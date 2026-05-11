@@ -56,3 +56,6 @@ CodeCoverage/
 TestResult.xml
 nunit-*.xml
 /.vs
+/FacilityService/FacilityServiceAPI/.vs/FacilityServiceAPI/CopilotIndices/17.14.1518.61961
+/FacilityService/FacilityServiceAPI/.vs/FacilityServiceAPI/FileContentIndex
+/FacilityService/FacilityServiceAPI/.vs/FacilityServiceAPI/v17
