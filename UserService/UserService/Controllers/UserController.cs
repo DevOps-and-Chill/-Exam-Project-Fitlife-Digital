@@ -16,6 +16,8 @@ namespace UserServiceAPI.Controllers
             _userRepository = userRepository;
         }
 
+        //AO: Endpoints mangler
+
         [HttpGet(Name = "GetAllUsers")]
         public IEnumerable<WeatherForecast> Get()
         {

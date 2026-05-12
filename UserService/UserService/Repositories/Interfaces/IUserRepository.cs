@@ -13,7 +13,7 @@ namespace UserServiceAPI.Repositories.Interfaces
         public Task<bool> SetUserAsInactive(Guid userId);
         public Task<bool> CancelMembershipForMember(Guid userId);
         public Task<bool> EndEmploymentForEmployee(Guid userId);
-        public Task<bool> SetEmployeeAsManagerForExerciseGym(Guid exerciseGymId,Guid userId);
+        public Task<bool> SetEmployeeAsManager(Guid userId);
 
         
     }
