@@ -1,4 +1,6 @@
 
+using FacilityServiceAPI.Repositories;
+
 namespace FacilityServiceAPI
 {
     public class Program
@@ -12,6 +14,8 @@ namespace FacilityServiceAPI
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+
+            builder.Services.AddTransient<IFacilityRepository, FacilityRepository>();
 
             var app = builder.Build();
 
