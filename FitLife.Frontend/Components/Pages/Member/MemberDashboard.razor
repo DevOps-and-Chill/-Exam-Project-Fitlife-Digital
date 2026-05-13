@@ -1,0 +1,201 @@
+@page "/member-dashboard"
+@rendermode InteractiveServer
+
+<div class="container-fluid px-0">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-5 py-3">
+        <a class="navbar-brand fw-bold fs-3" href="/member-dashboard">FitLife</a>
+
+        <div class="ms-auto d-flex align-items-center gap-3">
+            <a class="nav-link" href="/member-dashboard">Mit center</a>
+            <a class="nav-link" href="/find-hold">Find hold</a>
+            <a class="nav-link" href="/personal-training">Personlig træning</a>
+            <a class="nav-link" href="/digital-training">Digital træning</a>
+            <span class="fw-bold ms-3">NAVN NAVNESEN</span>
+            <a class="btn btn-outline-danger" href="/">Log ud</a>
+        </div>
+    </nav>
+
+    <section class="container py-5">
+
+        <div class="row align-items-center mb-5">
+            <div class="col-md-7">
+                <h1 class="fw-bold mb-3">Velkommen tilbage, Navn</h1>
+                <p class="lead">
+                    Her kan du se dine tilmeldte hold, personlige træninger og nyheder fra dit center.
+                </p>
+            </div>
+
+            <div class="col-md-5">
+                <div class="bg-light border rounded-3 d-flex align-items-center justify-content-center"
+                     style="height: 220px;">
+                    <span class="text-muted">
+                        Billede fra det udvalgte center
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h4 class="mb-3">Mine tilmeldte hold</h4>
+
+                        @foreach (var hold in MyClasses)
+                        {
+                            <div class="border rounded p-3 mb-3">
+                                <h6 class="mb-1">@hold.Title</h6>
+                                <p class="mb-1 text-muted">
+                                    @hold.Date.ToString("dd/MM") kl. @hold.Date.ToString("HH:mm")
+                                </p>
+                                <p class="mb-0">
+                                    Instruktør: @hold.Instructor
+                                </p>
+                            </div>
+                        }
+
+                        <a href="/find-hold" class="btn btn-success mt-2">
+                            Find flere hold
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h4 class="mb-3">Mine personlige træninger</h4>
+
+                        @foreach (var session in PersonalTrainingSessions)
+                        {
+                            <div class="border rounded p-3 mb-3">
+                                <h6 class="mb-1">@session.TrainerName</h6>
+                                <p class="mb-1 text-muted">
+                                    @session.Date.ToString("dd/MM") kl. @session.Date.ToString("HH:mm")
+                                </p>
+                                <p class="mb-0">
+                                    Status: @session.Status
+                                </p>
+                            </div>
+                        }
+
+                        <a href="/personal-training" class="btn btn-outline-success mt-2">
+                            Se personlig træning
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row g-4 mt-1">
+
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h5>Min profil</h5>
+                        <p class="text-muted">
+                            Se og administrer dine medlemsoplysninger.
+                        </p>
+                        <button class="btn btn-outline-dark" @onclick="ShowNotImplemented">
+                            Åbn profil
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h5>Administrer medlemskab</h5>
+                        <p class="text-muted">
+                            Se medlemskabstype, betaling og tilvalg.
+                        </p>
+                        <button class="btn btn-outline-dark" @onclick="ShowNotImplemented">
+                            Administrer
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h5>Mine data</h5>
+                        <p class="text-muted">
+                            Se træningsdata og tilkoblede wearables.
+                        </p>
+                        <button class="btn btn-outline-dark" @onclick="ShowNotImplemented">
+                            Se data
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Message))
+        {
+            <div class="alert alert-info mt-4">
+                @Message
+            </div>
+        }
+
+    </section>
+
+    <footer class="border-top bg-light py-4 text-center text-muted">
+        Footer
+    </footer>
+
+</div>
+
+@code {
+    private string Message = "";
+
+    private List<MemberClass> MyClasses = new()
+    {
+        new MemberClass
+        {
+            Title = "Yoga",
+            Instructor = "Frederikke",
+            Date = DateTime.Today.AddDays(1).AddHours(17)
+        },
+        new MemberClass
+        {
+            Title = "Spinning",
+            Instructor = "Mikkel",
+            Date = DateTime.Today.AddDays(3).AddHours(18)
+        }
+    };
+
+    private List<PersonalTrainingSession> PersonalTrainingSessions = new()
+    {
+        new PersonalTrainingSession
+        {
+            TrainerName = "Jonas",
+            Date = DateTime.Today.AddDays(2).AddHours(15),
+            Status = "Booket"
+        }
+    };
+
+    private void ShowNotImplemented()
+    {
+        Message = "Denne funktion er ikke implementeret endnu.";
+    }
+
+    private class MemberClass
+    {
+        public string Title { get; set; } = "";
+        public string Instructor { get; set; } = "";
+        public DateTime Date { get; set; }
+    }
+
+    private class PersonalTrainingSession
+    {
+        public string TrainerName { get; set; } = "";
+        public DateTime Date { get; set; }
+        public string Status { get; set; } = "";
+    }
+}

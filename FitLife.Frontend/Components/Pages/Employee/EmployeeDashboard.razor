@@ -1,0 +1,180 @@
+@page "/employee-dashboard"
+@rendermode InteractiveServer
+
+<div class="container-fluid px-0">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-5 py-3">
+        <a class="navbar-brand fw-bold fs-3 text-white"
+           href="/employee-dashboard">
+            FitLife Admin
+        </a>
+
+        <div class="ms-auto d-flex align-items-center gap-3">
+            <a class="nav-link text-white" href="/employee-dashboard">Forside</a>
+            <a class="nav-link text-white" href="/manage-sessions">Administrer hold</a>
+            <a class="nav-link text-white" href="/manage-members">Administrer medlemmer</a>
+            <a class="nav-link text-white" href="/personal-training">Personlig træning</a>
+
+            <span class="fw-bold text-white ms-3">
+                NAVN NAVNESEN
+            </span>
+        </div>
+    </nav>
+
+    <section class="container py-5">
+
+        <div class="mb-5">
+            <h1 class="fw-bold">Ansat dashboard</h1>
+
+            <p class="lead">
+                Administrer hold, medlemmer, centre og personlig træning.
+            </p>
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body p-4">
+
+                        <h3>Holdtræning</h3>
+
+                        <p class="text-muted">
+                            Administrer eksisterende hold eller opret nye hold.
+                        </p>
+
+                        <div class="d-grid gap-2">
+                            <a href="/manage-sessions"
+                               class="btn btn-success">
+                                Administrer hold
+                            </a>
+
+                            <a href="/create-session"
+                               class="btn btn-outline-success">
+                                + Opret hold
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body p-4">
+
+                        <h3>Medlemmer</h3>
+
+                        <p class="text-muted">
+                            Se medlemmer, rediger medlemsoplysninger eller opret nye medlemmer.
+                        </p>
+
+                        <div class="d-grid gap-2">
+                            <a href="/manage-members"
+                               class="btn btn-success">
+                                Administrer medlemmer
+                            </a>
+
+                            <a href="/create-member"
+                               class="btn btn-outline-success">
+                                + Opret medlem
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body p-4">
+
+                        <h3>Personlig træning</h3>
+
+                        <p class="text-muted">
+                            Se sessioner og ønsker om personlig træning.
+                        </p>
+
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-success"
+                                    @onclick="ShowPTSessions">
+                                Se mine sessioner
+                            </button>
+
+                            <button class="btn btn-outline-success"
+                                    @onclick="ShowPTRequests">
+                                Ønsker om sessioner
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body p-4">
+
+                        <h3>Centre</h3>
+
+                        <p class="text-muted">
+                            Administrer centre og opret afvigelser.
+                        </p>
+
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-success"
+                                    @onclick="ShowCenters">
+                                Administrer center
+                            </button>
+
+                            <button class="btn btn-outline-success"
+                                    @onclick="ShowCenterDeviation">
+                                Opret afvigelse for center
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Message))
+        {
+            <div class="alert alert-info mt-4">
+                @Message
+            </div>
+        }
+
+    </section>
+
+    <footer class="border-top bg-light py-4 text-center text-muted">
+        Footer
+    </footer>
+
+</div>
+
+@code {
+
+    private string Message = "";
+
+    private void ShowPTSessions()
+    {
+        Message = "Visning af personlige træningssessioner er ikke implementeret endnu.";
+    }
+
+    private void ShowPTRequests()
+    {
+        Message = "Visning af ønsker om sessioner er ikke implementeret endnu.";
+    }
+
+    private void ShowCenters()
+    {
+        Message = "Centeradministration er ikke implementeret endnu.";
+    }
+
+    private void ShowCenterDeviation()
+    {
+        Message = "Oprettelse af centerafvigelse er ikke implementeret endnu.";
+    }
+}

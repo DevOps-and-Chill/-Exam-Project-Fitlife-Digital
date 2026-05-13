@@ -1,0 +1,147 @@
+@page "/create-session"
+@rendermode InteractiveServer
+
+<div class="container-fluid px-0">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-5 py-3">
+        <a class="navbar-brand fw-bold fs-3 text-white" href="/employee-dashboard">
+            FitLife Admin
+        </a>
+
+        <div class="ms-auto d-flex align-items-center gap-3">
+            <a class="nav-link text-white" href="/employee-dashboard">Forside</a>
+            <a class="nav-link text-white" href="/manage-sessions">Administrer hold</a>
+            <a class="nav-link text-white" href="/manage-members">Administrer medlemmer</a>
+            <a class="nav-link text-white" href="/personal-training">Personlig træning</a>
+            <span class="fw-bold text-white ms-3">NAVN NAVNESEN</span>
+        </div>
+    </nav>
+
+    <section class="container py-5">
+
+        <div class="mb-4">
+            <h1 class="fw-bold">Opret hold</h1>
+            <p class="lead">Opret et nyt hold i centerets holdplan.</p>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label">Holdtype</label>
+                        <input class="form-control" @bind="Title" placeholder="Fx Yoga, Spinning, Crossfit" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Instruktør</label>
+                        <input class="form-control" @bind="InstructorName" placeholder="Navn på instruktør" />
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label">Beskrivelse af træning</label>
+                        <textarea class="form-control" rows="4" @bind="Description"></textarea>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Dato</label>
+                        <input class="form-control" type="date" @bind="SelectedDate" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Klokkeslæt</label>
+                        <input class="form-control" type="time" @bind="SelectedTime" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Samlet antal pladser</label>
+                        <input class="form-control" type="number" @bind="Capacity" />
+                    </div>
+
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(Message))
+                {
+                    <div class="alert alert-info mt-4">
+                        @Message
+                    </div>
+                }
+
+                <div class="d-flex gap-3 mt-4">
+                    <button class="btn btn-success px-4" @onclick="Save">
+                        Gem
+                    </button>
+
+                    <button class="btn btn-outline-success px-4" @onclick="SaveAndCreateMore">
+                        Gem og opret flere hold
+                    </button>
+
+                    <a href="/employee-dashboard" class="btn btn-outline-secondary px-4">
+                        Afbryd
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+    <footer class="border-top bg-light py-4 text-center text-muted">
+        Footer
+    </footer>
+
+</div>
+
+@code {
+    private string Title = "";
+    private string InstructorName = "";
+    private string Description = "";
+    private DateTime? SelectedDate;
+    private TimeOnly? SelectedTime;
+    private int Capacity = 10;
+    private string Message = "";
+
+    [Inject]
+    private NavigationManager Navigation { get; set; } = default!;
+
+    private bool Validate()
+    {
+        if (string.IsNullOrWhiteSpace(Title) ||
+            string.IsNullOrWhiteSpace(InstructorName) ||
+            SelectedDate is null ||
+            SelectedTime is null ||
+            Capacity <= 0)
+        {
+            Message = "Udfyld holdtype, instruktør, dato, klokkeslæt og antal pladser.";
+            return false;
+        }
+
+        return true;
+    }
+
+    private void Save()
+    {
+        if (!Validate())
+            return;
+
+        Message = $"Holdet {Title} er oprettet.";
+
+        Navigation.NavigateTo("/manage-sessions");
+    }
+
+    private void SaveAndCreateMore()
+    {
+        if (!Validate())
+            return;
+
+        Message = $"Holdet {Title} er oprettet. Du kan nu oprette et nyt hold.";
+
+        Title = "";
+        InstructorName = "";
+        Description = "";
+        SelectedDate = null;
+        SelectedTime = null;
+        Capacity = 10;
+    }
+}

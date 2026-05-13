@@ -1,0 +1,336 @@
+@page "/manage-members"
+@rendermode InteractiveServer
+
+<div class="container-fluid px-0">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-5 py-3">
+        <a class="navbar-brand fw-bold fs-3 text-white" href="/employee-dashboard">
+            FitLife Admin
+        </a>
+
+        <div class="ms-auto d-flex align-items-center gap-3">
+            <a class="nav-link text-white" href="/employee-dashboard">Forside</a>
+            <a class="nav-link text-white" href="/manage-sessions">Administrer hold</a>
+            <a class="nav-link text-white" href="/manage-members">Administrer medlemmer</a>
+            <a class="nav-link text-white" href="/personal-training">Personlig træning</a>
+            <span class="fw-bold text-white ms-3">NAVN NAVNESEN</span>
+        </div>
+    </nav>
+
+    <section class="container py-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="fw-bold">Administrer medlemmer</h1>
+                <p class="lead">Søg, se og rediger medlemmer.</p>
+            </div>
+
+            <a href="/register-step1" class="btn btn-success">
+                OPRET MEDLEM
+            </a>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body p-4">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-8">
+                        <label class="form-label">Søg efter medlem</label>
+                        <input class="form-control"
+                               placeholder="Søg efter medlem..."
+                               @bind="SearchText"
+                               @bind:event="oninput" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <button class="btn btn-outline-secondary w-100" @onclick="ClearSearch">
+                            Vis alle
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-6">
+                @foreach (var member in FilteredMembers)
+                {
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-body">
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5>@member.FirstName @member.LastName</h5>
+
+                                    <p class="mb-1">
+                                        Alder: @member.Age
+                                    </p>
+
+                                    <p class="mb-1">
+                                        Medlemskabstype: @member.MembershipType
+                                    </p>
+
+                                    <p class="mb-1">
+                                        Betalingsstatus: @member.PaymentStatus
+                                    </p>
+
+                                    <p class="text-muted mb-0">
+                                        Medlem siden: @member.MemberSince.ToString("dd/MM/yyyy")
+                                    </p>
+                                </div>
+
+                                <button class="btn btn-outline-dark"
+                                        @onclick="() => SelectMember(member)">
+                                    Rediger
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="col-md-6">
+                @if (SelectedMember is null)
+                {
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4 text-muted">
+                            Vælg et medlem for at redigere oplysninger.
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4">
+
+                            <h4>Rediger medlem</h4>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Fornavn</label>
+                                    <input class="form-control" @bind="SelectedMember.FirstName" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Efternavn</label>
+                                    <input class="form-control" @bind="SelectedMember.LastName" />
+                                </div>
+
+                                <div class="col-md-8">
+                                    <label class="form-label">Adresse</label>
+                                    <input class="form-control" @bind="SelectedMember.Address" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Postnr.</label>
+                                    <input class="form-control" @bind="SelectedMember.PostalCode" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">By</label>
+                                    <input class="form-control" @bind="SelectedMember.City" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">E-mailadresse</label>
+                                    <input class="form-control" type="email" @bind="SelectedMember.Email" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Telefonnummer</label>
+                                    <input class="form-control" @bind="SelectedMember.PhoneNumber" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Fødselsdag</label>
+                                    <input class="form-control" type="date" @bind="SelectedMember.BirthDate" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Medlemskabstype</label>
+                                    <select class="form-select" @bind="SelectedMember.MembershipType">
+                                        <option>Basis</option>
+                                        <option>Plus</option>
+                                        <option>Premium</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Betalingsstatus</label>
+                                    <select class="form-select" @bind="SelectedMember.PaymentStatus">
+                                        <option>Betalt</option>
+                                        <option>Mangler betaling</option>
+                                        <option>Faktura sendt</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label class="form-label">Nuværende PT</label>
+                                    <input class="form-control" @bind="SelectedMember.CurrentPersonalTrainer" />
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button class="btn btn-success" @onclick="SaveChanges">
+                                    Gem ændringer
+                                </button>
+
+                                <button class="btn btn-outline-warning" @onclick="UpdatePaymentMethod">
+                                    Opdater betalingsmiddel
+                                </button>
+
+                                <button class="btn btn-outline-secondary" @onclick="ClearSelection">
+                                    Afbryd
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                }
+            </div>
+
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Message))
+        {
+            <div class="alert alert-info mt-4">
+                @Message
+            </div>
+        }
+
+    </section>
+
+    <footer class="border-top bg-light py-4 text-center text-muted">
+        Footer
+    </footer>
+
+</div>
+
+@code {
+    private string SearchText = "";
+    private string Message = "";
+    private MemberAdmin? SelectedMember;
+
+    private List<MemberAdmin> Members = new()
+    {
+        new MemberAdmin
+        {
+            FirstName = "Jonas",
+            LastName = "Madsen",
+            Address = "Munkeallé 27",
+            PostalCode = "8000",
+            City = "Aarhus",
+            Email = "jonas@example.com",
+            PhoneNumber = "12345678",
+            BirthDate = new DateTime(1999, 4, 12),
+            MembershipType = "Plus",
+            PaymentStatus = "Betalt",
+            MemberSince = DateTime.Today.AddMonths(-6),
+            CurrentPersonalTrainer = "Frederikke"
+        },
+        new MemberAdmin
+        {
+            FirstName = "Frederik",
+            LastName = "Nielsen",
+            Address = "Vestergade 10",
+            PostalCode = "8600",
+            City = "Silkeborg",
+            Email = "frederik@example.com",
+            PhoneNumber = "22334455",
+            BirthDate = new DateTime(1988, 9, 2),
+            MembershipType = "Basis",
+            PaymentStatus = "Mangler betaling",
+            MemberSince = DateTime.Today.AddYears(-1),
+            CurrentPersonalTrainer = ""
+        },
+        new MemberAdmin
+        {
+            FirstName = "Charlotte",
+            LastName = "Hansen",
+            Address = "Stationsvej 4",
+            PostalCode = "8700",
+            City = "Horsens",
+            Email = "charlotte@example.com",
+            PhoneNumber = "87654321",
+            BirthDate = new DateTime(1974, 1, 20),
+            MembershipType = "Premium",
+            PaymentStatus = "Betalt",
+            MemberSince = DateTime.Today.AddYears(-3),
+            CurrentPersonalTrainer = "Mikkel"
+        }
+    };
+
+    private IEnumerable<MemberAdmin> FilteredMembers =>
+        Members.Where(m =>
+            string.IsNullOrWhiteSpace(SearchText) ||
+            m.FirstName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+            m.LastName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+            m.Email.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+            m.MembershipType.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
+
+    private void SelectMember(MemberAdmin member)
+    {
+        SelectedMember = member;
+        Message = "";
+    }
+
+    private void SaveChanges()
+    {
+        if (SelectedMember is null)
+            return;
+
+        Message = $"Ændringer for {SelectedMember.FirstName} {SelectedMember.LastName} er gemt.";
+    }
+
+    private void UpdatePaymentMethod()
+    {
+        if (SelectedMember is null)
+            return;
+
+        Message = $"Betalingsmiddel for {SelectedMember.FirstName} {SelectedMember.LastName} kan opdateres senere via betalingsintegration.";
+    }
+
+    private void ClearSelection()
+    {
+        SelectedMember = null;
+        Message = "";
+    }
+
+    private void ClearSearch()
+    {
+        SearchText = "";
+    }
+
+    private class MemberAdmin
+    {
+        public string FirstName { get; set; } = "";
+        public string LastName { get; set; } = "";
+        public string Address { get; set; } = "";
+        public string PostalCode { get; set; } = "";
+        public string City { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string PhoneNumber { get; set; } = "";
+        public DateTime BirthDate { get; set; }
+        public string MembershipType { get; set; } = "";
+        public string PaymentStatus { get; set; } = "";
+        public DateTime MemberSince { get; set; }
+        public string CurrentPersonalTrainer { get; set; } = "";
+
+        public int Age
+        {
+            get
+            {
+                var today = DateTime.Today;
+                var age = today.Year - BirthDate.Year;
+
+                if (BirthDate.Date > today.AddYears(-age))
+                {
+                    age--;
+                }
+
+                return age;
+            }
+        }
+    }
+}

@@ -1,0 +1,141 @@
+@page "/register-step3"
+@rendermode InteractiveServer
+
+<div class="container-fluid px-0">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-5 py-3">
+        <a class="navbar-brand fw-bold fs-3" href="/">FitLife</a>
+
+        <div class="ms-auto d-flex align-items-center gap-3">
+            <a class="nav-link" href="/">Find center</a>
+            <a class="nav-link" href="/find-hold">Find hold</a>
+            <a class="nav-link" href="/personal-training">Personlig træning</a>
+            <a class="nav-link" href="/digital-training">Digital træning</a>
+            <a class="nav-link" href="/login">Login</a>
+            <a class="btn btn-success fw-bold px-4" href="/register-step1">BLIV MEDLEM</a>
+        </div>
+    </nav>
+
+    <section class="container py-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Opret medlemskab</h2>
+            <button class="btn btn-outline-secondary">Hjælp mig</button>
+        </div>
+
+        <div class="row mb-4 text-center">
+            <div class="col">
+                <div class="border rounded p-3 bg-light">
+                    Trin 1<br />Personlige informationer
+                </div>
+            </div>
+            <div class="col">
+                <div class="border rounded p-3 bg-light">
+                    Trin 2<br />Vælg medlemskabstype
+                </div>
+            </div>
+            <div class="col">
+                <div class="border rounded p-3 bg-success text-white">
+                    Trin 3<br />Betalingsoplysninger
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-5">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h4>Gennemse dine valg</h4>
+
+                        <p><strong>Valgt medlemskabstype:</strong><br />Plus medlemskab</p>
+                        <p><strong>Valgte tilvalg:</strong><br />Digital træning</p>
+
+                        <hr />
+
+                        <h5>Total pris pr. måned</h5>
+                        <h3>349 kr.</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-7">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+
+                        <h4 class="mb-3">Indtast betalingsoplysninger</h4>
+
+                        <div class="mb-3">
+                            <label class="form-label">Kortnummer</label>
+                            <input class="form-control" @bind="CardNumber" />
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">MM</label>
+                                <input class="form-control" @bind="Month" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">YY</label>
+                                <input class="form-control" @bind="Year" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">CVV/CVD</label>
+                                <input class="form-control" @bind="Cvv" />
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(Message))
+                        {
+                            <div class="alert alert-info mt-4">
+                                @Message
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a href="/register-step2" class="btn btn-outline-secondary">
+                Tilbage
+            </a>
+
+            <button class="btn btn-success px-4" @onclick="CompleteRegistration">
+                Betal og afslut
+            </button>
+        </div>
+
+    </section>
+
+    <footer class="border-top bg-light py-4 text-center text-muted">
+        Footer
+    </footer>
+
+</div>
+
+@code {
+    private string CardNumber = "";
+    private string Month = "";
+    private string Year = "";
+    private string Cvv = "";
+    private string Message = "";
+
+    private void CompleteRegistration()
+    {
+        if (string.IsNullOrWhiteSpace(CardNumber) ||
+            string.IsNullOrWhiteSpace(Month) ||
+            string.IsNullOrWhiteSpace(Year) ||
+            string.IsNullOrWhiteSpace(Cvv))
+        {
+            Message = "Udfyld alle betalingsoplysninger.";
+            return;
+        }
+
+        Message = "Medlemskabet er oprettet. Betaling gennemført.";
+    }
+}

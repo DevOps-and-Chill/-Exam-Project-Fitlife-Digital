@@ -1,0 +1,163 @@
+@page "/find-hold"
+@rendermode InteractiveServer
+@using FitLife.Frontend.Models
+
+<div class="container-fluid px-0">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-5 py-3">
+        <a class="navbar-brand fw-bold fs-3" href="/member-dashboard">
+            FitLife
+        </a>
+
+        <div class="ms-auto d-flex align-items-center gap-3">
+            <a class="nav-link" href="/member-dashboard">
+                Mit center
+            </a>
+
+            <a class="nav-link" href="/find-hold">
+                Find hold
+            </a>
+
+            <a class="nav-link" href="/personal-training">
+                Personlig træning
+            </a>
+
+            <a class="nav-link" href="/digital-training">
+                Digital træning
+            </a>
+
+            <span class="fw-bold ms-3">
+                NAVN NAVNESEN
+            </span>
+
+            <a class="btn btn-outline-danger" href="/">
+                Log ud
+            </a>
+        </div>
+    </nav>
+
+    <section class="container py-5">
+
+        <h1 class="mb-4">Find hold</h1>
+
+        <div class="mb-4 d-flex gap-2">
+            <button class="btn btn-outline-secondary">
+                Filtrér
+            </button>
+
+            <button class="btn btn-outline-primary">
+                Vis alle hold
+            </button>
+        </div>
+
+        @foreach (var session in Sessions)
+        {
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        @session.Title
+                    </h5>
+
+                    <p class="card-text">
+                        Kl. @session.StartTime.ToString("HH:mm") <br />
+                        Instruktør: @session.InstructorName <br />
+                        Ledige pladser: @session.AvailableSpots
+                    </p>
+
+                    @if (session.IsUserSignedUp)
+                    {
+                        <button class="btn btn-danger"
+                                @onclick="() => Unregister(session)">
+                            Afmeld
+                        </button>
+                    }
+                    else if (session.AvailableSpots > 0)
+                    {
+                        <button class="btn btn-success"
+                                @onclick="() => Register(session)">
+                            Tilmeld
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-warning"
+                                @onclick="() => JoinWaitlist(session)">
+                            Tilmeld venteliste
+                        </button>
+                    }
+
+                </div>
+            </div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Message))
+        {
+            <div class="alert alert-success mt-4">
+                @Message
+            </div>
+        }
+
+    </section>
+
+    <footer class="border-top bg-light py-4 text-center text-muted">
+        Footer
+    </footer>
+
+</div>
+
+@code {
+
+    private string Message = "";
+
+    private List<TrainingSession> Sessions = new()
+    {
+        new TrainingSession
+        {
+            Title = "Yoga",
+            InstructorName = "Frederikke",
+            StartTime = DateTime.Today.AddHours(17),
+            Capacity = 12,
+            RegisteredCount = 4
+        },
+
+        new TrainingSession
+        {
+            Title = "Spinning",
+            InstructorName = "Mikkel",
+            StartTime = DateTime.Today.AddHours(18),
+            Capacity = 10,
+            RegisteredCount = 10
+        },
+
+        new TrainingSession
+        {
+            Title = "Crossfit",
+            InstructorName = "Jonas",
+            StartTime = DateTime.Today.AddHours(19),
+            Capacity = 15,
+            RegisteredCount = 8
+        }
+    };
+
+    private void Register(TrainingSession session)
+    {
+        session.IsUserSignedUp = true;
+        session.RegisteredCount++;
+
+        Message = $"Du er nu tilmeldt {session.Title}.";
+    }
+
+    private void Unregister(TrainingSession session)
+    {
+        session.IsUserSignedUp = false;
+        session.RegisteredCount--;
+
+        Message = $"Du er nu afmeldt {session.Title}.";
+    }
+
+    private void JoinWaitlist(TrainingSession session)
+    {
+        Message = $"Du er nu tilmeldt ventelisten til {session.Title}.";
+    }
+}

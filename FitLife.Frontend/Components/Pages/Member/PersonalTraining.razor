@@ -1,0 +1,276 @@
+@page "/personal-training"
+@rendermode InteractiveServer
+
+<div class="container-fluid px-0">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-5 py-3">
+        <a class="navbar-brand fw-bold fs-3" href="/member-dashboard">FitLife</a>
+
+        <div class="ms-auto d-flex align-items-center gap-3">
+            <a class="nav-link" href="/member-dashboard">Mit center</a>
+            <a class="nav-link" href="/find-hold">Find hold</a>
+            <a class="nav-link" href="/personal-training">Personlig træning</a>
+            <a class="nav-link" href="/digital-training">Digital træning</a>
+            <span class="fw-bold ms-3">NAVN NAVNESEN</span>
+        </div>
+    </nav>
+
+    <section class="container py-5">
+
+        <div class="row align-items-center mb-5">
+            <div class="col-md-7">
+                <h1 class="fw-bold">Personlig træning</h1>
+                <p class="lead">
+                    Find en personlig træner, book en session eller send en besked.
+                </p>
+            </div>
+
+            <div class="col-md-5">
+                <div class="bg-light border rounded-3 d-flex align-items-center justify-content-center"
+                     style="height: 220px;">
+                    <span class="text-muted">
+                        Billede fra det udvalgte center
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+
+            @foreach (var trainer in Trainers)
+            {
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body p-4">
+
+                            <h4>@trainer.Name</h4>
+                            <p class="text-muted">@trainer.Description</p>
+
+                            <p>
+                                <strong>Ledig:</strong>
+                                @(trainer.IsAvailable ? "Ja" : "Nej")
+                            </p>
+
+                            <div class="d-grid gap-2">
+                                @if (trainer.IsAvailable)
+                                {
+                                    <button class="btn btn-success"
+                                            @onclick="() => SelectTrainerForBooking(trainer)">
+                                        Book session
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-warning"
+                                            @onclick="() => JoinWaitlist(trainer)">
+                                        Tilmeld venteliste
+                                    </button>
+                                }
+
+                                <button class="btn btn-outline-dark"
+                                        @onclick="() => SelectTrainerForMessage(trainer)">
+                                    Send besked
+                                </button>
+
+                                <button class="btn btn-outline-secondary"
+                                        @onclick="() => ShowProfile(trainer)">
+                                    Se profil
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+        @if (SelectedTrainerForBooking is not null)
+        {
+            <div class="card shadow-sm mt-5">
+                <div class="card-body p-4">
+                    <h4>Book session med @SelectedTrainerForBooking.Name</h4>
+
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-6">
+                            <label class="form-label">Valgt dato</label>
+                            <input class="form-control" type="date" @bind="SelectedDate" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Vælg tid</label>
+                            <select class="form-select" @bind="SelectedTime">
+                                <option value="">Vælg tid</option>
+                                <option>09:00</option>
+                                <option>12:00</option>
+                                <option>15:00</option>
+                                <option>17:00</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 mt-4">
+                        <button class="btn btn-success" @onclick="BookSession">
+                            BOOK
+                        </button>
+
+                        <button class="btn btn-outline-secondary" @onclick="CancelBooking">
+                            Afbryd booking
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (SelectedTrainerForMessage is not null)
+        {
+            <div class="card shadow-sm mt-5">
+                <div class="card-body p-4">
+                    <h4>Send besked til @SelectedTrainerForMessage.Name</h4>
+
+                    <div class="mb-3">
+                        <label class="form-label">Emne</label>
+                        <input class="form-control" @bind="MessageSubject" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Besked</label>
+                        <textarea class="form-control" rows="5" @bind="MessageBody"></textarea>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <button class="btn btn-success" @onclick="SendMessage">
+                            SEND
+                        </button>
+
+                        <button class="btn btn-outline-secondary" @onclick="CancelMessage">
+                            Afbryd
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(StatusMessage))
+        {
+            <div class="alert alert-info mt-4">
+                @StatusMessage
+            </div>
+        }
+
+    </section>
+
+    <footer class="border-top bg-light py-4 text-center text-muted">
+        Footer
+    </footer>
+
+</div>
+
+@code {
+    private Trainer? SelectedTrainerForBooking;
+    private Trainer? SelectedTrainerForMessage;
+
+    private DateTime? SelectedDate;
+    private string SelectedTime = "";
+
+    private string MessageSubject = "";
+    private string MessageBody = "";
+    private string StatusMessage = "";
+
+    private List<Trainer> Trainers = new()
+    {
+        new Trainer
+        {
+            Name = "Frederikke",
+            Description = "Styrketræning, holdtræning og motivation.",
+            IsAvailable = true
+        },
+        new Trainer
+        {
+            Name = "Jonas",
+            Description = "Vægttab, teknik og personlige programmer.",
+            IsAvailable = false
+        },
+        new Trainer
+        {
+            Name = "Mikkel",
+            Description = "Kondition, spinning og funktionel træning.",
+            IsAvailable = true
+        }
+    };
+
+    private void SelectTrainerForBooking(Trainer trainer)
+    {
+        SelectedTrainerForBooking = trainer;
+        SelectedTrainerForMessage = null;
+        StatusMessage = "";
+    }
+
+    private void SelectTrainerForMessage(Trainer trainer)
+    {
+        SelectedTrainerForMessage = trainer;
+        SelectedTrainerForBooking = null;
+        StatusMessage = "";
+    }
+
+    private void JoinWaitlist(Trainer trainer)
+    {
+        StatusMessage = $"Du er nu tilmeldt ventelisten hos {trainer.Name}.";
+    }
+
+    private void ShowProfile(Trainer trainer)
+    {
+        StatusMessage = $"Profil for {trainer.Name} vises ikke som separat side endnu.";
+    }
+
+    private void BookSession()
+    {
+        if (SelectedTrainerForBooking is null || SelectedDate is null || string.IsNullOrWhiteSpace(SelectedTime))
+        {
+            StatusMessage = "Vælg både dato og tid.";
+            return;
+        }
+
+        StatusMessage = $"Du har booket en session med {SelectedTrainerForBooking.Name} den {SelectedDate:dd/MM} kl. {SelectedTime}.";
+        SelectedTrainerForBooking = null;
+        SelectedDate = null;
+        SelectedTime = "";
+    }
+
+    private void CancelBooking()
+    {
+        SelectedTrainerForBooking = null;
+        SelectedDate = null;
+        SelectedTime = "";
+    }
+
+    private void SendMessage()
+    {
+        if (SelectedTrainerForMessage is null ||
+            string.IsNullOrWhiteSpace(MessageSubject) ||
+            string.IsNullOrWhiteSpace(MessageBody))
+        {
+            StatusMessage = "Udfyld både emne og besked.";
+            return;
+        }
+
+        StatusMessage = $"Din besked til {SelectedTrainerForMessage.Name} er sendt.";
+        SelectedTrainerForMessage = null;
+        MessageSubject = "";
+        MessageBody = "";
+    }
+
+    private void CancelMessage()
+    {
+        SelectedTrainerForMessage = null;
+        MessageSubject = "";
+        MessageBody = "";
+    }
+
+    private class Trainer
+    {
+        public string Name { get; set; } = "";
+        public string Description { get; set; } = "";
+        public bool IsAvailable { get; set; }
+    }
+}

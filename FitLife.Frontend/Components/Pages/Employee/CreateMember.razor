@@ -1,0 +1,167 @@
+@page "/create-member"
+@rendermode InteractiveServer
+
+<div class="container-fluid px-0">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-5 py-3">
+        <a class="navbar-brand fw-bold fs-3 text-white" href="/employee-dashboard">
+            FitLife Admin
+        </a>
+
+        <div class="ms-auto d-flex align-items-center gap-3">
+            <a class="nav-link text-white" href="/employee-dashboard">Forside</a>
+            <a class="nav-link text-white" href="/manage-sessions">Administrer hold</a>
+            <a class="nav-link text-white" href="/manage-members">Administrer medlemmer</a>
+            <span class="fw-bold text-white ms-3">NAVN NAVNESEN</span>
+        </div>
+    </nav>
+
+    <section class="container py-5">
+
+        <h1 class="fw-bold mb-3">Opret medlem</h1>
+        <p class="lead">
+            Opret et nyt medlem via receptionen.
+        </p>
+
+        <div class="alert alert-info">
+            Husk at informere kunden om, at de bliver bedt om at lave password ved første login.
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label">Fornavn</label>
+                        <input class="form-control" @bind="FirstName" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Efternavn</label>
+                        <input class="form-control" @bind="LastName" />
+                    </div>
+
+                    <div class="col-md-8">
+                        <label class="form-label">Adresse</label>
+                        <input class="form-control" @bind="Address" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Postnr.</label>
+                        <input class="form-control" @bind="PostalCode" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">By</label>
+                        <input class="form-control" @bind="City" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Fødselsdag</label>
+                        <input class="form-control" type="date" @bind="BirthDate" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">E-mailadresse</label>
+                        <input class="form-control" type="email" @bind="Email" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Telefonnummer</label>
+                        <input class="form-control" @bind="PhoneNumber" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Center</label>
+                        <select class="form-select" @bind="Center">
+                            <option value="">Vælg center</option>
+                            <option>Aarhus C</option>
+                            <option>Randers</option>
+                            <option>Silkeborg</option>
+                            <option>Horsens</option>
+                            <option>Vejle</option>
+                            <option>Skanderborg</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Medlemskabstype</label>
+                        <select class="form-select" @bind="MembershipType">
+                            <option value="">Vælg medlemskabstype</option>
+                            <option>Basis</option>
+                            <option>Plus</option>
+                            <option>Premium</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label">Betalingsform</label>
+                        <select class="form-select" @bind="PaymentMethod">
+                            <option value="">Vælg betalingsform</option>
+                            <option>Dankort - kunden scanner kort på terminalen</option>
+                            <option>MobilePay - kunden scanner QR</option>
+                            <option>Faktura - kunden modtager faktura på mail</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(Message))
+                {
+                    <div class="alert alert-info mt-4">
+                        @Message
+                    </div>
+                }
+
+                <div class="d-flex gap-3 mt-4">
+                    <button class="btn btn-success px-4" @onclick="CreateNewMember">
+                        Opret medlem
+                    </button>
+
+                    <a href="/manage-members" class="btn btn-outline-secondary px-4">
+                        Afbryd
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+    <footer class="border-top bg-light py-4 text-center text-muted">
+        Footer
+    </footer>
+
+</div>
+
+@code {
+    private string FirstName = "";
+    private string LastName = "";
+    private string Address = "";
+    private string PostalCode = "";
+    private string City = "";
+    private DateTime? BirthDate;
+    private string Email = "";
+    private string PhoneNumber = "";
+    private string Center = "";
+    private string MembershipType = "";
+    private string PaymentMethod = "";
+    private string Message = "";
+
+    private void CreateNewMember()
+    {
+        if (string.IsNullOrWhiteSpace(FirstName) ||
+            string.IsNullOrWhiteSpace(LastName) ||
+            string.IsNullOrWhiteSpace(Email) ||
+            string.IsNullOrWhiteSpace(Center) ||
+            string.IsNullOrWhiteSpace(MembershipType) ||
+            string.IsNullOrWhiteSpace(PaymentMethod))
+        {
+            Message = "Udfyld fornavn, efternavn, email, center, medlemskabstype og betalingsform.";
+            return;
+        }
+
+        Message = $"Medlemmet {FirstName} {LastName} er oprettet.";
+    }
+}

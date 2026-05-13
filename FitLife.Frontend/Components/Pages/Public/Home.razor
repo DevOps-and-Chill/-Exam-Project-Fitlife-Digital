@@ -1,0 +1,132 @@
+@page "/"
+@rendermode InteractiveServer
+
+<div class="container-fluid px-0">
+
+    <!-- Top navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-5 py-3">
+        <a class="navbar-brand fw-bold fs-3" href="/">FitLife</a>
+
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto align-items-center gap-3">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Find center</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/find-hold">Find hold</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/personal-training">Personlig træning</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/digital-training">Digital træning</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="btn btn-success fw-bold px-4" href="/register-step1">
+                        BLIV MEDLEM
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero section -->
+    <section class="container py-5">
+        <div class="row align-items-center">
+            
+            <div class="col-md-6">
+                <h1 class="display-5 fw-bold mb-4">
+                    Træning, fællesskab og fleksibilitet samlet ét sted
+                </h1>
+
+                <p class="lead mb-4">
+                    FitLife gør det nemt for medlemmer at finde hold, booke personlig træning
+                    og få adgang til digitale træningsmuligheder.
+                </p>
+
+                <div class="d-flex gap-3">
+                    <a href="/register-step1" class="btn btn-success btn-lg">
+                        Bliv medlem
+                    </a>
+
+                    <a href="/find-hold" class="btn btn-outline-dark btn-lg">
+                        Find hold
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 mt-4 mt-md-0">
+                <div class="bg-light border rounded-3 d-flex align-items-center justify-content-center"
+                     style="height: 350px;">
+                    <span class="text-muted fs-5">
+                        Inspirerende billede fra et center
+                    </span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Info cards -->
+    <section class="container pb-5">
+        <div class="row g-4">
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Find hold</h5>
+                        <p class="card-text">
+                            Se aktuelle hold, ledige pladser og tilmeld dig direkte online.
+                        </p>
+                        <a href="/find-hold" class="btn btn-outline-success">
+                            Se hold
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Personlig træning</h5>
+                        <p class="card-text">
+                            Find en træner, book sessioner og følg dit personlige træningsforløb.
+                        </p>
+                        <a href="/personal-training" class="btn btn-outline-success">
+                            Se trænere
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Digital træning</h5>
+                        <p class="card-text">
+                            Få adgang til træningsvideoer og programmer, når det passer dig.
+                        </p>
+                        <a href="/digital-training" class="btn btn-outline-success">
+                            Se digital træning
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-top bg-light py-4 text-center text-muted">
+        Footer
+    </footer>
+
+</div>

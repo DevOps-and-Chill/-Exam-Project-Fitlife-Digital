@@ -1,0 +1,210 @@
+@page "/register-step2"
+@rendermode InteractiveServer
+
+<div class="container-fluid px-0">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-5 py-3">
+        <a class="navbar-brand fw-bold fs-3" href="/">FitLife</a>
+
+        <div class="ms-auto d-flex align-items-center gap-3">
+            <a class="nav-link" href="/">Find center</a>
+            <a class="nav-link" href="/find-hold">Find hold</a>
+            <a class="nav-link" href="/personal-training">Personlig træning</a>
+            <a class="nav-link" href="/digital-training">Digital træning</a>
+            <a class="nav-link" href="/login">Login</a>
+            <a class="btn btn-success fw-bold px-4" href="/register-step1">BLIV MEDLEM</a>
+        </div>
+    </nav>
+
+    <section class="container py-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Opret medlemskab</h2>
+            <button class="btn btn-outline-secondary">Hjælp mig</button>
+        </div>
+
+        <div class="row mb-4 text-center">
+            <div class="col">
+                <div class="border rounded p-3 bg-light">
+                    Trin 1<br />Personlige informationer
+                </div>
+            </div>
+            <div class="col">
+                <div class="border rounded p-3 bg-success text-white">
+                    Trin 2<br />Vælg medlemskabstype
+                </div>
+            </div>
+            <div class="col">
+                <div class="border rounded p-3 bg-light">
+                    Trin 3<br />Betalingsoplysninger
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+
+                        <h4 class="mb-3">Vælg center/centre</h4>
+
+                        <select class="form-select mb-4" @bind="SelectedCenter">
+                            <option value="">Vælg center</option>
+                            <option>Aarhus C</option>
+                            <option>Randers</option>
+                            <option>Silkeborg</option>
+                            <option>Horsens</option>
+                            <option>Vejle</option>
+                            <option>Skanderborg</option>
+                        </select>
+
+                        <h4 class="mb-3">Vælg medlemskabstype</h4>
+
+                        <div class="list-group mb-4">
+                            <button class="list-group-item list-group-item-action"
+                                    @onclick="@(() => SelectMembership("Basis", 199))">
+                                Basis medlemskab — 199 kr./md.
+                            </button>
+
+                            <button class="list-group-item list-group-item-action"
+                                    @onclick="@(() => SelectMembership("Plus", 299))">
+                                Plus medlemskab — 299 kr./md.
+                            </button>
+
+                            <button class="list-group-item list-group-item-action"
+                                    @onclick="@(() => SelectMembership("Premium", 399))">
+                                Premium medlemskab — 399 kr./md.
+                            </button>
+                        </div>
+
+                        <h4 class="mb-3">Vælg tilvalg</h4>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" @bind="PersonalTrainingAddon" />
+                            <label class="form-check-label">
+                                Personlig træning +150 kr./md.
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" @bind="DigitalTrainingAddon" />
+                            <label class="form-check-label">
+                                Digital træning +50 kr./md.
+                            </label>
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(Message))
+                        {
+                            <div class="alert alert-warning mt-4">
+                                @Message
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h4>Dine valg</h4>
+
+                        <p>
+                            <strong>Center:</strong><br />
+                            @(string.IsNullOrWhiteSpace(SelectedCenter) ? "Ikke valgt" : SelectedCenter)
+                        </p>
+
+                        <p>
+                            <strong>Valgt medlemskabstype:</strong><br />
+                            @(string.IsNullOrWhiteSpace(SelectedMembership) ? "Ikke valgt" : SelectedMembership)
+                        </p>
+
+                        <p>
+                            <strong>Valgte tilvalg:</strong><br />
+                            @if (!PersonalTrainingAddon && !DigitalTrainingAddon)
+                            {
+                                <span>Ingen tilvalg</span>
+                            }
+                            else
+                            {
+                                @if (PersonalTrainingAddon)
+                                {
+                                    <span>Personlig træning</span><br />
+                                }
+
+                                @if (DigitalTrainingAddon)
+                                {
+                                    <span>Digital træning</span>
+                                }
+                            }
+                        </p>
+
+                        <hr />
+
+                        <h5>Total pris pr. måned</h5>
+                        <h3>@TotalPrice kr.</h3>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a href="/register-step1" class="btn btn-outline-secondary">
+                Tilbage
+            </a>
+
+            <button class="btn btn-success px-4" @onclick="GoToNextStep">
+                Næste
+            </button>
+        </div>
+
+    </section>
+
+    <footer class="border-top bg-light py-4 text-center text-muted">
+        Footer
+    </footer>
+
+</div>
+
+@code {
+    private string SelectedCenter = "";
+    private string SelectedMembership = "";
+    private int MembershipPrice = 0;
+    private bool PersonalTrainingAddon;
+    private bool DigitalTrainingAddon;
+    private string Message = "";
+
+    [Inject]
+    private NavigationManager Navigation { get; set; } = default!;
+
+    private int TotalPrice =>
+        MembershipPrice +
+        (PersonalTrainingAddon ? 150 : 0) +
+        (DigitalTrainingAddon ? 50 : 0);
+
+    private void SelectMembership(string membership, int price)
+    {
+        SelectedMembership = membership;
+        MembershipPrice = price;
+        Message = "";
+    }
+
+    private void GoToNextStep()
+    {
+        if (string.IsNullOrWhiteSpace(SelectedCenter))
+        {
+            Message = "Vælg et center.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(SelectedMembership))
+        {
+            Message = "Vælg en medlemskabstype.";
+            return;
+        }
+
+        Navigation.NavigateTo("/register-step3");
+    }
+}

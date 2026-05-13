@@ -1,0 +1,300 @@
+@page "/manage-sessions"
+@rendermode InteractiveServer
+
+<div class="container-fluid px-0">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-5 py-3">
+        <a class="navbar-brand fw-bold fs-3 text-white" href="/employee-dashboard">
+            FitLife Admin
+        </a>
+
+        <div class="ms-auto d-flex align-items-center gap-3">
+            <a class="nav-link text-white" href="/employee-dashboard">Forside</a>
+            <a class="nav-link text-white" href="/manage-sessions">Administrer hold</a>
+            <a class="nav-link text-white" href="/manage-members">Administrer medlemmer</a>
+            <a class="nav-link text-white" href="/personal-training">Personlig træning</a>
+            <span class="fw-bold text-white ms-3">NAVN NAVNESEN</span>
+        </div>
+    </nav>
+
+    <section class="container py-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="fw-bold">Administrer hold</h1>
+                <p class="lead">Se, rediger eller aflys hold.</p>
+            </div>
+
+            <a href="/create-session" class="btn btn-success">
+                OPRET HOLD
+            </a>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body p-4">
+
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label">Dato</label>
+                        <input class="form-control" type="date" @bind="SelectedDate" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Søg efter hold</label>
+                        <input class="form-control"
+                               placeholder="Søg efter hold..."
+                               @bind="SearchText"
+                               @bind:event="oninput" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <button class="btn btn-outline-secondary w-100" @onclick="ClearFilter">
+                            Vis alle hold
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-7">
+
+                @foreach (var session in FilteredSessions)
+                {
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-body">
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5>@session.Title</h5>
+                                    <p class="mb-1">
+                                        Kl. @session.StartTime.ToString("HH:mm") —
+                                        Instruktør: @session.InstructorName —
+                                        Ledige pladser: @session.AvailableSpots
+                                    </p>
+                                    <p class="text-muted mb-0">
+                                        Dato: @session.StartTime.ToString("dd/MM/yyyy")
+                                    </p>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-dark"
+                                            @onclick="() => SelectSession(session)">
+                                        Se hold
+                                    </button>
+
+                                    <button class="btn btn-danger"
+                                            @onclick="() => CancelSession(session)">
+                                        Aflys hold
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                }
+
+            </div>
+
+            <div class="col-md-5">
+
+                @if (SelectedSession is null)
+                {
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4 text-muted">
+                            Vælg et hold for at se eller redigere detaljer.
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4">
+
+                            <h4>Se eller rediger hold</h4>
+
+                            <div class="mb-3">
+                                <label class="form-label">Holdtype</label>
+                                <input class="form-control" @bind="SelectedSession.Title" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Beskrivelse af træning</label>
+                                <textarea class="form-control" rows="3" @bind="SelectedSession.Description"></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Instruktør</label>
+                                <input class="form-control" @bind="SelectedSession.InstructorName" />
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Dato</label>
+                                    <input class="form-control" type="date" @bind="SelectedSessionDate" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Klokkeslæt</label>
+                                    <input class="form-control" type="time" @bind="SelectedSessionTime" />
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mt-1">
+                                <div class="col-md-6">
+                                    <label class="form-label">Tilmeldte medlemmer</label>
+                                    <input class="form-control" type="number" @bind="SelectedSession.RegisteredCount" />
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Samlet antal</label>
+                                    <input class="form-control" type="number" @bind="SelectedSession.Capacity" />
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button class="btn btn-success" @onclick="SaveChanges">
+                                    Gem ændringer
+                                </button>
+
+                                <button class="btn btn-outline-warning" @onclick="SendSms">
+                                    Send SMS til tilmeldte
+                                </button>
+
+                                <button class="btn btn-outline-secondary" @onclick="ClearSelection">
+                                    Afbryd
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Message))
+        {
+            <div class="alert alert-info mt-4">
+                @Message
+            </div>
+        }
+
+    </section>
+
+    <footer class="border-top bg-light py-4 text-center text-muted">
+        Footer
+    </footer>
+
+</div>
+
+@code {
+    private string SearchText = "";
+    private string Message = "";
+    private DateTime? SelectedDate;
+    private AdminSession? SelectedSession;
+    private DateTime? SelectedSessionDate;
+    private TimeOnly? SelectedSessionTime;
+
+    private List<AdminSession> Sessions = new()
+    {
+        new AdminSession
+        {
+            Title = "Yoga",
+            Description = "Rolig træning med fokus på smidighed og vejrtrækning.",
+            InstructorName = "Frederikke",
+            StartTime = DateTime.Today.AddHours(17),
+            Capacity = 12,
+            RegisteredCount = 4
+        },
+        new AdminSession
+        {
+            Title = "Spinning",
+            Description = "Høj intensitet på cykel.",
+            InstructorName = "Mikkel",
+            StartTime = DateTime.Today.AddHours(18),
+            Capacity = 10,
+            RegisteredCount = 10
+        },
+        new AdminSession
+        {
+            Title = "Crossfit",
+            Description = "Funktionel træning med styrke og puls.",
+            InstructorName = "Jonas",
+            StartTime = DateTime.Today.AddDays(1).AddHours(19),
+            Capacity = 15,
+            RegisteredCount = 8
+        }
+    };
+
+    private IEnumerable<AdminSession> FilteredSessions =>
+        Sessions.Where(s =>
+            (SelectedDate is null || s.StartTime.Date == SelectedDate.Value.Date) &&
+            (string.IsNullOrWhiteSpace(SearchText) ||
+             s.Title.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+             s.InstructorName.Contains(SearchText, StringComparison.OrdinalIgnoreCase)));
+
+    private void SelectSession(AdminSession session)
+    {
+        SelectedSession = session;
+        SelectedSessionDate = session.StartTime.Date;
+        SelectedSessionTime = TimeOnly.FromDateTime(session.StartTime);
+        Message = "";
+    }
+
+    private void SaveChanges()
+    {
+        if (SelectedSession is null)
+            return;
+
+        if (SelectedSessionDate is not null && SelectedSessionTime is not null)
+        {
+            SelectedSession.StartTime = SelectedSessionDate.Value.Date + SelectedSessionTime.Value.ToTimeSpan();
+        }
+
+        Message = $"Ændringer for {SelectedSession.Title} er gemt.";
+    }
+
+    private void CancelSession(AdminSession session)
+    {
+        Sessions.Remove(session);
+
+        if (SelectedSession == session)
+            SelectedSession = null;
+
+        Message = $"{session.Title} er aflyst.";
+    }
+
+    private void SendSms()
+    {
+        if (SelectedSession is null)
+            return;
+
+        Message = $"SMS er sendt til tilmeldte medlemmer på {SelectedSession.Title}.";
+    }
+
+    private void ClearSelection()
+    {
+        SelectedSession = null;
+        Message = "";
+    }
+
+    private void ClearFilter()
+    {
+        SearchText = "";
+        SelectedDate = null;
+    }
+
+    private class AdminSession
+    {
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string InstructorName { get; set; } = "";
+        public DateTime StartTime { get; set; }
+        public int Capacity { get; set; }
+        public int RegisteredCount { get; set; }
+
+        public int AvailableSpots => Capacity - RegisteredCount;
+    }
+}
