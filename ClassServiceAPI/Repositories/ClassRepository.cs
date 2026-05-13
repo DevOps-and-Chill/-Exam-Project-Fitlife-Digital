@@ -1,13 +1,17 @@
 ﻿using ClassServiceAPI.Models;
 using ClassServiceAPI.Repositories.Interfaces;
+using Microsoft.Azure.Cosmos;
 
 namespace ClassServiceAPI.Repositories;
 
 public class ClassRepository : IClassRepository
 {
-    public ClassRepository(IConfiguration config) {
+    private readonly Container _container;
+    private readonly ILogger<ClassRepository> _logger;
+    public ClassRepository(CosmosClient cosmosClient, string databaseName, string containerName, ILogger<ClassRepository> logger) {
         
-
+        _container = cosmosClient.GetContainer(databaseName, containerName);
+        _logger = logger;
     }
     
     // Post
@@ -29,7 +33,7 @@ public class ClassRepository : IClassRepository
     }
     
     // Get
-        
+    
     public async Task GetAllClassesAsync() {
         throw new NotImplementedException();
     }
