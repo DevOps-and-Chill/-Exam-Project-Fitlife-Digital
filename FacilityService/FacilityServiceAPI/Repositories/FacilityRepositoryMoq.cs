@@ -1,4 +1,5 @@
 ﻿using FacilityServiceAPI.Models;
+using FacilityServiceAPI.TestData;
 
 namespace FacilityServiceAPI.Repositories
 {
@@ -6,27 +7,32 @@ namespace FacilityServiceAPI.Repositories
 	{
 		public Task DeleteFacility(string facilityId)
 		{
-			throw new NotImplementedException();
+			return Task.FromResult(FacilityTestData.Facilities.Remove((FacilityTestData.Facilities.First(x => x.Id.ToString() == facilityId))));
 		}
 
 		public Task<List<Facility>> GetFacilities()
 		{
-			throw new NotImplementedException();
+			return Task.FromResult(FacilityTestData.Facilities);
 		}
 
 		public Task<Facility> GetFacility(string facilityId)
 		{
-			throw new NotImplementedException();
+			return Task.FromResult(FacilityTestData.Facilities.Single(f => f.Id.ToString() == facilityId));
 		}
 
 		public Task InsertFacility(Facility facility)
 		{
-			throw new NotImplementedException();
+			FacilityTestData.Facilities.Add(facility);
+
+			return Task.CompletedTask;
 		}
 
 		public Task UpdateFacility(Facility facility)
 		{
-			throw new NotImplementedException();
+			FacilityTestData.Facilities.Remove(facility);
+			FacilityTestData.Facilities.Add(facility);
+
+			return Task.CompletedTask;
 		}
 	}
 }
