@@ -14,14 +14,10 @@ public class ClassRepository : IClassRepository
         _logger = logger;
     }
     
-    // Post
+    // POST
     
     public Task CreateClassAsync(Class classModel)
     {
-       /*
-        await _collection.InsertOneAsync(classModel);
-        */
-       
         throw new NotImplementedException();
     }
         
@@ -32,7 +28,7 @@ public class ClassRepository : IClassRepository
         throw new NotImplementedException();
     }
     
-    // Get
+    // GET
     
     public async Task GetAllClassesAsync() {
         throw new NotImplementedException();
@@ -66,7 +62,7 @@ public class ClassRepository : IClassRepository
         throw new NotImplementedException();
     }
         
-    // Put
+    // PUT
     
     public async Task CancelClassByIdAsync(int id) {
         throw new NotImplementedException();
@@ -84,7 +80,7 @@ public class ClassRepository : IClassRepository
         throw new NotImplementedException();
     }
     
-    // Delete
+    // DELETE
         
     public async Task DeleteClassByIdAsync(int id) {
         throw new NotImplementedException();

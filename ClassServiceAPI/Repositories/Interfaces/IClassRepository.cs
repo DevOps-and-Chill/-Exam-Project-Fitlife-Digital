@@ -4,13 +4,13 @@ namespace ClassServiceAPI.Repositories.Interfaces;
 
 public interface IClassRepository
 {
-    // Post
+    // POST
     Task CreateClassAsync(Class classModel);
     Task RegisterMemberToClassByMemberIdAsync(int memberId);
     Task RegisterMemberToWaitingListByMemberIdAsync(int memberId);
     
     
-    // Get
+    // GET
     Task GetAllClassesAsync();
     Task GetAllClassesByExerciseGymAsync(int exerciseGymId);
     Task GetClassByIdAsync(int id);
@@ -21,12 +21,12 @@ public interface IClassRepository
     Task CalculateAbsenceByClassAsync(int id);
     
    
-    // Put
+    // PUT
     Task CancelClassByIdAsync(int id);
     Task RateClassByIdAsync(int id, double rating);
     Task UnRegisterMemberFromClassByClassAndMemberAsync(int memberId, int classId);
     Task UnRegisterMemberFromWaitingListByClassAndMemberAsync(int memberId, int classId);
     
-    // Delete
+    // DELETE
     Task DeleteClassByIdAsync(int id);
 }
