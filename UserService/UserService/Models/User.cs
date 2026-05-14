@@ -55,5 +55,26 @@ namespace UserServiceAPI.Models
                 return;
         }
 
+        public void UpdateUserInformation(
+            UserRole userRole,
+            string givenName,
+            string familyName,
+            string address,
+            string telephone,
+            string email,
+            Guid affiliation,
+            bool activeUser)
+        {
+            RoleName = userRole;
+            GivenName = givenName;
+            FamilyName = familyName;
+            Address = address;
+            this.Telephone = telephone;
+            Email = email;
+            Affiliation = affiliation;
+            ActiveUser = activeUser;
+            DateModified = DateTime.Now;
+        }
+
     }
 }

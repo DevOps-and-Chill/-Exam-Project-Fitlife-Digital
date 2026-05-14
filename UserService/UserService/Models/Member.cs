@@ -7,12 +7,16 @@ namespace UserServiceAPI.Models
 
         //AO: Abonnementstype
         public MembershipType MembershipType { get; set; }
+
         //AO: Tilvalg til abonnement
         public MembershipOptional MembershipOptional { get; set; }
+
         //AO: Starttidspunkt for abonnement
         public DateTime StartDate { get; set; } = DateTime.Now;
+
         //AO: Sluttidspunkt for abonnement
         public DateTime EndDate { get; set; }
+
         public bool ActiveMembership { get; set; } = true;
 
         public Member(
@@ -25,8 +29,7 @@ namespace UserServiceAPI.Models
             Guid affiliation,
             bool activeUser,
             MembershipType membershipType,
-            MembershipOptional membershipOptional,
-            DateTime endDate)
+            MembershipOptional membershipOptional)
             : base(
                   roleName,
                   givenName,
@@ -39,7 +42,6 @@ namespace UserServiceAPI.Models
         {
         MembershipType = membershipType;
         MembershipOptional = membershipOptional;
-        EndDate = endDate;
         }
 
 
@@ -47,6 +49,18 @@ namespace UserServiceAPI.Models
         {
             EndDate = DateTime.Now;
             ActiveMembership = false; 
+        }
+
+        public void UpdateMembership(
+            MembershipType membershipType,
+            MembershipOptional membershipOptional,
+            DateTime newStartDate, 
+            DateTime newEndDate)
+        {
+            MembershipType = membershipType;
+            MembershipOptional = membershipOptional;
+            StartDate = newStartDate;
+            EndDate = newEndDate;
         }
 
     }

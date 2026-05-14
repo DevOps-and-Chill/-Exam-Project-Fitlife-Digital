@@ -1,4 +1,7 @@
 
+using UserServiceAPI.Repositories;
+using UserServiceAPI.Repositories.Interfaces;
+
 namespace UserServiceAPI
 {
     public class Program
@@ -8,6 +11,9 @@ namespace UserServiceAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddScoped<IUserRepository, UserRepositoryMOCK>();
+            builder.Services.AddScoped<IMemberRepository, MemberRepositoryMOCK>();
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepositoryMOCK>();
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
