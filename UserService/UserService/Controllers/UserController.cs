@@ -68,7 +68,7 @@ namespace UserServiceAPI.Controllers
         }
 
         [HttpPost("UpsertUser")]
-        public async Task<ActionResult> UpsertUser(User user)
+        public async Task<ActionResult> UpsertUser([FromBody] User user)
         {
             try
             {

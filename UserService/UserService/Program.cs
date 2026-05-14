@@ -1,6 +1,8 @@
 
 using UserServiceAPI.Repositories;
 using UserServiceAPI.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using UserServiceAPI.Data;
 
 namespace UserServiceAPI
 {
@@ -11,15 +13,32 @@ namespace UserServiceAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddScoped<IUserRepository, UserRepositoryMOCK>();
+            builder.Services.AddScoped<IUserRepository, UserRepositoryDB>();
             builder.Services.AddScoped<IMemberRepository, MemberRepositoryMOCK>();
             builder.Services.AddScoped<IEmployeeRepository, EmployeeRepositoryMOCK>();
+
+            //AO: Accountkey and endpoint to be added to vault
+            builder.Services.AddDbContext<UserDbContext>(options =>
+            {
+                options.UseCosmos(
+                    builder.Configuration["CosmosDb:AccountEndpoint"]!,
+                    builder.Configuration["CosmosDb:AccountKey"]!,
+                    builder.Configuration["CosmosDb:DatabaseName"]!);
+            });
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
+
+            //AO: Ensures DB and container exists. EnsureCreated() is alternative of migration
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+
+                db.Database.EnsureCreatedAsync();
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

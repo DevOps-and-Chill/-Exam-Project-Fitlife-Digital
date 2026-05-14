@@ -1,18 +1,27 @@
-﻿using UserServiceAPI.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using UserServiceAPI.Data;
+using UserServiceAPI.Models;
 using UserServiceAPI.Repositories.Interfaces;
 
 namespace UserServiceAPI.Repositories
 {
     public class UserRepositoryDB : IUserRepository
     {
+        private readonly UserDbContext _context;
+
+        public UserRepositoryDB(UserDbContext context)
+        {
+            _context = context;
+        }
+
         public Task<bool> DeleteUser(Guid userId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<User>> GetAllUsers()
+        public async Task<List<User>> GetAllUsers()
         {
-            throw new NotImplementedException();
+            return await _context.Users.ToListAsync();
         }
 
         public Task<List<User>> GetUsersByAffiliation(Guid affiliationId)
@@ -30,9 +39,13 @@ namespace UserServiceAPI.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<User> UpsertUser(User user)
+        public async Task<User> UpsertUser(User user)
         {
-            throw new NotImplementedException();
+            _context.Users.Add(user);
+
+            await _context.SaveChangesAsync();
+
+            return user;
         }
     }
 }
