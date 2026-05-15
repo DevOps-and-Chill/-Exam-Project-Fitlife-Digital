@@ -1,33 +1,31 @@
 @page "/personal-training"
 @rendermode InteractiveServer
+@using FitLife.Frontend.Models
 
 <div class="container-fluid px-0">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-5 py-3">
-        <a class="navbar-brand fw-bold fs-3" href="/member-dashboard">FitLife</a>
-
-        <div class="ms-auto d-flex align-items-center gap-3">
-            <a class="nav-link" href="/member-dashboard">Mit center</a>
-            <a class="nav-link" href="/find-hold">Find hold</a>
-            <a class="nav-link" href="/personal-training">Personlig træning</a>
-            <a class="nav-link" href="/digital-training">Digital træning</a>
-            <span class="fw-bold ms-3">NAVN NAVNESEN</span>
-        </div>
-    </nav>
+    <MemberNavbar />
 
     <section class="container py-5">
 
         <div class="row align-items-center mb-5">
             <div class="col-md-7">
-                <h1 class="fw-bold">Personlig træning</h1>
-                <p class="lead">
-                    Find en personlig træner, book en session eller send en besked.
+                <span class="badge bg-success mb-3 px-3 py-2">
+                    PERSONLIG TRÆNING
+                </span>
+
+                <h1 class="fw-bold mb-3">
+                    Personlig træning
+                </h1>
+
+                <p class="lead text-muted">
+                    Find en personlig træner, book en session eller send en besked direkte fra platformen.
                 </p>
             </div>
 
             <div class="col-md-5">
-                <div class="bg-light border rounded-3 d-flex align-items-center justify-content-center"
-                     style="height: 220px;">
+                <div class="bg-light border rounded-4 d-flex align-items-center justify-content-center shadow-sm"
+                     style="height: 240px;">
                     <span class="text-muted">
                         Billede fra det udvalgte center
                     </span>
@@ -40,13 +38,26 @@
             @foreach (var trainer in Trainers)
             {
                 <div class="col-md-4">
-                    <div class="card shadow-sm h-100">
+                    <div class="card shadow-sm h-100 border-0">
                         <div class="card-body p-4">
 
-                            <h4>@trainer.Name</h4>
-                            <p class="text-muted">@trainer.Description</p>
+                            <div class="fs-2 mb-3">
+                                💪
+                            </div>
 
-                            <p>
+                            <h4 class="fw-bold">
+                                @trainer.Name
+                            </h4>
+
+                            <p class="text-muted">
+                                @trainer.Description
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Speciale:</strong> @trainer.Specialty
+                            </p>
+
+                            <p class="mb-3">
                                 <strong>Ledig:</strong>
                                 @(trainer.IsAvailable ? "Ja" : "Nej")
                             </p>
@@ -87,9 +98,16 @@
 
         @if (SelectedTrainerForBooking is not null)
         {
-            <div class="card shadow-sm mt-5">
+            <div class="card shadow-sm border-0 mt-5">
                 <div class="card-body p-4">
-                    <h4>Book session med @SelectedTrainerForBooking.Name</h4>
+
+                    <h4 class="fw-bold">
+                        Book session med @SelectedTrainerForBooking.Name
+                    </h4>
+
+                    <p class="text-muted">
+                        Vælg dato og tidspunkt for din personlige træning.
+                    </p>
 
                     <div class="row g-3 mt-2">
                         <div class="col-md-6">
@@ -111,42 +129,51 @@
 
                     <div class="d-flex gap-3 mt-4">
                         <button class="btn btn-success" @onclick="BookSession">
-                            BOOK
+                            Book
                         </button>
 
                         <button class="btn btn-outline-secondary" @onclick="CancelBooking">
                             Afbryd booking
                         </button>
                     </div>
+
                 </div>
             </div>
         }
 
         @if (SelectedTrainerForMessage is not null)
         {
-            <div class="card shadow-sm mt-5">
+            <div class="card shadow-sm border-0 mt-5">
                 <div class="card-body p-4">
-                    <h4>Send besked til @SelectedTrainerForMessage.Name</h4>
+
+                    <h4 class="fw-bold">
+                        Send besked til @SelectedTrainerForMessage.Name
+                    </h4>
+
+                    <p class="text-muted">
+                        Skriv en kort besked til træneren om dit behov eller spørgsmål.
+                    </p>
 
                     <div class="mb-3">
                         <label class="form-label">Emne</label>
-                        <input class="form-control" @bind="MessageSubject" />
+                        <input class="form-control" @bind="NewMessage.Subject" />
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Besked</label>
-                        <textarea class="form-control" rows="5" @bind="MessageBody"></textarea>
+                        <textarea class="form-control" rows="5" @bind="NewMessage.Content"></textarea>
                     </div>
 
                     <div class="d-flex gap-3">
                         <button class="btn btn-success" @onclick="SendMessage">
-                            SEND
+                            Send
                         </button>
 
                         <button class="btn btn-outline-secondary" @onclick="CancelMessage">
                             Afbryd
                         </button>
                     </div>
+
                 </div>
             </div>
         }
@@ -160,9 +187,7 @@
 
     </section>
 
-    <footer class="border-top bg-light py-4 text-center text-muted">
-        Footer
-    </footer>
+    <AppFooter />
 
 </div>
 
@@ -173,8 +198,8 @@
     private DateTime? SelectedDate;
     private string SelectedTime = "";
 
-    private string MessageSubject = "";
-    private string MessageBody = "";
+    private Message NewMessage = new();
+
     private string StatusMessage = "";
 
     private List<Trainer> Trainers = new()
@@ -183,18 +208,21 @@
         {
             Name = "Frederikke",
             Description = "Styrketræning, holdtræning og motivation.",
+            Specialty = "Styrketræning",
             IsAvailable = true
         },
         new Trainer
         {
             Name = "Jonas",
             Description = "Vægttab, teknik og personlige programmer.",
+            Specialty = "Vægttab",
             IsAvailable = false
         },
         new Trainer
         {
             Name = "Mikkel",
             Description = "Kondition, spinning og funktionel træning.",
+            Specialty = "Kondition",
             IsAvailable = true
         }
     };
@@ -211,6 +239,7 @@
         SelectedTrainerForMessage = trainer;
         SelectedTrainerForBooking = null;
         StatusMessage = "";
+        NewMessage = new Message();
     }
 
     private void JoinWaitlist(Trainer trainer)
@@ -247,30 +276,27 @@
     private void SendMessage()
     {
         if (SelectedTrainerForMessage is null ||
-            string.IsNullOrWhiteSpace(MessageSubject) ||
-            string.IsNullOrWhiteSpace(MessageBody))
+            string.IsNullOrWhiteSpace(NewMessage.Subject) ||
+            string.IsNullOrWhiteSpace(NewMessage.Content))
         {
             StatusMessage = "Udfyld både emne og besked.";
             return;
         }
 
-        StatusMessage = $"Din besked til {SelectedTrainerForMessage.Name} er sendt.";
+        NewMessage.SenderName = "NAVN NAVNESEN";
+        NewMessage.ReceiverName = SelectedTrainerForMessage.Name;
+        NewMessage.SentDate = DateTime.Now;
+        NewMessage.IsRead = false;
+
+        StatusMessage = $"Din besked til {NewMessage.ReceiverName} er sendt.";
+
         SelectedTrainerForMessage = null;
-        MessageSubject = "";
-        MessageBody = "";
+        NewMessage = new Message();
     }
 
     private void CancelMessage()
     {
         SelectedTrainerForMessage = null;
-        MessageSubject = "";
-        MessageBody = "";
-    }
-
-    private class Trainer
-    {
-        public string Name { get; set; } = "";
-        public string Description { get; set; } = "";
-        public bool IsAvailable { get; set; }
+        NewMessage = new Message();
     }
 }

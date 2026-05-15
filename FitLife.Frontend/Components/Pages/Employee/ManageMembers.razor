@@ -1,21 +1,10 @@
 @page "/manage-members"
 @rendermode InteractiveServer
+@using FitLife.Frontend.Models
 
 <div class="container-fluid px-0">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-5 py-3">
-        <a class="navbar-brand fw-bold fs-3 text-white" href="/employee-dashboard">
-            FitLife Admin
-        </a>
-
-        <div class="ms-auto d-flex align-items-center gap-3">
-            <a class="nav-link text-white" href="/employee-dashboard">Forside</a>
-            <a class="nav-link text-white" href="/manage-sessions">Administrer hold</a>
-            <a class="nav-link text-white" href="/manage-members">Administrer medlemmer</a>
-            <a class="nav-link text-white" href="/personal-training">Personlig træning</a>
-            <span class="fw-bold text-white ms-3">NAVN NAVNESEN</span>
-        </div>
-    </nav>
+    <EmployeeNavbar />
 
     <section class="container py-5">
 
@@ -25,7 +14,7 @@
                 <p class="lead">Søg, se og rediger medlemmer.</p>
             </div>
 
-            <a href="/register-step1" class="btn btn-success">
+            <a href="/create-member" class="btn btn-success">
                 OPRET MEDLEM
             </a>
         </div>
@@ -201,20 +190,18 @@
 
     </section>
 
-    <footer class="border-top bg-light py-4 text-center text-muted">
-        Footer
-    </footer>
+    <AppFooter />
 
 </div>
 
 @code {
     private string SearchText = "";
     private string Message = "";
-    private MemberAdmin? SelectedMember;
+    private Member? SelectedMember;
 
-    private List<MemberAdmin> Members = new()
+    private List<Member> Members = new()
     {
-        new MemberAdmin
+        new Member
         {
             FirstName = "Jonas",
             LastName = "Madsen",
@@ -229,7 +216,7 @@
             MemberSince = DateTime.Today.AddMonths(-6),
             CurrentPersonalTrainer = "Frederikke"
         },
-        new MemberAdmin
+        new Member
         {
             FirstName = "Frederik",
             LastName = "Nielsen",
@@ -244,7 +231,7 @@
             MemberSince = DateTime.Today.AddYears(-1),
             CurrentPersonalTrainer = ""
         },
-        new MemberAdmin
+        new Member
         {
             FirstName = "Charlotte",
             LastName = "Hansen",
@@ -261,7 +248,7 @@
         }
     };
 
-    private IEnumerable<MemberAdmin> FilteredMembers =>
+    private IEnumerable<Member> FilteredMembers =>
         Members.Where(m =>
             string.IsNullOrWhiteSpace(SearchText) ||
             m.FirstName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
@@ -269,7 +256,7 @@
             m.Email.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
             m.MembershipType.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
 
-    private void SelectMember(MemberAdmin member)
+    private void SelectMember(Member member)
     {
         SelectedMember = member;
         Message = "";
@@ -300,37 +287,5 @@
     private void ClearSearch()
     {
         SearchText = "";
-    }
-
-    private class MemberAdmin
-    {
-        public string FirstName { get; set; } = "";
-        public string LastName { get; set; } = "";
-        public string Address { get; set; } = "";
-        public string PostalCode { get; set; } = "";
-        public string City { get; set; } = "";
-        public string Email { get; set; } = "";
-        public string PhoneNumber { get; set; } = "";
-        public DateTime BirthDate { get; set; }
-        public string MembershipType { get; set; } = "";
-        public string PaymentStatus { get; set; } = "";
-        public DateTime MemberSince { get; set; }
-        public string CurrentPersonalTrainer { get; set; } = "";
-
-        public int Age
-        {
-            get
-            {
-                var today = DateTime.Today;
-                var age = today.Year - BirthDate.Year;
-
-                if (BirthDate.Date > today.AddYears(-age))
-                {
-                    age--;
-                }
-
-                return age;
-            }
-        }
     }
 }

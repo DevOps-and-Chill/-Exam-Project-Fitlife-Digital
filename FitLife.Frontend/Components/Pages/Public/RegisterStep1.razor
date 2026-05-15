@@ -1,20 +1,10 @@
 @page "/register-step1"
 @rendermode InteractiveServer
+@using FitLife.Frontend.Models
 
 <div class="container-fluid px-0">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-5 py-3">
-        <a class="navbar-brand fw-bold fs-3" href="/">FitLife</a>
-
-        <div class="ms-auto d-flex align-items-center gap-3">
-            <a class="nav-link" href="/">Find center</a>
-            <a class="nav-link" href="/find-hold">Find hold</a>
-            <a class="nav-link" href="/personal-training">Personlig træning</a>
-            <a class="nav-link" href="/digital-training">Digital træning</a>
-            <a class="nav-link" href="/login">Login</a>
-            <a class="btn btn-success fw-bold px-4" href="/register-step1">BLIV MEDLEM</a>
-        </div>
-    </nav>
+    <PublicNavbar />
 
     <section class="container py-5">
 
@@ -52,42 +42,42 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label">Fornavn</label>
-                        <input class="form-control" @bind="FirstName" />
+                        <input class="form-control" @bind="NewMember.FirstName" />
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">Efternavn</label>
-                        <input class="form-control" @bind="LastName" />
+                        <input class="form-control" @bind="NewMember.LastName" />
                     </div>
 
                     <div class="col-md-8">
                         <label class="form-label">Adresse</label>
-                        <input class="form-control" @bind="Address" />
+                        <input class="form-control" @bind="NewMember.Address" />
                     </div>
 
                     <div class="col-md-4">
                         <label class="form-label">Postnr.</label>
-                        <input class="form-control" @bind="PostalCode" />
+                        <input class="form-control" @bind="NewMember.PostalCode" />
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">By</label>
-                        <input class="form-control" @bind="City" />
+                        <input class="form-control" @bind="NewMember.City" />
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">Fødselsdag</label>
-                        <input class="form-control" type="date" @bind="BirthDate" />
+                        <input class="form-control" type="date" @bind="NewMember.BirthDate" />
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">E-mailadresse</label>
-                        <input class="form-control" type="email" @bind="Email" />
+                        <input class="form-control" type="email" @bind="NewMember.Email" />
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">Telefonnummer</label>
-                        <input class="form-control" @bind="PhoneNumber" />
+                        <input class="form-control" @bind="NewMember.PhoneNumber" />
                     </div>
 
                     <div class="col-md-6">
@@ -123,21 +113,17 @@
 
     </section>
 
-    <footer class="border-top bg-light py-4 text-center text-muted">
-        Footer
-    </footer>
+    <AppFooter />
 
 </div>
 
 @code {
-    private string FirstName = "";
-    private string LastName = "";
-    private string Address = "";
-    private string PostalCode = "";
-    private string City = "";
-    private DateTime? BirthDate;
-    private string Email = "";
-    private string PhoneNumber = "";
+    private Member NewMember = new()
+    {
+        BirthDate = DateTime.Today,
+        MemberSince = DateTime.Today
+    };
+
     private string Password = "";
     private string RepeatPassword = "";
     private string Message = "";
@@ -147,9 +133,9 @@
 
     private void GoToNextStep()
     {
-        if (string.IsNullOrWhiteSpace(FirstName) ||
-            string.IsNullOrWhiteSpace(LastName) ||
-            string.IsNullOrWhiteSpace(Email))
+        if (string.IsNullOrWhiteSpace(NewMember.FirstName) ||
+            string.IsNullOrWhiteSpace(NewMember.LastName) ||
+            string.IsNullOrWhiteSpace(NewMember.Email))
         {
             Message = "Udfyld som minimum fornavn, efternavn og email.";
             return;

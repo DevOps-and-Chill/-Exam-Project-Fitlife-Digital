@@ -1,19 +1,10 @@
 @page "/digital-training"
 @rendermode InteractiveServer
+@using FitLife.Frontend.Models
 
 <div class="container-fluid px-0">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-5 py-3">
-        <a class="navbar-brand fw-bold fs-3" href="/member-dashboard">FitLife</a>
-
-        <div class="ms-auto d-flex align-items-center gap-3">
-            <a class="nav-link" href="/member-dashboard">Mit center</a>
-            <a class="nav-link" href="/find-hold">Find hold</a>
-            <a class="nav-link" href="/personal-training">Personlig træning</a>
-            <a class="nav-link" href="/digital-training">Digital træning</a>
-            <span class="fw-bold ms-3">NAVN NAVNESEN</span>
-        </div>
-    </nav>
+    <MemberNavbar />
 
     <section class="container py-5">
 
@@ -112,6 +103,10 @@
                                         <h5>@video.Title</h5>
                                         <p class="text-muted">@video.Description</p>
 
+                                        <p>
+                                            <strong>Kategori:</strong> @video.Category
+                                        </p>
+
                                         <button class="btn btn-success"
                                                 @onclick="() => SelectVideo(video)">
                                             Se video
@@ -168,6 +163,10 @@
                                         <h5>@program.Title</h5>
                                         <p class="text-muted">@program.Description</p>
 
+                                        <p>
+                                            <strong>Niveau:</strong> @program.Level
+                                        </p>
+
                                         <button class="btn btn-success"
                                                 @onclick="() => SelectProgram(program)">
                                             Se program
@@ -192,9 +191,7 @@
 
     </section>
 
-    <footer class="border-top bg-light py-4 text-center text-muted">
-        Footer
-    </footer>
+    <AppFooter />
 
 </div>
 
@@ -210,17 +207,20 @@
         new TrainingVideo
         {
             Title = "Squat teknik",
-            Description = "Kort video om korrekt squat-teknik og typiske fejl."
+            Description = "Kort video om korrekt squat-teknik og typiske fejl.",
+            Category = "Styrke"
         },
         new TrainingVideo
         {
             Title = "Core træning",
-            Description = "Øvelser til mave, ryg og stabilitet."
+            Description = "Øvelser til mave, ryg og stabilitet.",
+            Category = "Core"
         },
         new TrainingVideo
         {
             Title = "Opvarmning",
-            Description = "En simpel opvarmningsrutine før træning."
+            Description = "En simpel opvarmningsrutine før træning.",
+            Category = "Opvarmning"
         }
     };
 
@@ -229,17 +229,20 @@
         new TrainingProgram
         {
             Title = "Begynderprogram",
-            Description = "Et simpelt program til nye medlemmer."
+            Description = "Et simpelt program til nye medlemmer.",
+            Level = "Begynder"
         },
         new TrainingProgram
         {
             Title = "Styrketræning 3 dage",
-            Description = "Program med fokus på styrke og progression."
+            Description = "Program med fokus på styrke og progression.",
+            Level = "Øvet"
         },
         new TrainingProgram
         {
             Title = "Vægttab og kondition",
-            Description = "Program med fokus på cardio og basis styrke."
+            Description = "Program med fokus på cardio og basis styrke.",
+            Level = "Begynder"
         }
     };
 
@@ -247,13 +250,15 @@
         Videos.Where(v =>
             string.IsNullOrWhiteSpace(SearchText) ||
             v.Title.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
-            v.Description.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
+            v.Description.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+            v.Category.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
 
     private IEnumerable<TrainingProgram> FilteredPrograms =>
         Programs.Where(p =>
             string.IsNullOrWhiteSpace(SearchText) ||
             p.Title.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
-            p.Description.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
+            p.Description.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+            p.Level.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
 
     private void ShowVideos()
     {
@@ -279,17 +284,5 @@
     private void SelectProgram(TrainingProgram program)
     {
         SelectedProgram = program;
-    }
-
-    private class TrainingVideo
-    {
-        public string Title { get; set; } = "";
-        public string Description { get; set; } = "";
-    }
-
-    private class TrainingProgram
-    {
-        public string Title { get; set; } = "";
-        public string Description { get; set; } = "";
     }
 }

@@ -1,10 +1,17 @@
 using FitLife.Frontend.Components;
+using FitLife.Frontend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddScoped<SessionService>();
+builder.Services.AddScoped<MemberService>();
+builder.Services.AddScoped<TrainerService>();
+builder.Services.AddScoped<DigitalTrainingService>();
+builder.Services.AddScoped<AuthService>();
 
 var app = builder.Build();
 

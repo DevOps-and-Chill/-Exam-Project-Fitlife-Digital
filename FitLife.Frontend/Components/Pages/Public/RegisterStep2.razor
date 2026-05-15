@@ -1,20 +1,10 @@
 @page "/register-step2"
 @rendermode InteractiveServer
+@using FitLife.Frontend.Models
 
 <div class="container-fluid px-0">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-5 py-3">
-        <a class="navbar-brand fw-bold fs-3" href="/">FitLife</a>
-
-        <div class="ms-auto d-flex align-items-center gap-3">
-            <a class="nav-link" href="/">Find center</a>
-            <a class="nav-link" href="/find-hold">Find hold</a>
-            <a class="nav-link" href="/personal-training">Personlig træning</a>
-            <a class="nav-link" href="/digital-training">Digital træning</a>
-            <a class="nav-link" href="/login">Login</a>
-            <a class="btn btn-success fw-bold px-4" href="/register-step1">BLIV MEDLEM</a>
-        </div>
-    </nav>
+    <PublicNavbar />
 
     <section class="container py-5">
 
@@ -49,33 +39,38 @@
 
                         <h4 class="mb-3">Vælg center/centre</h4>
 
-                        <select class="form-select mb-4" @bind="SelectedCenter">
+                        <select class="form-select mb-4" @bind="SelectedCenterName">
                             <option value="">Vælg center</option>
-                            <option>Aarhus C</option>
-                            <option>Randers</option>
-                            <option>Silkeborg</option>
-                            <option>Horsens</option>
-                            <option>Vejle</option>
-                            <option>Skanderborg</option>
+                            @foreach (var center in Centers)
+                            {
+                                <option value="@center.Name">
+                                    @center.Name
+                                </option>
+                            }
                         </select>
 
                         <h4 class="mb-3">Vælg medlemskabstype</h4>
 
                         <div class="list-group mb-4">
-                            <button class="list-group-item list-group-item-action"
-                                    @onclick="@(() => SelectMembership("Basis", 199))">
-                                Basis medlemskab — 199 kr./md.
-                            </button>
+                            @foreach (var membershipType in MembershipTypes)
+                            {
+                                <button class="list-group-item list-group-item-action"
+                                        @onclick="() => SelectMembership(membershipType)">
+                                    <div class="d-flex justify-content-between">
+                                        <span>
+                                            @membershipType.Name medlemskab
+                                        </span>
 
-                            <button class="list-group-item list-group-item-action"
-                                    @onclick="@(() => SelectMembership("Plus", 299))">
-                                Plus medlemskab — 299 kr./md.
-                            </button>
+                                        <strong>
+                                            @membershipType.MonthlyPrice kr./md.
+                                        </strong>
+                                    </div>
 
-                            <button class="list-group-item list-group-item-action"
-                                    @onclick="@(() => SelectMembership("Premium", 399))">
-                                Premium medlemskab — 399 kr./md.
-                            </button>
+                                    <small class="text-muted">
+                                        @membershipType.Description
+                                    </small>
+                                </button>
+                            }
                         </div>
 
                         <h4 class="mb-3">Vælg tilvalg</h4>
@@ -112,12 +107,12 @@
 
                         <p>
                             <strong>Center:</strong><br />
-                            @(string.IsNullOrWhiteSpace(SelectedCenter) ? "Ikke valgt" : SelectedCenter)
+                            @(string.IsNullOrWhiteSpace(SelectedCenterName) ? "Ikke valgt" : SelectedCenterName)
                         </p>
 
                         <p>
                             <strong>Valgt medlemskabstype:</strong><br />
-                            @(string.IsNullOrWhiteSpace(SelectedMembership) ? "Ikke valgt" : SelectedMembership)
+                            @(SelectedMembership is null ? "Ikke valgt" : SelectedMembership.Name)
                         </p>
 
                         <p>
@@ -162,16 +157,14 @@
 
     </section>
 
-    <footer class="border-top bg-light py-4 text-center text-muted">
-        Footer
-    </footer>
+    <AppFooter />
 
 </div>
 
 @code {
-    private string SelectedCenter = "";
-    private string SelectedMembership = "";
-    private int MembershipPrice = 0;
+    private string SelectedCenterName = "";
+    private MembershipType? SelectedMembership;
+
     private bool PersonalTrainingAddon;
     private bool DigitalTrainingAddon;
     private string Message = "";
@@ -179,27 +172,88 @@
     [Inject]
     private NavigationManager Navigation { get; set; } = default!;
 
-    private int TotalPrice =>
-        MembershipPrice +
+    private List<Center> Centers = new()
+    {
+        new Center
+        {
+            Name = "Aarhus C",
+            City = "Aarhus",
+            Address = "Eksempelvej 1"
+        },
+        new Center
+        {
+            Name = "Randers",
+            City = "Randers",
+            Address = "Eksempelvej 2"
+        },
+        new Center
+        {
+            Name = "Silkeborg",
+            City = "Silkeborg",
+            Address = "Eksempelvej 3"
+        },
+        new Center
+        {
+            Name = "Horsens",
+            City = "Horsens",
+            Address = "Eksempelvej 4"
+        },
+        new Center
+        {
+            Name = "Vejle",
+            City = "Vejle",
+            Address = "Eksempelvej 5"
+        },
+        new Center
+        {
+            Name = "Skanderborg",
+            City = "Skanderborg",
+            Address = "Eksempelvej 6"
+        }
+    };
+
+    private List<MembershipType> MembershipTypes = new()
+    {
+        new MembershipType
+        {
+            Name = "Basis",
+            Description = "Adgang til center og basis træningsfaciliteter.",
+            MonthlyPrice = 199
+        },
+        new MembershipType
+        {
+            Name = "Plus",
+            Description = "Adgang til center, holdtræning og digitale træningsprogrammer.",
+            MonthlyPrice = 299
+        },
+        new MembershipType
+        {
+            Name = "Premium",
+            Description = "Adgang til alle faciliteter, hold og ekstra personlig træning.",
+            MonthlyPrice = 399
+        }
+    };
+
+    private decimal TotalPrice =>
+        (SelectedMembership?.MonthlyPrice ?? 0) +
         (PersonalTrainingAddon ? 150 : 0) +
         (DigitalTrainingAddon ? 50 : 0);
 
-    private void SelectMembership(string membership, int price)
+    private void SelectMembership(MembershipType membershipType)
     {
-        SelectedMembership = membership;
-        MembershipPrice = price;
+        SelectedMembership = membershipType;
         Message = "";
     }
 
     private void GoToNextStep()
     {
-        if (string.IsNullOrWhiteSpace(SelectedCenter))
+        if (string.IsNullOrWhiteSpace(SelectedCenterName))
         {
             Message = "Vælg et center.";
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(SelectedMembership))
+        if (SelectedMembership is null)
         {
             Message = "Vælg en medlemskabstype.";
             return;

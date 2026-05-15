@@ -1,95 +1,106 @@
 @page "/find-hold"
 @rendermode InteractiveServer
 @using FitLife.Frontend.Models
+@using FitLife.Frontend.Services
+@inject SessionService SessionService
 
 <div class="container-fluid px-0">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-5 py-3">
-        <a class="navbar-brand fw-bold fs-3" href="/member-dashboard">
-            FitLife
-        </a>
-
-        <div class="ms-auto d-flex align-items-center gap-3">
-            <a class="nav-link" href="/member-dashboard">
-                Mit center
-            </a>
-
-            <a class="nav-link" href="/find-hold">
-                Find hold
-            </a>
-
-            <a class="nav-link" href="/personal-training">
-                Personlig træning
-            </a>
-
-            <a class="nav-link" href="/digital-training">
-                Digital træning
-            </a>
-
-            <span class="fw-bold ms-3">
-                NAVN NAVNESEN
-            </span>
-
-            <a class="btn btn-outline-danger" href="/">
-                Log ud
-            </a>
-        </div>
-    </nav>
+    <MemberNavbar />
 
     <section class="container py-5">
 
-        <h1 class="mb-4">Find hold</h1>
+        <div class="mb-5">
+            <span class="badge bg-success mb-3 px-3 py-2">
+                HOLDTRÆNING
+            </span>
 
-        <div class="mb-4 d-flex gap-2">
-            <button class="btn btn-outline-secondary">
-                Filtrér
-            </button>
+            <h1 class="fw-bold mb-3">
+                Find hold
+            </h1>
 
-            <button class="btn btn-outline-primary">
-                Vis alle hold
-            </button>
+            <p class="lead text-muted">
+                Se aktuelle hold, ledige pladser og tilmeld dig direkte online.
+            </p>
         </div>
 
-        @foreach (var session in Sessions)
-        {
-            <div class="card mb-3 shadow-sm">
-                <div class="card-body">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4">
 
-                    <h5 class="card-title">
-                        @session.Title
-                    </h5>
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-outline-secondary">
+                        Filtrér
+                    </button>
 
-                    <p class="card-text">
-                        Kl. @session.StartTime.ToString("HH:mm") <br />
-                        Instruktør: @session.InstructorName <br />
-                        Ledige pladser: @session.AvailableSpots
-                    </p>
-
-                    @if (session.IsUserSignedUp)
-                    {
-                        <button class="btn btn-danger"
-                                @onclick="() => Unregister(session)">
-                            Afmeld
-                        </button>
-                    }
-                    else if (session.AvailableSpots > 0)
-                    {
-                        <button class="btn btn-success"
-                                @onclick="() => Register(session)">
-                            Tilmeld
-                        </button>
-                    }
-                    else
-                    {
-                        <button class="btn btn-warning"
-                                @onclick="() => JoinWaitlist(session)">
-                            Tilmeld venteliste
-                        </button>
-                    }
-
+                    <button class="btn btn-outline-primary">
+                        Vis alle hold
+                    </button>
                 </div>
+
             </div>
-        }
+        </div>
+
+        <div class="row g-4">
+            @foreach (var session in Sessions)
+            {
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body p-4">
+
+                            <div class="fs-2 mb-3">
+                                📅
+                            </div>
+
+                            <h5 class="card-title fw-bold">
+                                @session.Title
+                            </h5>
+
+                            <p class="card-text text-muted">
+                                @session.Description
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Tidspunkt:</strong>
+                                @session.StartTime.ToString("dd/MM") kl. @session.StartTime.ToString("HH:mm")
+                            </p>
+
+                            <p class="mb-1">
+                                <strong>Instruktør:</strong>
+                                @session.InstructorName
+                            </p>
+
+                            <p class="mb-3">
+                                <strong>Ledige pladser:</strong>
+                                @session.AvailableSpots
+                            </p>
+
+                            @if (session.IsUserSignedUp)
+                            {
+                                <button class="btn btn-danger w-100"
+                                        @onclick="() => Unregister(session)">
+                                    Afmeld
+                                </button>
+                            }
+                            else if (session.AvailableSpots > 0)
+                            {
+                                <button class="btn btn-success w-100"
+                                        @onclick="() => Register(session)">
+                                    Tilmeld
+                                </button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-warning w-100"
+                                        @onclick="() => JoinWaitlist(session)">
+                                    Tilmeld venteliste
+                                </button>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
 
         @if (!string.IsNullOrWhiteSpace(Message))
         {
@@ -100,64 +111,32 @@
 
     </section>
 
-    <footer class="border-top bg-light py-4 text-center text-muted">
-        Footer
-    </footer>
+    <AppFooter />
 
 </div>
 
 @code {
-
     private string Message = "";
 
-    private List<TrainingSession> Sessions = new()
+    private List<TrainingSession> Sessions = new();
+
+    protected override void OnInitialized()
     {
-        new TrainingSession
-        {
-            Title = "Yoga",
-            InstructorName = "Frederikke",
-            StartTime = DateTime.Today.AddHours(17),
-            Capacity = 12,
-            RegisteredCount = 4
-        },
-
-        new TrainingSession
-        {
-            Title = "Spinning",
-            InstructorName = "Mikkel",
-            StartTime = DateTime.Today.AddHours(18),
-            Capacity = 10,
-            RegisteredCount = 10
-        },
-
-        new TrainingSession
-        {
-            Title = "Crossfit",
-            InstructorName = "Jonas",
-            StartTime = DateTime.Today.AddHours(19),
-            Capacity = 15,
-            RegisteredCount = 8
-        }
-    };
+        Sessions = SessionService.GetSessions();
+    }
 
     private void Register(TrainingSession session)
     {
-        session.IsUserSignedUp = true;
-        session.RegisteredCount++;
-
-        Message = $"Du er nu tilmeldt {session.Title}.";
+        Message = SessionService.Register(session);
     }
 
     private void Unregister(TrainingSession session)
     {
-        session.IsUserSignedUp = false;
-        session.RegisteredCount--;
-
-        Message = $"Du er nu afmeldt {session.Title}.";
+        Message = SessionService.Unregister(session);
     }
 
     private void JoinWaitlist(TrainingSession session)
     {
-        Message = $"Du er nu tilmeldt ventelisten til {session.Title}.";
+        Message = SessionService.JoinWaitlist(session);
     }
 }

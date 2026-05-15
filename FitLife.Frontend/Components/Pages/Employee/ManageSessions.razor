@@ -1,21 +1,10 @@
 @page "/manage-sessions"
 @rendermode InteractiveServer
+@using FitLife.Frontend.Models
 
 <div class="container-fluid px-0">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-5 py-3">
-        <a class="navbar-brand fw-bold fs-3 text-white" href="/employee-dashboard">
-            FitLife Admin
-        </a>
-
-        <div class="ms-auto d-flex align-items-center gap-3">
-            <a class="nav-link text-white" href="/employee-dashboard">Forside</a>
-            <a class="nav-link text-white" href="/manage-sessions">Administrer hold</a>
-            <a class="nav-link text-white" href="/manage-members">Administrer medlemmer</a>
-            <a class="nav-link text-white" href="/personal-training">Personlig træning</a>
-            <span class="fw-bold text-white ms-3">NAVN NAVNESEN</span>
-        </div>
-    </nav>
+    <EmployeeNavbar />
 
     <section class="container py-5">
 
@@ -183,9 +172,7 @@
 
     </section>
 
-    <footer class="border-top bg-light py-4 text-center text-muted">
-        Footer
-    </footer>
+    <AppFooter />
 
 </div>
 
@@ -193,13 +180,13 @@
     private string SearchText = "";
     private string Message = "";
     private DateTime? SelectedDate;
-    private AdminSession? SelectedSession;
+    private TrainingSession? SelectedSession;
     private DateTime? SelectedSessionDate;
     private TimeOnly? SelectedSessionTime;
 
-    private List<AdminSession> Sessions = new()
+    private List<TrainingSession> Sessions = new()
     {
-        new AdminSession
+        new TrainingSession
         {
             Title = "Yoga",
             Description = "Rolig træning med fokus på smidighed og vejrtrækning.",
@@ -208,7 +195,7 @@
             Capacity = 12,
             RegisteredCount = 4
         },
-        new AdminSession
+        new TrainingSession
         {
             Title = "Spinning",
             Description = "Høj intensitet på cykel.",
@@ -217,7 +204,7 @@
             Capacity = 10,
             RegisteredCount = 10
         },
-        new AdminSession
+        new TrainingSession
         {
             Title = "Crossfit",
             Description = "Funktionel træning med styrke og puls.",
@@ -228,14 +215,14 @@
         }
     };
 
-    private IEnumerable<AdminSession> FilteredSessions =>
+    private IEnumerable<TrainingSession> FilteredSessions =>
         Sessions.Where(s =>
             (SelectedDate is null || s.StartTime.Date == SelectedDate.Value.Date) &&
             (string.IsNullOrWhiteSpace(SearchText) ||
              s.Title.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
              s.InstructorName.Contains(SearchText, StringComparison.OrdinalIgnoreCase)));
 
-    private void SelectSession(AdminSession session)
+    private void SelectSession(TrainingSession session)
     {
         SelectedSession = session;
         SelectedSessionDate = session.StartTime.Date;
@@ -256,7 +243,7 @@
         Message = $"Ændringer for {SelectedSession.Title} er gemt.";
     }
 
-    private void CancelSession(AdminSession session)
+    private void CancelSession(TrainingSession session)
     {
         Sessions.Remove(session);
 
@@ -284,17 +271,5 @@
     {
         SearchText = "";
         SelectedDate = null;
-    }
-
-    private class AdminSession
-    {
-        public string Title { get; set; } = "";
-        public string Description { get; set; } = "";
-        public string InstructorName { get; set; } = "";
-        public DateTime StartTime { get; set; }
-        public int Capacity { get; set; }
-        public int RegisteredCount { get; set; }
-
-        public int AvailableSpots => Capacity - RegisteredCount;
     }
 }

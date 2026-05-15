@@ -3,77 +3,74 @@
 
 <div class="container-fluid px-0">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-5 py-3">
-        <a class="navbar-brand fw-bold fs-3" href="/">FitLife</a>
-
-        <div class="ms-auto d-flex align-items-center gap-3">
-            <a class="nav-link" href="/">Find center</a>
-            <a class="nav-link" href="/find-hold">Find hold</a>
-            <a class="nav-link" href="/personal-training">Personlig træning</a>
-            <a class="nav-link" href="/digital-training">Digital træning</a>
-            <a class="nav-link" href="/login">Login</a>
-            <a class="btn btn-success fw-bold px-4" href="/register-step1">BLIV MEDLEM</a>
-        </div>
-    </nav>
+    <PublicNavbar />
 
     <section class="container py-5">
+
         <div class="row align-items-center">
 
             <div class="col-md-6">
-                <div class="bg-light border rounded-3 d-flex align-items-center justify-content-center"
+
+                <div class="border bg-light d-flex align-items-center justify-content-center"
                      style="height: 420px;">
+
                     <span class="text-muted fs-5">
                         Inspirerende billede fra et center
                     </span>
+
                 </div>
+
             </div>
 
             <div class="col-md-5 offset-md-1">
-                <div class="card shadow-sm">
-                    <div class="card-body p-4">
 
-                        <h2 class="mb-4">Login</h2>
+                <h2 class="mb-4">
+                    LOGIN
+                </h2>
 
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input class="form-control"
-                                   type="email"
-                                   @bind="Email" />
-                        </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
 
-                        <div class="mb-3">
-                            <label class="form-label">Password</label>
-                            <input class="form-control"
-                                   type="password"
-                                   @bind="Password" />
-                        </div>
-
-                        <button class="btn btn-success w-100 mb-3"
-                                @onclick="LoginUser">
-                            LOGIN
-                        </button>
-
-                        <button class="btn btn-link w-100">
-                            Få hjælp til login
-                        </button>
-
-                        @if (!string.IsNullOrWhiteSpace(Message))
-                        {
-                            <div class="alert alert-info mt-3">
-                                @Message
-                            </div>
-                        }
-
-                    </div>
+                    <input class="form-control"
+                           type="email"
+                           @bind="Email" />
                 </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Password</label>
+
+                    <input class="form-control"
+                           type="password"
+                           @bind="Password" />
+                </div>
+
+                <div class="d-grid gap-3">
+
+                    <button class="btn btn-success"
+                            @onclick="LoginUser">
+                        LOGIN
+                    </button>
+
+                    <button class="btn btn-outline-secondary">
+                        Få hjælp til login
+                    </button>
+
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(Message))
+                {
+                    <div class="alert alert-info mt-4">
+                        @Message
+                    </div>
+                }
+
             </div>
 
         </div>
+
     </section>
 
-    <footer class="border-top bg-light py-4 text-center text-muted">
-        Footer
-    </footer>
+    <AppFooter />
 
 </div>
 
@@ -84,7 +81,8 @@
 
     private void LoginUser()
     {
-        if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
+        if (string.IsNullOrWhiteSpace(Email) ||
+            string.IsNullOrWhiteSpace(Password))
         {
             Message = "Indtast både email og password.";
             return;

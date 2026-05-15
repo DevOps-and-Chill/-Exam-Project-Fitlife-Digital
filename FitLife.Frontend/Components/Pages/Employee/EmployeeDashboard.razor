@@ -3,44 +3,40 @@
 
 <div class="container-fluid px-0">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-5 py-3">
-        <a class="navbar-brand fw-bold fs-3 text-white"
-           href="/employee-dashboard">
-            FitLife Admin
-        </a>
-
-        <div class="ms-auto d-flex align-items-center gap-3">
-            <a class="nav-link text-white" href="/employee-dashboard">Forside</a>
-            <a class="nav-link text-white" href="/manage-sessions">Administrer hold</a>
-            <a class="nav-link text-white" href="/manage-members">Administrer medlemmer</a>
-            <a class="nav-link text-white" href="/personal-training">Personlig træning</a>
-
-            <span class="fw-bold text-white ms-3">
-                NAVN NAVNESEN
-            </span>
-        </div>
-    </nav>
+    <EmployeeNavbar />
 
     <section class="container py-5">
 
         <div class="mb-5">
-            <h1 class="fw-bold">Ansat dashboard</h1>
+            <span class="badge bg-dark mb-3 px-3 py-2">
+                ANSAT OMRÅDE
+            </span>
 
-            <p class="lead">
-                Administrer hold, medlemmer, centre og personlig træning.
+            <h1 class="fw-bold">
+                Ansat dashboard
+            </h1>
+
+            <p class="lead text-muted">
+                Administrer hold, medlemmer, centre og personlig træning fra ét samlet overblik.
             </p>
         </div>
 
         <div class="row g-4">
 
             <div class="col-md-6">
-                <div class="card shadow-sm h-100">
+                <div class="card shadow-sm h-100 border-0">
                     <div class="card-body p-4">
 
-                        <h3>Holdtræning</h3>
+                        <div class="fs-2 mb-3">
+                            📅
+                        </div>
+
+                        <h3 class="fw-bold">
+                            Holdtræning
+                        </h3>
 
                         <p class="text-muted">
-                            Administrer eksisterende hold eller opret nye hold.
+                            Administrer eksisterende hold, rediger kapacitet eller opret nye hold i holdplanen.
                         </p>
 
                         <div class="d-grid gap-2">
@@ -60,13 +56,19 @@
             </div>
 
             <div class="col-md-6">
-                <div class="card shadow-sm h-100">
+                <div class="card shadow-sm h-100 border-0">
                     <div class="card-body p-4">
 
-                        <h3>Medlemmer</h3>
+                        <div class="fs-2 mb-3">
+                            👥
+                        </div>
+
+                        <h3 class="fw-bold">
+                            Medlemmer
+                        </h3>
 
                         <p class="text-muted">
-                            Se medlemmer, rediger medlemsoplysninger eller opret nye medlemmer.
+                            Søg efter medlemmer, rediger medlemsoplysninger eller opret nye medlemmer via receptionen.
                         </p>
 
                         <div class="d-grid gap-2">
@@ -86,13 +88,19 @@
             </div>
 
             <div class="col-md-6">
-                <div class="card shadow-sm h-100">
+                <div class="card shadow-sm h-100 border-0">
                     <div class="card-body p-4">
 
-                        <h3>Personlig træning</h3>
+                        <div class="fs-2 mb-3">
+                            💪
+                        </div>
+
+                        <h3 class="fw-bold">
+                            Personlig træning
+                        </h3>
 
                         <p class="text-muted">
-                            Se sessioner og ønsker om personlig træning.
+                            Se planlagte sessioner og håndter ønsker om personlig træning fra medlemmer.
                         </p>
 
                         <div class="d-grid gap-2">
@@ -112,13 +120,19 @@
             </div>
 
             <div class="col-md-6">
-                <div class="card shadow-sm h-100">
+                <div class="card shadow-sm h-100 border-0">
                     <div class="card-body p-4">
 
-                        <h3>Centre</h3>
+                        <div class="fs-2 mb-3">
+                            🏢
+                        </div>
+
+                        <h3 class="fw-bold">
+                            Centre
+                        </h3>
 
                         <p class="text-muted">
-                            Administrer centre og opret afvigelser.
+                            Administrer centeroplysninger og opret afvigelser for åbningstider eller drift.
                         </p>
 
                         <div class="d-grid gap-2">
@@ -148,14 +162,11 @@
 
     </section>
 
-    <footer class="border-top bg-light py-4 text-center text-muted">
-        Footer
-    </footer>
+    <AppFooter />
 
 </div>
 
 @code {
-
     private string Message = "";
 
     private void ShowPTSessions()
