@@ -1,0 +1,93 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\GitHub\\DevOps-and-Chill\\-Exam-Project-Fitlife-Digital\\FacilityService\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A4F0197E-6FF9-4067-9B8E-90BABFAFDD46}|FacilityServiceTest\\FacilityServiceTest.csproj|c:\\github\\devops-and-chill\\-exam-project-fitlife-digital\\facilityservice\\facilityservicetest\\facilityrepositoryandcontrollertest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A4F0197E-6FF9-4067-9B8E-90BABFAFDD46}|FacilityServiceTest\\FacilityServiceTest.csproj|solutionrelative:facilityservicetest\\facilityrepositoryandcontrollertest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FacilityRepositoryAndControllerTest.cs",
+              "DocumentMoniker": "C:\\GitHub\\DevOps-and-Chill\\-Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceTest\\FacilityRepositoryAndControllerTest.cs",
+              "RelativeDocumentMoniker": "FacilityServiceTest\\FacilityRepositoryAndControllerTest.cs",
+              "ToolTip": "C:\\GitHub\\DevOps-and-Chill\\-Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceTest\\FacilityRepositoryAndControllerTest.cs",
+              "RelativeToolTip": "FacilityServiceTest\\FacilityRepositoryAndControllerTest.cs",
+              "ViewState": "AgIAAJgAAAAAAAAAAAAAAJgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-15T18:50:01.465Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 455,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 455,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:133:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:132:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{131369f2-062d-44a2-8671-91ff31efb4f4}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
