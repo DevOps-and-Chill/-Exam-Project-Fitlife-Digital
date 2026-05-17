@@ -13,12 +13,6 @@ namespace UserServiceAPI.Repositories
         {
             _context = context;
         }
-
-        public Task<bool> DeleteUser(Guid userId)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<List<User>> GetAllUsers()
         {
             return await _context.Users.ToListAsync();
@@ -34,18 +28,12 @@ namespace UserServiceAPI.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<bool> SetUserAsInactive(Guid userId)
+        public async Task<bool> LoadTestData()
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<User> UpsertUser(User user)
-        {
-            _context.Users.Add(user);
-
+            _context.Users.AddRange(TestData.EmployeeTestData.employees);
+            _context.Users.AddRange(TestData.MemberTestData.members);
             await _context.SaveChangesAsync();
-
-            return user;
+            return true;
         }
     }
 }

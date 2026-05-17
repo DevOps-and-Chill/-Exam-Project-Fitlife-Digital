@@ -4,8 +4,10 @@ namespace UserServiceAPI.Repositories.Interfaces
 {
     public interface IMemberRepository
     {
-        public Task<List<User>> GetAllMembers();
-        public Task<bool> CancelMembershipForMember(Guid userId);
-
+        public Task<List<Member>> GetAllMembers();
+        public Task<Member> CancelMembershipForMember(string userId);
+        public Task<Member> UpsertMember(Member member);
+        public Task<Member> DeleteMember(string userId);
+        public Task<Member> SetAccountAsInactive(string userId);
     }
 }

@@ -14,7 +14,7 @@ namespace UserServiceAPI.Repositories
         /// </summary>
         /// <param name="userId"></param>
         /// <returns>True if member is found and cancelled. False if member is null</returns>
-        public Task<bool> CancelMembershipForMember(Guid userId)
+        public Task<bool> CancelMembershipForMember(string userId)
         {
             var memberToCancel = members.SingleOrDefault(m => m.Id == userId);
 
@@ -28,6 +28,11 @@ namespace UserServiceAPI.Repositories
             return Task.FromResult(true);
         }
 
+        public Task<Member> DeleteMember(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<List<User>> GetAllMembers()
         {
             List<User> result = members
@@ -35,6 +40,26 @@ namespace UserServiceAPI.Repositories
                 .ToList();
 
             return Task.FromResult(result);
+        }
+
+        public Task<Member> SetAccountAsInactive(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Member> UpsertMember(Member member)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<Member> IMemberRepository.CancelMembershipForMember(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<List<Member>> IMemberRepository.GetAllMembers()
+        {
+            throw new NotImplementedException();
         }
     }
 }

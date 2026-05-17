@@ -54,38 +54,20 @@ namespace UserServiceAPI.Controllers
                 return BadRequest(ex);
             }
         }
-        [HttpDelete("DeleteUser")]
-        public async Task<ActionResult> DeleteUser(Guid userId)
-        {
-            try
-            {
-                return Ok(await _userRepository.DeleteUser(userId));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
 
-        [HttpPost("UpsertUser")]
-        public async Task<ActionResult> UpsertUser([FromBody] User user)
+        [HttpGet("addtestdata")]
+        public async Task<ActionResult> AddData()
         {
             try
             {
-                return Ok(await _userRepository.UpsertUser(user));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
-
-        [HttpPut("SetUserAsInactive")]
-        public async Task<ActionResult> SetUserAsInactive(Guid userId)
-        {
-            try
-            {
-                return Ok(await _userRepository.SetUserAsInactive(userId));
+                var result = await _userRepository.LoadTestData();
+                if (result)
+                {
+                    return Ok();
+                }
+                else
+                    return Ok("error in loading data");
+                
             }
             catch (Exception ex)
             {

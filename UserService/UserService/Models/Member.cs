@@ -4,7 +4,6 @@ namespace UserServiceAPI.Models
 {
     public class Member : User
     {
-
         //AO: Abonnementstype
         public MembershipType MembershipType { get; set; }
 
@@ -18,7 +17,10 @@ namespace UserServiceAPI.Models
         public DateTime EndDate { get; set; }
 
         public bool ActiveMembership { get; set; } = true;
+        public Member()
+        {
 
+        }
         public Member(
             UserRole roleName,
             string givenName,

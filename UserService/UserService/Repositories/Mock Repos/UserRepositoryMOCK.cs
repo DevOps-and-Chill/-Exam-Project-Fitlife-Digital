@@ -11,7 +11,7 @@ namespace UserServiceAPI.Repositories
         List<Member> members = MemberTestData.members;
         List<Employee> employees = EmployeeTestData.employees;
 
-        public Task<bool> DeleteUser(Guid userId)
+        public Task<bool> DeleteUser(string userId)
         {
             string userRole = users.SingleOrDefault(u => u.Id == userId).RoleName.ToString();
             if(userRole == null)
@@ -52,7 +52,7 @@ namespace UserServiceAPI.Repositories
             return Task.FromResult(usersInExerciseGym);
         }
 
-        public Task<bool> SetUserAsInactive(Guid userId)
+        public Task<bool> SetUserAsInactive(string userId)
         {
             var member = members.SingleOrDefault(e => e.Id == userId);
 
@@ -107,6 +107,11 @@ namespace UserServiceAPI.Repositories
             var listByAffiliation = users.Where(u => u.Affiliation == affiliationId).ToList();
 
             return Task.FromResult(listByAffiliation);
+        }
+
+        public Task<bool> LoadTestData()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -8,7 +8,13 @@ namespace UserServiceAPI.Repositories
     public class EmployeeRepositoryMOCK : IEmployeeRepository
     {
         List<Employee> employees = EmployeeTestData.employees;
-        public Task<bool> EndEmploymentForEmployee(Guid userId)
+
+        public Task<Employee> DeleteEmployee(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> EndEmploymentForEmployee(string userId)
         {
             var employeeToUpdate = employees.SingleOrDefault(m => m.Id == userId);
 
@@ -31,7 +37,12 @@ namespace UserServiceAPI.Repositories
             return Task.FromResult(result);
         }
 
-        public Task<bool> SetEmployeeAsManager(Guid userId)
+        public Task<Employee> SetAccountAsInactive(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> SetEmployeeAsManager(string userId)
         {
             var employee = employees.SingleOrDefault(e => e.Id == userId);
 
@@ -43,6 +54,26 @@ namespace UserServiceAPI.Repositories
             employee.SetAsManager();
 
             return Task.FromResult(true);
+        }
+
+        public Task<Employee> UpsertEmployee(Employee employee)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<Employee> IEmployeeRepository.EndEmploymentForEmployee(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<List<Employee>> IEmployeeRepository.GetAllEmployees()
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<Employee> IEmployeeRepository.SetEmployeeAsManager(string userId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

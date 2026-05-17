@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Data;
 using UserServiceAPI.Models;
 
 namespace UserServiceAPI.Data
@@ -22,11 +23,17 @@ namespace UserServiceAPI.Data
 
             //AO: What the documents (objects) are grouped by
             modelBuilder.Entity<User>()
-                .HasPartitionKey(u => u.Id);
+                .HasPartitionKey(u => u.PartitionKey);
 
             //AO: Defines the PK/unique identity of the docuemnts/objects
             modelBuilder.Entity<User>()
                 .HasKey(u => u.Id);
+
+            //AO: Tells EF “ Når du gemmer objekter i Users-containeren, skal du gemme hvilken subtype objektet er." Gøres med udgangspunkt i typen
+            modelBuilder.Entity<User>()
+               .HasDiscriminator<string>("userType")
+               .HasValue<Member>("Member")
+               .HasValue<Employee>("Employee");
         }
 
     }

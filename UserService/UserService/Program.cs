@@ -8,23 +8,24 @@ namespace UserServiceAPI
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             builder.Services.AddScoped<IUserRepository, UserRepositoryDB>();
-            builder.Services.AddScoped<IMemberRepository, MemberRepositoryMOCK>();
-            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepositoryMOCK>();
+            builder.Services.AddScoped<IMemberRepository, MemberRepositoryDB>();
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepositoryDB>();
 
-            //AO: Accountkey and endpoint to be added to vault
+            //AO: Accountkey and endpoint to be added to vault currently in appsettings
             builder.Services.AddDbContext<UserDbContext>(options =>
             {
                 options.UseCosmos(
-                    builder.Configuration["CosmosDb:AccountEndpoint"]!,
-                    builder.Configuration["CosmosDb:AccountKey"]!,
-                    builder.Configuration["CosmosDb:DatabaseName"]!);
+                builder.Configuration["CosmosDb:AccountEndpoint"]!,
+                builder.Configuration["CosmosDb:AccountKey"]!,
+                builder.Configuration["CosmosDb:DatabaseName"]!);
             });
+        
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -37,7 +38,7 @@ namespace UserServiceAPI
             {
                 var db = scope.ServiceProvider.GetRequiredService<UserDbContext>();
 
-                db.Database.EnsureCreatedAsync();
+                await db.Database.EnsureCreatedAsync();
             }
 
             // Configure the HTTP request pipeline.

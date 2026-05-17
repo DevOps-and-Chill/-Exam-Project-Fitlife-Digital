@@ -30,7 +30,7 @@ namespace UserServiceAPI.Controllers
         }
 
         [HttpPut("EndEmploymentForEmployee")]
-        public async Task<ActionResult> EndEmployment(Guid userId)
+        public async Task<ActionResult> EndEmployment(string userId)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace UserServiceAPI.Controllers
         }
 
         [HttpPut("SetEmployeeAsManager")]
-        public async Task<ActionResult> SetEmployeeAsManager(Guid userId)
+        public async Task<ActionResult> SetEmployeeAsManager(string userId)
         {
             try
             {
@@ -52,6 +52,45 @@ namespace UserServiceAPI.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex);
+            }
+        }
+
+        [HttpPost("UpsertEmployee")]
+        public async Task<ActionResult> UpsertEmployee([FromBody] Employee employee)
+        {
+            try
+            {
+                return Ok(await _employeeRepository.UpsertEmployee(employee));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("DeleteEmployee")]
+        public async Task<ActionResult> DeleteEmployee(string userId)
+        {
+            try
+            {
+                return Ok(await _employeeRepository.DeleteEmployee(userId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("SetAccountAsInactive")]
+        public async Task<ActionResult> SetEmployeeAccountAsInactive(string userId)
+        {
+            try
+            {
+                return Ok(await _employeeRepository.SetAccountAsInactive(userId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 

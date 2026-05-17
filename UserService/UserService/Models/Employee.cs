@@ -6,12 +6,18 @@ namespace UserServiceAPI.Models
     {
         public EmployeeRole EmployeeRoleName { get; set; }
         public bool IsPT { get; set; }
+
+        //AO: To be set when employee is created
         public DateTime StartDate { get; init; }
 
         public DateTime EndDate { get; set; }
 
         public bool ActiveEmployment { get; set; } = true;
 
+        public Employee()
+        {
+
+        }
         public Employee(
             UserRole userRole,
             string givenName,

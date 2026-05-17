@@ -4,8 +4,11 @@ namespace UserServiceAPI.Repositories.Interfaces
 {
     public interface IEmployeeRepository
     {
-        public Task<List<User>> GetAllEmployees();
-        public Task<bool> EndEmploymentForEmployee(Guid userId);
-        public Task<bool> SetEmployeeAsManager(Guid userId);
+        public Task<List<Employee>> GetAllEmployees();
+        public Task<Employee> EndEmploymentForEmployee(string userId);
+        public Task<Employee> SetEmployeeAsManager(string userId);
+        public Task<Employee> UpsertEmployee(Employee employee);
+        public Task<Employee> DeleteEmployee(string userId);
+        public Task<Employee> SetAccountAsInactive(string userId);
     }
 }
