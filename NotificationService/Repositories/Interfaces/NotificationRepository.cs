@@ -4,13 +4,18 @@ namespace NotificationService.Repositories.Interfaces;
 
 public class NotificationRepository : INotificationRepository
 {
-    public Task SendNotificationAsync(Notification notification)
+    
+    // POST
+    
+    public async Task SendNotificationAsync(Notification notification)
+    {
+        
+    }
+    
+    // GET
+    public Task<List<Notification>> GetNotificationByRecieverAsync(string recieverId)
     {
         throw new NotImplementedException();
     }
     
-    public Task<List<Notification>> GetNotificationByRecieverAsync(string senderId)
-    {
-        throw new NotImplementedException();
-    }
 }
