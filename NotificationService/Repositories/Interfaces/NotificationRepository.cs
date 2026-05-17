@@ -1,4 +1,4 @@
-﻿using Models;
+﻿using NotificationService.Models;
 
 namespace NotificationService.Repositories.Interfaces;
 

@@ -1,4 +1,6 @@
-﻿namespace NotificationService.Repositories.Interfaces;
+﻿using NotificationService.Models;
+
+namespace NotificationService.Repositories.Interfaces;
 
 public interface INotificationRepository
 {
