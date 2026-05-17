@@ -4,6 +4,7 @@
 
 <div class="container-fluid px-0">
 
+    <!-- Shared navigation for employee/admin pages -->
     <EmployeeNavbar />
 
     <section class="container py-5">
@@ -16,6 +17,8 @@
         <div class="card shadow-sm">
             <div class="card-body p-4">
 
+                <!-- Formularen binder direkte til NewSession-modellen.
+                     Senere kan NewSession sendes til backend via SessionService/API. -->
                 <div class="row g-3">
 
                     <div class="col-md-6">
@@ -39,6 +42,9 @@
                                   @bind="NewSession.Description"></textarea>
                     </div>
 
+                    <!-- Dato og klokkeslæt holdes adskilt i UI'et,
+                         fordi det er lettere for brugeren at udfylde.
+                         De samles senere til NewSession.StartTime i SetStartTime(). -->
                     <div class="col-md-4">
                         <label class="form-label">Dato</label>
                         <input class="form-control"
@@ -62,6 +68,8 @@
 
                 </div>
 
+                <!-- Midlertidig UI-feedback.
+                     Senere kan denne besked komme fra SessionService/API response. -->
                 @if (!string.IsNullOrWhiteSpace(Message))
                 {
                     <div class="alert alert-info mt-4">
@@ -93,14 +101,19 @@
 </div>
 
 @code {
+    // NewSession samler data for det hold, medarbejderen er ved at oprette.
+    // TODO: Senere bør dette objekt sendes til SessionService.CreateSessionAsync().
     private TrainingSession NewSession = new()
     {
         Capacity = 10,
         RegisteredCount = 0
     };
 
+    // Bruges kun i formularen, så dato og tid kan vælges separat.
+    // De bliver samlet til NewSession.StartTime før holdet gemmes.
     private DateTime? SelectedDate;
     private TimeOnly? SelectedTime;
+
     private string Message = "";
 
     [Inject]
@@ -108,6 +121,8 @@
 
     private bool Validate()
     {
+        // Simpel frontend-validering.
+        // Backend skal stadig validere data, når holdet senere oprettes via API.
         if (string.IsNullOrWhiteSpace(NewSession.Title) ||
             string.IsNullOrWhiteSpace(NewSession.InstructorName) ||
             SelectedDate is null ||
@@ -123,6 +138,8 @@
 
     private void SetStartTime()
     {
+        // Samler dato og klokkeslæt fra formularen til én DateTime,
+        // fordi TrainingSession-modellen bruger StartTime som samlet tidspunkt.
         if (SelectedDate is not null && SelectedTime is not null)
         {
             NewSession.StartTime = SelectedDate.Value.Date + SelectedTime.Value.ToTimeSpan();
@@ -136,6 +153,8 @@
 
         SetStartTime();
 
+        // Midlertidig prototype-handling.
+        // TODO: Erstat med kald til SessionService/API, så holdet gemmes i backend.
         Message = $"Holdet {NewSession.Title} er oprettet.";
 
         Navigation.NavigateTo("/manage-sessions");
@@ -148,8 +167,11 @@
 
         SetStartTime();
 
+        // Midlertidig prototype-handling.
+        // TODO: Erstat med kald til SessionService/API og nulstil derefter formularen.
         Message = $"Holdet {NewSession.Title} er oprettet. Du kan nu oprette et nyt hold.";
 
+        // Nulstiller formularen, så medarbejderen hurtigt kan oprette endnu et hold.
         NewSession = new TrainingSession
         {
             Capacity = 10,

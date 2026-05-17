@@ -6,10 +6,12 @@
 
 <div class="container-fluid px-0">
 
+    <!-- Shared navbar for medlemssider -->
     <MemberNavbar />
 
     <section class="container py-5">
 
+        <!-- Side-header -->
         <div class="mb-5">
             <span class="badge bg-success mb-3 px-3 py-2">
                 HOLDTRÆNING
@@ -24,6 +26,10 @@
             </p>
         </div>
 
+        <!-- Filterområde -->
+        <!-- TODO:
+             Filtrér og Vis alle hold kan senere kobles til rigtig filtrering på dato,
+             center, holdtype eller instruktør -->
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-body p-4">
 
@@ -40,7 +46,11 @@
             </div>
         </div>
 
+        <!-- Liste/grid over hold -->
         <div class="row g-4">
+
+            <!-- Sessions kommer fra SessionService.
+                 Lige nu bruger servicen mock-data, men senere kan den hente hold fra backend/API. -->
             @foreach (var session in Sessions)
             {
                 <div class="col-md-4">
@@ -74,8 +84,10 @@
                                 @session.AvailableSpots
                             </p>
 
+                            <!-- Viser forskellig handling alt efter brugerens status og ledige pladser -->
                             @if (session.IsUserSignedUp)
                             {
+                                <!-- Brugeren er allerede tilmeldt og kan derfor afmelde sig -->
                                 <button class="btn btn-danger w-100"
                                         @onclick="() => Unregister(session)">
                                     Afmeld
@@ -83,6 +95,7 @@
                             }
                             else if (session.AvailableSpots > 0)
                             {
+                                <!-- Der er ledige pladser, så brugeren kan tilmelde sig -->
                                 <button class="btn btn-success w-100"
                                         @onclick="() => Register(session)">
                                     Tilmeld
@@ -90,6 +103,7 @@
                             }
                             else
                             {
+                                <!-- Holdet er fyldt, så brugeren kan komme på venteliste -->
                                 <button class="btn btn-warning w-100"
                                         @onclick="() => JoinWaitlist(session)">
                                     Tilmeld venteliste
@@ -102,6 +116,7 @@
             }
         </div>
 
+        <!-- Midlertidig feedback-besked fra SessionService -->
         @if (!string.IsNullOrWhiteSpace(Message))
         {
             <div class="alert alert-success mt-4">
@@ -116,27 +131,42 @@
 </div>
 
 @code {
+    // Feedback til brugeren efter tilmelding, afmelding eller venteliste
     private string Message = "";
 
+    // Liste over hold der vises på siden
     private List<TrainingSession> Sessions = new();
 
     protected override void OnInitialized()
     {
+        // Henter hold fra service-laget.
+        // TODO:
+        // Når backend er klar, kan SessionService.GetSessions()
+        // ændres til at hente data fra en microservice/API.
         Sessions = SessionService.GetSessions();
     }
 
     private void Register(TrainingSession session)
     {
+        // Kalder service-laget i stedet for at have tilmeldingslogik direkte i UI'et.
+        // TODO:
+        // Senere bør dette blive et API-kald, fx POST /api/sessions/{id}/register
         Message = SessionService.Register(session);
     }
 
     private void Unregister(TrainingSession session)
     {
+        // Afmelding håndteres også gennem service-laget.
+        // TODO:
+        // Senere bør dette blive et API-kald, fx DELETE /api/sessions/{id}/registration
         Message = SessionService.Unregister(session);
     }
 
     private void JoinWaitlist(TrainingSession session)
     {
+        // Venteliste håndteres midlertidigt i SessionService.
+        // TODO:
+        // Senere kan dette kobles til backend, fx POST /api/sessions/{id}/waitlist
         Message = SessionService.JoinWaitlist(session);
     }
 }

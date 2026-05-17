@@ -12,6 +12,7 @@ builder.Services.AddScoped<MemberService>();
 builder.Services.AddScoped<TrainerService>();
 builder.Services.AddScoped<DigitalTrainingService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<CenterService>();
 
 var app = builder.Build();
 

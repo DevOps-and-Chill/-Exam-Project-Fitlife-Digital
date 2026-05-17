@@ -4,12 +4,16 @@
 
 <div class="container-fluid px-0">
 
+    <!-- Shared navbar for medlemssider -->
     <MemberNavbar />
 
     <section class="container py-5">
 
+        <!-- Hero/introsektion -->
         <div class="row align-items-center mb-5">
+
             <div class="col-md-7">
+
                 <span class="badge bg-success mb-3 px-3 py-2">
                     PERSONLIG TRÆNING
                 </span>
@@ -21,24 +25,38 @@
                 <p class="lead text-muted">
                     Find en personlig træner, book en session eller send en besked direkte fra platformen.
                 </p>
+
             </div>
 
+            <!-- Placeholder til billede -->
+            <!-- TODO:
+                 Senere kan billedet hentes dynamisk fra backend eller CMS -->
             <div class="col-md-5">
+
                 <div class="bg-light border rounded-4 d-flex align-items-center justify-content-center shadow-sm"
                      style="height: 240px;">
+
                     <span class="text-muted">
                         Billede fra det udvalgte center
                     </span>
+
                 </div>
+
             </div>
         </div>
 
+        <!-- Liste over trænere -->
         <div class="row g-4">
 
+            <!-- Loop gennem alle trænere -->
+            <!-- TODO:
+                 Senere skal Trainers hentes fra backend/API -->
             @foreach (var trainer in Trainers)
             {
                 <div class="col-md-4">
+
                     <div class="card shadow-sm h-100 border-0">
+
                         <div class="card-body p-4">
 
                             <div class="fs-2 mb-3">
@@ -54,15 +72,20 @@
                             </p>
 
                             <p class="mb-1">
-                                <strong>Speciale:</strong> @trainer.Specialty
+                                <strong>Speciale:</strong>
+                                @trainer.Specialty
                             </p>
 
                             <p class="mb-3">
+
                                 <strong>Ledig:</strong>
+
                                 @(trainer.IsAvailable ? "Ja" : "Nej")
                             </p>
 
                             <div class="d-grid gap-2">
+
+                                <!-- Hvis træneren er ledig kan medlemmet booke -->
                                 @if (trainer.IsAvailable)
                                 {
                                     <button class="btn btn-success"
@@ -72,21 +95,27 @@
                                 }
                                 else
                                 {
+                                    <!-- Hvis træneren ikke er ledig -->
                                     <button class="btn btn-warning"
                                             @onclick="() => JoinWaitlist(trainer)">
                                         Tilmeld venteliste
                                     </button>
                                 }
 
+                                <!-- Åbner beskedformular -->
                                 <button class="btn btn-outline-dark"
                                         @onclick="() => SelectTrainerForMessage(trainer)">
                                     Send besked
                                 </button>
 
+                                <!-- Midlertidig prototype-knap -->
+                                <!-- TODO:
+                                     Kan senere navigere til separat profilside -->
                                 <button class="btn btn-outline-secondary"
                                         @onclick="() => ShowProfile(trainer)">
                                     Se profil
                                 </button>
+
                             </div>
 
                         </div>
@@ -96,9 +125,11 @@
 
         </div>
 
+        <!-- Bookingpanel -->
         @if (SelectedTrainerForBooking is not null)
         {
             <div class="card shadow-sm border-0 mt-5">
+
                 <div class="card-body p-4">
 
                     <h4 class="fw-bold">
@@ -110,40 +141,70 @@
                     </p>
 
                     <div class="row g-3 mt-2">
+
+                        <!-- Valg af dato -->
                         <div class="col-md-6">
-                            <label class="form-label">Valgt dato</label>
-                            <input class="form-control" type="date" @bind="SelectedDate" />
+
+                            <label class="form-label">
+                                Valgt dato
+                            </label>
+
+                            <input class="form-control"
+                                   type="date"
+                                   @bind="SelectedDate" />
                         </div>
 
+                        <!-- Valg af tidspunkt -->
                         <div class="col-md-6">
-                            <label class="form-label">Vælg tid</label>
-                            <select class="form-select" @bind="SelectedTime">
-                                <option value="">Vælg tid</option>
+
+                            <label class="form-label">
+                                Vælg tid
+                            </label>
+
+                            <select class="form-select"
+                                    @bind="SelectedTime">
+
+                                <option value="">
+                                    Vælg tid
+                                </option>
+
                                 <option>09:00</option>
                                 <option>12:00</option>
                                 <option>15:00</option>
                                 <option>17:00</option>
+
                             </select>
+
                         </div>
                     </div>
 
                     <div class="d-flex gap-3 mt-4">
-                        <button class="btn btn-success" @onclick="BookSession">
+
+                        <!-- Opretter booking -->
+                        <!-- TODO:
+                             Senere skal dette sende booking til backend/API -->
+                        <button class="btn btn-success"
+                                @onclick="BookSession">
                             Book
                         </button>
 
-                        <button class="btn btn-outline-secondary" @onclick="CancelBooking">
+                        <!-- Lukker booking -->
+                        <button class="btn btn-outline-secondary"
+                                @onclick="CancelBooking">
                             Afbryd booking
                         </button>
+
                     </div>
 
                 </div>
             </div>
         }
 
+        <!-- Beskedpanel -->
         @if (SelectedTrainerForMessage is not null)
         {
             <div class="card shadow-sm border-0 mt-5">
+
                 <div class="card-body p-4">
 
                     <h4 class="fw-bold">
@@ -154,30 +215,55 @@
                         Skriv en kort besked til træneren om dit behov eller spørgsmål.
                     </p>
 
+                    <!-- Message-modellen bruges nu i stedet for separate strings -->
+                    <!-- Dette gør løsningen mere domain-driven og nemmere at koble til backend -->
+
                     <div class="mb-3">
-                        <label class="form-label">Emne</label>
-                        <input class="form-control" @bind="NewMessage.Subject" />
+
+                        <label class="form-label">
+                            Emne
+                        </label>
+
+                        <input class="form-control"
+                               @bind="NewMessage.Subject" />
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Besked</label>
-                        <textarea class="form-control" rows="5" @bind="NewMessage.Content"></textarea>
+
+                        <label class="form-label">
+                            Besked
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="5"
+                                  @bind="NewMessage.Content">
+                        </textarea>
+
                     </div>
 
                     <div class="d-flex gap-3">
-                        <button class="btn btn-success" @onclick="SendMessage">
+
+                        <!-- Sender besked -->
+                        <!-- TODO:
+                             Senere skal beskeden gemmes via MessageService/API -->
+                        <button class="btn btn-success"
+                                @onclick="SendMessage">
                             Send
                         </button>
 
-                        <button class="btn btn-outline-secondary" @onclick="CancelMessage">
+                        <!-- Lukker beskedformular -->
+                        <button class="btn btn-outline-secondary"
+                                @onclick="CancelMessage">
                             Afbryd
                         </button>
+
                     </div>
 
                 </div>
             </div>
         }
 
+        <!-- Feedback til bruger -->
         @if (!string.IsNullOrWhiteSpace(StatusMessage))
         {
             <div class="alert alert-info mt-4">
@@ -192,16 +278,28 @@
 </div>
 
 @code {
+
+    // Holder styr på hvilken træner brugeren vil booke hos
     private Trainer? SelectedTrainerForBooking;
+
+    // Holder styr på hvilken træner brugeren skriver til
     private Trainer? SelectedTrainerForMessage;
 
+    // Midlertidige bookingfelter
     private DateTime? SelectedDate;
     private string SelectedTime = "";
 
+    // Message-model bruges til beskedsystemet
+    // TODO:
+    // Skal senere sendes til backend via MessageService/API
     private Message NewMessage = new();
 
+    // Feedback til bruger
     private string StatusMessage = "";
 
+    // Midlertidig mock data til prototype
+    // TODO:
+    // Skal senere hentes fra backend/API
     private List<Trainer> Trainers = new()
     {
         new Trainer
@@ -211,6 +309,7 @@
             Specialty = "Styrketræning",
             IsAvailable = true
         },
+
         new Trainer
         {
             Name = "Jonas",
@@ -218,6 +317,7 @@
             Specialty = "Vægttab",
             IsAvailable = false
         },
+
         new Trainer
         {
             Name = "Mikkel",
@@ -227,45 +327,68 @@
         }
     };
 
+    // Åbner bookingpanel
     private void SelectTrainerForBooking(Trainer trainer)
     {
         SelectedTrainerForBooking = trainer;
+
+        // Lukker eventuel beskedformular
         SelectedTrainerForMessage = null;
+
         StatusMessage = "";
     }
 
+    // Åbner beskedformular
     private void SelectTrainerForMessage(Trainer trainer)
     {
         SelectedTrainerForMessage = trainer;
+
+        // Lukker eventuel booking
         SelectedTrainerForBooking = null;
+
         StatusMessage = "";
+
+        // Nulstiller besked
         NewMessage = new Message();
     }
 
+    // Midlertidig ventelistefunktion
+    // TODO:
+    // Skal senere kobles til backend
     private void JoinWaitlist(Trainer trainer)
     {
         StatusMessage = $"Du er nu tilmeldt ventelisten hos {trainer.Name}.";
     }
 
+    // Midlertidig prototypefunktion
     private void ShowProfile(Trainer trainer)
     {
         StatusMessage = $"Profil for {trainer.Name} vises ikke som separat side endnu.";
     }
 
+    // Opretter booking
+    // TODO:
+    // Skal senere sende booking til backend/API
     private void BookSession()
     {
-        if (SelectedTrainerForBooking is null || SelectedDate is null || string.IsNullOrWhiteSpace(SelectedTime))
+        if (SelectedTrainerForBooking is null ||
+            SelectedDate is null ||
+            string.IsNullOrWhiteSpace(SelectedTime))
         {
             StatusMessage = "Vælg både dato og tid.";
             return;
         }
 
-        StatusMessage = $"Du har booket en session med {SelectedTrainerForBooking.Name} den {SelectedDate:dd/MM} kl. {SelectedTime}.";
+        StatusMessage =
+            $"Du har booket en session med {SelectedTrainerForBooking.Name} den {SelectedDate:dd/MM} kl. {SelectedTime}.";
+
+        // Lukker bookingpanel og nulstiller data
         SelectedTrainerForBooking = null;
         SelectedDate = null;
         SelectedTime = "";
     }
 
+    // Lukker bookingformular
     private void CancelBooking()
     {
         SelectedTrainerForBooking = null;
@@ -273,6 +396,9 @@
         SelectedTime = "";
     }
 
+    // Sender besked
+    // TODO:
+    // Skal senere gemmes via MessageService/API/database
     private void SendMessage()
     {
         if (SelectedTrainerForMessage is null ||
@@ -283,20 +409,30 @@
             return;
         }
 
+        // Tilføjer metadata til beskeden
         NewMessage.SenderName = "NAVN NAVNESEN";
-        NewMessage.ReceiverName = SelectedTrainerForMessage.Name;
+
+        NewMessage.ReceiverName =
+            SelectedTrainerForMessage.Name;
+
         NewMessage.SentDate = DateTime.Now;
+
         NewMessage.IsRead = false;
 
-        StatusMessage = $"Din besked til {NewMessage.ReceiverName} er sendt.";
+        StatusMessage =
+            $"Din besked til {NewMessage.ReceiverName} er sendt.";
 
+        // Nulstiller formular
         SelectedTrainerForMessage = null;
+
         NewMessage = new Message();
     }
 
+    // Lukker beskedformular
     private void CancelMessage()
     {
         SelectedTrainerForMessage = null;
+
         NewMessage = new Message();
     }
 }

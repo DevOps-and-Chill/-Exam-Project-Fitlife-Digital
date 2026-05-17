@@ -1,0 +1,91 @@
+@page "/find-center"
+@rendermode InteractiveServer
+@using FitLife.Frontend.Models
+@using FitLife.Frontend.Services
+@inject CenterService CenterService
+
+<div class="container-fluid px-0">
+
+    <PublicNavbar />
+
+    <section class="container py-5">
+
+        <div class="mb-5">
+            <h1 class="fw-bold mb-3">
+                Find center
+            </h1>
+
+            <p class="lead text-muted">
+                Se FitLife-centre, adresser og vælg det center der passer bedst til dig.
+            </p>
+        </div>
+
+        <div class="row g-4">
+
+            @foreach (var center in Centers)
+            {
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body p-4">
+
+                            <h4 class="fw-bold">
+                                @center.Name
+                            </h4>
+
+                            <p class="text-muted mb-1">
+                                @center.Address
+                            </p>
+
+                            <p class="mb-3">
+                                @center.City
+                            </p>
+
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-success"
+                                        @onclick="() => SelectCenter(center)">
+                                    Vælg center
+                                </button>
+
+                                <a href="/find-hold" class="btn btn-outline-secondary">
+                                    Se hold
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Message))
+        {
+            <div class="alert alert-info mt-4">
+                @Message
+            </div>
+        }
+
+    </section>
+
+    <AppFooter />
+
+</div>
+
+@code {
+    private List<Center> Centers = new();
+    private string Message = "";
+
+    protected override void OnInitialized()
+    {
+        // Henter centerdata fra service-laget.
+        // Lige nu er det mock data, senere kan CenterService hente fra backend/API.
+        Centers = CenterService.GetCenters();
+    }
+
+    private void SelectCenter(Center center)
+    {
+        // Midlertidig prototype-handling.
+        // Senere kan valgt center gemmes på brugerprofilen eller bruges som filter.
+        Message = $"{center.Name} er valgt som dit center.";
+    }
+}

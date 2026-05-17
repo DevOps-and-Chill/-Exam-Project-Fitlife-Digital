@@ -4,6 +4,7 @@
 
 <div class="container-fluid px-0">
 
+    <!-- Shared navigation for employee/admin pages -->
     <EmployeeNavbar />
 
     <section class="container py-5">
@@ -13,6 +14,7 @@
             Opret et nyt medlem via receptionen.
         </p>
 
+        <!-- Prototype/UX note: viser medarbejderen en vigtig arbejdsgang fra casen -->
         <div class="alert alert-info">
             Husk at informere kunden om, at de bliver bedt om at lave password ved første login.
         </div>
@@ -20,6 +22,8 @@
         <div class="card shadow-sm">
             <div class="card-body p-4">
 
+                <!-- Formularen binder direkte til NewMember-modellen.
+                     Senere kan NewMember sendes videre til backend via MemberService/API. -->
                 <div class="row g-3">
 
                     <div class="col-md-6">
@@ -64,6 +68,9 @@
 
                     <div class="col-md-6">
                         <label class="form-label">Center</label>
+
+                        <!-- Mock-data fra Centers-listen.
+                             Senere bør listen hentes fra CenterService/API. -->
                         <select class="form-select" @bind="SelectedCenterName">
                             <option value="">Vælg center</option>
                             @foreach (var center in Centers)
@@ -75,6 +82,9 @@
 
                     <div class="col-md-6">
                         <label class="form-label">Medlemskabstype</label>
+
+                        <!-- Mock-data fra MembershipTypes-listen.
+                             Senere bør medlemskabstyper/priser hentes fra backend. -->
                         <select class="form-select" @bind="NewMember.MembershipType">
                             <option value="">Vælg medlemskabstype</option>
                             @foreach (var membershipType in MembershipTypes)
@@ -88,6 +98,9 @@
 
                     <div class="col-md-12">
                         <label class="form-label">Betalingsform</label>
+
+                        <!-- PaymentInfo bruges kun som frontend/UI-model lige nu.
+                             Senere bør betaling håndteres via betalingsservice eller betalingsudbyder. -->
                         <select class="form-select" @bind="Payment.PaymentMethod">
                             <option value="">Vælg betalingsform</option>
                             <option>Dankort - kunden scanner kort på terminalen</option>
@@ -98,6 +111,8 @@
 
                 </div>
 
+                <!-- Midlertidig UI-feedback.
+                     Senere kan denne besked komme fra MemberService/API response. -->
                 @if (!string.IsNullOrWhiteSpace(Message))
                 {
                     <div class="alert alert-info mt-4">
@@ -125,6 +140,8 @@
 </div>
 
 @code {
+    // NewMember samler alle medlemsoplysninger fra formularen.
+    // Senere kan dette objekt sendes til MemberService.CreateMemberAsync().
     private Member NewMember = new()
     {
         BirthDate = DateTime.Today,
@@ -132,11 +149,15 @@
         PaymentStatus = "Betalt"
     };
 
+    // PaymentInfo holder betalingsvalg adskilt fra Member.
+    // Det er vigtigt, fordi betaling senere typisk håndteres af en separat betalingsservice.
     private PaymentInfo Payment = new();
 
     private string SelectedCenterName = "";
     private string Message = "";
 
+    // Mock-data til prototype.
+    // TODO: Erstat med CenterService.GetCentersAsync(), når backend/microservice er klar.
     private List<Center> Centers = new()
     {
         new Center
@@ -177,6 +198,8 @@
         }
     };
 
+    // Mock-data til prototype.
+    // TODO: Erstat med MembershipService/API, så priser og typer ikke ligger hardcoded i UI.
     private List<MembershipType> MembershipTypes = new()
     {
         new MembershipType
@@ -201,6 +224,8 @@
 
     private void CreateNewMember()
     {
+        // Simpel frontend-validering.
+        // Senere bør backend også validere data, før medlemmet gemmes i databasen.
         if (string.IsNullOrWhiteSpace(NewMember.FirstName) ||
             string.IsNullOrWhiteSpace(NewMember.LastName) ||
             string.IsNullOrWhiteSpace(NewMember.Email) ||
@@ -212,8 +237,11 @@
             return;
         }
 
+        // Midlertidig prototype-handling.
+        // TODO: Erstat med kald til MemberService/CreateMember API.
         Message = $"Medlemmet {NewMember.FirstName} {NewMember.LastName} er oprettet.";
 
+        // Nulstiller formularen efter oprettelse.
         NewMember = new Member
         {
             BirthDate = DateTime.Today,

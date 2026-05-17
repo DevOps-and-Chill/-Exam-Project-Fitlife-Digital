@@ -4,26 +4,36 @@
 
 <div class="container-fluid px-0">
 
+    <!-- Shared navbar for medarbejder/admin sider -->
     <EmployeeNavbar />
 
     <section class="container py-5">
 
+        <!-- Side-header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h1 class="fw-bold">Administrer medlemmer</h1>
                 <p class="lead">Søg, se og rediger medlemmer.</p>
             </div>
 
+            <!-- Navigerer til oprettelse af nyt medlem -->
             <a href="/create-member" class="btn btn-success">
                 OPRET MEDLEM
             </a>
         </div>
 
+        <!-- Søgefelt -->
         <div class="card shadow-sm mb-4">
             <div class="card-body p-4">
                 <div class="row g-3 align-items-end">
+
                     <div class="col-md-8">
-                        <label class="form-label">Søg efter medlem</label>
+
+                        <label class="form-label">
+                            Søg efter medlem
+                        </label>
+
+                        <!-- Søger dynamisk mens brugeren skriver -->
                         <input class="form-control"
                                placeholder="Søg efter medlem..."
                                @bind="SearchText"
@@ -31,9 +41,13 @@
                     </div>
 
                     <div class="col-md-4">
-                        <button class="btn btn-outline-secondary w-100" @onclick="ClearSearch">
+
+                        <!-- Nulstiller søgning -->
+                        <button class="btn btn-outline-secondary w-100"
+                                @onclick="ClearSearch">
                             Vis alle
                         </button>
+
                     </div>
                 </div>
             </div>
@@ -41,15 +55,24 @@
 
         <div class="row g-4">
 
+            <!-- Venstre side:
+                 Liste over medlemmer -->
             <div class="col-md-6">
+
+                <!-- Loop gennem filtrerede medlemmer -->
                 @foreach (var member in FilteredMembers)
                 {
                     <div class="card shadow-sm mb-3">
                         <div class="card-body">
 
                             <div class="d-flex justify-content-between align-items-center">
+
+                                <!-- Medlemsinformation -->
                                 <div>
-                                    <h5>@member.FirstName @member.LastName</h5>
+
+                                    <h5>
+                                        @member.FirstName @member.LastName
+                                    </h5>
 
                                     <p class="mb-1">
                                         Alder: @member.Age
@@ -64,14 +87,18 @@
                                     </p>
 
                                     <p class="text-muted mb-0">
-                                        Medlem siden: @member.MemberSince.ToString("dd/MM/yyyy")
+                                        Medlem siden:
+                                        @member.MemberSince.ToString("dd/MM/yyyy")
                                     </p>
+
                                 </div>
 
+                                <!-- Vælger medlem til redigering -->
                                 <button class="btn btn-outline-dark"
                                         @onclick="() => SelectMember(member)">
                                     Rediger
                                 </button>
+
                             </div>
 
                         </div>
@@ -79,9 +106,13 @@
                 }
             </div>
 
+            <!-- Højre side:
+                 Redigeringspanel -->
             <div class="col-md-6">
+
                 @if (SelectedMember is null)
                 {
+                    <!-- Vises hvis intet medlem er valgt -->
                     <div class="card shadow-sm">
                         <div class="card-body p-4 text-muted">
                             Vælg et medlem for at redigere oplysninger.
@@ -90,88 +121,135 @@
                 }
                 else
                 {
+                    <!-- Redigeringsformular -->
                     <div class="card shadow-sm">
                         <div class="card-body p-4">
 
-                            <h4>Rediger medlem</h4>
+                            <h4>
+                                Rediger medlem
+                            </h4>
 
                             <div class="row g-3">
+
+                                <!-- Alle inputs er bundet direkte til SelectedMember -->
+                                <!-- Ændringer sker derfor live i objektet -->
+
                                 <div class="col-md-6">
                                     <label class="form-label">Fornavn</label>
-                                    <input class="form-control" @bind="SelectedMember.FirstName" />
+                                    <input class="form-control"
+                                           @bind="SelectedMember.FirstName" />
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">Efternavn</label>
-                                    <input class="form-control" @bind="SelectedMember.LastName" />
+                                    <input class="form-control"
+                                           @bind="SelectedMember.LastName" />
                                 </div>
 
                                 <div class="col-md-8">
                                     <label class="form-label">Adresse</label>
-                                    <input class="form-control" @bind="SelectedMember.Address" />
+                                    <input class="form-control"
+                                           @bind="SelectedMember.Address" />
                                 </div>
 
                                 <div class="col-md-4">
                                     <label class="form-label">Postnr.</label>
-                                    <input class="form-control" @bind="SelectedMember.PostalCode" />
+                                    <input class="form-control"
+                                           @bind="SelectedMember.PostalCode" />
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">By</label>
-                                    <input class="form-control" @bind="SelectedMember.City" />
+                                    <input class="form-control"
+                                           @bind="SelectedMember.City" />
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">E-mailadresse</label>
-                                    <input class="form-control" type="email" @bind="SelectedMember.Email" />
+                                    <input class="form-control"
+                                           type="email"
+                                           @bind="SelectedMember.Email" />
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">Telefonnummer</label>
-                                    <input class="form-control" @bind="SelectedMember.PhoneNumber" />
+                                    <input class="form-control"
+                                           @bind="SelectedMember.PhoneNumber" />
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">Fødselsdag</label>
-                                    <input class="form-control" type="date" @bind="SelectedMember.BirthDate" />
+                                    <input class="form-control"
+                                           type="date"
+                                           @bind="SelectedMember.BirthDate" />
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">Medlemskabstype</label>
-                                    <select class="form-select" @bind="SelectedMember.MembershipType">
+
+                                    <!-- TODO:
+                                         Senere kan medlemskabstyper
+                                         hentes fra backend/API -->
+                                    <select class="form-select"
+                                            @bind="SelectedMember.MembershipType">
+
                                         <option>Basis</option>
                                         <option>Plus</option>
                                         <option>Premium</option>
+
                                     </select>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">Betalingsstatus</label>
-                                    <select class="form-select" @bind="SelectedMember.PaymentStatus">
+
+                                    <!-- TODO:
+                                         Senere kobles betalingsstatus
+                                         sandsynligvis til betalingsservice -->
+                                    <select class="form-select"
+                                            @bind="SelectedMember.PaymentStatus">
+
                                         <option>Betalt</option>
                                         <option>Mangler betaling</option>
                                         <option>Faktura sendt</option>
+
                                     </select>
                                 </div>
 
                                 <div class="col-md-12">
-                                    <label class="form-label">Nuværende PT</label>
-                                    <input class="form-control" @bind="SelectedMember.CurrentPersonalTrainer" />
+                                    <label class="form-label">
+                                        Nuværende PT
+                                    </label>
+
+                                    <input class="form-control"
+                                           @bind="SelectedMember.CurrentPersonalTrainer" />
                                 </div>
                             </div>
 
                             <div class="d-grid gap-2 mt-4">
-                                <button class="btn btn-success" @onclick="SaveChanges">
+
+                                <!-- Gemmer ændringer -->
+                                <!-- TODO:
+                                     Skal senere sende PUT/PATCH request til backend -->
+                                <button class="btn btn-success"
+                                        @onclick="SaveChanges">
                                     Gem ændringer
                                 </button>
 
-                                <button class="btn btn-outline-warning" @onclick="UpdatePaymentMethod">
+                                <!-- Prototypefunktion -->
+                                <!-- TODO:
+                                     Skal senere åbne betalingsflow -->
+                                <button class="btn btn-outline-warning"
+                                        @onclick="UpdatePaymentMethod">
                                     Opdater betalingsmiddel
                                 </button>
 
-                                <button class="btn btn-outline-secondary" @onclick="ClearSelection">
+                                <!-- Lukker redigering -->
+                                <button class="btn btn-outline-secondary"
+                                        @onclick="ClearSelection">
                                     Afbryd
                                 </button>
+
                             </div>
 
                         </div>
@@ -181,6 +259,7 @@
 
         </div>
 
+        <!-- Midlertidig statusbesked -->
         @if (!string.IsNullOrWhiteSpace(Message))
         {
             <div class="alert alert-info mt-4">
@@ -195,10 +274,19 @@
 </div>
 
 @code {
+
+    // Tekst brugt til søgning
     private string SearchText = "";
+
+    // Midlertidig feedback til UI
     private string Message = "";
+
+    // Det medlem medarbejderen aktuelt redigerer
     private Member? SelectedMember;
 
+    // Midlertidig mock data til prototype
+    // TODO:
+    // Skal senere erstattes af data fra backend/API
     private List<Member> Members = new()
     {
         new Member
@@ -216,6 +304,7 @@
             MemberSince = DateTime.Today.AddMonths(-6),
             CurrentPersonalTrainer = "Frederikke"
         },
+
         new Member
         {
             FirstName = "Frederik",
@@ -231,6 +320,7 @@
             MemberSince = DateTime.Today.AddYears(-1),
             CurrentPersonalTrainer = ""
         },
+
         new Member
         {
             FirstName = "Charlotte",
@@ -248,20 +338,30 @@
         }
     };
 
+    // Filtrerer medlemmer ud fra søgetekst
     private IEnumerable<Member> FilteredMembers =>
         Members.Where(m =>
+
             string.IsNullOrWhiteSpace(SearchText) ||
+
             m.FirstName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+
             m.LastName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+
             m.Email.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+
             m.MembershipType.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
 
+    // Vælger medlem til redigering
     private void SelectMember(Member member)
     {
         SelectedMember = member;
         Message = "";
     }
 
+    // Gemmer ændringer
+    // TODO:
+    // Skal senere sende ændringer til backend via API/service
     private void SaveChanges()
     {
         if (SelectedMember is null)
@@ -270,6 +370,9 @@
         Message = $"Ændringer for {SelectedMember.FirstName} {SelectedMember.LastName} er gemt.";
     }
 
+    // Prototypefunktion til betalingsopdatering
+    // TODO:
+    // Skal senere integreres med betalingsservice
     private void UpdatePaymentMethod()
     {
         if (SelectedMember is null)
@@ -278,12 +381,14 @@
         Message = $"Betalingsmiddel for {SelectedMember.FirstName} {SelectedMember.LastName} kan opdateres senere via betalingsintegration.";
     }
 
+    // Lukker redigeringspanel
     private void ClearSelection()
     {
         SelectedMember = null;
         Message = "";
     }
 
+    // Nulstiller søgning
     private void ClearSearch()
     {
         SearchText = "";

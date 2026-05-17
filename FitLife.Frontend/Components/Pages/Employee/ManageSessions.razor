@@ -4,42 +4,59 @@
 
 <div class="container-fluid px-0">
 
+    <!-- Shared navbar for medarbejder/admin sider -->
     <EmployeeNavbar />
 
     <section class="container py-5">
 
+        <!-- Side-header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h1 class="fw-bold">Administrer hold</h1>
                 <p class="lead">Se, rediger eller aflys hold.</p>
             </div>
 
+            <!-- Navigerer til oprettelse af nyt hold -->
             <a href="/create-session" class="btn btn-success">
                 OPRET HOLD
             </a>
         </div>
 
+        <!-- Filtrering og søgning -->
         <div class="card shadow-sm mb-4">
             <div class="card-body p-4">
 
                 <div class="row g-3 align-items-end">
+
+                    <!-- Filtrering på dato -->
                     <div class="col-md-4">
                         <label class="form-label">Dato</label>
-                        <input class="form-control" type="date" @bind="SelectedDate" />
+
+                        <input class="form-control"
+                               type="date"
+                               @bind="SelectedDate" />
                     </div>
 
+                    <!-- Dynamisk søgning -->
                     <div class="col-md-4">
-                        <label class="form-label">Søg efter hold</label>
+                        <label class="form-label">
+                            Søg efter hold
+                        </label>
+
                         <input class="form-control"
                                placeholder="Søg efter hold..."
                                @bind="SearchText"
                                @bind:event="oninput" />
                     </div>
 
+                    <!-- Nulstiller filtre -->
                     <div class="col-md-4">
-                        <button class="btn btn-outline-secondary w-100" @onclick="ClearFilter">
+
+                        <button class="btn btn-outline-secondary w-100"
+                                @onclick="ClearFilter">
                             Vis alle hold
                         </button>
+
                     </div>
                 </div>
 
@@ -47,36 +64,60 @@
         </div>
 
         <div class="row g-4">
+
+            <!-- Venstre side:
+                 Liste over hold -->
             <div class="col-md-7">
 
+                <!-- Loop gennem filtrerede hold -->
                 @foreach (var session in FilteredSessions)
                 {
                     <div class="card shadow-sm mb-3">
                         <div class="card-body">
 
                             <div class="d-flex justify-content-between align-items-center">
+
+                                <!-- Holdinformation -->
                                 <div>
-                                    <h5>@session.Title</h5>
+
+                                    <h5>
+                                        @session.Title
+                                    </h5>
+
                                     <p class="mb-1">
+
                                         Kl. @session.StartTime.ToString("HH:mm") —
-                                        Instruktør: @session.InstructorName —
-                                        Ledige pladser: @session.AvailableSpots
+
+                                        Instruktør:
+                                        @session.InstructorName —
+
+                                        Ledige pladser:
+                                        @session.AvailableSpots
                                     </p>
+
                                     <p class="text-muted mb-0">
-                                        Dato: @session.StartTime.ToString("dd/MM/yyyy")
+                                        Dato:
+                                        @session.StartTime.ToString("dd/MM/yyyy")
                                     </p>
+
                                 </div>
 
                                 <div class="d-flex gap-2">
+
+                                    <!-- Vælger hold til redigering -->
                                     <button class="btn btn-outline-dark"
                                             @onclick="() => SelectSession(session)">
                                         Se hold
                                     </button>
 
+                                    <!-- Aflyser hold -->
+                                    <!-- TODO:
+                                         Skal senere sende DELETE/PUT request til backend -->
                                     <button class="btn btn-danger"
                                             @onclick="() => CancelSession(session)">
                                         Aflys hold
                                     </button>
+
                                 </div>
                             </div>
 
@@ -86,10 +127,13 @@
 
             </div>
 
+            <!-- Højre side:
+                 Redigeringspanel -->
             <div class="col-md-5">
 
                 @if (SelectedSession is null)
                 {
+                    <!-- Vises hvis intet hold er valgt -->
                     <div class="card shadow-sm">
                         <div class="card-body p-4 text-muted">
                             Vælg et hold for at se eller redigere detaljer.
@@ -98,62 +142,117 @@
                 }
                 else
                 {
+                    <!-- Formular til redigering af hold -->
                     <div class="card shadow-sm">
                         <div class="card-body p-4">
 
-                            <h4>Se eller rediger hold</h4>
+                            <h4>
+                                Se eller rediger hold
+                            </h4>
+
+                            <!-- Inputs er bundet direkte til SelectedSession -->
+                            <!-- Ændringer sker derfor live i objektet -->
 
                             <div class="mb-3">
                                 <label class="form-label">Holdtype</label>
-                                <input class="form-control" @bind="SelectedSession.Title" />
+
+                                <input class="form-control"
+                                       @bind="SelectedSession.Title" />
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label">Beskrivelse af træning</label>
-                                <textarea class="form-control" rows="3" @bind="SelectedSession.Description"></textarea>
+                                <label class="form-label">
+                                    Beskrivelse af træning
+                                </label>
+
+                                <textarea class="form-control"
+                                          rows="3"
+                                          @bind="SelectedSession.Description">
+                                </textarea>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">Instruktør</label>
-                                <input class="form-control" @bind="SelectedSession.InstructorName" />
+
+                                <input class="form-control"
+                                       @bind="SelectedSession.InstructorName" />
                             </div>
 
+                            <!-- Dato og tid redigeres separat -->
+                            <!-- De samles senere til StartTime -->
                             <div class="row g-3">
+
                                 <div class="col-md-6">
+
                                     <label class="form-label">Dato</label>
-                                    <input class="form-control" type="date" @bind="SelectedSessionDate" />
+
+                                    <input class="form-control"
+                                           type="date"
+                                           @bind="SelectedSessionDate" />
                                 </div>
 
                                 <div class="col-md-6">
+
                                     <label class="form-label">Klokkeslæt</label>
-                                    <input class="form-control" type="time" @bind="SelectedSessionTime" />
+
+                                    <input class="form-control"
+                                           type="time"
+                                           @bind="SelectedSessionTime" />
                                 </div>
+
                             </div>
 
+                            <!-- Kapacitetsstyring -->
                             <div class="row g-3 mt-1">
+
                                 <div class="col-md-6">
-                                    <label class="form-label">Tilmeldte medlemmer</label>
-                                    <input class="form-control" type="number" @bind="SelectedSession.RegisteredCount" />
+
+                                    <label class="form-label">
+                                        Tilmeldte medlemmer
+                                    </label>
+
+                                    <input class="form-control"
+                                           type="number"
+                                           @bind="SelectedSession.RegisteredCount" />
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label">Samlet antal</label>
-                                    <input class="form-control" type="number" @bind="SelectedSession.Capacity" />
+
+                                    <label class="form-label">
+                                        Samlet antal
+                                    </label>
+
+                                    <input class="form-control"
+                                           type="number"
+                                           @bind="SelectedSession.Capacity" />
                                 </div>
+
                             </div>
 
                             <div class="d-grid gap-2 mt-4">
-                                <button class="btn btn-success" @onclick="SaveChanges">
+
+                                <!-- Gemmer ændringer -->
+                                <!-- TODO:
+                                     Skal senere sende PUT/PATCH request til backend -->
+                                <button class="btn btn-success"
+                                        @onclick="SaveChanges">
                                     Gem ændringer
                                 </button>
 
-                                <button class="btn btn-outline-warning" @onclick="SendSms">
+                                <!-- Prototypefunktion -->
+                                <!-- TODO:
+                                     Skal senere integreres med notification/SMS service -->
+                                <button class="btn btn-outline-warning"
+                                        @onclick="SendSms">
                                     Send SMS til tilmeldte
                                 </button>
 
-                                <button class="btn btn-outline-secondary" @onclick="ClearSelection">
+                                <!-- Lukker redigering -->
+                                <button class="btn btn-outline-secondary"
+                                        @onclick="ClearSelection">
                                     Afbryd
                                 </button>
+
                             </div>
 
                         </div>
@@ -163,6 +262,7 @@
             </div>
         </div>
 
+        <!-- Midlertidig feedback til bruger -->
         @if (!string.IsNullOrWhiteSpace(Message))
         {
             <div class="alert alert-info mt-4">
@@ -177,13 +277,27 @@
 </div>
 
 @code {
+
+    // Bruges til søgning
     private string SearchText = "";
+
+    // Midlertidig UI-feedback
     private string Message = "";
+
+    // Filter på dato
     private DateTime? SelectedDate;
+
+    // Det hold medarbejderen aktuelt redigerer
     private TrainingSession? SelectedSession;
+
+    // Midlertidige felter til redigering af dato/tid
+    // Samles senere til StartTime
     private DateTime? SelectedSessionDate;
     private TimeOnly? SelectedSessionTime;
 
+    // Midlertidig mock data
+    // TODO:
+    // Skal senere hentes fra backend/API
     private List<TrainingSession> Sessions = new()
     {
         new TrainingSession
@@ -195,6 +309,7 @@
             Capacity = 12,
             RegisteredCount = 4
         },
+
         new TrainingSession
         {
             Title = "Spinning",
@@ -204,6 +319,7 @@
             Capacity = 10,
             RegisteredCount = 10
         },
+
         new TrainingSession
         {
             Title = "Crossfit",
@@ -215,34 +331,59 @@
         }
     };
 
+    // Filtrerer hold ud fra dato og søgetekst
     private IEnumerable<TrainingSession> FilteredSessions =>
-        Sessions.Where(s =>
-            (SelectedDate is null || s.StartTime.Date == SelectedDate.Value.Date) &&
-            (string.IsNullOrWhiteSpace(SearchText) ||
-             s.Title.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
-             s.InstructorName.Contains(SearchText, StringComparison.OrdinalIgnoreCase)));
 
+        Sessions.Where(s =>
+
+            (SelectedDate is null ||
+             s.StartTime.Date == SelectedDate.Value.Date) &&
+
+            (string.IsNullOrWhiteSpace(SearchText) ||
+
+             s.Title.Contains(SearchText,
+                 StringComparison.OrdinalIgnoreCase) ||
+
+             s.InstructorName.Contains(SearchText,
+                 StringComparison.OrdinalIgnoreCase)));
+
+    // Vælger hold til redigering
     private void SelectSession(TrainingSession session)
     {
         SelectedSession = session;
+
+        // Splitter DateTime op i dato og tid til formularen
         SelectedSessionDate = session.StartTime.Date;
-        SelectedSessionTime = TimeOnly.FromDateTime(session.StartTime);
+
+        SelectedSessionTime =
+            TimeOnly.FromDateTime(session.StartTime);
+
         Message = "";
     }
 
+    // Gemmer ændringer
+    // TODO:
+    // Skal senere sende ændringer til backend via API/service
     private void SaveChanges()
     {
         if (SelectedSession is null)
             return;
 
-        if (SelectedSessionDate is not null && SelectedSessionTime is not null)
+        // Samler dato + tid til én StartTime
+        if (SelectedSessionDate is not null &&
+            SelectedSessionTime is not null)
         {
-            SelectedSession.StartTime = SelectedSessionDate.Value.Date + SelectedSessionTime.Value.ToTimeSpan();
+            SelectedSession.StartTime =
+                SelectedSessionDate.Value.Date +
+                SelectedSessionTime.Value.ToTimeSpan();
         }
 
         Message = $"Ændringer for {SelectedSession.Title} er gemt.";
     }
 
+    // Aflyser hold
+    // TODO:
+    // Skal senere håndteres via backend
     private void CancelSession(TrainingSession session)
     {
         Sessions.Remove(session);
@@ -253,6 +394,9 @@
         Message = $"{session.Title} er aflyst.";
     }
 
+    // Prototypefunktion
+    // TODO:
+    // Skal senere kobles til SMS/notification microservice
     private void SendSms()
     {
         if (SelectedSession is null)
@@ -261,12 +405,14 @@
         Message = $"SMS er sendt til tilmeldte medlemmer på {SelectedSession.Title}.";
     }
 
+    // Lukker redigeringspanel
     private void ClearSelection()
     {
         SelectedSession = null;
         Message = "";
     }
 
+    // Nulstiller filtre
     private void ClearFilter()
     {
         SearchText = "";

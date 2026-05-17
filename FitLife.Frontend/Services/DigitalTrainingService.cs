@@ -4,6 +4,14 @@ namespace FitLife.Frontend.Services;
 
 public class DigitalTrainingService
 {
+    // Denne service håndterer digitalt træningsindhold.
+    // Service-laget fungerer som bindeled mellem frontend og data.
+    // TODO:
+    // Senere skal data hentes fra backend/API i stedet for hardcoded mock data.
+
+    // Midlertidig mock data til træningsvideoer
+    // TODO:
+    // Skal senere komme fra database/backend microservice.
     private readonly List<TrainingVideo> _videos = new()
     {
         new TrainingVideo
@@ -12,12 +20,14 @@ public class DigitalTrainingService
             Description = "Kort video om korrekt squat-teknik og typiske fejl.",
             Category = "Styrke"
         },
+
         new TrainingVideo
         {
             Title = "Core træning",
             Description = "Øvelser til mave, ryg og stabilitet.",
             Category = "Core"
         },
+
         new TrainingVideo
         {
             Title = "Opvarmning",
@@ -26,6 +36,9 @@ public class DigitalTrainingService
         }
     };
 
+    // Midlertidig mock data til træningsprogrammer
+    // TODO:
+    // Skal senere komme fra database/backend microservice.
     private readonly List<TrainingProgram> _programs = new()
     {
         new TrainingProgram
@@ -34,12 +47,14 @@ public class DigitalTrainingService
             Description = "Et simpelt program til nye medlemmer.",
             Level = "Begynder"
         },
+
         new TrainingProgram
         {
             Title = "Styrketræning 3 dage",
             Description = "Program med fokus på styrke og progression.",
             Level = "Øvet"
         },
+
         new TrainingProgram
         {
             Title = "Vægttab og kondition",
@@ -48,11 +63,19 @@ public class DigitalTrainingService
         }
     };
 
+    // Returnerer alle træningsvideoer
+    // Bruges af frontend til at vise digitalt videoindhold.
+    // TODO:
+    // Senere kan denne metode kalde et API-endpoint.
     public List<TrainingVideo> GetVideos()
     {
         return _videos;
     }
 
+    // Returnerer alle træningsprogrammer
+    // Bruges af frontend til at vise træningsprogrammer.
+    // TODO:
+    // Senere kan denne metode kalde et API-endpoint.
     public List<TrainingProgram> GetPrograms()
     {
         return _programs;
