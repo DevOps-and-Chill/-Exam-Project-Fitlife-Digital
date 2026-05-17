@@ -3,4 +3,10 @@
 public interface INotificationRepository
 {
     
+    // POST
+    Task SendNotificationAsync(Notification notification);
+    
+    // GET
+    Task<List<Notification>> GetNotificationByRecieverAsync(string senderId);
+    
 }
