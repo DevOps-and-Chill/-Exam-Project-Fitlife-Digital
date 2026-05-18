@@ -17,8 +17,6 @@ public class ClassRepository : IClassRepository
         _context = context;
         _logger = logger;
         _publisher = publisher;
-        _context   = context;
-        _logger    = logger;
     }
 
     // POST
@@ -43,7 +41,6 @@ public class ClassRepository : IClassRepository
 
         if (fitnessClass.Registered.Count >= fitnessClass.MemberLimit)
         {
-            // Fuld — flyt til venteliste i stedet
             return await RegisterMemberToWaitingListAsync(classId, member);
         }
 
@@ -108,19 +105,18 @@ public class ClassRepository : IClassRepository
 
         return fitnessClass.Attended.Count;
     }
-
-    // Fraværsprocent: tilmeldte der IKKE mødte op
-    public async Task<double> CalculateAbsenceByClassAsync(Guid classId)
+    
+    public async Task<int> CalculateAbsenceByClassAsync(Guid classId)
     {
         var fitnessClass = await GetClassByIdAsync(classId)
             ?? throw new InvalidOperationException($"Class '{classId}' not found");
 
         if (fitnessClass.Registered.Count == 0) return 0;
 
-        var attendedIds = fitnessClass.Attended.Select(m => m.Id).ToHashSet();
-        int absent = fitnessClass.Registered.Count(m => !attendedIds.Contains(m.Id));
+        var attended = fitnessClass.Attended.Select(m => m.Id).ToHashSet();
+        int absent = fitnessClass.Registered.Count - attended.Count;
 
-        return (double)absent / fitnessClass.Registered.Count * 100;
+        return absent;
     }
 
     // PUT
@@ -160,8 +156,8 @@ public class ClassRepository : IClassRepository
             ?? throw new InvalidOperationException("Member is not registered in this class");
 
         fitnessClass.Registered.Remove(member);
-
-        // Ryk første person på ventelisten op automatisk
+        
+        // Så waiting list bliver opdateret
         var next = fitnessClass.WaitingList.FirstOrDefault();
         if (next is not null)
         {
