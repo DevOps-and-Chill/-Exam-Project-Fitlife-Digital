@@ -83,6 +83,7 @@ namespace UserServiceAPI.Repositories
                 userToUpsert.RoleName,
                 userToUpsert.GivenName,
                 userToUpsert.FamilyName,
+                userToUpsert.BirthDate,
                 userToUpsert.Address,
                 userToUpsert.Telephone,
                 userToUpsert.Email,
@@ -112,6 +113,24 @@ namespace UserServiceAPI.Repositories
         public Task<bool> LoadTestData()
         {
             throw new NotImplementedException();
+        }
+
+        public Task<User?> GetUserById(string userId)
+        {
+            var user = users
+            .FirstOrDefault(u => u.Id == userId);
+
+            return Task.FromResult(user);
+        }
+
+        public Task<string?> GetUserIdByEmail(string email)
+        {
+            var userId = users
+            .Where(u => u.Email == email)
+            .Select(u => u.Id)
+            .FirstOrDefault();
+
+            return Task.FromResult(userId);
         }
     }
 }

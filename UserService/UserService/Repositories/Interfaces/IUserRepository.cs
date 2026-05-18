@@ -6,7 +6,7 @@ namespace UserServiceAPI.Repositories.Interfaces
     {
         public Task<List<User>> GetAllUsers();
         public Task<bool> LoadTestData();
-        public Task<User> GetUserById(string userId);
-        public Task<string> GetUserIdByEmail(string email);
+        public Task<User?> GetUserById(string userId);
+        public Task<string?> GetUserIdByEmail(string email);
     }
 }
