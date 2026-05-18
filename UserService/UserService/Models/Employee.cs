@@ -5,6 +5,7 @@ namespace UserServiceAPI.Models
     public class Employee : User
     {
         public EmployeeRole EmployeeRoleName { get; set; }
+
         public bool IsPT { get; set; }
 
         //AO: To be set when employee is created
@@ -18,10 +19,12 @@ namespace UserServiceAPI.Models
         {
 
         }
+
         public Employee(
             UserRole userRole,
             string givenName,
             string familyName,
+            DateTime birthDate,
             string address,
             string telephone,
             string email,
@@ -33,6 +36,7 @@ namespace UserServiceAPI.Models
                   userRole,
                   givenName,
                   familyName,
+                  birthDate,
                   address,
                   telephone,
                   email,
@@ -45,7 +49,7 @@ namespace UserServiceAPI.Models
 
         public void EndEmployment()
         {
-            ActiveEmployment = false; 
+            ActiveEmployment = false;
         }
 
         public void SetAsManager()
@@ -55,12 +59,13 @@ namespace UserServiceAPI.Models
                 throw new InvalidOperationException(
                     "Inactive employees cannot become managers");
             }
+
             EmployeeRoleName = EmployeeRole.Manager;
         }
 
         public void UpdateEmplyoment(
             EmployeeRole newEmployeeRole,
-            bool isPT, 
+            bool isPT,
             DateTime newEnd,
             bool setActiveState)
         {

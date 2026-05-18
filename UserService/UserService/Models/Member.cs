@@ -17,14 +17,17 @@ namespace UserServiceAPI.Models
         public DateTime EndDate { get; set; }
 
         public bool ActiveMembership { get; set; } = true;
+
         public Member()
         {
 
         }
+
         public Member(
             UserRole roleName,
             string givenName,
             string familyName,
+            DateTime birthDate,
             string address,
             string telephone,
             string email,
@@ -36,27 +39,27 @@ namespace UserServiceAPI.Models
                   roleName,
                   givenName,
                   familyName,
+                  birthDate,
                   address,
                   telephone,
                   email,
                   affiliation,
                   activeUser)
         {
-        MembershipType = membershipType;
-        MembershipOptional = membershipOptional;
+            MembershipType = membershipType;
+            MembershipOptional = membershipOptional;
         }
-
 
         public void CancelMembership()
         {
             EndDate = DateTime.Now;
-            ActiveMembership = false; 
+            ActiveMembership = false;
         }
 
         public void UpdateMembership(
             MembershipType membershipType,
             MembershipOptional membershipOptional,
-            DateTime newStartDate, 
+            DateTime newStartDate,
             DateTime newEndDate)
         {
             MembershipType = membershipType;

@@ -15,6 +15,8 @@ namespace UserServiceAPI.Models
 
         public string FamilyName { get; set; }
 
+        public DateTime BirthDate { get; set; }
+
         public string Address { get; set; }
 
         public string Telephone { get; set; }
@@ -22,7 +24,7 @@ namespace UserServiceAPI.Models
         public string Email { get; set; }
 
         //AO: Might later be changed to string if necessary for setup of db in facilityservice. 
-        public Guid Affiliation {  get; set; }
+        public Guid Affiliation { get; set; }
 
         public bool ActiveUser { get; set; }
 
@@ -34,10 +36,12 @@ namespace UserServiceAPI.Models
         {
 
         }
+
         public User(
              UserRole roleName,
              string givenName,
              string familyName,
+             DateTime birthDate,
              string address,
              string telephone,
              string email,
@@ -47,6 +51,7 @@ namespace UserServiceAPI.Models
             RoleName = roleName;
             GivenName = givenName;
             FamilyName = familyName;
+            BirthDate = birthDate;
             Address = address;
             Telephone = telephone;
             Email = email;
@@ -66,6 +71,7 @@ namespace UserServiceAPI.Models
             UserRole userRole,
             string givenName,
             string familyName,
+            DateTime birthDate,
             string address,
             string telephone,
             string email,
@@ -75,6 +81,7 @@ namespace UserServiceAPI.Models
             RoleName = userRole;
             GivenName = givenName;
             FamilyName = familyName;
+            BirthDate = birthDate;
             Address = address;
             this.Telephone = telephone;
             Email = email;
