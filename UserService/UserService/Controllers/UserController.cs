@@ -18,6 +18,12 @@ namespace UserServiceAPI.Controllers
             _userRepository = userRepository;
         }
 
+        /// <summary>
+        /// Retrieves all users.
+        /// </summary>
+        /// <returns>
+        /// Returns a list of all users.
+        /// </returns>
         [HttpGet("GetAllUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -31,6 +37,15 @@ namespace UserServiceAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves a user by id.
+        /// </summary>
+        /// <param name="userId">
+        /// The id of the user.
+        /// </param>
+        /// <returns>
+        /// Returns the user object if found.
+        /// </returns>
         [HttpGet("GetUserById/{userId}")]
         public async Task<IActionResult> GetUserById(string userId)
         {
@@ -44,12 +59,23 @@ namespace UserServiceAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves a user id based on email.
+        /// </summary>
+        /// <param name="email">
+        /// The email address of the user.
+        /// </param>
+        /// <returns>
+        /// Returns the user id if a matching user is found.
+        /// Returns NotFound if no user exists with the provided email.
+        /// </returns>
         [HttpGet("GetUserIdByEmail/{email}")]
         public async Task<IActionResult> GetUserIdByEmail(string email)
         {
             try
             {
                 string? userId = await _userRepository.GetUserIdByEmail(email);
+
                 if (string.IsNullOrWhiteSpace(userId))
                 {
                     return NotFound();
@@ -58,7 +84,6 @@ namespace UserServiceAPI.Controllers
                 {
                     return Ok(userId);
                 }
-                
             }
             catch (Exception ex)
             {
@@ -66,19 +91,27 @@ namespace UserServiceAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Loads test data into the database.
+        /// </summary>
+        /// <returns>
+        /// Returns Ok if the test data was loaded successfully.
+        /// </returns>
         [HttpGet("addtestdata")]
         public async Task<ActionResult> AddData()
         {
             try
             {
                 var result = await _userRepository.LoadTestData();
+
                 if (result)
                 {
                     return Ok();
                 }
                 else
+                {
                     return Ok("error in loading data");
-                
+                }
             }
             catch (Exception ex)
             {

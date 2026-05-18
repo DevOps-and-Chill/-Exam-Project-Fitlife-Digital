@@ -106,7 +106,11 @@ namespace UserServiceAPI.Repositories
 
             return employee;
         }
-
+        /// <summary>
+        /// Based on userid finds the employee
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>return the employee-object. Returns null if not found</returns>
         public async Task<Employee?> GetEmployeeById(string userId)
         {
             var employee = await _context.Users
@@ -115,6 +119,12 @@ namespace UserServiceAPI.Repositories
             return employee;
         }
 
+        /// <summary>
+        /// Inserts or updates the employee-object. Ensures that email is unique
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <returns>Updated or new object</returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public async Task<Employee> UpsertEmployee(Employee employee)
         {
             bool emailExists = await _context.Users
@@ -157,6 +167,11 @@ namespace UserServiceAPI.Repositories
             return existingEmployee ?? employee;
         }
 
+        /// <summary>
+        /// Finds the employees based on affiliation (typically an exerciseGym) 
+        /// </summary>
+        /// <param name="affiliationId"></param>
+        /// <returns>Returns list of employees</returns>
         public async Task<List<Employee>> GetEmployeesByAffiliation(Guid affiliationId)
         {
             return await _context.Users
