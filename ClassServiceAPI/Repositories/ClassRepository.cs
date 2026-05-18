@@ -1,4 +1,5 @@
 ﻿using ClassServiceAPI.Data;
+using ClassServiceAPI.Messaging;
 using ClassServiceAPI.Models;
 using ClassServiceAPI.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +10,13 @@ public class ClassRepository : IClassRepository
 {
     private readonly ClassDbContext _context;
     private readonly ILogger<ClassRepository> _logger;
+    private readonly IMessagePublisher _publisher;
 
-    public ClassRepository(ClassDbContext context, ILogger<ClassRepository> logger)
+    public ClassRepository(ClassDbContext context, ILogger<ClassRepository> logger, IMessagePublisher publisher)
     {
         _context = context;
         _logger = logger;
+        _publisher = publisher;
     }
 
     // POST
@@ -38,7 +41,6 @@ public class ClassRepository : IClassRepository
 
         if (fitnessClass.Registered.Count >= fitnessClass.MemberLimit)
         {
-            // Fuld — flyt til venteliste i stedet
             return await RegisterMemberToWaitingListAsync(classId, member);
         }
 
@@ -103,19 +105,18 @@ public class ClassRepository : IClassRepository
 
         return fitnessClass.Attended.Count;
     }
-
-    // Fraværsprocent: tilmeldte der IKKE mødte op
-    public async Task<double> CalculateAbsenceByClassAsync(Guid classId)
+    
+    public async Task<int> CalculateAbsenceByClassAsync(Guid classId)
     {
         var fitnessClass = await GetClassByIdAsync(classId)
             ?? throw new InvalidOperationException($"Class '{classId}' not found");
 
         if (fitnessClass.Registered.Count == 0) return 0;
 
-        var attendedIds = fitnessClass.Attended.Select(m => m.Id).ToHashSet();
-        int absent = fitnessClass.Registered.Count(m => !attendedIds.Contains(m.Id));
+        var attended = fitnessClass.Attended.Select(m => m.Id).ToHashSet();
+        int absent = fitnessClass.Registered.Count - attended.Count;
 
-        return (double)absent / fitnessClass.Registered.Count * 100;
+        return absent;
     }
 
     // PUT
@@ -123,10 +124,26 @@ public class ClassRepository : IClassRepository
     public async Task<Class> CancelClassByIdAsync(Guid id)
     {
         var fitnessClass = await GetClassByIdAsync(id)
-            ?? throw new InvalidOperationException($"Class '{id}' not found");
+                           ?? throw new InvalidOperationException($"Class '{id}' not found");
 
         fitnessClass.ActiveClass = false;
         await _context.SaveChangesAsync();
+
+        // Publicére beskeden til rabbit
+        var message = new ClassCancelledMessage
+        {
+            ClassId   = fitnessClass.Id,
+            Title     = fitnessClass.Title,
+            TimeStart = fitnessClass.TimeStart,
+            TimeEnd   = fitnessClass.TimeEnd,
+            MemberIds = fitnessClass.Registered
+                .Select(m => m.Id)
+                .ToList()
+        };
+
+        await _publisher.PublishAsync(message, "class.cancelled");
+        _logger.LogInformation("Published cancellation for class {ClassId} to RabbitMQ", id);
+
         return fitnessClass;
     }
 
@@ -139,8 +156,8 @@ public class ClassRepository : IClassRepository
             ?? throw new InvalidOperationException("Member is not registered in this class");
 
         fitnessClass.Registered.Remove(member);
-
-        // Ryk første person på ventelisten op automatisk
+        
+        // Så waiting list bliver opdateret
         var next = fitnessClass.WaitingList.FirstOrDefault();
         if (next is not null)
         {
