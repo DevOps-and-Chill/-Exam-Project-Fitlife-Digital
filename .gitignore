@@ -62,3 +62,6 @@ nunit-*.xml
 /FacilityService/FacilityServiceAPI/.vs/FacilityServiceAPI
 /FacilityService/FacilityServiceAPI/.vs/ProjectEvaluation
 /FacilityService/FacilityServiceAPI/.github
+/UserService/.vs/UserServiceAPI/CopilotIndices/17.14.1661.41761
+/UserService/.vs/UserServiceAPI/FileContentIndex
+/UserService/.github
