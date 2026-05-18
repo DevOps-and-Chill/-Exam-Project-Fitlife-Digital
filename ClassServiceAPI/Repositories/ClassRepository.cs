@@ -1,4 +1,5 @@
 ﻿using ClassServiceAPI.Data;
+using ClassServiceAPI.Messaging;
 using ClassServiceAPI.Models;
 using ClassServiceAPI.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +10,15 @@ public class ClassRepository : IClassRepository
 {
     private readonly ClassDbContext _context;
     private readonly ILogger<ClassRepository> _logger;
+    private readonly IMessagePublisher _publisher;
 
-    public ClassRepository(ClassDbContext context, ILogger<ClassRepository> logger)
+    public ClassRepository(ClassDbContext context, ILogger<ClassRepository> logger, IMessagePublisher publisher)
     {
         _context = context;
         _logger = logger;
+        _publisher = publisher;
+        _context   = context;
+        _logger    = logger;
     }
 
     // POST
@@ -123,10 +128,26 @@ public class ClassRepository : IClassRepository
     public async Task<Class> CancelClassByIdAsync(Guid id)
     {
         var fitnessClass = await GetClassByIdAsync(id)
-            ?? throw new InvalidOperationException($"Class '{id}' not found");
+                           ?? throw new InvalidOperationException($"Class '{id}' not found");
 
         fitnessClass.ActiveClass = false;
         await _context.SaveChangesAsync();
+
+        // Publicére beskeden til rabbit
+        var message = new ClassCancelledMessage
+        {
+            ClassId   = fitnessClass.Id,
+            Title     = fitnessClass.Title,
+            TimeStart = fitnessClass.TimeStart,
+            TimeEnd   = fitnessClass.TimeEnd,
+            MemberIds = fitnessClass.Registered
+                .Select(m => m.Id)
+                .ToList()
+        };
+
+        await _publisher.PublishAsync(message, "class.cancelled");
+        _logger.LogInformation("Published cancellation for class {ClassId} to RabbitMQ", id);
+
         return fitnessClass;
     }
 
