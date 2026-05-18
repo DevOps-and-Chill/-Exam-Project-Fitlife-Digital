@@ -3,6 +3,26 @@
   "WorkspaceRootPath": "C:\\GitHub\\DevOps-and-Chill\\-Exam-Project-Fitlife-Digital\\FacilityService\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|c:\\github\\devops-and-chill\\-exam-project-fitlife-digital\\facilityservice\\facilityserviceapi\\controllers\\facilitycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|solutionrelative:facilityserviceapi\\controllers\\facilitycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|c:\\github\\devops-and-chill\\-exam-project-fitlife-digital\\facilityservice\\facilityserviceapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|solutionrelative:facilityserviceapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|c:\\github\\devops-and-chill\\-exam-project-fitlife-digital\\facilityservice\\facilityserviceapi\\compose.yaml||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|solutionrelative:facilityserviceapi\\compose.yaml||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|c:\\github\\devops-and-chill\\-exam-project-fitlife-digital\\facilityservice\\facilityserviceapi\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|solutionrelative:facilityserviceapi\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|c:\\github\\devops-and-chill\\-exam-project-fitlife-digital\\facilityservice\\facilityserviceapi\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|solutionrelative:facilityserviceapi\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A4F0197E-6FF9-4067-9B8E-90BABFAFDD46}|FacilityServiceTest\\FacilityServiceTest.csproj|c:\\github\\devops-and-chill\\-exam-project-fitlife-digital\\facilityservice\\facilityservicetest\\facilityrepositoryandcontrollertest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A4F0197E-6FF9-4067-9B8E-90BABFAFDD46}|FacilityServiceTest\\FacilityServiceTest.csproj|solutionrelative:facilityservicetest\\facilityrepositoryandcontrollertest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -31,6 +51,67 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "FacilityController.cs",
+              "DocumentMoniker": "C:\\GitHub\\DevOps-and-Chill\\-Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Controllers\\FacilityController.cs",
+              "RelativeDocumentMoniker": "FacilityServiceAPI\\Controllers\\FacilityController.cs",
+              "ToolTip": "C:\\GitHub\\DevOps-and-Chill\\-Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Controllers\\FacilityController.cs",
+              "RelativeToolTip": "FacilityServiceAPI\\Controllers\\FacilityController.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAAD0AAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-15T20:54:17.404Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "compose.yaml",
+              "DocumentMoniker": "C:\\GitHub\\DevOps-and-Chill\\-Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\compose.yaml",
+              "RelativeDocumentMoniker": "FacilityServiceAPI\\compose.yaml",
+              "ToolTip": "C:\\GitHub\\DevOps-and-Chill\\-Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\compose.yaml",
+              "RelativeToolTip": "FacilityServiceAPI\\compose.yaml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003775|",
+              "WhenOpened": "2026-05-15T20:48:06.843Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\GitHub\\DevOps-and-Chill\\-Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Program.cs",
+              "RelativeDocumentMoniker": "FacilityServiceAPI\\Program.cs",
+              "ToolTip": "C:\\GitHub\\DevOps-and-Chill\\-Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Program.cs",
+              "RelativeToolTip": "FacilityServiceAPI\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACIAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-15T20:28:16.384Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\GitHub\\DevOps-and-Chill\\-Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "FacilityServiceAPI\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\GitHub\\DevOps-and-Chill\\-Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Properties\\launchSettings.json",
+              "RelativeToolTip": "FacilityServiceAPI\\Properties\\launchSettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-05-15T20:27:55.772Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Dockerfile",
+              "DocumentMoniker": "C:\\GitHub\\DevOps-and-Chill\\-Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Dockerfile",
+              "RelativeDocumentMoniker": "FacilityServiceAPI\\Dockerfile",
+              "ToolTip": "C:\\GitHub\\DevOps-and-Chill\\-Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Dockerfile",
+              "RelativeToolTip": "FacilityServiceAPI\\Dockerfile",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-05-15T19:13:29.408Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "FacilityRepositoryAndControllerTest.cs",
               "DocumentMoniker": "C:\\GitHub\\DevOps-and-Chill\\-Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceTest\\FacilityRepositoryAndControllerTest.cs",
               "RelativeDocumentMoniker": "FacilityServiceTest\\FacilityRepositoryAndControllerTest.cs",
@@ -38,8 +119,7 @@
               "RelativeToolTip": "FacilityServiceTest\\FacilityRepositoryAndControllerTest.cs",
               "ViewState": "AgIAAJgAAAAAAAAAAAAAAJgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-15T18:50:01.465Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-15T18:50:01.465Z"
             }
           ]
         },
