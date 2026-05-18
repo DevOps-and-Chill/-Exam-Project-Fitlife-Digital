@@ -9,5 +9,7 @@ namespace UserServiceAPI.Repositories.Interfaces
         public Task<Member> UpsertMember(Member member);
         public Task<Member> DeleteMember(string userId);
         public Task<Member> SetAccountAsInactive(string userId);
+        public Task<Member?> GetMemberById(string userId);
+        public Task<List<Member>> GetMembersByAffiliation(Guid affiliationId);
     }
 }

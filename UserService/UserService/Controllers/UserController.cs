@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Linq;
 using UserServiceAPI.Models;
 using UserServiceAPI.Repositories;
 using UserServiceAPI.Repositories.Interfaces;
@@ -29,12 +31,12 @@ namespace UserServiceAPI.Controllers
             }
         }
 
-        [HttpGet("GetByAffiliation")]
-        public async Task<ActionResult> GetUsersByAffiliation(Guid exerciseGymId)
+        [HttpGet("GetUserById/{userId}")]
+        public async Task<IActionResult> GetUserById(string userId)
         {
             try
             {
-                return Ok(await _userRepository.GetUsersByAffiliation(exerciseGymId));
+                return Ok(await _userRepository.GetUserById(userId));
             }
             catch (Exception ex)
             {
@@ -42,12 +44,21 @@ namespace UserServiceAPI.Controllers
             }
         }
 
-        [HttpGet("GetUsersInGymByRole")]
-        public async Task<ActionResult> GetUsersInExerciseGymByRole(Guid exerciseGymId, string role)
+        [HttpGet("GetUserIdByEmail/{email}")]
+        public async Task<IActionResult> GetUserIdByEmail(string email)
         {
             try
             {
-                return Ok(await _userRepository.GetUsersInExerciseGymByRole(exerciseGymId, role));
+                string? userId = await _userRepository.GetUserIdByEmail(email);
+                if (string.IsNullOrWhiteSpace(userId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(userId);
+                }
+                
             }
             catch (Exception ex)
             {

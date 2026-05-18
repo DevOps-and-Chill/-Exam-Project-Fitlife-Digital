@@ -15,9 +15,7 @@ namespace UserServiceAPI.Repositories
         }
         public async Task<Member> CancelMembershipForMember(string userId)
         {
-            var member = await _context.Users
-                .OfType<Member>()
-                .FirstOrDefaultAsync(m => m.Id == userId);
+            var member = await GetMemberById(userId);
 
             if (member == null)
             {
@@ -33,9 +31,7 @@ namespace UserServiceAPI.Repositories
 
         public async Task<Member> DeleteMember(string userId)
         {
-            var member = await _context.Users
-            .OfType<Member>()
-            .FirstOrDefaultAsync(m => m.Id == userId);
+            var member = await GetMemberById(userId);
 
             if (member == null)
             {
@@ -56,9 +52,7 @@ namespace UserServiceAPI.Repositories
 
         public async Task<Member?> SetAccountAsInactive(string userId)
         {
-            var member = await _context.Users
-                .OfType<Member>()
-                .FirstOrDefaultAsync(m => m.Id == userId);
+            var member = await GetMemberById(userId);
 
             if (member == null)
             {
@@ -72,14 +66,64 @@ namespace UserServiceAPI.Repositories
             return member;
         }
 
+        public async Task<Member?> GetMemberById(string userId)
+        {
+            var member = await _context.Users
+                .OfType<Member>()
+                .FirstOrDefaultAsync(m => m.Id == userId);
+            return member;
+        }
+
         public async Task<Member> UpsertMember(Member member)
         {
-            _context.Users.Add(member);
+            bool emailExists = await _context.Users
+                .AnyAsync(u =>
+                    u.Email == member.Email &&
+                    u.Id != member.Id);
+
+            if (emailExists)
+            {
+                throw new InvalidOperationException(
+                    $"Email '{member.Email}' is already in use");
+            }
+
+            Member? existingMember = await GetMemberById(member.Id);
+
+            if (existingMember is null)
+            {
+                _context.Users.Add(member);
+            }
+            else
+            {
+                existingMember.UpdateUserInformation(
+                    member.RoleName,
+                    member.GivenName,
+                    member.FamilyName,
+                    member.Address,
+                    member.Telephone,
+                    member.Email,
+                    member.Affiliation,
+                    member.ActiveUser);
+
+                existingMember.UpdateMembership(
+                    member.MembershipType,
+                    member.MembershipOptional,
+                    member.StartDate,
+                    member.EndDate);
+            }
 
             await _context.SaveChangesAsync();
 
-            return member;
+            return existingMember ?? member;
         }
-    
+
+        public async Task<List<Member>> GetMembersByAffiliation(Guid affiliationId)
+        {
+            return await _context.Users
+                .OfType<Member>()
+                .Where(e => e.Affiliation == affiliationId)
+                .ToListAsync();
+        }
+
     }
 }

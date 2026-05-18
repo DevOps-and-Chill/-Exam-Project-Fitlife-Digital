@@ -10,5 +10,7 @@ namespace UserServiceAPI.Repositories.Interfaces
         public Task<Employee> UpsertEmployee(Employee employee);
         public Task<Employee> DeleteEmployee(string userId);
         public Task<Employee> SetAccountAsInactive(string userId);
+        public Task<Employee?> GetEmployeeById(string id);
+        public Task<List<Employee>> GetEmployeesByAffiliation(Guid affiliationId);
     }
 }
