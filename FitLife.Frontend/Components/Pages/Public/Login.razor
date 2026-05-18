@@ -1,0 +1,128 @@
+@page "/login"
+@rendermode InteractiveServer
+
+<div class="container-fluid px-0">
+
+    <!-- Shared navbar for public pages -->
+    <PublicNavbar />
+
+    <section class="container py-5">
+
+        <div class="row align-items-center">
+
+            <!-- Placeholder til billede -->
+            <!-- TODO:
+                 Senere kan dette erstattes med rigtigt billede/video fra backend eller CMS -->
+            <div class="col-md-6">
+
+                <div class="border bg-light d-flex align-items-center justify-content-center"
+                     style="height: 420px;">
+
+                    <span class="text-muted fs-5">
+                        Inspirerende billede fra et center
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- Loginformular -->
+            <div class="col-md-5 offset-md-1">
+
+                <h2 class="mb-4">
+                    LOGIN
+                </h2>
+
+                <!-- Email-input -->
+                <!-- @bind kobler inputfeltet direkte til Email-variablen -->
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Email
+                    </label>
+
+                    <input class="form-control"
+                           type="email"
+                           @bind="Email" />
+                </div>
+
+                <!-- Password-input -->
+                <!-- Password skjules automatisk pga type="password" -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        Password
+                    </label>
+
+                    <input class="form-control"
+                           type="password"
+                           @bind="Password" />
+                </div>
+
+                <div class="d-grid gap-3">
+
+                    <!-- Starter loginprocessen -->
+                    <!-- TODO:
+                         Skal senere sende login-request til backend/auth-service -->
+                    <button class="btn btn-success"
+                            @onclick="LoginUser">
+                        LOGIN
+                    </button>
+
+                    <!-- Prototype-knap -->
+                    <!-- TODO:
+                         Kan senere kobles til password reset eller support -->
+                    <button class="btn btn-outline-secondary">
+                        Få hjælp til login
+                    </button>
+
+                </div>
+
+                <!-- Feedback til bruger -->
+                @if (!string.IsNullOrWhiteSpace(Message))
+                {
+                    <div class="alert alert-info mt-4">
+                        @Message
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <AppFooter />
+
+</div>
+
+@code {
+
+    // Gemmer brugerens email fra loginformularen
+    private string Email = "";
+
+    // Gemmer brugerens password fra loginformularen
+    private string Password = "";
+
+    // Bruges til feedbackbeskeder i UI'et
+    private string Message = "";
+
+    // Midlertidig loginlogik
+    // TODO:
+    // Senere skal denne metode sende loginoplysninger til backend/authentication service
+    private void LoginUser()
+    {
+        // Simpel validering
+        if (string.IsNullOrWhiteSpace(Email) ||
+            string.IsNullOrWhiteSpace(Password))
+        {
+            Message = "Indtast både email og password.";
+            return;
+        }
+
+        // Midlertidig prototypebesked
+        // TODO:
+        // Senere skal brugeren logges ind og modtage JWT/token/session
+        Message = $"Login forsøgt for {Email}.";
+    }
+}
