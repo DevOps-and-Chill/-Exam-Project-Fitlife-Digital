@@ -1,88 +1,180 @@
-﻿using ClassServiceAPI.Models;
+﻿using ClassServiceAPI.Data;
+using ClassServiceAPI.Models;
 using ClassServiceAPI.Repositories.Interfaces;
-using Microsoft.Azure.Cosmos;
+using Microsoft.EntityFrameworkCore;
 
 namespace ClassServiceAPI.Repositories;
 
 public class ClassRepository : IClassRepository
 {
-    private readonly Container _container;
+    private readonly ClassDbContext _context;
     private readonly ILogger<ClassRepository> _logger;
-    public ClassRepository(CosmosClient cosmosClient, string databaseName, string containerName, ILogger<ClassRepository> logger) {
-        
-        _container = cosmosClient.GetContainer(databaseName, containerName);
+
+    public ClassRepository(ClassDbContext context, ILogger<ClassRepository> logger)
+    {
+        _context = context;
         _logger = logger;
     }
-    
+
     // POST
-    
-    public Task CreateClassAsync(Class classModel)
+
+    public async Task<Class> CreateClassAsync(Class classModel)
     {
-        throw new NotImplementedException();
+        _context.Classes.Add(classModel);
+        await _context.SaveChangesAsync();
+        return classModel;
     }
-        
-    public Task RegisterMemberToClassByMemberIdAsync(int memberId) { 
-        throw new NotImplementedException();
+
+    public async Task<Class> RegisterMemberToClassAsync(Guid classId, Member member)
+    {
+        var fitnessClass = await GetClassByIdAsync(classId)
+            ?? throw new InvalidOperationException($"Class '{classId}' not found");
+
+        if (!fitnessClass.ActiveClass)
+            throw new InvalidOperationException("Cannot register to an inactive class");
+
+        if (fitnessClass.Registered.Any(m => m.Id == member.Id))
+            throw new InvalidOperationException("Member is already registered");
+
+        if (fitnessClass.Registered.Count >= fitnessClass.MemberLimit)
+        {
+            // Fuld — flyt til venteliste i stedet
+            return await RegisterMemberToWaitingListAsync(classId, member);
+        }
+
+        fitnessClass.Registered.Add(member);
+        await _context.SaveChangesAsync();
+        return fitnessClass;
     }
-    public Task RegisterMemberToWaitingListByMemberIdAsync(int memberId) {
-        throw new NotImplementedException();
+
+    public async Task<Class> RegisterMemberToWaitingListAsync(Guid classId, Member member)
+    {
+        var fitnessClass = await GetClassByIdAsync(classId)
+            ?? throw new InvalidOperationException($"Class '{classId}' not found");
+
+        if (fitnessClass.WaitingList.Any(m => m.Id == member.Id))
+            throw new InvalidOperationException("Member is already on the waiting list");
+
+        fitnessClass.WaitingList.Add(member);
+        await _context.SaveChangesAsync();
+        return fitnessClass;
     }
-    
+
     // GET
-    
-    public async Task GetAllClassesAsync() {
-        throw new NotImplementedException();
+
+    public async Task<List<Class>> GetAllClassesAsync()
+    {
+        return await _context.Classes.ToListAsync();
     }
-        
-    public async Task GetAllClassesByExerciseGymAsync(int exerciseGymId) {
-        throw new NotImplementedException();
+
+    public async Task<List<Class>> GetAllClassesByExerciseGymAsync(Guid exerciseGymId)
+    {
+        return await _context.Classes
+            .Where(c => c.ExerciseGymId == exerciseGymId)
+            .ToListAsync();
     }
-        
-    public async Task GetClassByIdAsync(int id) {
-        throw new NotImplementedException();
+
+    public async Task<Class?> GetClassByIdAsync(Guid id)
+    {
+        return await _context.Classes
+            .FirstOrDefaultAsync(c => c.Id == id);
     }
-        
-    public async Task GetClassRatingByIdAsync(int id) { 
-        throw new NotImplementedException();
+
+    public async Task<List<Member>> GetWaitingListByClassAsync(Guid classId)
+    {
+        var fitnessClass = await GetClassByIdAsync(classId)
+            ?? throw new InvalidOperationException($"Class '{classId}' not found");
+
+        return fitnessClass.WaitingList;
     }
-        
-    public async Task GetWaitingListByClassAsync(int id) { 
-        throw new NotImplementedException();
+
+    public async Task<List<Member>> GetRegisteredByClassAsync(Guid classId)
+    {
+        var fitnessClass = await GetClassByIdAsync(classId)
+            ?? throw new InvalidOperationException($"Class '{classId}' not found");
+
+        return fitnessClass.Registered;
     }
-        
-    public async Task GetRegisteredByClassAsync(int id) {
-        throw new NotImplementedException();
+
+    public async Task<int> GetNumberOfAttendeesByClassAsync(Guid classId)
+    {
+        var fitnessClass = await GetClassByIdAsync(classId)
+            ?? throw new InvalidOperationException($"Class '{classId}' not found");
+
+        return fitnessClass.Attended.Count;
     }
-        
-    public async Task GetNumberOfAttendeesByClassAsync(int id) {
-        throw new NotImplementedException();
-            }
-        
-    public async Task CalculateAbsenceByClassAsync(int id) {
-        throw new NotImplementedException();
+
+    // Fraværsprocent: tilmeldte der IKKE mødte op
+    public async Task<double> CalculateAbsenceByClassAsync(Guid classId)
+    {
+        var fitnessClass = await GetClassByIdAsync(classId)
+            ?? throw new InvalidOperationException($"Class '{classId}' not found");
+
+        if (fitnessClass.Registered.Count == 0) return 0;
+
+        var attendedIds = fitnessClass.Attended.Select(m => m.Id).ToHashSet();
+        int absent = fitnessClass.Registered.Count(m => !attendedIds.Contains(m.Id));
+
+        return (double)absent / fitnessClass.Registered.Count * 100;
     }
-        
+
     // PUT
-    
-    public async Task CancelClassByIdAsync(int id) {
-        throw new NotImplementedException();
+
+    public async Task<Class> CancelClassByIdAsync(Guid id)
+    {
+        var fitnessClass = await GetClassByIdAsync(id)
+            ?? throw new InvalidOperationException($"Class '{id}' not found");
+
+        fitnessClass.ActiveClass = false;
+        await _context.SaveChangesAsync();
+        return fitnessClass;
     }
-        
-    public async Task RateClassByIdAsync(int id, double rating) {
-                throw new NotImplementedException();
+
+    public async Task<Class> UnRegisterMemberFromClassAsync(Guid classId, Guid memberId)
+    {
+        var fitnessClass = await GetClassByIdAsync(classId)
+            ?? throw new InvalidOperationException($"Class '{classId}' not found");
+
+        var member = fitnessClass.Registered.FirstOrDefault(m => m.Id == memberId)
+            ?? throw new InvalidOperationException("Member is not registered in this class");
+
+        fitnessClass.Registered.Remove(member);
+
+        // Ryk første person på ventelisten op automatisk
+        var next = fitnessClass.WaitingList.FirstOrDefault();
+        if (next is not null)
+        {
+            fitnessClass.WaitingList.Remove(next);
+            fitnessClass.Registered.Add(next);
+            _logger.LogInformation("Member {MemberId} moved from waiting list to registered", next.Id);
+        }
+
+        await _context.SaveChangesAsync();
+        return fitnessClass;
     }
-         
-    public async Task UnRegisterMemberFromClassByClassAndMemberAsync(int memberId, int classId) { 
-        throw new NotImplementedException();
+
+    public async Task<Class> UnRegisterMemberFromWaitingListAsync(Guid classId, Guid memberId)
+    {
+        var fitnessClass = await GetClassByIdAsync(classId)
+            ?? throw new InvalidOperationException($"Class '{classId}' not found");
+
+        var member = fitnessClass.WaitingList.FirstOrDefault(m => m.Id == memberId)
+            ?? throw new InvalidOperationException("Member is not on the waiting list");
+
+        fitnessClass.WaitingList.Remove(member);
+        await _context.SaveChangesAsync();
+        return fitnessClass;
     }
-        
-    public async Task UnRegisterMemberFromWaitingListByClassAndMemberAsync(int memberId, int classId) {
-        throw new NotImplementedException();
-    }
-    
+
     // DELETE
-        
-    public async Task DeleteClassByIdAsync(int id) {
-        throw new NotImplementedException();
+
+    public async Task<Class> DeleteClassByIdAsync(Guid id)
+    {
+        var fitnessClass = await GetClassByIdAsync(id)
+            ?? throw new InvalidOperationException($"Class '{id}' not found");
+
+        _context.Classes.Remove(fitnessClass);
+        await _context.SaveChangesAsync();
+        return fitnessClass;
     }
 }

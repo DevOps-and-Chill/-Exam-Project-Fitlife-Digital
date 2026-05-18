@@ -129,6 +129,7 @@ namespace UserServiceAPI.Repositories
                     member.RoleName,
                     member.GivenName,
                     member.FamilyName,
+                    member.BirthDate,
                     member.Address,
                     member.Telephone,
                     member.Email,
