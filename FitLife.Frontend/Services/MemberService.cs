@@ -17,55 +17,69 @@ public class MemberService
     }
 
     // Henter medlemmer direkte fra UserService.
-    // Frontend og backend bruger nu samme modelstruktur.
+    // Kalder endpoint:
+    // GET /member/GetAllMembers
     public async Task<List<Member>> GetMembersAsync()
     {
-        // Kalder endpoint:
-        // GET /member/GetAllMembers
-        var members =
-            await _httpClient.GetFromJsonAsync<List<Member>>
-            ("/member/GetAllMembers");
+        try
+        {
+            var members =
+                await _httpClient.GetFromJsonAsync<List<Member>>(
+                    "/member/GetAllMembers");
 
-        // Hvis API returnerer null,
-        // returneres en tom liste i stedet.
-        return members ?? new List<Member>();
+            return members ?? new List<Member>();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(
+                $"Kunne ikke hente medlemmer fra UserService. Fejl: {ex.Message}",
+                ex);
+        }
     }
 
-    // Opretter et nyt medlem via UserService.
-    // Denne metode sender Member-objektet direkte til backend API.
+    // Opretter eller opdaterer et medlem via UserService.
+    // Kalder endpoint:
+    // POST /member/UpsertMember
     public async Task<Member> CreateMemberAsync(Member member)
     {
-        // Sender POST request til UserService endpoint:
-        // POST /member/UpsertMember
-        var response =
-            await _httpClient.PostAsJsonAsync(
-                "/member/UpsertMember",
-                member);
+        try
+        {
+            var response =
+                await _httpClient.PostAsJsonAsync(
+                    "/member/UpsertMember",
+                    member);
 
-        // Hvis request fejler,
-        // kastes exception så frontend kan vise fejlbesked.
-        response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage =
+                    await response.Content.ReadAsStringAsync();
 
-        // Backend returnerer det oprettede/opdaterede medlem.
-        var createdMember =
-            await response.Content.ReadFromJsonAsync<Member>();
+                throw new Exception(
+                    $"UserService returnerede fejl: {(int)response.StatusCode} {response.ReasonPhrase}. {errorMessage}");
+            }
 
-        // Hvis backend returnerer null,
-        // returneres originalt member objekt.
-        return createdMember ?? member;
+            var createdMember =
+                await response.Content.ReadFromJsonAsync<Member>();
+
+            return createdMember ?? member;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(
+                $"Kunne ikke oprette medlem via UserService. Fejl: {ex.Message}",
+                ex);
+        }
     }
 
     // Midlertidig lokal funktion.
-    // TODO:
-    // Senere bør denne sende PUT/PATCH request til UserService.
+    // TODO: Senere bør denne sende PUT/PATCH request til UserService.
     public string SaveMember(Member member)
     {
         return $"Ændringer for {member.GivenName} {member.FamilyName} er gemt.";
     }
 
     // Midlertidig prototypefunktion.
-    // TODO:
-    // Skal senere integreres med rigtig betalingsservice/payment provider.
+    // TODO: Skal senere integreres med rigtig betalingsservice/payment provider.
     public string UpdatePaymentMethod(Member member)
     {
         return $"Betalingsmiddel for {member.GivenName} {member.FamilyName} kan opdateres senere via betalingsintegration.";
