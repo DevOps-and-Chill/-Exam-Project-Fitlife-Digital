@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Azure.Cosmos;
+using Microsoft.EntityFrameworkCore;
 using UserServiceAPI.Data;
 using UserServiceAPI.Models;
 using UserServiceAPI.Repositories.Interfaces;
@@ -20,9 +21,7 @@ namespace UserServiceAPI.Repositories
         /// <returns>Returns object that has been removed</returns>
         public async Task<Employee> DeleteEmployee(string userId)
         {
-            var employee = await _context.Users
-            .OfType<Employee>()
-            .FirstOrDefaultAsync(m => m.Id == userId);
+            var employee = await GetEmployeeById(userId);
 
             if (employee == null)
             {
@@ -43,9 +42,7 @@ namespace UserServiceAPI.Repositories
         /// <returns>Returns updated employee-object</returns>
         public async Task<Employee> EndEmploymentForEmployee(string userId)
         {
-            var employee = await _context.Users
-                .OfType<Employee>()
-                .FirstOrDefaultAsync(m => m.Id == userId);
+            var employee = await GetEmployeeById(userId);
 
             if (employee == null)
             {
@@ -75,9 +72,7 @@ namespace UserServiceAPI.Repositories
         /// <returns>Updated employee-object</returns>
         public async Task<Employee> SetAccountAsInactive(string userId)
         {
-            var employee = await _context.Users
-                .OfType<Employee>()
-                .FirstOrDefaultAsync(m => m.Id == userId);
+            var employee = await GetEmployeeById(userId);
 
             if (employee == null)
             {
@@ -98,9 +93,7 @@ namespace UserServiceAPI.Repositories
         /// <returns>Returns the updated employee</returns>
         public async Task<Employee> SetEmployeeAsManager(string userId)
         {
-            var employee = await _context.Users
-                .OfType<Employee>()
-                .FirstOrDefaultAsync(m => m.Id == userId);
+            var employee = await GetEmployeeById(userId);
 
             if (employee == null)
             {
@@ -114,13 +107,62 @@ namespace UserServiceAPI.Repositories
             return employee;
         }
 
+        public async Task<Employee?> GetEmployeeById(string userId)
+        {
+            var employee = await _context.Users
+                .OfType<Employee>()
+                .FirstOrDefaultAsync(m => m.Id == userId);
+            return employee;
+        }
+
         public async Task<Employee> UpsertEmployee(Employee employee)
         {
-            _context.Users.Add(employee);
+            bool emailExists = await _context.Users
+               .AnyAsync(u =>
+                   u.Email == employee.Email &&
+                   u.Id != employee.Id);
+
+            if (emailExists)
+            {
+                throw new InvalidOperationException(
+                    $"Email '{employee.Email}' is already in use");
+            }
+            Employee ?existingEmployee = await GetEmployeeById(employee.Id);
+
+            if (existingEmployee is null)
+            {
+                _context.Users.Add(employee);
+            }
+            else
+            {
+                existingEmployee.UpdateUserInformation(
+                    employee.RoleName,
+                    employee.GivenName,
+                    employee.FamilyName,
+                    employee.Address,
+                    employee.Telephone,
+                    employee.Email,
+                    employee.Affiliation,
+                    employee.ActiveUser);
+
+                existingEmployee.UpdateEmplyoment(
+                    employee.EmployeeRoleName,
+                    employee.IsPT,
+                    employee.EndDate,
+                    employee.ActiveEmployment);
+            }
 
             await _context.SaveChangesAsync();
 
-            return employee;
+            return existingEmployee ?? employee;
+        }
+
+        public async Task<List<Employee>> GetEmployeesByAffiliation(Guid affiliationId)
+        {
+            return await _context.Users
+                .OfType<Employee>()
+                .Where(e => e.Affiliation == affiliationId)
+                .ToListAsync();
         }
     }
 }

@@ -29,7 +29,7 @@ namespace UserServiceAPI.Controllers
             }
         }
 
-        [HttpPut("CancelMembership")]
+        [HttpPut("CancelMembership/{userId}")]
         public async Task<ActionResult> CancelMembership(string userId)
         {
             try
@@ -47,15 +47,17 @@ namespace UserServiceAPI.Controllers
         {
             try
             {
-                return Ok(await _memberRepository.UpsertMember(member));
+                Member updatedMember = await _memberRepository.UpsertMember(member);
+
+                return Ok(updatedMember);
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
                 return BadRequest(ex.Message);
             }
         }
 
-        [HttpDelete("DeleteMember")]
+        [HttpDelete("DeleteMember/{userId}")]
         public async Task<ActionResult> DeleteMember(string userId)
         {
             try
@@ -68,7 +70,7 @@ namespace UserServiceAPI.Controllers
             }
         }
 
-        [HttpPut("SetAccountAsInactive")]
+        [HttpPut("SetAccountAsInactive/{userId}")]
         public async Task<ActionResult> SetMemberAccountAsInactive(string userId)
         {
             try
@@ -81,6 +83,40 @@ namespace UserServiceAPI.Controllers
             }
         }
 
+        [HttpGet("GetMemberById/{userId}")]
+        public async Task<ActionResult> GetMemberById(string userId)
+        {
+            try
+            {
+                Member? member = await _memberRepository.GetMemberById(userId);
+
+                if (member is null)
+                {
+                    return NotFound(
+                        $"Member with id '{userId}' was not found");
+                }
+
+                return Ok(member);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetMemberByAffiliation/{affiliationId}")]
+        public async Task<ActionResult> GetMemberByAffiliation(Guid affiliationId)
+        {
+            try
+            {
+                var members = await _memberRepository.GetMembersByAffiliation(affiliationId);
+                return Ok(members);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
     }

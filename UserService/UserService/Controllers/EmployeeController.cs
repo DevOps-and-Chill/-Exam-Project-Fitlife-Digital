@@ -29,7 +29,7 @@ namespace UserServiceAPI.Controllers
             }
         }
 
-        [HttpPut("EndEmploymentForEmployee")]
+        [HttpPut("EndEmploymentForEmployee/{userId}")]
         public async Task<ActionResult> EndEmployment(string userId)
         {
             try
@@ -42,7 +42,7 @@ namespace UserServiceAPI.Controllers
             }
         }
 
-        [HttpPut("SetEmployeeAsManager")]
+        [HttpPut("SetEmployeeAsManager/{userId}")]
         public async Task<ActionResult> SetEmployeeAsManager(string userId)
         {
             try
@@ -60,15 +60,16 @@ namespace UserServiceAPI.Controllers
         {
             try
             {
-                return Ok(await _employeeRepository.UpsertEmployee(employee));
+                Employee updatedEmployee = await _employeeRepository.UpsertEmployee(employee);
+                return Ok(updatedEmployee);
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
                 return BadRequest(ex.Message);
             }
         }
 
-        [HttpDelete("DeleteEmployee")]
+        [HttpDelete("DeleteEmployee/{userId}")]
         public async Task<ActionResult> DeleteEmployee(string userId)
         {
             try
@@ -81,12 +82,47 @@ namespace UserServiceAPI.Controllers
             }
         }
 
-        [HttpPut("SetAccountAsInactive")]
+        [HttpPut("SetAccountAsInactive/{userId}")]
         public async Task<ActionResult> SetEmployeeAccountAsInactive(string userId)
         {
             try
             {
                 return Ok(await _employeeRepository.SetAccountAsInactive(userId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetEmployeeById/{userId}")]
+        public async Task<ActionResult> GetEmployeeById(string userId)
+        {
+            try
+            {
+                Employee? employee = await _employeeRepository.GetEmployeeById(userId);
+
+                if (employee is null)
+                {
+                    return NotFound(
+                        $"Employee with id '{userId}' was not found");
+                }
+
+                return Ok(employee);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetEmployeeByAffiliation/{affiliationId}")]
+        public async Task<ActionResult> GetEmployeeByAffiliation(Guid affiliationId)
+        {
+            try
+            {
+                var employees = await _employeeRepository.GetEmployeesByAffiliation(affiliationId);
+                return Ok(employees);
             }
             catch (Exception ex)
             {

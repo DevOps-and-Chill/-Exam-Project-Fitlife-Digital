@@ -42,6 +42,16 @@ namespace UserServiceAPI.Repositories
             return Task.FromResult(result);
         }
 
+        public Task<Member?> GetMemberById(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Member>> GetMembersByAffiliation(Guid affiliationId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Member> SetAccountAsInactive(string userId)
         {
             throw new NotImplementedException();
