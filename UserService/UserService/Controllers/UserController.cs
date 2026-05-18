@@ -16,26 +16,63 @@ namespace UserServiceAPI.Controllers
             _userRepository = userRepository;
         }
 
-        [HttpGet(Name = "GetAllUsers")]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet("GetAllUsers")]
+        public async Task<IActionResult> GetAllUsers()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            try
             {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+                return Ok(await _userRepository.GetAllUsers());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
-        [HttpGet("GetByAffiliation/{exerciseGymId}")]
-        public ActionResult<List<User>> GetUsersByAffiliation(Guid exerciseGymId)
+        [HttpGet("GetByAffiliation")]
+        public async Task<ActionResult> GetUsersByAffiliation(Guid exerciseGymId)
         {
-            var users = _userRepository.GetUsersByExerciseGym.
-                .Where(u => u.Affiliation == exerciseGymId)
-                .ToList();
+            try
+            {
+                return Ok(await _userRepository.GetUsersByAffiliation(exerciseGymId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
 
-            return Ok(users);
+        [HttpGet("GetUsersInGymByRole")]
+        public async Task<ActionResult> GetUsersInExerciseGymByRole(Guid exerciseGymId, string role)
+        {
+            try
+            {
+                return Ok(await _userRepository.GetUsersInExerciseGymByRole(exerciseGymId, role));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpGet("addtestdata")]
+        public async Task<ActionResult> AddData()
+        {
+            try
+            {
+                var result = await _userRepository.LoadTestData();
+                if (result)
+                {
+                    return Ok();
+                }
+                else
+                    return Ok("error in loading data");
+                
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
     }
 }

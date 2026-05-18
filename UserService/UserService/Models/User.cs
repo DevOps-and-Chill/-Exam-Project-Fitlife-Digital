@@ -2,9 +2,12 @@
 
 namespace UserServiceAPI.Models
 {
-    public class User
+    public abstract class User
     {
-        public Guid Id { get; init; } = Guid.NewGuid();
+        public string Id { get; init; } = Guid.NewGuid().ToString();
+
+        //AO: Used in cosmos. Ensures correct partitioning. Enables later change in partitioning strategy, ie. partitioning by affiliation 
+        public string PartitionKey { get; set; } = "users";
 
         public UserRole RoleName { get; set; }
 
@@ -18,6 +21,7 @@ namespace UserServiceAPI.Models
 
         public string Email { get; set; }
 
+        //AO: Might later be changed to string if necessary for setup of db in facilityservice. 
         public Guid Affiliation {  get; set; }
 
         public bool ActiveUser { get; set; }
@@ -26,7 +30,10 @@ namespace UserServiceAPI.Models
 
         public DateTime DateModified { get; set; } = DateTime.Now;
 
+        protected User()
+        {
 
+        }
         public User(
              UserRole roleName,
              string givenName,
@@ -53,6 +60,27 @@ namespace UserServiceAPI.Models
                 ActiveUser = false;
             else
                 return;
+        }
+
+        public void UpdateUserInformation(
+            UserRole userRole,
+            string givenName,
+            string familyName,
+            string address,
+            string telephone,
+            string email,
+            Guid affiliation,
+            bool activeUser)
+        {
+            RoleName = userRole;
+            GivenName = givenName;
+            FamilyName = familyName;
+            Address = address;
+            this.Telephone = telephone;
+            Email = email;
+            Affiliation = affiliation;
+            ActiveUser = activeUser;
+            DateModified = DateTime.Now;
         }
 
     }

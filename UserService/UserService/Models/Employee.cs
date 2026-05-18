@@ -5,13 +5,19 @@ namespace UserServiceAPI.Models
     public class Employee : User
     {
         public EmployeeRole EmployeeRoleName { get; set; }
-        public bool isPT { get; set; }
+        public bool IsPT { get; set; }
+
+        //AO: To be set when employee is created
         public DateTime StartDate { get; init; }
 
         public DateTime EndDate { get; set; }
 
         public bool ActiveEmployment { get; set; } = true;
 
+        public Employee()
+        {
+
+        }
         public Employee(
             UserRole userRole,
             string givenName,
@@ -22,8 +28,7 @@ namespace UserServiceAPI.Models
             Guid affiliation,
             bool activeUser,
             EmployeeRole roleName,
-            bool isPT,
-            DateTime endDate)
+            bool isPT)
             : base(
                   userRole,
                   givenName,
@@ -35,13 +40,34 @@ namespace UserServiceAPI.Models
                   activeUser)
         {
             EmployeeRoleName = roleName;
-            this.isPT = isPT;
-            EndDate = endDate;
+            this.IsPT = isPT;
         }
 
         public void EndEmployment()
         {
             ActiveEmployment = false; 
+        }
+
+        public void SetAsManager()
+        {
+            if (!ActiveEmployment)
+            {
+                throw new InvalidOperationException(
+                    "Inactive employees cannot become managers");
+            }
+            EmployeeRoleName = EmployeeRole.Manager;
+        }
+
+        public void UpdateEmplyoment(
+            EmployeeRole newEmployeeRole,
+            bool isPT, 
+            DateTime newEnd,
+            bool setActiveState)
+        {
+            EmployeeRoleName = newEmployeeRole;
+            IsPT = isPT;
+            EndDate = newEnd;
+            ActiveEmployment = setActiveState;
         }
     }
 }

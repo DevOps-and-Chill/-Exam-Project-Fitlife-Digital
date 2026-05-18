@@ -1,0 +1,103 @@
+﻿using Microsoft.EntityFrameworkCore;
+using UserServiceAPI.Data;
+using UserServiceAPI.Models;
+using UserServiceAPI.Repositories.Interfaces;
+
+namespace UserServiceAPI.Repositories
+{
+    public class EmployeeRepositoryDB : IEmployeeRepository
+    {
+        private readonly UserDbContext _context;
+
+        public EmployeeRepositoryDB(UserDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<Employee> DeleteEmployee(string userId)
+        {
+            var employee = await _context.Users
+            .OfType<Employee>()
+            .FirstOrDefaultAsync(m => m.Id == userId);
+
+            if (employee == null)
+            {
+                return null;
+            }
+
+            _context.Users.Remove(employee);
+
+            await _context.SaveChangesAsync();
+
+            return employee;
+        }
+
+        public async Task<Employee> EndEmploymentForEmployee(string userId)
+        {
+            var employee = await _context.Users
+                .OfType<Employee>()
+                .FirstOrDefaultAsync(m => m.Id == userId);
+
+            if (employee == null)
+            {
+                return null;
+            }
+
+            employee.EndEmployment();
+
+            await _context.SaveChangesAsync();
+
+            return employee;
+        }
+
+        public async Task<List<Employee>> GetAllEmployees()
+        {
+            return await _context.Users.OfType<Employee>().ToListAsync();
+        }
+
+        public async Task<Employee> SetAccountAsInactive(string userId)
+        {
+            var employee = await _context.Users
+                .OfType<Employee>()
+                .FirstOrDefaultAsync(m => m.Id == userId);
+
+            if (employee == null)
+            {
+                return null;
+            }
+
+            employee.SetUserAsInactive();
+
+            await _context.SaveChangesAsync();
+
+            return employee;
+        }
+
+        public async Task<Employee> SetEmployeeAsManager(string userId)
+        {
+            var employee = await _context.Users
+                .OfType<Employee>()
+                .FirstOrDefaultAsync(m => m.Id == userId);
+
+            if (employee == null)
+            {
+                return null;
+            }
+
+            employee.SetAsManager();
+
+            await _context.SaveChangesAsync();
+
+            return employee;
+        }
+
+        public async Task<Employee> UpsertEmployee(Employee employee)
+        {
+            _context.Users.Add(employee);
+
+            await _context.SaveChangesAsync();
+
+            return employee;
+        }
+    }
+}
