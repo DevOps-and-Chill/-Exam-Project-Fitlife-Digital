@@ -1,6 +1,6 @@
 ﻿namespace AuthServiceAPI.Models
 {
-    public class User
+    public class Credential
     {
         public string Id { get; init; }
         public string Email { get; set; } = null!;
