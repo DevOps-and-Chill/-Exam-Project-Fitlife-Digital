@@ -7,6 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+    builder.Services.AddHttpClient("UserService", client =>
+{
+    client.BaseAddress = new Uri(
+        builder.Configuration["UserService:BaseUrl"]!);
+});
+
 builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<MemberService>();
 builder.Services.AddScoped<TrainerService>();
