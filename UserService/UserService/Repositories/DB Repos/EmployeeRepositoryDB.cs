@@ -149,6 +149,7 @@ namespace UserServiceAPI.Repositories
                     employee.RoleName,
                     employee.GivenName,
                     employee.FamilyName,
+                    employee.BirthDate,
                     employee.Address,
                     employee.Telephone,
                     employee.Email,
