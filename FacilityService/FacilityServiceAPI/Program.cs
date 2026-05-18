@@ -1,5 +1,9 @@
 
+using FacilityServiceAPI.Contexts;
 using FacilityServiceAPI.Repositories;
+using Microsoft.Azure.Cosmos;
+using Microsoft.EntityFrameworkCore;
+using System.Configuration;
 
 namespace FacilityServiceAPI
 {
@@ -16,6 +20,10 @@ namespace FacilityServiceAPI
 			builder.Services.AddOpenApi();
 
 			builder.Services.AddTransient<IFacilityRepository, FacilityRepositoryMoq>();
+
+			builder.Services.AddDbContextFactory<FacilityContext>(options => options.UseCosmos(
+				builder.Configuration.GetConnectionString("CosmosDBConn"),
+				builder.Configuration.GetValue("Databasename",string.Empty)));
 
 			var app = builder.Build();
 
