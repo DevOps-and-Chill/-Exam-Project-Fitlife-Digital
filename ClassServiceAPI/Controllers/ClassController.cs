@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ClassServiceAPI.Repositories;
 using ClassServiceAPI.Models;
 using ClassServiceAPI.Repositories.Interfaces;
 
@@ -21,22 +20,43 @@ public class ClassController : ControllerBase
     [HttpPost("create-class")]
     public async Task<IActionResult> CreateClassAsync([FromBody] Class classModel)
     {
-        await _repo.CreateClassAsync(classModel);
-        return Ok();
+        try
+        {
+            var created = await _repo.CreateClassAsync(classModel);
+            return Ok(created);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
-    [HttpPost("register-member-to-class")]
-    public async Task<IActionResult> RegisterMemberToClassByMemberIdAsync(int memberId)
+    [HttpPost("{classId}/register-member")]
+    public async Task<IActionResult> RegisterMemberToClassAsync(Guid classId, [FromBody] Member member)
     {
-        await _repo.RegisterMemberToClassByMemberIdAsync(memberId);
-        return Ok();
+        try
+        {
+            var updated = await _repo.RegisterMemberToClassAsync(classId, member);
+            return Ok(updated);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
-    [HttpPost("register-member-to-waitinglist")]
-    public async Task<IActionResult> RegisterMemberToWaitingListByMemberIdAsync(int memberId)
+    [HttpPost("{classId}/register-member-to-waitinglist")]
+    public async Task<IActionResult> RegisterMemberToWaitingListAsync(Guid classId, [FromBody] Member member)
     {
-        await _repo.RegisterMemberToWaitingListByMemberIdAsync(memberId);
-        return Ok();
+        try
+        {
+            var updated = await _repo.RegisterMemberToWaitingListAsync(classId, member);
+            return Ok(updated);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     // GET
@@ -44,95 +64,152 @@ public class ClassController : ControllerBase
     [HttpGet("get-all-classes")]
     public async Task<IActionResult> GetAllClassesAsync()
     {
-        await _repo.GetAllClassesAsync();
-        return Ok();
+        try
+        {
+            return Ok(await _repo.GetAllClassesAsync());
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpGet("get-classes-by-gym/{exerciseGymId}")]
-    public async Task<IActionResult> GetAllClassesByExerciseGymAsync(int exerciseGymId)
+    public async Task<IActionResult> GetAllClassesByExerciseGymAsync(Guid exerciseGymId)
     {
-        await _repo.GetAllClassesByExerciseGymAsync(exerciseGymId);
-        return Ok();
+        try
+        {
+            return Ok(await _repo.GetAllClassesByExerciseGymAsync(exerciseGymId));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpGet("get-class-by-id/{id}")]
-    public async Task<IActionResult> GetClassByIdAsync(int id)
+    public async Task<IActionResult> GetClassByIdAsync(Guid id)
     {
-        await _repo.GetClassByIdAsync(id);
-        return Ok();
+        try
+        {
+            var fitnessClass = await _repo.GetClassByIdAsync(id);
+
+            if (fitnessClass is null)
+                return NotFound($"Class with id '{id}' was not found");
+
+            return Ok(fitnessClass);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
-    [HttpGet("get-class-rating/{id}")]
-    public async Task<IActionResult> GetClassRatingByIdAsync(int id)
+    [HttpGet("{id}/waitinglist")]
+    public async Task<IActionResult> GetWaitingListByClassAsync(Guid id)
     {
-        await _repo.GetClassRatingByIdAsync(id);
-        return Ok();
+        try
+        {
+            return Ok(await _repo.GetWaitingListByClassAsync(id));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
-    [HttpGet("get-waitinglist/{id}")]
-    public async Task<IActionResult> GetWaitingListByClassAsync(int id)
+    [HttpGet("{id}/registered-members")]
+    public async Task<IActionResult> GetRegisteredByClassAsync(Guid id)
     {
-        await _repo.GetWaitingListByClassAsync(id);
-        return Ok();
+        try
+        {
+            return Ok(await _repo.GetRegisteredByClassAsync(id));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
-    [HttpGet("get-registered-members/{id}")]
-    public async Task<IActionResult> GetRegisteredByClassAsync(int id)
+    [HttpGet("{id}/attendees-count")]
+    public async Task<IActionResult> GetNumberOfAttendeesByClassAsync(Guid id)
     {
-        await _repo.GetRegisteredByClassAsync(id);
-        return Ok();
+        try
+        {
+            return Ok(await _repo.GetNumberOfAttendeesByClassAsync(id));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
-    [HttpGet("get-attendees-count/{id}")]
-    public async Task<IActionResult> GetNumberOfAttendeesByClassAsync(int id)
+    [HttpGet("{id}/absence")]
+    public async Task<IActionResult> CalculateAbsenceByClassAsync(Guid id)
     {
-        await _repo.GetNumberOfAttendeesByClassAsync(id);
-        return Ok();
-    }
-
-    [HttpGet("calculate-absence/{id}")]
-    public async Task<IActionResult> CalculateAbsenceByClassAsync(int id)
-    {
-        await _repo.CalculateAbsenceByClassAsync(id);
-        return Ok();
+        try
+        {
+            return Ok(await _repo.CalculateAbsenceByClassAsync(id));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     // PUT
 
-    [HttpPut("cancel-class/{id}")]
-    public async Task<IActionResult> CancelClassByIdAsync(int id)
+    [HttpPut("{id}/cancel")]
+    public async Task<IActionResult> CancelClassByIdAsync(Guid id)
     {
-        await _repo.CancelClassByIdAsync(id);
-        return Ok();
+        try
+        {
+            return Ok(await _repo.CancelClassByIdAsync(id));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
-    [HttpPut("rate-class/{id}")]
-    public async Task<IActionResult> RateClassByIdAsync(int id, double rating)
+    [HttpPut("{classId}/unregister-member/{memberId}")]
+    public async Task<IActionResult> UnRegisterMemberFromClassAsync(Guid classId, Guid memberId)
     {
-        await _repo.RateClassByIdAsync(id, rating);
-        return Ok();
+        try
+        {
+            return Ok(await _repo.UnRegisterMemberFromClassAsync(classId, memberId));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
-    [HttpPut("unregister-member-from-class")]
-    public async Task<IActionResult> UnRegisterMemberFromClassByClassAndMemberAsync(int memberId, int classId)
+    [HttpPut("{classId}/unregister-member-from-waitinglist/{memberId}")]
+    public async Task<IActionResult> UnRegisterMemberFromWaitingListAsync(Guid classId, Guid memberId)
     {
-        await _repo.UnRegisterMemberFromClassByClassAndMemberAsync(memberId, classId);
-        return Ok();
-    }
-
-    [HttpPut("unregister-member-from-waitinglist")]
-    public async Task<IActionResult> UnRegisterMemberFromWaitingListByClassAndMemberAsync(int memberId, int classId)
-    {
-        await _repo.UnRegisterMemberFromWaitingListByClassAndMemberAsync(memberId, classId);
-        return Ok();
+        try
+        {
+            return Ok(await _repo.UnRegisterMemberFromWaitingListAsync(classId, memberId));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     // DELETE
 
-    [HttpDelete("delete-class/{id}")]
-    public async Task<IActionResult> DeleteClassByIdAsync(int id)
+    [HttpDelete("{id}/delete")]
+    public async Task<IActionResult> DeleteClassByIdAsync(Guid id)
     {
-        await _repo.DeleteClassByIdAsync(id);
-        return Ok();
+        try
+        {
+            return Ok(await _repo.DeleteClassByIdAsync(id));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 }
