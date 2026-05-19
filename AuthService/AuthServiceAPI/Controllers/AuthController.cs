@@ -37,26 +37,22 @@ namespace AuthServiceAPI.Controllers
             }
         }
 
-        [HttpPost("ValidateCredentials")]
-        public async Task<ActionResult> ValidateCredentials([FromBody] ValidateCredentialsRequestDTO validateDTO)
+        [HttpPost("Login")]
+        public async Task<ActionResult> Login([FromBody] LoginRequestDTO loginRequestDTO)
         {
             try
             {
-                bool result = await _credentialService.ValidateCredential(validateDTO);
-                if (result)
+                string? token = await _credentialService.Login(loginRequestDTO);
+
+                if (string.IsNullOrEmpty(token))
                 {
-                    return Ok(new
-                    {
-                        message = "Validation successful"
-                    });
+                    return Unauthorized();
                 }
-                else
+
+                return Ok(new
                 {
-                    return Unauthorized(new
-                    {
-                        message = "Validation failed"
-                    });
-                }
+                    token
+                });
             }
             catch (ArgumentException ex)
             {
