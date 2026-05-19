@@ -1,4 +1,3 @@
-
 using UserServiceAPI.Repositories;
 using UserServiceAPI.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +24,6 @@ namespace UserServiceAPI
                 builder.Configuration["CosmosDb:AccountKey"]!,
                 builder.Configuration["CosmosDb:DatabaseName"]!);
             });
-        
 
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
@@ -55,7 +53,6 @@ namespace UserServiceAPI
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
