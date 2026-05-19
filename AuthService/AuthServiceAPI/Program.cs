@@ -1,46 +1,62 @@
+using NLog;
+using NLog.Web;
 using AuthServiceAPI.Data;
 using AuthServiceAPI.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
+var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
-// Add services to the container.
+logger.Debug("AuthService starter op");
 
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
-builder.Services.AddScoped<IAuthRepository, AuthRepositoryDB>();
-
-builder.Services.AddDbContext<AuthDbContext>(options =>
+try
 {
-    options.UseCosmos(
-        builder.Configuration["CosmosDb:AccountEndpoint"]!,
-        builder.Configuration["CosmosDb:AccountKey"]!,
-        builder.Configuration["CosmosDb:DatabaseName"]!
-    );
-});
+    var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+    // Ryd eksisterende logging providers og brug NLog i stedet
+    builder.Logging.ClearProviders();
+    builder.Host.UseNLog();
 
-//AO: Ensures DB and container exists. EnsureCreated() is alternative of migration
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
+    builder.Services.AddControllers();
+    builder.Services.AddOpenApi();
 
-    await db.Database.EnsureCreatedAsync();
+    builder.Services.AddScoped<IAuthRepository, AuthRepositoryDB>();
+
+    builder.Services.AddDbContext<AuthDbContext>(options =>
+    {
+        options.UseCosmos(
+            builder.Configuration["CosmosDb:AccountEndpoint"]!,
+            builder.Configuration["CosmosDb:AccountKey"]!,
+            builder.Configuration["CosmosDb:DatabaseName"]!
+        );
+    });
+
+    var app = builder.Build();
+
+    // Sikrer at DB og container eksisterer
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
+        await db.Database.EnsureCreatedAsync();
+    }
+
+    if (app.Environment.IsDevelopment())
+    {
+        app.MapOpenApi();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseAuthorization();
+    app.MapControllers();
+    app.Run();
 }
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+catch (Exception ex)
 {
-    app.MapOpenApi();
+    // Logger fejl hvis applikationen crasher ved opstart
+    logger.Error(ex, "AuthService stoppede på grund af en fejl!");
+    throw;
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+finally
+{
+    // Sørg for at alle logs bliver skrevet færdigt før applikationen lukker
+    NLog.LogManager.Shutdown();
+}
