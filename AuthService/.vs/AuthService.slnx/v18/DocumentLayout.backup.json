@@ -94,8 +94,7 @@
               "RelativeToolTip": "AuthServiceAPI\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-05-19T19:21:06.191Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-19T19:21:06.191Z"
             },
             {
               "$type": "Document",
@@ -107,8 +106,7 @@
               "RelativeToolTip": "AuthServiceAPI\\Services\\JWTService.cs",
               "ViewState": "AgIAABoAAAAAAAAAAAAAACIAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T19:20:57.43Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-19T19:20:57.43Z"
             },
             {
               "$type": "Document",
@@ -120,8 +118,7 @@
               "RelativeToolTip": "AuthServiceAPI\\Services\\Interfaces\\IJWTService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T19:20:42.868Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-19T19:20:42.868Z"
             },
             {
               "$type": "Document",
@@ -133,8 +130,7 @@
               "RelativeToolTip": "AuthServiceAPI\\Repositories\\Interfaces\\ICredentialRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T09:29:23.368Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-19T09:29:23.368Z"
             },
             {
               "$type": "Document",
@@ -146,8 +142,7 @@
               "RelativeToolTip": "AuthServiceAPI\\Data\\CredentialDbContext.cs",
               "ViewState": "AgIAABkAAAAAAAAAAMBSwCgAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T09:29:23.372Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-19T09:29:23.372Z"
             },
             {
               "$type": "Document",
@@ -159,8 +154,7 @@
               "RelativeToolTip": "AuthServiceAPI\\DTOs\\AuthResponseDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T09:29:23.355Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-19T09:29:23.355Z"
             },
             {
               "$type": "Document",
@@ -172,8 +166,7 @@
               "RelativeToolTip": "AuthServiceAPI\\DTOs\\RegisterCredentialsRequestDTO.cs",
               "ViewState": "AgIAAAIAAAAAAAAAAIA0wA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T09:29:23.361Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-19T09:29:23.361Z"
             },
             {
               "$type": "Document",
@@ -185,8 +178,7 @@
               "RelativeToolTip": "AuthServiceAPI\\Services\\Interfaces\\ICredentialService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T15:58:12.977Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-19T15:58:12.977Z"
             },
             {
               "$type": "Document",
@@ -196,7 +188,7 @@
               "RelativeDocumentMoniker": "AuthServiceAPI\\Program.cs",
               "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthServiceAPI\\Program.cs",
               "RelativeToolTip": "AuthServiceAPI\\Program.cs",
-              "ViewState": "AgIAAEYAAAAAAAAAAAAAAFgAAAAKAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-19T15:28:13.235Z",
               "EditorCaption": ""
@@ -211,8 +203,7 @@
               "RelativeToolTip": "AuthServiceAPI\\Controllers\\AuthController.cs",
               "ViewState": "AgIAADwAAAAAAAAAAMBSwFEAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T09:29:23.375Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-19T09:29:23.375Z"
             },
             {
               "$type": "Document",
@@ -224,8 +215,7 @@
               "RelativeToolTip": "AuthServiceAPI\\Services\\CredentialService.cs",
               "ViewState": "AgIAABYAAAAAAAAAAAAIwCgAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T15:57:54.253Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-19T15:57:54.253Z"
             },
             {
               "$type": "Document",
@@ -237,8 +227,7 @@
               "RelativeToolTip": "AuthServiceAPI\\Repositories\\CredentialRepositoryDB.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T09:29:23.364Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-19T09:29:23.364Z"
             },
             {
               "$type": "Document",
@@ -250,8 +239,7 @@
               "RelativeToolTip": "AuthServiceAPI\\Services\\Interfaces\\IPasswordService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T15:24:23.81Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-19T15:24:23.81Z"
             },
             {
               "$type": "Document",
@@ -263,8 +251,7 @@
               "RelativeToolTip": "AuthServiceAPI\\Services\\PasswordService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAABKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T15:24:36.713Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-19T15:24:36.713Z"
             },
             {
               "$type": "Document",
@@ -276,8 +263,7 @@
               "RelativeToolTip": "AuthServiceAPI\\DTOs\\ValidateCredentialsRequestDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T09:29:23.358Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-19T09:29:23.358Z"
             },
             {
               "$type": "Document",
@@ -289,8 +275,7 @@
               "RelativeToolTip": "AuthServiceAPI\\DTOs\\ValidateTokenRequestDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T09:29:23.35Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-19T09:29:23.35Z"
             },
             {
               "$type": "Document",
@@ -302,8 +287,7 @@
               "RelativeToolTip": "AuthServiceAPI\\Models\\Credential.cs",
               "ViewState": "AgIAAAUAAAAAAAAAAABBwBIAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T09:29:23.378Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-19T09:29:23.378Z"
             },
             {
               "$type": "Document",
@@ -315,8 +299,7 @@
               "RelativeToolTip": "AuthServiceAPI\\DTOs\\ValidateTokenResponseDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T09:29:23.304Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-19T09:29:23.304Z"
             }
           ]
         }
