@@ -13,6 +13,7 @@ namespace RapportServiceAPI.Models
         }
 
         public Guid Id { get; init; } = Guid.NewGuid();
+        public string PartitionKey { get; set; } = "statistikker";
         public string Name { get; private set; }
         public string Description { get; private set; }
         public DateTime DataCreated { get; init; } = DateTime.UtcNow;
