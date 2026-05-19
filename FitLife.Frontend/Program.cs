@@ -13,6 +13,12 @@ builder.Services.AddRazorComponents()
         builder.Configuration["UserService:BaseUrl"]!);
 });
 
+builder.Services.AddHttpClient("FacilityService", client =>
+{
+    client.BaseAddress = new Uri(
+        builder.Configuration["FacilityService:BaseUrl"]);
+});
+
 builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<MemberService>();
 builder.Services.AddScoped<TrainerService>();
