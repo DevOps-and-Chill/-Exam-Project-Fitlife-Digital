@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
 
   gateway:
@@ -36,9 +34,11 @@ services:
     networks:
       - backend
 
-  classservice:
+  cclassservice:
     build:
       context: ./ClassServiceAPI
+    ports:
+      - "5000:8080"
     environment:
       RabbitMQ__Host: rabbitmq
     depends_on:
