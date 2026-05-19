@@ -34,7 +34,7 @@ services:
     networks:
       - backend
 
-  cclassservice:
+  classservice:
     build:
       context: ./ClassServiceAPI
     ports:
