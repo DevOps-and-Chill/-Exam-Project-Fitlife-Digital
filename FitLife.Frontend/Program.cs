@@ -7,29 +7,33 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+    builder.Services.AddHttpClient("UserService", client =>
+{
+    client.BaseAddress = new Uri(
+        builder.Configuration["UserService:BaseUrl"]!);
+});
+
 builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<MemberService>();
 builder.Services.AddScoped<TrainerService>();
 builder.Services.AddScoped<DigitalTrainingService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<CenterService>();
+builder.Services.AddScoped<RegistrationStateService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-
-
 app.UseAntiforgery();
 
 app.MapStaticAssets();
+
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
