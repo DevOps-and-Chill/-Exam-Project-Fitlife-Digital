@@ -3,6 +3,7 @@
 @using FitLife.Frontend.Models
 @using FitLife.Frontend.Services
 @inject MemberService MemberService
+@inject CenterService CenterService
 
 <div class="container-fluid px-0">
 
@@ -237,18 +238,20 @@
 
     private string Message = "";
 
-    // Midlertidig mock-data til center-valg
-    // TODO:
-    // Hent centre via CenterService/FacilityService senere
-    private List<Center> Centers = new()
+    // Centre hentes fra FacilityService via CenterService
+    private List<Center> Centers = new();
+
+    protected override async Task OnInitializedAsync()
     {
-        new Center { Name = "Aarhus C", City = "Aarhus", Address = "Eksempelvej 1" },
-        new Center { Name = "Randers", City = "Randers", Address = "Eksempelvej 2" },
-        new Center { Name = "Silkeborg", City = "Silkeborg", Address = "Eksempelvej 3" },
-        new Center { Name = "Horsens", City = "Horsens", Address = "Eksempelvej 4" },
-        new Center { Name = "Vejle", City = "Vejle", Address = "Eksempelvej 5" },
-        new Center { Name = "Skanderborg", City = "Skanderborg", Address = "Eksempelvej 6" }
-    };
+        try
+        {
+            Centers = await CenterService.GetCentersAsync();
+        }
+        catch (Exception ex)
+        {
+            Message = $"Kunne ikke hente centre. Fejl: {ex.Message}";
+        }
+    }
 
     private async Task CreateNewMember()
     {

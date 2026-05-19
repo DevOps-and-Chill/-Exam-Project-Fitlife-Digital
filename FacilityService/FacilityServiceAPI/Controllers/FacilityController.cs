@@ -17,10 +17,11 @@ namespace FacilityServiceAPI.Controllers
             _facilityRepository = facilityRepository;
         }
 
-		public FacilityController(IFacilityRepository facilityRepository)
-		{
-			_facilityRepository = facilityRepository;
-		}
+        //CS: Har lige udkommenteret da den ikke kunne finde rundt i 2 kontruktører.
+		// public FacilityController(IFacilityRepository facilityRepository)
+		// {
+		// 	_facilityRepository = facilityRepository;
+		// }
 
 
 		[HttpGet("getfacilitybyid")]
