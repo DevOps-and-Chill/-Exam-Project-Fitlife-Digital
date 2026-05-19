@@ -135,5 +135,23 @@ namespace UserServiceAPI.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public Task<User?> GetUserById(string userId)
+        {
+            var user = users
+            .FirstOrDefault(u => u.Id == userId);
+
+            return Task.FromResult(user);
+        }
+
+        public Task<string?> GetUserIdByEmail(string email)
+        {
+            var userId = users
+            .Where(u => u.Email == email)
+            .Select(u => u.Id)
+            .FirstOrDefault();
+
+            return Task.FromResult(userId);
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Azure.Cosmos;
+using Microsoft.EntityFrameworkCore;
 using UserServiceAPI.Data;
 using UserServiceAPI.Models;
 using UserServiceAPI.Repositories.Interfaces;
@@ -13,12 +14,14 @@ namespace UserServiceAPI.Repositories
         {
             _context = context;
         }
-
+        /// <summary>
+        /// Finds employee based on id and removes from DB.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>Returns object that has been removed</returns>
         public async Task<Employee> DeleteEmployee(string userId)
         {
-            var employee = await _context.Users
-            .OfType<Employee>()
-            .FirstOrDefaultAsync(m => m.Id == userId);
+            var employee = await GetEmployeeById(userId);
 
             if (employee == null)
             {
@@ -32,11 +35,14 @@ namespace UserServiceAPI.Repositories
             return employee;
         }
 
+        /// <summary>
+        /// Sets the property ActiveEmployment as false  
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>Returns updated employee-object</returns>
         public async Task<Employee> EndEmploymentForEmployee(string userId)
         {
-            var employee = await _context.Users
-                .OfType<Employee>()
-                .FirstOrDefaultAsync(m => m.Id == userId);
+            var employee = await GetEmployeeById(userId);
 
             if (employee == null)
             {
@@ -50,16 +56,23 @@ namespace UserServiceAPI.Repositories
             return employee;
         }
 
+        /// <summary>
+        /// Used to get a list of all employees in the db
+        /// </summary>
+        /// <returns>List of employees</returns>
         public async Task<List<Employee>> GetAllEmployees()
         {
             return await _context.Users.OfType<Employee>().ToListAsync();
         }
 
+        /// <summary>
+        /// Used to set the property ActiveUser to false
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>Updated employee-object</returns>
         public async Task<Employee> SetAccountAsInactive(string userId)
         {
-            var employee = await _context.Users
-                .OfType<Employee>()
-                .FirstOrDefaultAsync(m => m.Id == userId);
+            var employee = await GetEmployeeById(userId);
 
             if (employee == null)
             {
@@ -73,11 +86,14 @@ namespace UserServiceAPI.Repositories
             return employee;
         }
 
+        /// <summary>
+        /// Sets the property employeeRole to Manager
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>Returns the updated employee</returns>
         public async Task<Employee> SetEmployeeAsManager(string userId)
         {
-            var employee = await _context.Users
-                .OfType<Employee>()
-                .FirstOrDefaultAsync(m => m.Id == userId);
+            var employee = await GetEmployeeById(userId);
 
             if (employee == null)
             {
@@ -90,14 +106,79 @@ namespace UserServiceAPI.Repositories
 
             return employee;
         }
+        /// <summary>
+        /// Based on userid finds the employee
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>return the employee-object. Returns null if not found</returns>
+        public async Task<Employee?> GetEmployeeById(string userId)
+        {
+            var employee = await _context.Users
+                .OfType<Employee>()
+                .FirstOrDefaultAsync(m => m.Id == userId);
+            return employee;
+        }
 
+        /// <summary>
+        /// Inserts or updates the employee-object. Ensures that email is unique
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <returns>Updated or new object</returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public async Task<Employee> UpsertEmployee(Employee employee)
         {
-            _context.Users.Add(employee);
+            bool emailExists = await _context.Users
+               .AnyAsync(u =>
+                   u.Email == employee.Email &&
+                   u.Id != employee.Id);
+
+            if (emailExists)
+            {
+                throw new InvalidOperationException(
+                    $"Email '{employee.Email}' is already in use");
+            }
+            Employee ?existingEmployee = await GetEmployeeById(employee.Id);
+
+            if (existingEmployee is null)
+            {
+                _context.Users.Add(employee);
+            }
+            else
+            {
+                existingEmployee.UpdateUserInformation(
+                    employee.RoleName,
+                    employee.GivenName,
+                    employee.FamilyName,
+                    employee.BirthDate,
+                    employee.Address,
+                    employee.Telephone,
+                    employee.Email,
+                    employee.Affiliation,
+                    employee.ActiveUser);
+
+                existingEmployee.UpdateEmplyoment(
+                    employee.EmployeeRoleName,
+                    employee.IsPT,
+                    employee.EndDate,
+                    employee.ActiveEmployment);
+            }
 
             await _context.SaveChangesAsync();
 
-            return employee;
+            return existingEmployee ?? employee;
+        }
+
+        /// <summary>
+        /// Finds the employees based on affiliation (typically an exerciseGym) 
+        /// </summary>
+        /// <param name="affiliationId"></param>
+        /// <returns>Returns list of employees</returns>
+        public async Task<List<Employee>> GetEmployeesByAffiliation(Guid affiliationId)
+        {
+            return await _context.Users
+                .OfType<Employee>()
+                .Where(e => e.Affiliation == affiliationId)
+                .ToListAsync();
         }
     }
 }

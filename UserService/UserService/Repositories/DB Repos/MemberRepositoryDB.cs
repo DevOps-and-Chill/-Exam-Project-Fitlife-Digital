@@ -107,9 +107,20 @@ namespace UserServiceAPI.Repositories
         /// <param name="member">Member to add or update; if Id matches an existing user, that user's profile and membership are updated,
         /// otherwise a new user is created.</param>
         /// <returns>The persisted Member entity — either the newly added instance or the updated existing instance.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when another user already exists with the same Email.</exception>
         public async Task<Member> UpsertMember(Member member)
         {
-            //AO: Midlertidigt slået fra pga. Cosmos query-fejl ved AnyAsync på inheritance hierarchy
+            //CS: Midlertidigt slået fra pga. Cosmos query-fejl ved AnyAsync på inheritance hierarchy
+            // bool emailExists = await _context.Set<Member>()
+            //     .AnyAsync(u =>
+            //         u.Email == member.Email &&
+            //         u.Id != member.Id);
+
+            // if (emailExists)
+            // {
+            //     throw new InvalidOperationException(
+            //         $"Email '{member.Email}' is already in use");
+            // }
 
             Member? existingMember = await GetMemberById(member.Id);
 

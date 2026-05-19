@@ -14,7 +14,7 @@ namespace UserServiceAPI.TestData
                 UserRole.Employee,
                 "Andreas",
                 "Pedersen",
-                new DateTime(1985, 3, 12),
+                new DateTime(1985, 5, 12),
                 "Søndergade 5, 8000 Aarhus C",
                 "11223344",
                 "andreas.pedersen@fitlife.dk",
@@ -28,7 +28,7 @@ namespace UserServiceAPI.TestData
                 UserRole.Employee,
                 "Julie",
                 "Mortensen",
-                new DateTime(1992, 7, 21),
+                new DateTime(1992, 8, 23),
                 "Kirkegade 14, 8230 Åbyhøj",
                 "22334411",
                 "julie.mortensen@fitlife.dk",
@@ -42,7 +42,7 @@ namespace UserServiceAPI.TestData
                 UserRole.Employee,
                 "Kasper",
                 "Hansen",
-                new DateTime(1990, 11, 5),
+                new DateTime(1990, 2, 10),
                 "Møllevej 9, 8250 Egå",
                 "33441122",
                 "kasper.hansen@fitlife.dk",
@@ -56,7 +56,7 @@ namespace UserServiceAPI.TestData
                 UserRole.Employee,
                 "Laura",
                 "Thomsen",
-                new DateTime(1995, 1, 17),
+                new DateTime(1995, 11, 4),
                 "Lindevej 21, 8520 Lystrup",
                 "44552233",
                 "laura.thomsen@fitlife.dk",
@@ -66,6 +66,5 @@ namespace UserServiceAPI.TestData
                 true
             )
         };
-
     }
 }

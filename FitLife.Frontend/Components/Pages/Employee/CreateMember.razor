@@ -1,6 +1,8 @@
 @page "/create-member"
 @rendermode InteractiveServer
 @using FitLife.Frontend.Models
+@using FitLife.Frontend.Services
+@inject MemberService MemberService
 
 <div class="container-fluid px-0">
 
@@ -10,11 +12,12 @@
     <section class="container py-5">
 
         <h1 class="fw-bold mb-3">Opret medlem</h1>
+
         <p class="lead">
             Opret et nyt medlem via receptionen.
         </p>
 
-        <!-- Prototype/UX note: viser medarbejderen en vigtig arbejdsgang fra casen -->
+        <!-- Prototype/UX note -->
         <div class="alert alert-info">
             Husk at informere kunden om, at de bliver bedt om at lave password ved første login.
         </div>
@@ -22,97 +25,172 @@
         <div class="card shadow-sm">
             <div class="card-body p-4">
 
-                <!-- Formularen binder direkte til NewMember-modellen.
-                     Senere kan NewMember sendes videre til backend via MemberService/API. -->
+                <!-- Formularen binder direkte til NewMember-modellen -->
+                <!-- NewMember matcher nu UserService/Ubiquitous Language -->
                 <div class="row g-3">
 
                     <div class="col-md-6">
                         <label class="form-label">Fornavn</label>
-                        <input class="form-control" @bind="NewMember.FirstName" />
+
+                        <!-- GivenName matcher UserService -->
+                        <input class="form-control"
+                               @bind="NewMember.GivenName" />
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">Efternavn</label>
-                        <input class="form-control" @bind="NewMember.LastName" />
+
+                        <!-- FamilyName matcher UserService -->
+                        <input class="form-control"
+                               @bind="NewMember.FamilyName" />
                     </div>
 
-                    <div class="col-md-8">
+                    <div class="col-md-12">
                         <label class="form-label">Adresse</label>
-                        <input class="form-control" @bind="NewMember.Address" />
+
+                        <input class="form-control"
+                               @bind="NewMember.Address" />
                     </div>
 
-                    <div class="col-md-4">
-                        <label class="form-label">Postnr.</label>
-                        <input class="form-control" @bind="NewMember.PostalCode" />
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">By</label>
-                        <input class="form-control" @bind="NewMember.City" />
-                    </div>
+                    <!-- PostalCode og City findes ikke i UserService endnu -->
+                    <!-- TODO:
+                         Tilføj til UserService hvis disse felter ønskes senere -->
 
                     <div class="col-md-6">
                         <label class="form-label">Fødselsdag</label>
-                        <input class="form-control" type="date" @bind="NewMember.BirthDate" />
+
+                        <!-- BirthDate bruges til beregning af Age -->
+                        <input class="form-control"
+                               type="date"
+                               @bind="NewMember.BirthDate" />
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">E-mailadresse</label>
-                        <input class="form-control" type="email" @bind="NewMember.Email" />
+
+                        <input class="form-control"
+                               type="email"
+                               @bind="NewMember.Email" />
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">Telefonnummer</label>
-                        <input class="form-control" @bind="NewMember.PhoneNumber" />
+
+                        <!-- Telephone matcher UserService -->
+                        <input class="form-control"
+                               @bind="NewMember.Telephone" />
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">Center</label>
 
-                        <!-- Mock-data fra Centers-listen.
-                             Senere bør listen hentes fra CenterService/API. -->
-                        <select class="form-select" @bind="SelectedCenterName">
-                            <option value="">Vælg center</option>
+                        <!-- Center vælges stadig lokalt i frontend.
+                             Når CenterService/FacilityService kobles på,
+                             bør Affiliation sættes ud fra rigtigt center-id. -->
+                        <select class="form-select"
+                                @bind="SelectedCenterName">
+
+                            <option value="">
+                                Vælg center
+                            </option>
+
                             @foreach (var center in Centers)
                             {
-                                <option value="@center.Name">@center.Name</option>
+                                <option value="@center.Name">
+                                    @center.Name
+                                </option>
                             }
+
                         </select>
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">Medlemskabstype</label>
 
-                        <!-- Mock-data fra MembershipTypes-listen.
-                             Senere bør medlemskabstyper/priser hentes fra backend. -->
-                        <select class="form-select" @bind="NewMember.MembershipType">
-                            <option value="">Vælg medlemskabstype</option>
-                            @foreach (var membershipType in MembershipTypes)
-                            {
-                                <option value="@membershipType.Name">
-                                    @membershipType.Name - @membershipType.MonthlyPrice kr./md.
-                                </option>
-                            }
+                        <!-- VIGTIGT:
+                             UserService bruger enum værdierne Standard og Premium.
+                             Derfor skal værdierne matche backend-navnene. -->
+                        <select class="form-select"
+                                @bind="NewMember.MembershipType">
+
+                            <option value="">
+                                Vælg medlemskabstype
+                            </option>
+
+                            <option value="Standard">
+                                Standard
+                            </option>
+
+                            <option value="Premium">
+                                Premium
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Ekstra medlemsvalg</label>
+
+                        <!-- VIGTIGT:
+                             UserService bruger enum værdierne Swimming og Pizza.
+                             Derfor skal værdierne matche backend-navnene. -->
+                        <select class="form-select"
+                                @bind="NewMember.MembershipOptional">
+
+                            <option value="Swimming">
+                                Swimming
+                            </option>
+
+                            <option value="Pizza">
+                                Pizza
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Aktivt medlemskab</label>
+
+                        <!-- ActiveMembership matcher UserService -->
+                        <select class="form-select"
+                                @bind="NewMember.ActiveMembership">
+
+                            <option value="true">Ja</option>
+                            <option value="false">Nej</option>
+
                         </select>
                     </div>
 
                     <div class="col-md-12">
                         <label class="form-label">Betalingsform</label>
 
-                        <!-- PaymentInfo bruges kun som frontend/UI-model lige nu.
-                             Senere bør betaling håndteres via betalingsservice eller betalingsudbyder. -->
-                        <select class="form-select" @bind="Payment.PaymentMethod">
-                            <option value="">Vælg betalingsform</option>
-                            <option>Dankort - kunden scanner kort på terminalen</option>
-                            <option>MobilePay - kunden scanner QR</option>
-                            <option>Faktura - kunden modtager faktura på mail</option>
+                        <!-- PaymentInfo holdes adskilt fra Member -->
+                        <!-- Betaling bør senere håndteres af separat betalingsservice/payment provider -->
+                        <select class="form-select"
+                                @bind="Payment.PaymentMethod">
+
+                            <option value="">
+                                Vælg betalingsform
+                            </option>
+
+                            <option>
+                                Dankort - kunden scanner kort på terminalen
+                            </option>
+
+                            <option>
+                                MobilePay - kunden scanner QR
+                            </option>
+
+                            <option>
+                                Faktura - kunden modtager faktura på mail
+                            </option>
+
                         </select>
                     </div>
 
                 </div>
 
-                <!-- Midlertidig UI-feedback.
-                     Senere kan denne besked komme fra MemberService/API response. -->
+                <!-- Feedback til medarbejderen -->
                 @if (!string.IsNullOrWhiteSpace(Message))
                 {
                     <div class="alert alert-info mt-4">
@@ -121,13 +199,19 @@
                 }
 
                 <div class="d-flex gap-3 mt-4">
-                    <button class="btn btn-success px-4" @onclick="CreateNewMember">
+
+                    <!-- Opretter medlem via MemberService -->
+                    <!-- MemberService kalder videre til UserService API -->
+                    <button class="btn btn-success px-4"
+                            @onclick="CreateNewMember">
                         Opret medlem
                     </button>
 
-                    <a href="/manage-members" class="btn btn-outline-secondary px-4">
+                    <a href="/manage-members"
+                       class="btn btn-outline-secondary px-4">
                         Afbryd
                     </a>
+
                 </div>
 
             </div>
@@ -140,116 +224,111 @@
 </div>
 
 @code {
-    // NewMember samler alle medlemsoplysninger fra formularen.
-    // Senere kan dette objekt sendes til MemberService.CreateMemberAsync().
-    private Member NewMember = new()
-    {
-        BirthDate = DateTime.Today,
-        MemberSince = DateTime.Today,
-        PaymentStatus = "Betalt"
-    };
 
-    // PaymentInfo holder betalingsvalg adskilt fra Member.
-    // Det er vigtigt, fordi betaling senere typisk håndteres af en separat betalingsservice.
+    // NewMember samler alle oplysninger fra formularen
+    // Modellen matcher nu UserService/Ubiquitous Language
+    private Member NewMember = CreateEmptyMember();
+
+    // Betalingsvalg holdes separat fra Member
+    // Betaling håndteres sandsynligvis af separat service senere
     private PaymentInfo Payment = new();
 
     private string SelectedCenterName = "";
+
     private string Message = "";
 
-    // Mock-data til prototype.
-    // TODO: Erstat med CenterService.GetCentersAsync(), når backend/microservice er klar.
+    // Midlertidig mock-data til center-valg
+    // TODO:
+    // Hent centre via CenterService/FacilityService senere
     private List<Center> Centers = new()
     {
-        new Center
-        {
-            Name = "Aarhus C",
-            City = "Aarhus",
-            Address = "Eksempelvej 1"
-        },
-        new Center
-        {
-            Name = "Randers",
-            City = "Randers",
-            Address = "Eksempelvej 2"
-        },
-        new Center
-        {
-            Name = "Silkeborg",
-            City = "Silkeborg",
-            Address = "Eksempelvej 3"
-        },
-        new Center
-        {
-            Name = "Horsens",
-            City = "Horsens",
-            Address = "Eksempelvej 4"
-        },
-        new Center
-        {
-            Name = "Vejle",
-            City = "Vejle",
-            Address = "Eksempelvej 5"
-        },
-        new Center
-        {
-            Name = "Skanderborg",
-            City = "Skanderborg",
-            Address = "Eksempelvej 6"
-        }
+        new Center { Name = "Aarhus C", City = "Aarhus", Address = "Eksempelvej 1" },
+        new Center { Name = "Randers", City = "Randers", Address = "Eksempelvej 2" },
+        new Center { Name = "Silkeborg", City = "Silkeborg", Address = "Eksempelvej 3" },
+        new Center { Name = "Horsens", City = "Horsens", Address = "Eksempelvej 4" },
+        new Center { Name = "Vejle", City = "Vejle", Address = "Eksempelvej 5" },
+        new Center { Name = "Skanderborg", City = "Skanderborg", Address = "Eksempelvej 6" }
     };
 
-    // Mock-data til prototype.
-    // TODO: Erstat med MembershipService/API, så priser og typer ikke ligger hardcoded i UI.
-    private List<MembershipType> MembershipTypes = new()
+    private async Task CreateNewMember()
     {
-        new MembershipType
-        {
-            Name = "Basis",
-            Description = "Adgang til center og basis træningsfaciliteter.",
-            MonthlyPrice = 199
-        },
-        new MembershipType
-        {
-            Name = "Plus",
-            Description = "Adgang til center, holdtræning og digitale træningsprogrammer.",
-            MonthlyPrice = 299
-        },
-        new MembershipType
-        {
-            Name = "Premium",
-            Description = "Adgang til alle faciliteter, hold og ekstra personlig træning.",
-            MonthlyPrice = 399
-        }
-    };
-
-    private void CreateNewMember()
-    {
-        // Simpel frontend-validering.
-        // Senere bør backend også validere data, før medlemmet gemmes i databasen.
-        if (string.IsNullOrWhiteSpace(NewMember.FirstName) ||
-            string.IsNullOrWhiteSpace(NewMember.LastName) ||
+        // Simpel frontend-validering
+        // Backend/UserService bør også validere data før det gemmes i Cosmos DB
+        if (string.IsNullOrWhiteSpace(NewMember.GivenName) ||
+            string.IsNullOrWhiteSpace(NewMember.FamilyName) ||
             string.IsNullOrWhiteSpace(NewMember.Email) ||
+            string.IsNullOrWhiteSpace(NewMember.Telephone) ||
             string.IsNullOrWhiteSpace(SelectedCenterName) ||
             string.IsNullOrWhiteSpace(NewMember.MembershipType) ||
+            string.IsNullOrWhiteSpace(NewMember.MembershipOptional) ||
             string.IsNullOrWhiteSpace(Payment.PaymentMethod))
         {
-            Message = "Udfyld fornavn, efternavn, email, center, medlemskabstype og betalingsform.";
+            Message = "Udfyld fornavn, efternavn, email, telefonnummer, center, medlemskabstype, tilvalg og betalingsform.";
             return;
         }
 
-        // Midlertidig prototype-handling.
-        // TODO: Erstat med kald til MemberService/CreateMember API.
-        Message = $"Medlemmet {NewMember.FirstName} {NewMember.LastName} er oprettet.";
+        // UserService kræver Affiliation som Guid.
+        // Lige nu mappes center-valget midlertidigt til faste test-id'er.
+        // TODO:
+        // Når FacilityService/CenterService er klar, bør dette komme fra rigtige center-id'er.
+        NewMember.Affiliation = GetAffiliationFromSelectedCenter();
 
-        // Nulstiller formularen efter oprettelse.
-        NewMember = new Member
+        // Sikrer at bruger og medlemskab oprettes som aktive
+        NewMember.ActiveUser = true;
+        NewMember.ActiveMembership = true;
+        NewMember.RoleName = "Member";
+        NewMember.PartitionKey = "users";
+        NewMember.StartDate = DateTime.Today;
+        NewMember.DateModified = DateTime.Now;
+
+        try
         {
-            BirthDate = DateTime.Today,
-            MemberSince = DateTime.Today,
-            PaymentStatus = "Betalt"
-        };
+            // Kalder frontend MemberService
+            // MemberService sender POST request til UserService:
+            // POST /member/UpsertMember
+            var createdMember = await MemberService.CreateMemberAsync(NewMember);
 
-        Payment = new PaymentInfo();
-        SelectedCenterName = "";
+            Message = $"Medlemmet {createdMember.GivenName} {createdMember.FamilyName} er oprettet.";
+
+            // Nulstiller formularen efter succesfuld oprettelse
+            NewMember = CreateEmptyMember();
+            Payment = new PaymentInfo();
+            SelectedCenterName = "";
+        }
+        catch
+        {
+            Message = "Medlemmet kunne ikke oprettes via UserService API.";
+        }
+    }
+
+    // Opretter et tomt Member-objekt med standardværdier
+    private static Member CreateEmptyMember()
+    {
+        return new Member
+        {
+            PartitionKey = "users",
+            RoleName = "Member",
+            BirthDate = DateTime.Today,
+            StartDate = DateTime.Today,
+            ActiveMembership = true,
+            ActiveUser = true,
+            MembershipOptional = "Swimming"
+        };
+    }
+
+    // Midlertidig mapping mellem center-navn og UserService Affiliation Guid
+    // Disse id'er matcher testdata-strukturen fra UserService
+    private Guid GetAffiliationFromSelectedCenter()
+    {
+        return SelectedCenterName switch
+        {
+            "Aarhus C" => Guid.Parse("11111111-1111-1111-1111-111111111111"),
+            "Randers" => Guid.Parse("11111111-1111-1111-1111-111111111112"),
+            "Silkeborg" => Guid.Parse("11111111-1111-1111-1111-111111111112"),
+            "Horsens" => Guid.Parse("11111111-1111-1111-1111-111111111112"),
+            "Vejle" => Guid.Parse("11111111-1111-1111-1111-111111111112"),
+            "Skanderborg" => Guid.Parse("11111111-1111-1111-1111-111111111112"),
+            _ => Guid.Parse("11111111-1111-1111-1111-111111111111")
+        };
     }
 }

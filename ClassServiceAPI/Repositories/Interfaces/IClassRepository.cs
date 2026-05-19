@@ -5,28 +5,28 @@ namespace ClassServiceAPI.Repositories.Interfaces;
 public interface IClassRepository
 {
     // POST
-    Task CreateClassAsync(Class classModel);
-    Task RegisterMemberToClassByMemberIdAsync(int memberId);
-    Task RegisterMemberToWaitingListByMemberIdAsync(int memberId);
     
-    
+    Task<Class> CreateClassAsync(Class classModel);
+    Task<Class> RegisterMemberToClassAsync(Guid classId, Member member);
+    Task<Class> RegisterMemberToWaitingListAsync(Guid classId, Member member);
+
     // GET
-    Task GetAllClassesAsync();
-    Task GetAllClassesByExerciseGymAsync(int exerciseGymId);
-    Task GetClassByIdAsync(int id);
-    Task GetClassRatingByIdAsync(int id);
-    Task GetWaitingListByClassAsync(int id);
-    Task GetRegisteredByClassAsync(int id);
-    Task GetNumberOfAttendeesByClassAsync(int id);
-    Task CalculateAbsenceByClassAsync(int id);
     
-   
+    Task<List<Class>> GetAllClassesAsync();
+    Task<List<Class>> GetAllClassesByExerciseGymAsync(Guid exerciseGymId);
+    Task<Class?> GetClassByIdAsync(Guid id);
+    Task<List<Member>> GetWaitingListByClassAsync(Guid classId);
+    Task<List<Member>> GetRegisteredByClassAsync(Guid classId);
+    Task<int> GetNumberOfAttendeesByClassAsync(Guid classId);
+    Task<int> CalculateAbsenceByClassAsync(Guid classId);
+
     // PUT
-    Task CancelClassByIdAsync(int id);
-    Task RateClassByIdAsync(int id, double rating);
-    Task UnRegisterMemberFromClassByClassAndMemberAsync(int memberId, int classId);
-    Task UnRegisterMemberFromWaitingListByClassAndMemberAsync(int memberId, int classId);
     
+    Task<Class> CancelClassByIdAsync(Guid id);
+    Task<Class> UnRegisterMemberFromClassAsync(Guid classId, Guid memberId);
+    Task<Class> UnRegisterMemberFromWaitingListAsync(Guid classId, Guid memberId);
+
     // DELETE
-    Task DeleteClassByIdAsync(int id);
+    
+    Task<Class> DeleteClassByIdAsync(Guid id);
 }
