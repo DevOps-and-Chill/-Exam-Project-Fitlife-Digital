@@ -1,116 +1,87 @@
+using System.Net.Http.Json;
 using FitLife.Frontend.Models;
 
 namespace FitLife.Frontend.Services;
 
 public class MemberService
 {
-    // Denne service håndterer medlemsdata i frontend-prototypen.
-    // Service-laget fungerer som bindeled mellem UI og data.
-    // TODO:
-    // Senere skal denne service kommunikere med backend/API/database.
+    // HttpClient bruges til at kommunikere med backend APIs.
+    // Her bruges den til at kalde UserService.
+    private readonly HttpClient _httpClient;
 
-    // Midlertidig mock data til medlemmer
-    // TODO:
-    // Skal senere hentes fra backend/database.
-    private readonly List<Member> _members = new()
+    public MemberService(IHttpClientFactory httpClientFactory)
     {
-        new Member
+        // Opretter HttpClient med base URL fra Program.cs/appsettings.json.
+        // Base URL peger på UserService.
+        _httpClient = httpClientFactory.CreateClient("UserService");
+    }
+
+    // Henter medlemmer direkte fra UserService.
+    // Kalder endpoint:
+    // GET /member/GetAllMembers
+    public async Task<List<Member>> GetMembersAsync()
+    {
+        try
         {
-            FirstName = "Jonas",
-            LastName = "Madsen",
-            Address = "Munkeallé 27",
-            PostalCode = "8000",
-            City = "Aarhus",
-            Email = "jonas@example.com",
-            PhoneNumber = "12345678",
-            BirthDate = new DateTime(1999, 4, 12),
+            var members =
+                await _httpClient.GetFromJsonAsync<List<Member>>(
+                    "/member/GetAllMembers");
 
-            // Medlemsoplysninger
-            MembershipType = "Plus",
-            PaymentStatus = "Betalt",
-
-            // Viser hvornår medlemmet blev oprettet
-            MemberSince = DateTime.Today.AddMonths(-6),
-
-            // Kobling til personlig træner
-            CurrentPersonalTrainer = "Frederikke"
-        },
-
-        new Member
-        {
-            FirstName = "Frederik",
-            LastName = "Nielsen",
-            Address = "Vestergade 10",
-            PostalCode = "8600",
-            City = "Silkeborg",
-            Email = "frederik@example.com",
-            PhoneNumber = "22334455",
-            BirthDate = new DateTime(1988, 9, 2),
-
-            MembershipType = "Basis",
-            PaymentStatus = "Mangler betaling",
-
-            MemberSince = DateTime.Today.AddYears(-1),
-
-            CurrentPersonalTrainer = ""
-        },
-
-        new Member
-        {
-            FirstName = "Charlotte",
-            LastName = "Hansen",
-            Address = "Stationsvej 4",
-            PostalCode = "8700",
-            City = "Horsens",
-            Email = "charlotte@example.com",
-            PhoneNumber = "87654321",
-            BirthDate = new DateTime(1974, 1, 20),
-
-            MembershipType = "Premium",
-            PaymentStatus = "Betalt",
-
-            MemberSince = DateTime.Today.AddYears(-3),
-
-            CurrentPersonalTrainer = "Mikkel"
+            return members ?? new List<Member>();
         }
-    };
-
-    // Returnerer alle medlemmer
-    // Bruges af frontend til medlemsoversigter.
-    // TODO:
-    // Senere skal medlemmer hentes via API/database.
-    public List<Member> GetMembers()
-    {
-        return _members;
+        catch (Exception ex)
+        {
+            throw new Exception(
+                $"Kunne ikke hente medlemmer fra UserService. Fejl: {ex.Message}",
+                ex);
+        }
     }
 
-    // Opretter et nyt medlem
-    // TODO:
-    // Senere skal medlemmet gemmes i backend/database.
-    public string CreateMember(Member member)
+    // Opretter eller opdaterer et medlem via UserService.
+    // Kalder endpoint:
+    // POST /member/UpsertMember
+    public async Task<Member> CreateMemberAsync(Member member)
     {
-        // Sætter oprettelsesdato automatisk
-        member.MemberSince = DateTime.Today;
+        try
+        {
+            var response =
+                await _httpClient.PostAsJsonAsync(
+                    "/member/UpsertMember",
+                    member);
 
-        // Tilføjer medlem til mock-listen
-        _members.Add(member);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage =
+                    await response.Content.ReadAsStringAsync();
 
-        return $"Medlemmet {member.FirstName} {member.LastName} er oprettet.";
+                throw new Exception(
+                    $"UserService returnerede fejl: {(int)response.StatusCode} {response.ReasonPhrase}. {errorMessage}");
+            }
+
+            var createdMember =
+                await response.Content.ReadFromJsonAsync<Member>();
+
+            return createdMember ?? member;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(
+                $"Kunne ikke oprette medlem via UserService. Fejl: {ex.Message}",
+                ex);
+        }
     }
 
-    // Gemmer ændringer på et medlem
-    // TODO:
-    // Senere skal ændringer sendes til backend/API.
+    // Midlertidig lokal funktion.
+    // TODO: Senere bør denne sende PUT/PATCH request til UserService.
     public string SaveMember(Member member)
     {
-        return $"Ændringer for {member.FirstName} {member.LastName} er gemt.";
+        return $"Ændringer for {member.GivenName} {member.FamilyName} er gemt.";
     }
 
-    // Midlertidig betalingsmetode-funktion
-    // TODO:
-    // Skal senere integreres med rigtig betalingsservice/payment provider.
+    // Midlertidig prototypefunktion.
+    // TODO: Skal senere integreres med rigtig betalingsservice/payment provider.
     public string UpdatePaymentMethod(Member member)
     {
-        return $"Betalingsmiddel for {member.FirstName} {member.LastName} kan opdateres senere via betalingsintegration.";
+        return $"Betalingsmiddel for {member.GivenName} {member.FamilyName} kan opdateres senere via betalingsintegration.";
     }
 }

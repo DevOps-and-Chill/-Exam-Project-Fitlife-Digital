@@ -75,17 +75,20 @@
     private List<Center> Centers = new();
     private string Message = "";
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        // Henter centerdata fra service-laget.
-        // Lige nu er det mock data, senere kan CenterService hente fra backend/API.
-        Centers = CenterService.GetCenters();
+        try
+        {
+            Centers = await CenterService.GetCentersAsync();
+        }
+        catch (Exception ex)
+        {
+            Message = $"Kunne ikke hente centre fra FacilityService. Fejl: {ex.Message}";
+        }
     }
 
     private void SelectCenter(Center center)
     {
-        // Midlertidig prototype-handling.
-        // Senere kan valgt center gemmes på brugerprofilen eller bruges som filter.
         Message = $"{center.Name} er valgt som dit center.";
     }
 }

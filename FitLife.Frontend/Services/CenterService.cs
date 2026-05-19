@@ -1,49 +1,37 @@
+using System.Net.Http.Json;
 using FitLife.Frontend.Models;
 
 namespace FitLife.Frontend.Services;
 
 public class CenterService
 {
-    // Denne service håndterer centre i frontend-prototypen.
-    // TODO:
-    // Senere skal data hentes fra backend/API/database.
+    // HttpClient bruges til at kommunikere med FacilityService API
+    private readonly HttpClient _httpClient;
 
-    // Midlertidig mock data til centre
-    private readonly List<Center> _centers = new()
+    public CenterService(IHttpClientFactory httpClientFactory)
     {
-        new Center
-        {
-            Name = "Aarhus C",
-            City = "Aarhus",
-            Address = "Banegårdsgade 12"
-        },
+        // Opretter HttpClient med base URL fra Program.cs/appsettings.json
+        _httpClient = httpClientFactory.CreateClient("FacilityService");
+    }
 
-        new Center
+    // Henter alle centre fra FacilityService
+    // Kalder endpoint:
+    // GET /Facility/getfacilities
+    public async Task<List<Center>> GetCentersAsync()
+    {
+        try
         {
-            Name = "Randers",
-            City = "Randers",
-            Address = "Vestergade 24"
-        },
+            var centers =
+                await _httpClient.GetFromJsonAsync<List<Center>>(
+                    "Facility/getfacilities");
 
-        new Center
-        {
-            Name = "Silkeborg",
-            City = "Silkeborg",
-            Address = "Torvet 8"
-        },
-
-        new Center
-        {
-            Name = "Horsens",
-            City = "Horsens",
-            Address = "Søndergade 17"
+            return centers ?? new List<Center>();
         }
-    };
-
-    // Returnerer alle centre
-    // Bruges af frontend til centeroversigter.
-    public List<Center> GetCenters()
-    {
-        return _centers;
+        catch (Exception ex)
+        {
+            throw new Exception(
+                $"Kunne ikke hente centre fra FacilityService. Fejl: {ex.Message}",
+                ex);
+        }
     }
 }
