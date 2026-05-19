@@ -14,11 +14,13 @@ namespace UserServiceAPI.Repositories
         public Task<bool> DeleteUser(string userId)
         {
             string userRole = users.SingleOrDefault(u => u.Id == userId).RoleName.ToString();
-            if(userRole == null)
+
+            if (userRole == null)
             {
                 return Task.FromResult(false);
             }
-            if(userRole == "Member")
+
+            if (userRole == "Member")
             {
                 var memberToRemove = members.SingleOrDefault(m => m.Id == userId);
                 members.Remove(memberToRemove);
@@ -34,9 +36,28 @@ namespace UserServiceAPI.Repositories
 
             return Task.FromResult(false);
         }
+
         public Task<List<User>> GetAllUsers()
         {
             return Task.FromResult(users);
+        }
+
+        public Task<User?> GetUserById(string userId)
+        {
+            var user = users
+                .FirstOrDefault(u => u.Id == userId);
+
+            return Task.FromResult(user);
+        }
+
+        public Task<string?> GetUserIdByEmail(string email)
+        {
+            var userId = users
+                .Where(u => u.Email == email)
+                .Select(u => u.Id)
+                .FirstOrDefault();
+
+            return Task.FromResult(userId);
         }
 
         public Task<List<User>> GetUsersInExerciseGymByRole(Guid exerciseGymId, string role)
@@ -83,20 +104,21 @@ namespace UserServiceAPI.Repositories
                 userToUpsert.RoleName,
                 userToUpsert.GivenName,
                 userToUpsert.FamilyName,
+                userToUpsert.BirthDate,
                 userToUpsert.Address,
                 userToUpsert.Telephone,
                 userToUpsert.Email,
                 userToUpsert.Affiliation,
                 userToUpsert.ActiveUser);
 
-            if(userToUpsert.RoleName.ToString() == "Member")
+            if (userToUpsert.RoleName.ToString() == "Member")
             {
-                
-            }
 
+            }
 
             return Task.FromResult(existingUser);
         }
+
         /// <summary>
         /// Used to get all users connected to a facility
         /// </summary>

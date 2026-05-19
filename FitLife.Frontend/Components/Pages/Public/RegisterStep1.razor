@@ -1,6 +1,7 @@
 @page "/register-step1"
 @rendermode InteractiveServer
 @using FitLife.Frontend.Models
+@using FitLife.Frontend.Services
 
 <div class="container-fluid px-0">
 
@@ -9,173 +10,96 @@
 
     <section class="container py-5">
 
-        <!-- Titel og hjælpelink -->
         <div class="d-flex justify-content-between align-items-center mb-4">
-
-            <h2>
-                Opret medlemskab
-            </h2>
+            <h2>Opret medlemskab</h2>
 
             <!-- Prototype-knap -->
-            <!-- TODO:
-                 Kan senere åbne support/chat/hjælpesektion -->
+            <!-- TODO: Kan senere åbne support/chat/hjælpesektion -->
             <button class="btn btn-outline-secondary">
                 Hjælp mig
             </button>
-
         </div>
 
         <!-- Step-indikator -->
-        <!-- Viser hvor langt brugeren er i registreringen -->
         <div class="row mb-4 text-center">
-
             <div class="col">
-
                 <div class="border rounded p-3 bg-success text-white">
-
                     Trin 1<br />
                     Personlige informationer
-
                 </div>
-
             </div>
 
             <div class="col">
-
                 <div class="border rounded p-3 bg-light">
-
                     Trin 2<br />
                     Vælg medlemskabstype
-
                 </div>
-
             </div>
 
             <div class="col">
-
                 <div class="border rounded p-3 bg-light">
-
                     Trin 3<br />
                     Betalingsoplysninger
-
                 </div>
-
             </div>
-
         </div>
 
         <!-- Registreringsformular -->
         <div class="card shadow-sm">
-
             <div class="card-body p-4">
 
                 <div class="row g-3">
 
-                    <!-- Alle inputs er bundet direkte til NewMember-modellen -->
-                    <!-- Dette gør koden mere domain-driven og klar til backend -->
-
+                    <!-- Felterne matcher nu Member-modellen fra frontend/UserService -->
                     <div class="col-md-6">
-
-                        <label class="form-label">
-                            Fornavn
-                        </label>
-
+                        <label class="form-label">Fornavn</label>
                         <input class="form-control"
-                               @bind="NewMember.FirstName" />
+                               @bind="NewMember.GivenName" />
                     </div>
 
                     <div class="col-md-6">
-
-                        <label class="form-label">
-                            Efternavn
-                        </label>
-
+                        <label class="form-label">Efternavn</label>
                         <input class="form-control"
-                               @bind="NewMember.LastName" />
+                               @bind="NewMember.FamilyName" />
                     </div>
 
-                    <div class="col-md-8">
-
-                        <label class="form-label">
-                            Adresse
-                        </label>
-
+                    <div class="col-md-12">
+                        <label class="form-label">Adresse</label>
                         <input class="form-control"
                                @bind="NewMember.Address" />
                     </div>
 
-                    <div class="col-md-4">
-
-                        <label class="form-label">
-                            Postnr.
-                        </label>
-
-                        <input class="form-control"
-                               @bind="NewMember.PostalCode" />
-                    </div>
-
                     <div class="col-md-6">
-
-                        <label class="form-label">
-                            By
-                        </label>
-
-                        <input class="form-control"
-                               @bind="NewMember.City" />
-                    </div>
-
-                    <div class="col-md-6">
-
-                        <label class="form-label">
-                            Fødselsdag
-                        </label>
-
+                        <label class="form-label">Fødselsdag</label>
                         <input class="form-control"
                                type="date"
                                @bind="NewMember.BirthDate" />
                     </div>
 
                     <div class="col-md-6">
-
-                        <label class="form-label">
-                            E-mailadresse
-                        </label>
-
+                        <label class="form-label">E-mailadresse</label>
                         <input class="form-control"
                                type="email"
                                @bind="NewMember.Email" />
                     </div>
 
                     <div class="col-md-6">
-
-                        <label class="form-label">
-                            Telefonnummer
-                        </label>
-
+                        <label class="form-label">Telefonnummer</label>
                         <input class="form-control"
-                               @bind="NewMember.PhoneNumber" />
+                               @bind="NewMember.Telephone" />
                     </div>
 
                     <!-- Password ligger separat fra Member-modellen -->
-                    <!-- Dette er normalt i mange systemer,
-                         da password typisk håndteres af auth-system -->
+                    <!-- TODO: Skal senere hashes/sendes til authentication service -->
                     <div class="col-md-6">
-
-                        <label class="form-label">
-                            Password
-                        </label>
-
+                        <label class="form-label">Password</label>
                         <input class="form-control"
                                type="password"
                                @bind="Password" />
                     </div>
 
                     <div class="col-md-6">
-
-                        <label class="form-label">
-                            Gentag password
-                        </label>
-
+                        <label class="form-label">Gentag password</label>
                         <input class="form-control"
                                type="password"
                                @bind="RepeatPassword" />
@@ -183,7 +107,6 @@
 
                 </div>
 
-                <!-- Feedback til bruger -->
                 @if (!string.IsNullOrWhiteSpace(Message))
                 {
                     <div class="alert alert-warning mt-4">
@@ -192,18 +115,14 @@
                 }
 
                 <div class="d-flex justify-content-between mt-4">
-
-                    <!-- Tilbage til forsiden -->
                     <a href="/" class="btn btn-outline-secondary">
                         Tilbage
                     </a>
 
-                    <!-- Går videre til trin 2 -->
                     <button class="btn btn-success px-4"
                             @onclick="GoToNextStep">
                         Næste
                     </button>
-
                 </div>
 
             </div>
@@ -216,55 +135,50 @@
 </div>
 
 @code {
+    // Medlemsdata gemmes nu i RegistrationStateService,
+    // så informationer bevares mellem step 1, 2 og 3.
+    private Member NewMember = new();
 
-    // Member-modellen samler alle medlemsoplysninger ét sted
-    // TODO:
-    // Skal senere sendes til backend/API ved registrering
-    private Member NewMember = new()
-    {
-        // Standardværdier
-        BirthDate = DateTime.Today,
-        MemberSince = DateTime.Today
-    };
-
-    // Password håndteres separat fra Member-modellen
-    // TODO:
-    // Skal senere hashes/sendes til authentication service
+    // Password håndteres separat fra Member-modellen.
+    // TODO: Skal senere hashes/sendes til authentication service.
     private string Password = "";
 
     private string RepeatPassword = "";
 
-    // Feedback til bruger
     private string Message = "";
 
     [Inject]
-
-    // Bruges til navigation mellem sider
     private NavigationManager Navigation { get; set; } = default!;
 
-    // Validerer trin 1 og sender brugeren videre
+    [Inject]
+    private RegistrationStateService RegistrationState { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        // Henter medlemsdata fra shared registration state.
+        NewMember = RegistrationState.Member;
+    }
+
     private void GoToNextStep()
     {
-        // Simpel validering af obligatoriske felter
-        if (string.IsNullOrWhiteSpace(NewMember.FirstName) ||
-            string.IsNullOrWhiteSpace(NewMember.LastName) ||
+        // Simpel validering af obligatoriske felter.
+        if (string.IsNullOrWhiteSpace(NewMember.GivenName) ||
+            string.IsNullOrWhiteSpace(NewMember.FamilyName) ||
             string.IsNullOrWhiteSpace(NewMember.Email))
         {
             Message = "Udfyld som minimum fornavn, efternavn og email.";
             return;
         }
 
-        // Sikrer at passwords matcher
         if (Password != RepeatPassword)
         {
             Message = "Password og gentag password skal være ens.";
             return;
         }
 
-        // TODO:
-        // Senere kan NewMember gemmes midlertidigt i state/service/session storage
+        // Gemmer medlemsdata i shared registration state.
+        RegistrationState.Member = NewMember;
 
-        // Går videre til næste trin i registreringen
         Navigation.NavigateTo("/register-step2");
     }
 }

@@ -23,6 +23,20 @@ namespace UserServiceAPI
                 // Ryd eksisterende logging providers og brug NLog i stedet
                 builder.Logging.ClearProviders();
                 builder.Host.UseNLog();
+                options.UseCosmos(
+                builder.Configuration["CosmosDb:AccountEndpoint"]!,
+                builder.Configuration["CosmosDb:AccountKey"]!,
+                builder.Configuration["CosmosDb:DatabaseName"]!);
+            });
+
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(
+                new System.Text.Json.Serialization.JsonStringEnumConverter());
+            });
+            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+            builder.Services.AddOpenApi();
 
                 builder.Services.AddScoped<IUserRepository, UserRepositoryDB>();
                 builder.Services.AddScoped<IMemberRepository, MemberRepositoryDB>();
@@ -70,6 +84,14 @@ namespace UserServiceAPI
                 // Sørg for at alle logs bliver skrevet færdigt før applikationen lukker
                 NLog.LogManager.Shutdown();
             }
+
+            app.UseHttpsRedirection();
+
+            app.UseAuthorization();
+
+            app.MapControllers();
+
+            app.Run();
         }
     }
 }

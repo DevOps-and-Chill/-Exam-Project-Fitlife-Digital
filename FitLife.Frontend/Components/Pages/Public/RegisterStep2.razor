@@ -1,6 +1,7 @@
 @page "/register-step2"
 @rendermode InteractiveServer
 @using FitLife.Frontend.Models
+@using FitLife.Frontend.Services
 
 <div class="container-fluid px-0">
 
@@ -9,82 +10,55 @@
 
     <section class="container py-5">
 
-        <!-- Titel og hjælpelink -->
         <div class="d-flex justify-content-between align-items-center mb-4">
-
-            <h2>
-                Opret medlemskab
-            </h2>
+            <h2>Opret medlemskab</h2>
 
             <!-- Prototype-knap -->
-            <!-- TODO:
-                 Kan senere åbne support/chat/hjælpesektion -->
+            <!-- TODO: Kan senere åbne support/chat/hjælpesektion -->
             <button class="btn btn-outline-secondary">
                 Hjælp mig
             </button>
-
         </div>
 
         <!-- Step-indikator -->
         <div class="row mb-4 text-center">
-
             <div class="col">
-
                 <div class="border rounded p-3 bg-light">
-
                     Trin 1<br />
                     Personlige informationer
-
                 </div>
-
             </div>
 
             <div class="col">
-
                 <div class="border rounded p-3 bg-success text-white">
-
                     Trin 2<br />
                     Vælg medlemskabstype
-
                 </div>
-
             </div>
 
             <div class="col">
-
                 <div class="border rounded p-3 bg-light">
-
                     Trin 3<br />
                     Betalingsoplysninger
-
                 </div>
-
             </div>
-
         </div>
 
         <div class="row g-4">
 
             <!-- Valg af center og medlemskab -->
             <div class="col-md-8">
-
                 <div class="card shadow-sm">
-
                     <div class="card-body p-4">
 
-                        <h4 class="mb-3">
-                            Vælg center/centre
-                        </h4>
+                        <h4 class="mb-3">Vælg center</h4>
 
-                        <!-- Dropdown med centre -->
-                        <!-- TODO:
-                             Senere skal centre hentes fra backend/API -->
+                        <!-- Midlertidig dropdown med centre -->
+                        <!-- TODO: Senere skal centre hentes fra FacilityService/backend -->
                         <select class="form-select mb-4"
                                 @bind="SelectedCenterName">
 
-                            <option value="">
-                                Vælg center
-                            </option>
+                            <option value="">Vælg center</option>
 
                             @foreach (var center in Centers)
                             {
@@ -92,53 +66,44 @@
                                     @center.Name
                                 </option>
                             }
-
                         </select>
 
-                        <h4 class="mb-3">
-                            Vælg medlemskabstype
-                        </h4>
+                        <h4 class="mb-3">Vælg medlemskabstype</h4>
 
-                        <!-- Liste over medlemskabstyper -->
-                        <!-- TODO:
-                             Skal senere hentes fra backend/API -->
+                        <!-- Midlertidige medlemskabstyper -->
+                        <!-- TODO: Skal senere enten mappes til backend enum eller hentes fra backend -->
                         <div class="list-group mb-4">
 
                             @foreach (var membershipType in MembershipTypes)
                             {
-                                <button class="list-group-item list-group-item-action"
+                                <button type="button"
+                                        class="list-group-item list-group-item-action @(SelectedMembership == membershipType ? "active" : "")"
                                         @onclick="() => SelectMembership(membershipType)">
 
                                     <div class="d-flex justify-content-between">
-
-                                        <span>
-                                            @membershipType.Name medlemskab
-                                        </span>
+                                        <span>@membershipType.Name medlemskab</span>
 
                                         <strong>
                                             @membershipType.MonthlyPrice kr./md.
                                         </strong>
-
                                     </div>
 
-                                    <small class="text-muted">
+                                    <small>
                                         @membershipType.Description
                                     </small>
 
                                 </button>
                             }
-
                         </div>
 
-                        <!-- Tilvalg -->
-                        <h4 class="mb-3">
-                            Vælg tilvalg
-                        </h4>
+                        <h4 class="mb-3">Vælg tilvalg</h4>
 
-                        <!-- Checkbox er bundet direkte til bools -->
-                        <!-- Når værdien ændres opdateres TotalPrice automatisk -->
+                        <!-- TODO:
+                             UserService backend har lige nu MembershipOptional som enum:
+                             Swimming eller Pizza.
+                             Personlig træning og digital træning findes ikke som backend-tilvalg endnu.
+                             Derfor bruges disse kun som prototypevalg lige nu. -->
                         <div class="form-check">
-
                             <input class="form-check-input"
                                    type="checkbox"
                                    @bind="PersonalTrainingAddon" />
@@ -146,11 +111,9 @@
                             <label class="form-check-label">
                                 Personlig træning +150 kr./md.
                             </label>
-
                         </div>
 
                         <div class="form-check">
-
                             <input class="form-check-input"
                                    type="checkbox"
                                    @bind="DigitalTrainingAddon" />
@@ -158,10 +121,8 @@
                             <label class="form-check-label">
                                 Digital træning +50 kr./md.
                             </label>
-
                         </div>
 
-                        <!-- Feedback til bruger -->
                         @if (!string.IsNullOrWhiteSpace(Message))
                         {
                             <div class="alert alert-warning mt-4">
@@ -175,47 +136,27 @@
 
             <!-- Oversigt over brugerens valg -->
             <div class="col-md-4">
-
                 <div class="card shadow-sm">
-
                     <div class="card-body p-4">
 
-                        <h4>
-                            Dine valg
-                        </h4>
+                        <h4>Dine valg</h4>
 
-                        <!-- Viser valgt center -->
                         <p>
-
-                            <strong>
-                                Center:
-                            </strong><br />
-
+                            <strong>Center:</strong><br />
                             @(string.IsNullOrWhiteSpace(SelectedCenterName)
                                 ? "Ikke valgt"
                                 : SelectedCenterName)
-
                         </p>
 
-                        <!-- Viser valgt medlemskab -->
                         <p>
-
-                            <strong>
-                                Valgt medlemskabstype:
-                            </strong><br />
-
+                            <strong>Valgt medlemskabstype:</strong><br />
                             @(SelectedMembership is null
                                 ? "Ikke valgt"
                                 : SelectedMembership.Name)
-
                         </p>
 
-                        <!-- Viser valgte tilvalg -->
                         <p>
-
-                            <strong>
-                                Valgte tilvalg:
-                            </strong><br />
+                            <strong>Valgte tilvalg:</strong><br />
 
                             @if (!PersonalTrainingAddon && !DigitalTrainingAddon)
                             {
@@ -226,7 +167,6 @@
                                 @if (PersonalTrainingAddon)
                                 {
                                     <span>Personlig træning</span>
-
                                     <br />
                                 }
 
@@ -235,19 +175,13 @@
                                     <span>Digital træning</span>
                                 }
                             }
-
                         </p>
 
                         <hr />
 
-                        <!-- Beregnet totalpris -->
-                        <h5>
-                            Total pris pr. måned
-                        </h5>
+                        <h5>Total pris pr. måned</h5>
 
-                        <h3>
-                            @TotalPrice kr.
-                        </h3>
+                        <h3>@TotalPrice kr.</h3>
 
                     </div>
                 </div>
@@ -255,9 +189,7 @@
 
         </div>
 
-        <!-- Navigation mellem steps -->
         <div class="d-flex justify-content-between mt-4">
-
             <a href="/register-step1"
                class="btn btn-outline-secondary">
                 Tilbage
@@ -267,7 +199,6 @@
                     @onclick="GoToNextStep">
                 Næste
             </button>
-
         </div>
 
     </section>
@@ -277,29 +208,29 @@
 </div>
 
 @code {
-
-    // Gemmer navnet på det valgte center
+    // Gemmer navnet på det valgte center.
+    // TODO: Senere skal dette mappes til en rigtig Affiliation Guid fra FacilityService.
     private string SelectedCenterName = "";
 
-    // Gemmer det valgte medlemskab
+    // Gemmer det valgte medlemskab i frontend.
     private MembershipType? SelectedMembership;
 
-    // Tilvalg som medlemmet kan aktivere
+    // Prototype-tilvalg.
+    // TODO: Disse skal senere afklares med backend-modellen.
     private bool PersonalTrainingAddon;
 
     private bool DigitalTrainingAddon;
 
-    // Feedback til bruger
     private string Message = "";
 
     [Inject]
-
-    // Bruges til navigation mellem sider
     private NavigationManager Navigation { get; set; } = default!;
 
-    // Midlertidig mock data til centre
-    // TODO:
-    // Skal senere hentes fra backend/API
+    [Inject]
+    private RegistrationStateService RegistrationState { get; set; } = default!;
+
+    // Midlertidig mock data til centre.
+    // TODO: Skal senere hentes fra backend/API.
     private List<Center> Centers = new()
     {
         new Center
@@ -345,74 +276,75 @@
         }
     };
 
-    // Midlertidig mock data til medlemskabstyper
-    // TODO:
-    // Skal senere hentes fra backend/API
+    // Midlertidig mock data til medlemskabstyper.
+    // OBS:
+    // Din backend enum har kun Standard og Premium.
+    // Derfor bør vi senere enten ændre "Basis/Plus/Premium"
+    // eller mappe dem korrekt til backend.
     private List<MembershipType> MembershipTypes = new()
     {
         new MembershipType
         {
-            Name = "Basis",
+            Name = "Standard",
             Description = "Adgang til center og basis træningsfaciliteter.",
             MonthlyPrice = 199
         },
 
         new MembershipType
         {
-            Name = "Plus",
+            Name = "Premium",
             Description = "Adgang til center, holdtræning og digitale træningsprogrammer.",
             MonthlyPrice = 299
-        },
-
-        new MembershipType
-        {
-            Name = "Premium",
-            Description = "Adgang til alle faciliteter, hold og ekstra personlig træning.",
-            MonthlyPrice = 399
         }
     };
 
-    // Beregner totalprisen dynamisk
-    // Computed property opdateres automatisk når værdier ændres
+    protected override void OnInitialized()
+    {
+        // Henter tidligere registreringsdata fra shared state.
+        SelectedCenterName = RegistrationState.SelectedCenterName;
+
+        SelectedMembership = RegistrationState.SelectedMembership;
+
+        PersonalTrainingAddon = RegistrationState.PersonalTrainingAddon;
+
+        DigitalTrainingAddon = RegistrationState.DigitalTrainingAddon;
+    }
+
     private decimal TotalPrice =>
-
         (SelectedMembership?.MonthlyPrice ?? 0) +
-
         (PersonalTrainingAddon ? 150 : 0) +
-
         (DigitalTrainingAddon ? 50 : 0);
 
-    // Gemmer det valgte medlemskab
     private void SelectMembership(MembershipType membershipType)
     {
         SelectedMembership = membershipType;
-
         Message = "";
     }
 
-    // Validerer trin 2 og sender brugeren videre
     private void GoToNextStep()
     {
-        // Sikrer at center er valgt
         if (string.IsNullOrWhiteSpace(SelectedCenterName))
         {
             Message = "Vælg et center.";
-
             return;
         }
 
-        // Sikrer at medlemskab er valgt
         if (SelectedMembership is null)
         {
             Message = "Vælg en medlemskabstype.";
-
             return;
         }
 
-        // TODO:
-        // Senere kan data gemmes midlertidigt i state/service/session storage
+        // Gemmer registreringsdata i shared registration state,
+        // så step 3 kan bruge brugerens valg.
+        RegistrationState.SelectedCenterName = SelectedCenterName;
 
-        // Går videre til sidste step
+        RegistrationState.SelectedMembership = SelectedMembership;
+
+        RegistrationState.PersonalTrainingAddon = PersonalTrainingAddon;
+
+        RegistrationState.DigitalTrainingAddon = DigitalTrainingAddon;
+
         Navigation.NavigateTo("/register-step3");
     }
 }
