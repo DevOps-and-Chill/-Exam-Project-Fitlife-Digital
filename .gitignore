@@ -52,16 +52,25 @@ CodeCoverage/
 [Bb]uild[Ll]og.*
 
 # NUnit
-*.VisualState.xml
+*.VisualState.xmlS
 TestResult.xml
 nunit-*.xml
 /.vs
 /FacilityService/FacilityServiceAPI/.vs/FacilityServiceAPI/CopilotIndices/17.14.1518.61961
 /FacilityService/FacilityServiceAPI/.vs/FacilityServiceAPI/FileContentIndex
 /FacilityService/FacilityServiceAPI/.vs/FacilityServiceAPI/v17
+
+#User-specific files
+*.csproj.user
 /FacilityService/FacilityServiceAPI/.vs/FacilityServiceAPI
 /FacilityService/FacilityServiceAPI/.vs/ProjectEvaluation
 /FacilityService/FacilityServiceAPI/.github
+/FacilityService/.vs/FacilityServiceAPI/CopilotIndices/17.14.1661.41761
+/FacilityService/.github
+/FacilityService/.vs/FacilityServiceAPI/DesignTimeBuild
+/FacilityService/.vs/FacilityServiceAPI/FileContentIndex
+/FacilityService/.vs/FacilityServiceAPI/v17/TestStore/0
+/FacilityService/FacilityServiceAPI/FacilityServiceAPI.csproj.lscache
 /UserService/.vs/UserServiceAPI/CopilotIndices/17.14.1661.41761
 /UserService/.vs/UserServiceAPI/FileContentIndex
 /UserService/.github

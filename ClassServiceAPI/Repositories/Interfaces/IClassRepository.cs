@@ -18,7 +18,7 @@ public interface IClassRepository
     Task<List<Member>> GetWaitingListByClassAsync(Guid classId);
     Task<List<Member>> GetRegisteredByClassAsync(Guid classId);
     Task<int> GetNumberOfAttendeesByClassAsync(Guid classId);
-    Task<double> CalculateAbsenceByClassAsync(Guid classId);
+    Task<int> CalculateAbsenceByClassAsync(Guid classId);
 
     // PUT
     

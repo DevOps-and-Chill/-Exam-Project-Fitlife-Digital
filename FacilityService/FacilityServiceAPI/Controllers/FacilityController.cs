@@ -11,16 +11,13 @@ namespace FacilityServiceAPI.Controllers
         private readonly IFacilityRepository _facilityRepository;
         private readonly ILogger<FacilityController> _logger;
 
-        public FacilityController(ILogger<FacilityController> logger, IFacilityRepository facilityRepository)
+        public FacilityController(ILogger<FacilityController> logger , IFacilityRepository facilityRepository)
         {
             _logger = logger;
             _facilityRepository = facilityRepository;
         }
 
-		public FacilityController(IFacilityRepository facilityRepository)
-		{
-			_facilityRepository = facilityRepository;
-		}
+		
 
 		/// <summary>
 		/// Gets all facilities of type  Swimming pool

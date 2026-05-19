@@ -1,4 +1,3 @@
-
 using UserServiceAPI.Repositories;
 using UserServiceAPI.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -25,9 +24,13 @@ namespace UserServiceAPI
                 builder.Configuration["CosmosDb:AccountKey"]!,
                 builder.Configuration["CosmosDb:DatabaseName"]!);
             });
-        
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(
+                new System.Text.Json.Serialization.JsonStringEnumConverter());
+            });
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
@@ -50,7 +53,6 @@ namespace UserServiceAPI
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
