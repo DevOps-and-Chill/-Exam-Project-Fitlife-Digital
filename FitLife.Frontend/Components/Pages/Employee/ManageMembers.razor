@@ -1,6 +1,8 @@
 @page "/manage-members"
 @rendermode InteractiveServer
 @using FitLife.Frontend.Models
+@using FitLife.Frontend.Services
+@inject MemberService MemberService
 
 <div class="container-fluid px-0">
 
@@ -53,211 +55,249 @@
             </div>
         </div>
 
-        <div class="row g-4">
-
-            <!-- Venstre side:
-                 Liste over medlemmer -->
-            <div class="col-md-6">
-
-                <!-- Loop gennem filtrerede medlemmer -->
-                @foreach (var member in FilteredMembers)
-                {
-                    <div class="card shadow-sm mb-3">
-                        <div class="card-body">
-
-                            <div class="d-flex justify-content-between align-items-center">
-
-                                <!-- Medlemsinformation -->
-                                <div>
-
-                                    <h5>
-                                        @member.FirstName @member.LastName
-                                    </h5>
-
-                                    <p class="mb-1">
-                                        Alder: @member.Age
-                                    </p>
-
-                                    <p class="mb-1">
-                                        Medlemskabstype: @member.MembershipType
-                                    </p>
-
-                                    <p class="mb-1">
-                                        Betalingsstatus: @member.PaymentStatus
-                                    </p>
-
-                                    <p class="text-muted mb-0">
-                                        Medlem siden:
-                                        @member.MemberSince.ToString("dd/MM/yyyy")
-                                    </p>
-
-                                </div>
-
-                                <!-- Vælger medlem til redigering -->
-                                <button class="btn btn-outline-dark"
-                                        @onclick="() => SelectMember(member)">
-                                    Rediger
-                                </button>
-
-                            </div>
-
-                        </div>
-                    </div>
-                }
+        @if (IsLoading)
+        {
+            <!-- Vises mens frontend venter på svar fra UserService API -->
+            <div class="alert alert-info">
+                Henter medlemmer...
             </div>
+        }
+        else
+        {
+            <div class="row g-4">
 
-            <!-- Højre side:
-                 Redigeringspanel -->
-            <div class="col-md-6">
+                <!-- Venstre side:
+                     Liste over medlemmer -->
+                <div class="col-md-6">
 
-                @if (SelectedMember is null)
-                {
-                    <!-- Vises hvis intet medlem er valgt -->
-                    <div class="card shadow-sm">
-                        <div class="card-body p-4 text-muted">
-                            Vælg et medlem for at redigere oplysninger.
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    <!-- Redigeringsformular -->
-                    <div class="card shadow-sm">
-                        <div class="card-body p-4">
+                    <!-- Loop gennem filtrerede medlemmer -->
+                    @foreach (var member in FilteredMembers)
+                    {
+                        <div class="card shadow-sm mb-3">
+                            <div class="card-body">
 
-                            <h4>
-                                Rediger medlem
-                            </h4>
+                                <div class="d-flex justify-content-between align-items-center">
 
-                            <div class="row g-3">
+                                    <!-- Medlemsinformation -->
+                                    <div>
 
-                                <!-- Alle inputs er bundet direkte til SelectedMember -->
-                                <!-- Ændringer sker derfor live i objektet -->
+                                        <!-- Ubiquitous language:
+                                             Frontend bruger nu samme navne som UserService -->
+                                        <h5>
+                                            @member.GivenName @member.FamilyName
+                                        </h5>
 
-                                <div class="col-md-6">
-                                    <label class="form-label">Fornavn</label>
-                                    <input class="form-control"
-                                           @bind="SelectedMember.FirstName" />
+                                        <!-- Alder beregnes ud fra BirthDate -->
+                                        <p class="mb-1">
+                                            Alder: @member.Age
+                                        </p>
+
+                                        <!-- MembershipType kommer direkte fra UserService -->
+                                        <p class="mb-1">
+                                            Medlemskabstype: @member.MembershipType
+                                        </p>
+
+                                        <!-- ActiveMembership bruges nu i stedet for PaymentStatus -->
+                                        <p class="mb-1">
+                                            Medlemskab aktivt:
+                                            @(member.ActiveMembership ? "Ja" : "Nej")
+                                        </p>
+
+                                        <!-- StartDate kommer fra backend/UserService -->
+                                        <p class="text-muted mb-0">
+                                            Medlem siden:
+                                            @member.StartDate.ToString("dd/MM/yyyy")
+                                        </p>
+
+                                    </div>
+
+                                    <!-- Vælger medlem til redigering -->
+                                    <button class="btn btn-outline-dark"
+                                            @onclick="() => SelectMember(member)">
+                                        Rediger
+                                    </button>
+
                                 </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Efternavn</label>
-                                    <input class="form-control"
-                                           @bind="SelectedMember.LastName" />
-                                </div>
-
-                                <div class="col-md-8">
-                                    <label class="form-label">Adresse</label>
-                                    <input class="form-control"
-                                           @bind="SelectedMember.Address" />
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label class="form-label">Postnr.</label>
-                                    <input class="form-control"
-                                           @bind="SelectedMember.PostalCode" />
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">By</label>
-                                    <input class="form-control"
-                                           @bind="SelectedMember.City" />
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">E-mailadresse</label>
-                                    <input class="form-control"
-                                           type="email"
-                                           @bind="SelectedMember.Email" />
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Telefonnummer</label>
-                                    <input class="form-control"
-                                           @bind="SelectedMember.PhoneNumber" />
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Fødselsdag</label>
-                                    <input class="form-control"
-                                           type="date"
-                                           @bind="SelectedMember.BirthDate" />
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Medlemskabstype</label>
-
-                                    <!-- TODO:
-                                         Senere kan medlemskabstyper
-                                         hentes fra backend/API -->
-                                    <select class="form-select"
-                                            @bind="SelectedMember.MembershipType">
-
-                                        <option>Basis</option>
-                                        <option>Plus</option>
-                                        <option>Premium</option>
-
-                                    </select>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Betalingsstatus</label>
-
-                                    <!-- TODO:
-                                         Senere kobles betalingsstatus
-                                         sandsynligvis til betalingsservice -->
-                                    <select class="form-select"
-                                            @bind="SelectedMember.PaymentStatus">
-
-                                        <option>Betalt</option>
-                                        <option>Mangler betaling</option>
-                                        <option>Faktura sendt</option>
-
-                                    </select>
-                                </div>
-
-                                <div class="col-md-12">
-                                    <label class="form-label">
-                                        Nuværende PT
-                                    </label>
-
-                                    <input class="form-control"
-                                           @bind="SelectedMember.CurrentPersonalTrainer" />
-                                </div>
-                            </div>
-
-                            <div class="d-grid gap-2 mt-4">
-
-                                <!-- Gemmer ændringer -->
-                                <!-- TODO:
-                                     Skal senere sende PUT/PATCH request til backend -->
-                                <button class="btn btn-success"
-                                        @onclick="SaveChanges">
-                                    Gem ændringer
-                                </button>
-
-                                <!-- Prototypefunktion -->
-                                <!-- TODO:
-                                     Skal senere åbne betalingsflow -->
-                                <button class="btn btn-outline-warning"
-                                        @onclick="UpdatePaymentMethod">
-                                    Opdater betalingsmiddel
-                                </button>
-
-                                <!-- Lukker redigering -->
-                                <button class="btn btn-outline-secondary"
-                                        @onclick="ClearSelection">
-                                    Afbryd
-                                </button>
 
                             </div>
-
                         </div>
-                    </div>
-                }
+                    }
+                </div>
+
+                <!-- Højre side:
+                     Redigeringspanel -->
+                <div class="col-md-6">
+
+                    @if (SelectedMember is null)
+                    {
+                        <!-- Vises hvis intet medlem er valgt -->
+                        <div class="card shadow-sm">
+                            <div class="card-body p-4 text-muted">
+                                Vælg et medlem for at redigere oplysninger.
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- Redigeringsformular -->
+                        <div class="card shadow-sm">
+                            <div class="card-body p-4">
+
+                                <h4>
+                                    Rediger medlem
+                                </h4>
+
+                                <div class="row g-3">
+
+                                    <!-- Alle inputs er bundet direkte til SelectedMember -->
+                                    <!-- Ændringer sker derfor live i objektet -->
+
+                                    <div class="col-md-6">
+
+                                        <label class="form-label">
+                                            Fornavn
+                                        </label>
+
+                                        <!-- GivenName matcher UserService -->
+                                        <input class="form-control"
+                                               @bind="SelectedMember.GivenName" />
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <label class="form-label">
+                                            Efternavn
+                                        </label>
+
+                                        <!-- FamilyName matcher UserService -->
+                                        <input class="form-control"
+                                               @bind="SelectedMember.FamilyName" />
+                                    </div>
+
+                                    <div class="col-md-12">
+
+                                        <label class="form-label">
+                                            Adresse
+                                        </label>
+
+                                        <input class="form-control"
+                                               @bind="SelectedMember.Address" />
+                                    </div>
+
+                                    <!-- PostalCode og City findes ikke i UserService endnu -->
+                                    <!-- TODO:
+                                         Tilføj til UserService hvis disse felter ønskes senere -->
+
+                                    <div class="col-md-6">
+
+                                        <label class="form-label">
+                                            E-mailadresse
+                                        </label>
+
+                                        <input class="form-control"
+                                               type="email"
+                                               @bind="SelectedMember.Email" />
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <label class="form-label">
+                                            Telefonnummer
+                                        </label>
+
+                                        <!-- Telephone matcher UserService -->
+                                        <input class="form-control"
+                                               @bind="SelectedMember.Telephone" />
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <label class="form-label">
+                                            Fødselsdag
+                                        </label>
+
+                                        <!-- BirthDate bruges til beregning af Age -->
+                                        <input class="form-control"
+                                               type="date"
+                                               @bind="SelectedMember.BirthDate" />
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <label class="form-label">
+                                            Medlemskabstype
+                                        </label>
+
+                                        <!-- TODO:
+                                             Senere kan medlemskabstyper
+                                             hentes dynamisk fra backend/API -->
+                                        <select class="form-select"
+                                                @bind="SelectedMember.MembershipType">
+
+                                            <option>Standard</option>
+                                            <option>Premium</option>
+                                            <option>Basis</option>
+                                            <option>Plus</option>
+
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <label class="form-label">
+                                            Aktivt medlemskab
+                                        </label>
+
+                                        <!-- ActiveMembership bruges nu i stedet for PaymentStatus -->
+                                        <select class="form-select"
+                                                @bind="SelectedMember.ActiveMembership">
+
+                                            <option value="true">Ja</option>
+                                            <option value="false">Nej</option>
+
+                                        </select>
+                                    </div>
+
+                                    <!-- CurrentPersonalTrainer findes ikke i UserService endnu -->
+                                    <!-- TODO:
+                                         Skal senere kobles til TrainerService -->
+
+                                </div>
+
+                                <div class="d-grid gap-2 mt-4">
+
+                                    <!-- Gemmer ændringer -->
+                                    <!-- TODO:
+                                         Skal senere sende ændringer til backend via MemberService.
+                                         UserService har endpointet POST /member/UpsertMember. -->
+                                    <button class="btn btn-success"
+                                            @onclick="SaveChanges">
+                                        Gem ændringer
+                                    </button>
+
+                                    <!-- Prototypefunktion -->
+                                    <!-- TODO:
+                                         Skal senere åbne betalingsflow -->
+                                    <button class="btn btn-outline-warning"
+                                            @onclick="UpdatePaymentMethod">
+                                        Opdater betalingsmiddel
+                                    </button>
+
+                                    <!-- Lukker redigering -->
+                                    <button class="btn btn-outline-secondary"
+                                            @onclick="ClearSelection">
+                                        Afbryd
+                                    </button>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+                </div>
+
             </div>
-
-        </div>
+        }
 
         <!-- Midlertidig statusbesked -->
         @if (!string.IsNullOrWhiteSpace(Message))
@@ -281,62 +321,32 @@
     // Midlertidig feedback til UI
     private string Message = "";
 
+    // Bruges til at vise loading-state mens API'et henter medlemmer
+    private bool IsLoading = true;
+
     // Det medlem medarbejderen aktuelt redigerer
     private Member? SelectedMember;
 
-    // Midlertidig mock data til prototype
-    // TODO:
-    // Skal senere erstattes af data fra backend/API
-    private List<Member> Members = new()
+    // Listen fyldes nu via UserService API i stedet for lokal mock-data
+    private List<Member> Members = new();
+
+    // Kører automatisk når siden loader.
+    // Henter medlemmer fra UserService via MemberService.
+    protected override async Task OnInitializedAsync()
     {
-        new Member
+        try
         {
-            FirstName = "Jonas",
-            LastName = "Madsen",
-            Address = "Munkeallé 27",
-            PostalCode = "8000",
-            City = "Aarhus",
-            Email = "jonas@example.com",
-            PhoneNumber = "12345678",
-            BirthDate = new DateTime(1999, 4, 12),
-            MembershipType = "Plus",
-            PaymentStatus = "Betalt",
-            MemberSince = DateTime.Today.AddMonths(-6),
-            CurrentPersonalTrainer = "Frederikke"
-        },
-
-        new Member
-        {
-            FirstName = "Frederik",
-            LastName = "Nielsen",
-            Address = "Vestergade 10",
-            PostalCode = "8600",
-            City = "Silkeborg",
-            Email = "frederik@example.com",
-            PhoneNumber = "22334455",
-            BirthDate = new DateTime(1988, 9, 2),
-            MembershipType = "Basis",
-            PaymentStatus = "Mangler betaling",
-            MemberSince = DateTime.Today.AddYears(-1),
-            CurrentPersonalTrainer = ""
-        },
-
-        new Member
-        {
-            FirstName = "Charlotte",
-            LastName = "Hansen",
-            Address = "Stationsvej 4",
-            PostalCode = "8700",
-            City = "Horsens",
-            Email = "charlotte@example.com",
-            PhoneNumber = "87654321",
-            BirthDate = new DateTime(1974, 1, 20),
-            MembershipType = "Premium",
-            PaymentStatus = "Betalt",
-            MemberSince = DateTime.Today.AddYears(-3),
-            CurrentPersonalTrainer = "Mikkel"
+            Members = await MemberService.GetMembersAsync();
         }
-    };
+        catch
+        {
+            Message = "Medlemmer kunne ikke hentes fra UserService API.";
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
 
     // Filtrerer medlemmer ud fra søgetekst
     private IEnumerable<Member> FilteredMembers =>
@@ -344,9 +354,9 @@
 
             string.IsNullOrWhiteSpace(SearchText) ||
 
-            m.FirstName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+            m.GivenName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
 
-            m.LastName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+            m.FamilyName.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
 
             m.Email.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
 
@@ -367,7 +377,7 @@
         if (SelectedMember is null)
             return;
 
-        Message = $"Ændringer for {SelectedMember.FirstName} {SelectedMember.LastName} er gemt.";
+        Message = MemberService.SaveMember(SelectedMember);
     }
 
     // Prototypefunktion til betalingsopdatering
@@ -378,7 +388,7 @@
         if (SelectedMember is null)
             return;
 
-        Message = $"Betalingsmiddel for {SelectedMember.FirstName} {SelectedMember.LastName} kan opdateres senere via betalingsintegration.";
+        Message = MemberService.UpdatePaymentMethod(SelectedMember);
     }
 
     // Lukker redigeringspanel
