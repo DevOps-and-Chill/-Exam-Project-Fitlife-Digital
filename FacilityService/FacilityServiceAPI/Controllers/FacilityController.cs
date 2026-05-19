@@ -11,23 +11,19 @@ namespace FacilityServiceAPI.Controllers
         private readonly IFacilityRepository _facilityRepository;
         private readonly ILogger<FacilityController> _logger;
 
-        public FacilityController(ILogger<FacilityController> logger, IFacilityRepository facilityRepository)
+        public FacilityController(ILogger<FacilityController> logger , IFacilityRepository facilityRepository)
         {
             _logger = logger;
             _facilityRepository = facilityRepository;
         }
 
-        //CS: Har lige udkommenteret da den ikke kunne finde rundt i 2 kontruktører.
-		// public FacilityController(IFacilityRepository facilityRepository)
-		// {
-		// 	_facilityRepository = facilityRepository;
-		// }
+		
 
 
 		[HttpGet("getfacilitybyid")]
         public async Task<IActionResult> GetFacility([FromBody] string facilityId)
         {
-            //_logger.LogDebug("Starting getfacilitybyid for facility" + facilityId);
+            _logger.LogDebug("Starting getfacilitybyid for facility" + facilityId);
             try
             {
                 return Ok(await _facilityRepository.GetFacility(facilityId));
@@ -41,7 +37,7 @@ namespace FacilityServiceAPI.Controllers
         [HttpGet("getfacilities")]
         public async Task<IActionResult> GetFacilities()
         {
-           // _logger.LogDebug("Starting getfacilities");
+           _logger.LogDebug("Starting getfacilities");
 
             try
             {
@@ -57,7 +53,7 @@ namespace FacilityServiceAPI.Controllers
         [HttpPost("insertfacility")]
         public async Task<IActionResult> InsertFacility([FromBody] Facility facility)
         {
-           // _logger.LogDebug("Starting insertfacility for facility" + facility.Name);
+           _logger.LogDebug("Starting insertfacility for facility" + facility.Name);
 
             try
             {
@@ -74,7 +70,7 @@ namespace FacilityServiceAPI.Controllers
         [HttpPut("updatefacility")]
         public async Task<IActionResult> UpdateFacility([FromBody] Facility facility)
         {
-           // _logger.LogDebug("starting updatefacility for facility" + facility.Id);
+           _logger.LogDebug("starting updatefacility for facility" + facility.Id);
 
             try
             {
@@ -91,7 +87,7 @@ namespace FacilityServiceAPI.Controllers
         [HttpDelete("deletefacility")]
         public async Task<IActionResult> DeleteFacility([FromBody] string facilityId)
         {
-           // _logger.LogDebug("starting deletefacility for facility" + facilityId);
+           _logger.LogDebug("starting deletefacility for facility" + facilityId);
 
             try
             {
