@@ -1,0 +1,66 @@
+@page "/"
+@rendermode InteractiveServer
+
+<div class="container-fluid px-0">
+
+    <!-- Shared navigation for public pages -->
+    <PublicNavbar />
+
+    <section class="container py-5">
+        <div class="row align-items-center">
+
+            <!-- Forside-tekst.
+                 Matcher prototypens "Kort fortælling om FitLife". -->
+            <div class="col-md-6">
+
+                <h1 class="fw-bold mb-4">
+                    Kort fortælling om FitLife
+                </h1>
+
+                <p class="lead mb-4">
+                    FitLife er en fitnesskæde, hvor medlemmer kan finde hold,
+                    booke personlig træning og få adgang til digitale træningsmuligheder.
+                </p>
+
+                <p class="text-muted mb-4">
+                    Platformen samler de vigtigste funktioner ét sted og gør det lettere
+                    for medlemmer og ansatte at håndtere træning, booking og medlemskab.
+                </p>
+
+                <!-- Primære handlinger fra forsiden -->
+                <div class="d-flex gap-3">
+
+                    <a href="/register-step1"
+                       class="btn btn-success px-4">
+                        BLIV MEDLEM
+                    </a>
+
+                    <a href="/find-hold"
+                       class="btn btn-outline-secondary px-4">
+                        Find hold
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- Placeholder til forsidebillede -->
+            <!-- TODO:
+                 Senere kan dette erstattes med rigtigt billede fra assets/backend/CMS -->
+            <div class="col-md-6 mt-4 mt-md-0">
+
+                <div class="border bg-light d-flex align-items-center justify-content-center"
+                     style="height: 380px;">
+
+                    <span class="text-muted fs-5">
+                        Inspirerende billede fra et center
+                    </span>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <AppFooter />
+
+</div>

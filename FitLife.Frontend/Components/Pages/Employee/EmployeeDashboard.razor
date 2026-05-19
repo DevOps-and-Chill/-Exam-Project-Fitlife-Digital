@@ -1,0 +1,224 @@
+@page "/employee-dashboard"
+@rendermode InteractiveServer
+
+<div class="container-fluid px-0">
+
+    <!-- Shared navigation for employee/admin pages -->
+    <EmployeeNavbar />
+
+    <section class="container py-5">
+
+        <!-- Intro/hero section for medarbejderområdet -->
+        <div class="mb-5">
+            <span class="badge bg-dark mb-3 px-3 py-2">
+                ANSAT OMRÅDE
+            </span>
+
+            <h1 class="fw-bold">
+                Ansat dashboard
+            </h1>
+
+            <p class="lead text-muted">
+                Administrer hold, medlemmer, centre og personlig træning fra ét samlet overblik.
+            </p>
+        </div>
+
+        <!-- Dashboard cards fungerer som navigation til systemets vigtigste områder -->
+        <div class="row g-4">
+
+            <!-- Holdadministration -->
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body p-4">
+
+                        <div class="fs-2 mb-3">
+                            📅
+                        </div>
+
+                        <h3 class="fw-bold">
+                            Holdtræning
+                        </h3>
+
+                        <p class="text-muted">
+                            Administrer eksisterende hold, rediger kapacitet eller opret nye hold i holdplanen.
+                        </p>
+
+                        <div class="d-grid gap-2">
+
+                            <!-- Navigerer til side hvor medarbejderen kan se/redigere hold -->
+                            <a href="/manage-sessions"
+                               class="btn btn-success">
+                                Administrer hold
+                            </a>
+
+                            <!-- Navigerer til oprettelse af nye hold -->
+                            <a href="/create-session"
+                               class="btn btn-outline-success">
+                                + Opret hold
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medlemsadministration -->
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body p-4">
+
+                        <div class="fs-2 mb-3">
+                            👥
+                        </div>
+
+                        <h3 class="fw-bold">
+                            Medlemmer
+                        </h3>
+
+                        <p class="text-muted">
+                            Søg efter medlemmer, rediger medlemsoplysninger eller opret nye medlemmer via receptionen.
+                        </p>
+
+                        <div class="d-grid gap-2">
+
+                            <!-- Navigerer til medlemsoversigt -->
+                            <a href="/manage-members"
+                               class="btn btn-success">
+                                Administrer medlemmer
+                            </a>
+
+                            <!-- Navigerer til medlemsoprettelse -->
+                            <a href="/create-member"
+                               class="btn btn-outline-success">
+                                + Opret medlem
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personlig træning -->
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body p-4">
+
+                        <div class="fs-2 mb-3">
+                            💪
+                        </div>
+
+                        <h3 class="fw-bold">
+                            Personlig træning
+                        </h3>
+
+                        <p class="text-muted">
+                            Se planlagte sessioner og håndter ønsker om personlig træning fra medlemmer.
+                        </p>
+
+                        <div class="d-grid gap-2">
+
+                            <!-- Midlertidig prototype-knap.
+                                 TODO: Skal senere navigere til PT-sessioner via egen side/service -->
+                            <button class="btn btn-success"
+                                    @onclick="ShowPTSessions">
+                                Se mine sessioner
+                            </button>
+
+                            <!-- Midlertidig prototype-knap.
+                                 TODO: Skal senere vise bookingønsker fra medlemmer -->
+                            <button class="btn btn-outline-success"
+                                    @onclick="ShowPTRequests">
+                                Ønsker om sessioner
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Centeradministration -->
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body p-4">
+
+                        <div class="fs-2 mb-3">
+                            🏢
+                        </div>
+
+                        <h3 class="fw-bold">
+                            Centre
+                        </h3>
+
+                        <p class="text-muted">
+                            Administrer centeroplysninger og opret afvigelser for åbningstider eller drift.
+                        </p>
+
+                        <div class="d-grid gap-2">
+
+                            <!-- Midlertidig prototype-knap -->
+                            <button class="btn btn-success"
+                                    @onclick="ShowCenters">
+                                Administrer center
+                            </button>
+
+                            <!-- Midlertidig prototype-knap -->
+                            <button class="btn btn-outline-success"
+                                    @onclick="ShowCenterDeviation">
+                                Opret afvigelse for center
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Midlertidig feedback-besked til prototype -->
+        @if (!string.IsNullOrWhiteSpace(Message))
+        {
+            <div class="alert alert-info mt-4">
+                @Message
+            </div>
+        }
+
+    </section>
+
+    <AppFooter />
+
+</div>
+
+@code {
+
+    // Bruges til midlertidig UI-feedback i prototypen.
+    // TODO: Senere kan dette erstattes af navigation eller backend responses.
+    private string Message = "";
+
+    // Midlertidig prototype-funktion.
+    // TODO: Skal senere kobles til side/service for PT-sessioner.
+    private void ShowPTSessions()
+    {
+        Message = "Visning af personlige træningssessioner er ikke implementeret endnu.";
+    }
+
+    // Midlertidig prototype-funktion.
+    // TODO: Skal senere hente ønsker om PT-sessioner fra backend/microservice.
+    private void ShowPTRequests()
+    {
+        Message = "Visning af ønsker om sessioner er ikke implementeret endnu.";
+    }
+
+    // Midlertidig prototype-funktion.
+    // TODO: Skal senere kobles til centeradministration via API/service.
+    private void ShowCenters()
+    {
+        Message = "Centeradministration er ikke implementeret endnu.";
+    }
+
+    // Midlertidig prototype-funktion.
+    // TODO: Skal senere bruges til oprettelse af driftsafvigelser for centre.
+    private void ShowCenterDeviation()
+    {
+        Message = "Oprettelse af centerafvigelse er ikke implementeret endnu.";
+    }
+}

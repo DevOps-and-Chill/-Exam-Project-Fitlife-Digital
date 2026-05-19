@@ -1,0 +1,244 @@
+@page "/register-step3"
+@rendermode InteractiveServer
+@using FitLife.Frontend.Models
+@using FitLife.Frontend.Services
+
+<div class="container-fluid px-0">
+
+    <!-- Shared navbar for public pages -->
+    <PublicNavbar />
+
+    <section class="container py-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Opret medlemskab</h2>
+
+            <!-- Prototype-knap -->
+            <!-- TODO: Kan senere åbne support/chat/hjælpesektion -->
+            <button class="btn btn-outline-secondary">
+                Hjælp mig
+            </button>
+        </div>
+
+        <!-- Step-indikator -->
+        <div class="row mb-4 text-center">
+
+            <div class="col">
+                <div class="border rounded p-3 bg-light">
+                    Trin 1<br />
+                    Personlige informationer
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="border rounded p-3 bg-light">
+                    Trin 2<br />
+                    Vælg medlemskabstype
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="border rounded p-3 bg-success text-white">
+                    Trin 3<br />
+                    Betalingsoplysninger
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row g-4">
+
+            <!-- Opsummering af brugerens valg -->
+            <!-- TODO:
+                 Senere skal disse værdier komme fra RegistrationStateService,
+                 så step 3 viser de faktiske valg fra step 1 og step 2. -->
+            <div class="col-md-5">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+
+                        <h4>Gennemse dine valg</h4>
+
+                        <p>
+                            <strong>Valgt medlemskabstype:</strong><br />
+                            Standard eller Premium
+                        </p>
+
+                        <p>
+                            <strong>Valgte tilvalg:</strong><br />
+                            Vises senere fra registrerings-state
+                        </p>
+
+                        <hr />
+
+                        <h5>Total pris pr. måned</h5>
+
+                        <h3>Vises senere</h3>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Betalingsformular -->
+            <div class="col-md-7">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+
+                        <h4 class="mb-3">
+                            Indtast betalingsoplysninger
+                        </h4>
+
+                        <!-- PaymentInfo samler betalingsfelterne i én model -->
+                        <!-- Vigtigt:
+                             I et rigtigt system bør kortnummer/CVV ikke gemmes i egen database.
+                             Det bør håndteres via betalingsudbyder/payment gateway. -->
+                        <div class="mb-3">
+                            <label class="form-label">Kortnummer</label>
+
+                            <input class="form-control"
+                                   @bind="Payment.CardNumber" />
+                        </div>
+
+                        <div class="row g-3">
+
+                            <div class="col-md-4">
+                                <label class="form-label">MM</label>
+
+                                <input class="form-control"
+                                       @bind="Payment.Month" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">YY</label>
+
+                                <input class="form-control"
+                                       @bind="Payment.Year" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">CVV/CVD</label>
+
+                                <input class="form-control"
+                                       @bind="Payment.Cvv" />
+                            </div>
+
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(Message))
+                        {
+                            <div class="alert alert-info mt-4">
+                                @Message
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+
+            <a href="/register-step2"
+               class="btn btn-outline-secondary">
+                Tilbage
+            </a>
+
+            <!-- Afslutter registrering -->
+            <!-- TODO:
+                 Senere skal denne metode:
+                 1. Hente medlem + valg fra RegistrationStateService
+                 2. Kalde UserService via MemberService
+                 3. Håndtere betaling via payment provider -->
+            <button class="btn btn-success px-4"
+                    disabled="@IsSubmitting"
+                    @onclick="CompleteRegistration">
+                @(IsSubmitting ? "Opretter..." : "Betal og afslut")
+            </button>
+
+        </div>
+
+    </section>
+
+    <AppFooter />
+
+</div>
+
+@code {
+    // PaymentInfo holder betalingsdata samlet ét sted.
+    // TODO: Senere bør betalingsflow håndteres via betalingsservice/payment provider.
+    private PaymentInfo Payment = new();
+
+    private string Message = "";
+
+    private bool IsSubmitting = false;
+
+    [Inject]
+    private MemberService MemberService { get; set; } = default!;
+
+    [Inject]
+    private RegistrationStateService RegistrationState { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        // Henter betalingsdata fra shared registration state.
+        Payment = RegistrationState.Payment;
+    }
+
+    private async Task CompleteRegistration()
+    {
+        if (string.IsNullOrWhiteSpace(Payment.CardNumber) ||
+            string.IsNullOrWhiteSpace(Payment.Month) ||
+            string.IsNullOrWhiteSpace(Payment.Year) ||
+            string.IsNullOrWhiteSpace(Payment.Cvv))
+        {
+            Message = "Udfyld alle betalingsoplysninger.";
+            return;
+        }
+
+        IsSubmitting = true;
+        Message = "";
+
+        try
+        {
+            // Gemmer betalingsdata i shared registration state.
+            RegistrationState.Payment = Payment;
+
+            // Henter medlemmet fra step 1.
+            var member = RegistrationState.Member;
+
+            // Sætter medlemsvalg fra step 2 på medlemmet.
+            member.MembershipType =
+                RegistrationState.SelectedMembership?.Name ?? "Standard";
+
+            // Midlertidig mapping til backend enum.
+            // Backend har lige nu MembershipOptional: Swimming eller Pizza.
+            member.MembershipOptional = "Swimming";
+
+            member.StartDate = DateTime.Today;
+            member.EndDate = DateTime.Today.AddYears(1);
+            member.ActiveMembership = true;
+            member.ActiveUser = true;
+            member.RoleName = "Member";
+            member.PartitionKey = "users";
+
+            // Midlertidig affiliation.
+            // TODO: Skal senere erstattes af rigtig center/facility id.
+            member.Affiliation =
+                Guid.Parse("11111111-1111-1111-1111-111111111111");
+
+            var createdMember =
+                await MemberService.CreateMemberAsync(member);
+
+            Message =
+                $"Medlem oprettet via UserService: {createdMember.GivenName} {createdMember.FamilyName}";
+        }
+        catch (Exception ex)
+        {
+            Message = $"Fejl ved oprettelse af medlem: {ex.Message}";
+        }
+        finally
+        {
+            IsSubmitting = false;
+        }
+    }
+}
