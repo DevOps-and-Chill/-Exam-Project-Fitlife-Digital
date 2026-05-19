@@ -1,6 +1,6 @@
 ﻿namespace AuthServiceAPI.DTOs
 {
-    public class ValidateCredentialsRequest
+    public class ValidateCredentialsRequestDTO
     {
         public string Email { get; set; } = null!;
 

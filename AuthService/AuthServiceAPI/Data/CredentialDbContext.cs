@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuthServiceAPI.Data
 {
-    public class AuthDbContext : DbContext
+    public class CredentialDbContext : DbContext
     {
-        public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options)
+        public CredentialDbContext(DbContextOptions<CredentialDbContext> options) : base(options)
         {
         }
 
-        public DbSet<Credential> AuthUsers => Set<Credential>();
+        public DbSet<Credential> UserCredential => Set<Credential>();
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -19,7 +19,7 @@ namespace AuthServiceAPI.Data
             modelBuilder.Entity<Credential>(entity =>
             {
                 // This container only stores authentication details.
-                entity.ToContainer("AuthUsers");
+                entity.ToContainer("UserCredential");
 
                 // The Id originates from UserService and acts as the globally unique identifier across services.
                 entity.HasKey(u => u.Id);
@@ -39,10 +39,6 @@ namespace AuthServiceAPI.Data
 
                 entity.Property(u => u.PasswordHash)
                     .IsRequired();
-
-                // Email uniqueness is enforced to prevent duplicate accounts.
-                entity.HasIndex(u => u.Email)
-                    .IsUnique();
             });
         }
     }

@@ -1,6 +1,9 @@
 ﻿namespace AuthServiceAPI.DTOs
 {
-    public class RegisterCredentialsRequest
+    /// <summary>
+    /// string UserID (Guid from UserService), string Email, string Password
+    /// </summary>
+    public class RegisterCredentialsRequestDTO
     {
         public string UserId { get; set; } = null!;
 
@@ -9,4 +12,4 @@
         public string Password { get; set; } = null!;
     }
 }
-}
+

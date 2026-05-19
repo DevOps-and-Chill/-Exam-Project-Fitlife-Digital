@@ -1,6 +1,6 @@
 ﻿namespace AuthServiceAPI.DTOs
 {
-    public class ValidateTokenRequest
+    public class ValidateTokenRequestDTO
     {
         public string Token { get; set; } = null!;
     }
