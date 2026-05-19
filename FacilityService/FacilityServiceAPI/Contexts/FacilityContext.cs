@@ -3,14 +3,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FacilityServiceAPI.Contexts
 {
-	public class FacilityContext:DbContext
+	public class FacilityContext : DbContext
 	{
-		public FacilityContext(DbContextOptions<FacilityContext> options):base (options)
+		public FacilityContext(DbContextOptions<FacilityContext> options) : base(options)
 		{
-			
+
 		}
 
-		public DbSet<Facility> db => Set<Facility>();
+		public DbSet<Facility> Facilities => Set<Facility>();
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -18,7 +18,13 @@ namespace FacilityServiceAPI.Contexts
 
 			modelBuilder.Entity<Facility>().ToContainer("Facilities");
 
-			mo
+			modelBuilder.Entity<Facility>()
+				.HasPartitionKey(f => f.PartitionKey)
+				.HasKey(f => f.Id);
+
+			modelBuilder.Entity<Facility>().HasDiscriminator<string>("facilityType")
+				.HasValue<ExerciseGym>("ExerciseGym")
+				.HasValue<SwimmingPool>("SwimmingPool");
 		}
 	}
 }

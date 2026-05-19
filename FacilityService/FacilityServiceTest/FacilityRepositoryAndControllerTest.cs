@@ -17,7 +17,9 @@ namespace FacilityServiceTest
 		[TestInitialize]
 		public void Setup()
 		{
-			facilitiesForTest = FacilityTestData.Facilities;
+			facilitiesForTest = new List<Facility>();
+			facilitiesForTest.AddRange(FacilityTestData.ExerciseGyms);
+			facilitiesForTest.AddRange(FacilityTestData.SwimmingPools);
 		}
 
 		[TestMethod(DisplayName = "GetFacility")]

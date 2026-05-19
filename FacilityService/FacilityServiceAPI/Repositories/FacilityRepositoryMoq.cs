@@ -5,32 +5,69 @@ namespace FacilityServiceAPI.Repositories
 {
 	public class FacilityRepositoryMoq : IFacilityRepository
 	{
+		public Task AddTestData()
+		{
+			throw new NotImplementedException();
+		}
+
 		public Task DeleteFacility(string facilityId)
 		{
-			return Task.FromResult(FacilityTestData.Facilities.Remove((FacilityTestData.Facilities.First(x => x.Id.ToString() == facilityId))));
+			return Task.FromResult(FacilityTestData.ExerciseGyms.Remove((FacilityTestData.ExerciseGyms.First(x => x.Id.ToString() == facilityId))));
+		}
+
+		public Task<List<ExerciseGym>> GetAllExerciseGyms()
+		{
+			return Task.FromResult(FacilityTestData.ExerciseGyms);
+		}
+
+		public Task<List<SwimmingPool>> GetAllSwimmingPools()
+		{
+			return Task.FromResult(FacilityTestData.SwimmingPools);
 		}
 
 		public Task<List<Facility>> GetFacilities()
 		{
-			return Task.FromResult(FacilityTestData.Facilities);
+			var concatList = new List<Facility>();
+			concatList.AddRange(FacilityTestData.ExerciseGyms);
+			concatList.AddRange(FacilityTestData.SwimmingPools);
+
+			return Task.FromResult(concatList);
 		}
 
 		public Task<Facility> GetFacility(string facilityId)
 		{
-			return Task.FromResult(FacilityTestData.Facilities.Single(f => f.Id.ToString() == facilityId));
+			var concatList = new List<Facility>();
+			concatList.AddRange(FacilityTestData.ExerciseGyms);
+			concatList.AddRange(FacilityTestData.SwimmingPools);
+			return Task.FromResult(concatList.Single(f => f.Id.ToString() == facilityId));
 		}
 
 		public Task InsertFacility(Facility facility)
 		{
-			FacilityTestData.Facilities.Add(facility);
+			if (facility.GetType() == typeof(ExerciseGym))
+			{
+				FacilityTestData.ExerciseGyms.Add((ExerciseGym)facility);
+			}
+			else
+			{
+				FacilityTestData.SwimmingPools.Add((SwimmingPool)facility);
+			}
 
 			return Task.CompletedTask;
 		}
 
 		public Task UpdateFacility(Facility facility)
 		{
-			FacilityTestData.Facilities.Remove(facility);
-			FacilityTestData.Facilities.Add(facility);
+			if (facility.GetType() == typeof(ExerciseGym))
+			{
+				FacilityTestData.ExerciseGyms.Remove((ExerciseGym)facility);
+				FacilityTestData.ExerciseGyms.Add((ExerciseGym)facility);
+			}
+			else
+			{
+				FacilityTestData.SwimmingPools.Remove((SwimmingPool)facility);
+				FacilityTestData.SwimmingPools.Add((SwimmingPool)facility);
+			}
 
 			return Task.CompletedTask;
 		}

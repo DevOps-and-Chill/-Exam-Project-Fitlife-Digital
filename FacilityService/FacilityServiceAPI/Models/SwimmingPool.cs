@@ -6,6 +6,6 @@
 		{
 			Swimlanes = swimLanes;
 		}
-		public int Swimlanes { get; private set; }
+		public int Swimlanes { get; set; }
 	}
 }

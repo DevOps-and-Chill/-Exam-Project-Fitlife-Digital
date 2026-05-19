@@ -9,7 +9,7 @@ namespace FacilityServiceAPI
 {
 	public class Program
 	{
-		public static void Main(string[] args)
+		public static async Task Main(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
@@ -19,11 +19,13 @@ namespace FacilityServiceAPI
 			// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 			builder.Services.AddOpenApi();
 
-			builder.Services.AddTransient<IFacilityRepository, FacilityRepositoryMoq>();
+			builder.Services.AddTransient<IFacilityRepository, FacilityRepository>();
 
+			//Enables dependency injection of Factory pattern for DBContext. This way the application is more threadsafe, because each 
 			builder.Services.AddDbContextFactory<FacilityContext>(options => options.UseCosmos(
-				builder.Configuration.GetConnectionString("CosmosDBConn"),
-				builder.Configuration.GetValue("Databasename",string.Empty)));
+				builder.Configuration["CosmosDb:AccountEndpoint"]!,
+				builder.Configuration["CosmosDb:AccountKey"]!,
+				builder.Configuration["CosmosDb:DatabaseName"]!));
 
 			var app = builder.Build();
 
@@ -31,6 +33,12 @@ namespace FacilityServiceAPI
 			if (app.Environment.IsDevelopment())
 			{
 				app.MapOpenApi();
+			}
+			using (var scope = app.Services.CreateScope())
+			{
+				var db = scope.ServiceProvider.GetRequiredService<FacilityContext>();
+
+				await db.Database.EnsureCreatedAsync();
 			}
 
 			app.UseHttpsRedirection();
