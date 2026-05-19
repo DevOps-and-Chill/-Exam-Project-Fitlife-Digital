@@ -18,7 +18,7 @@ services:
       - mongodb_data:/data/db
     networks:
       - backend
-  
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -29,34 +29,34 @@ services:
       RABBITMQ_DEFAULT_USER: 1
       RABBITMQ_DEFAULT_PASS: 1
     healthcheck:
-      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
       - backend
-    
-    classservice:
-      build:
-        context: ./ClassServiceAPI
-      environment:
-        RabbitMQ__Host: rabbitmq
-      depends_on:
-        rabbitmq:
-          condition: service_healthy
-      networks:
-        - backend
-    
-    messageservice:
-      build:
-        context: ./MessageServiceAPI
-      environment:
-        RabbitMQ__Host: rabbitmq
-      depends_on:
-        rabbitmq:
-          condition: service_healthy
-      networks:
-        - backend
+
+  classservice:
+    build:
+      context: ./ClassServiceAPI
+    environment:
+      RabbitMQ__Host: rabbitmq
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - backend
+
+  messageservice:
+    build:
+      context: ./MessageServiceAPI
+    environment:
+      RabbitMQ__Host: rabbitmq
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - backend
 
   grafana:
     image: grafana/grafana
@@ -90,7 +90,6 @@ services:
 networks:
   backend:
     name: backend
-    
 
 volumes:
   mongodb_data:
