@@ -98,6 +98,9 @@ services:
 networks:
   backend:
     name: backend
+  servicesnetwork:
+    external: true
+    name: exam-project-fitlife-digital_default
 
 volumes:
   mongodb_data:
