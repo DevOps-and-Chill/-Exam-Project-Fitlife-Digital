@@ -58,8 +58,6 @@ public class ClassCancelledConsumer : BackgroundService
 
     private Task HandleMessageAsync(ClassCancelledMessage message)
     {
-        // Her sender du faktiske notifikationer — email, SMS, push osv.
-        // Foreløbig logger vi blot:
         _logger.LogInformation(
             "Klasse '{Title}' (ID: {ClassId}) er aflyst. " +
             "Notificerer {Count} members: {MemberIds}",
@@ -68,7 +66,7 @@ public class ClassCancelledConsumer : BackgroundService
             message.MemberIds.Count,
             string.Join(", ", message.MemberIds));
 
-        // TODO: kald f.eks. en EmailService eller NotificationService her
+        // TODO: kald service
         // foreach (var memberId in message.MemberIds)
         //     await _emailService.SendCancellationEmailAsync(memberId, message);
 

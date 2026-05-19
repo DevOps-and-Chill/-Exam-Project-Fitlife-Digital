@@ -1,7 +1,6 @@
 using ClassServiceAPI.Messaging;
 using ClassServiceAPI.Repositories;
 using ClassServiceAPI.Repositories.Interfaces;
-using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +10,12 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IClassRepository, ClassRepository>();
-builder.Services.AddSingleton<IMessagePublisher, RabbitMqPublisher>();
+
+builder.Services.AddSingleton<IMessagePublisher>(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    return RabbitMqPublisher.CreateAsync(config).GetAwaiter().GetResult();
+});
 
 var app = builder.Build();
 

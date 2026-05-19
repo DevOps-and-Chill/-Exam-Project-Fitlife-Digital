@@ -38,7 +38,7 @@ services:
     build:
       context: ./ClassServiceAPI
     ports:
-      - "5000:8080"
+      - "5001:8080"
     environment:
       RabbitMQ__Host: rabbitmq
     depends_on:
