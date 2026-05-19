@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ClassServiceAPI.Messaging;
+using Microsoft.AspNetCore.Mvc;
 using ClassServiceAPI.Models;
 using ClassServiceAPI.Repositories.Interfaces;
 
@@ -9,10 +10,32 @@ namespace ClassServiceAPI.Controllers;
 public class ClassController : ControllerBase
 {
     private readonly IClassRepository _repo;
+    private readonly IMessagePublisher _publisher;
 
-    public ClassController(IClassRepository repo)
+    public ClassController(IClassRepository repo, IMessagePublisher publisher)
     {
         _repo = repo;
+        _publisher = publisher;
+    }
+    
+    [HttpPost("test-rabbitmq")]
+    public async Task<IActionResult> TestRabbitMq()
+    {
+        var message = new ClassCancelledMessage
+        {
+            ClassId   = Guid.NewGuid(),
+            Title     = "Test Yoga Class",
+            TimeStart = DateTime.Now,
+            TimeEnd   = DateTime.Now.AddHours(1),
+            MemberIds = new List<Guid>
+            {
+                Guid.NewGuid(),
+                Guid.NewGuid()
+            }
+        };
+
+        await _publisher.PublishAsync(message, "class.cancelled");
+        return Ok("Besked sendt til RabbitMQ!");
     }
 
     // POST
