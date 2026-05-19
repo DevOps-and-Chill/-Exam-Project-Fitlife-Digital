@@ -1,3 +1,5 @@
+using NLog;
+using NLog.Web;
 using UserServiceAPI.Repositories;
 using UserServiceAPI.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -9,16 +11,18 @@ namespace UserServiceAPI
     {
         public static async Task Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            // Opsæt NLog og hent en logger instans til at logge opstart og fejl
+            var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
-            // Add services to the container.
-            builder.Services.AddScoped<IUserRepository, UserRepositoryDB>();
-            builder.Services.AddScoped<IMemberRepository, MemberRepositoryDB>();
-            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepositoryDB>();
+            logger.Debug("UserService starter op");
 
-            //AO: Accountkey and endpoint to be added to vault currently in appsettings
-            builder.Services.AddDbContext<UserDbContext>(options =>
+            try
             {
+                var builder = WebApplication.CreateBuilder(args);
+
+                // Ryd eksisterende logging providers og brug NLog i stedet
+                builder.Logging.ClearProviders();
+                builder.Host.UseNLog();
                 options.UseCosmos(
                 builder.Configuration["CosmosDb:AccountEndpoint"]!,
                 builder.Configuration["CosmosDb:AccountKey"]!,
@@ -34,20 +38,51 @@ namespace UserServiceAPI
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
-            var app = builder.Build();
+                builder.Services.AddScoped<IUserRepository, UserRepositoryDB>();
+                builder.Services.AddScoped<IMemberRepository, MemberRepositoryDB>();
+                builder.Services.AddScoped<IEmployeeRepository, EmployeeRepositoryDB>();
 
-            //AO: Ensures DB and container exists. EnsureCreated() is alternative of migration
-            using (var scope = app.Services.CreateScope())
-            {
-                var db = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+                // AccountKey og endpoint tilføjes til vault - ligger i appsettings indtil videre
+                builder.Services.AddDbContext<UserDbContext>(options =>
+                {
+                    options.UseCosmos(
+                        builder.Configuration["CosmosDb:AccountEndpoint"]!,
+                        builder.Configuration["CosmosDb:AccountKey"]!,
+                        builder.Configuration["CosmosDb:DatabaseName"]!);
+                });
 
-                await db.Database.EnsureCreatedAsync();
+                builder.Services.AddControllers();
+                builder.Services.AddOpenApi();
+
+                var app = builder.Build();
+
+                // Sikrer at DB og container eksisterer
+                using (var scope = app.Services.CreateScope())
+                {
+                    var db = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+                    await db.Database.EnsureCreatedAsync();
+                }
+
+                if (app.Environment.IsDevelopment())
+                {
+                    app.MapOpenApi();
+                }
+
+                app.UseHttpsRedirection();
+                app.UseAuthorization();
+                app.MapControllers();
+                app.Run();
             }
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            catch (Exception ex)
             {
-                app.MapOpenApi();
+                // Logger fejl hvis applikationen crasher ved opstart
+                logger.Error(ex, "UserService stoppede på grund af en fejl!");
+                throw;
+            }
+            finally
+            {
+                // Sørg for at alle logs bliver skrevet færdigt før applikationen lukker
+                NLog.LogManager.Shutdown();
             }
 
             app.UseHttpsRedirection();

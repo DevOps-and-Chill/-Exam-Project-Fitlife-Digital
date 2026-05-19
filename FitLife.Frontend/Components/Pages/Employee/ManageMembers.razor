@@ -365,20 +365,31 @@
     // Vælger medlem til redigering
     private void SelectMember(Member member)
     {
-        SelectedMember = member;
-        Message = "";
+    SelectedMember = member;
+    Message = "";
     }
 
     // Gemmer ændringer
     // TODO:
     // Skal senere sende ændringer til backend via API/service
-    private void SaveChanges()
-    {
-        if (SelectedMember is null)
-            return;
+    private async Task SaveChanges()
+{
+    if (SelectedMember is null)
+        return;
 
-        Message = MemberService.SaveMember(SelectedMember);
+    try
+    {
+        SelectedMember.DateModified = DateTime.Now;
+
+        var updatedMember = await MemberService.CreateMemberAsync(SelectedMember);
+
+        Message = $"Ændringer for {updatedMember.GivenName} {updatedMember.FamilyName} er gemt.";
     }
+    catch (Exception ex)
+    {
+        Message = $"Kunne ikke gemme ændringer. Fejl: {ex.Message}";
+    }
+}
 
     // Prototypefunktion til betalingsopdatering
     // TODO:

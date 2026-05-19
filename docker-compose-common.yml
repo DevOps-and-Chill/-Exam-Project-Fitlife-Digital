@@ -18,7 +18,7 @@ services:
       - mongodb_data:/data/db
     networks:
       - backend
-  
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -35,40 +35,48 @@ services:
       retries: 5
     networks:
       - backend
-    
-    classservice:
-      build:
-        context: ./ClassServiceAPI
-      environment:
-        RabbitMQ__Host: rabbitmq
-      depends_on:
-        rabbitmq:
-          condition: service_healthy
-      networks:
-        - backend
-    
-    messageservice:
-      build:
-        context: ./MessageServiceAPI
-      environment:
-        RabbitMQ__Host: rabbitmq
-      depends_on:
-        rabbitmq:
-          condition: service_healthy
-      networks:
-        - backend
 
-  grafana:
-    image: grafana/grafana
-    ports:
-      - "3000:3000"
+  classservice:
+    build:
+      context: ./ClassServiceAPI
+    environment:
+      RabbitMQ__Host: rabbitmq
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     networks:
       - backend
 
+  messageservice:
+    build:
+      context: ./MessageServiceAPI
+    environment:
+      RabbitMQ__Host: rabbitmq
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - backend
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - backend
+    depends_on:
+      - loki
+
   loki:
     image: grafana/loki:latest
+    container_name: loki
     ports:
       - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
     networks:
       - backend
 
@@ -90,8 +98,8 @@ services:
 networks:
   backend:
     name: backend
-    
 
 volumes:
   mongodb_data:
   vault_data:
+  grafana_data:

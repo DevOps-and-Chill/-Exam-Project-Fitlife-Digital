@@ -1,38 +1,53 @@
-
+using NLog;
+using NLog.Web;
 using FacilityServiceAPI.Repositories;
 
 namespace FacilityServiceAPI
 {
-	public class Program
-	{
-		public static void Main(string[] args)
-		{
-			var builder = WebApplication.CreateBuilder(args);
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Opsæt NLog og hent en logger instans til at logge opstart og fejl
+            var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
-			// Add services to the container.
+            logger.Debug("FacilityService starter op");
 
-			builder.Services.AddControllers();
-			// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-			builder.Services.AddOpenApi();
+            try
+            {
+                var builder = WebApplication.CreateBuilder(args);
 
-			builder.Services.AddTransient<IFacilityRepository, FacilityRepositoryMoq>();
+                // Ryd eksisterende logging providers og brug NLog i stedet
+                builder.Logging.ClearProviders();
+                builder.Host.UseNLog();
 
-			var app = builder.Build();
+                builder.Services.AddControllers();
+                builder.Services.AddOpenApi();
+                builder.Services.AddTransient<IFacilityRepository, FacilityRepositoryMoq>();
 
-			// Configure the HTTP request pipeline.
-			if (app.Environment.IsDevelopment())
-			{
-				app.MapOpenApi();
-			}
+                var app = builder.Build();
 
-			app.UseHttpsRedirection();
+                if (app.Environment.IsDevelopment())
+                {
+                    app.MapOpenApi();
+                }
 
-			app.UseAuthorization();
-
-
-			app.MapControllers();
-
-			app.Run();
-		}
-	}
+                app.UseHttpsRedirection();
+                app.UseAuthorization();
+                app.MapControllers();
+                app.Run();
+            }
+            catch (Exception ex)
+            {
+                // Logger fejl hvis applikationen crasher ved opstart
+                logger.Error(ex, "FacilityService stoppede på grund af en fejl!");
+                throw;
+            }
+            finally
+            {
+                // Sørg for at alle logs bliver skrevet færdigt før applikationen lukker
+                NLog.LogManager.Shutdown();
+            }
+        }
+    }
 }

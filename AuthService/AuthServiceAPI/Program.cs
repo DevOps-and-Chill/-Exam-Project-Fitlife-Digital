@@ -1,3 +1,5 @@
+using NLog;
+using NLog.Web;
 using AuthServiceAPI.Data;
 using AuthServiceAPI.Repositories;
 using AuthServiceAPI.Repositories.Interfaces;
@@ -18,6 +20,7 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
+    // Ryd eksisterende logging providers og brug NLog i stedet
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
 
