@@ -25,20 +25,6 @@ namespace UserServiceAPI.Repositories
             return await _context.Users.ToListAsync();
         }
 
-        public async Task<User?> GetUserById(string userId)
-        {
-            return await _context.Users
-                .FirstOrDefaultAsync(u => u.Id == userId);
-        }
-
-        public async Task<string?> GetUserIdByEmail(string email)
-        {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == email);
-
-            return user?.Id;
-        }
-
         public Task<List<User>> GetUsersByAffiliation(Guid affiliationId)
         {
             throw new NotImplementedException();
