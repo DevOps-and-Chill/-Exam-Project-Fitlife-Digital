@@ -6,28 +6,28 @@ namespace PTServiceAPI.Repositories
     {
         private readonly List<Session> _sessions = new();
 
-        //Finder og returnerer en session baseret på id
-        //Returnerer null hvis der ikke findes noget på id'et
+        //JBS: Finder og returnerer en session baseret på id
+        //JBS: Returnerer null hvis der ikke findes noget på id'et
         public Task<Session?> GetByIdAsync(Guid id)
         {
             var session = _sessions.FirstOrDefault(s => s.Id == id);
             return Task.FromResult(session);
         }
 
-        //Returnerer alle sessioner i listen
+        //JBS: Returnerer alle sessioner i listen
         public Task<IEnumerable<Session>> GetAllAsync()
         {
             return Task.FromResult<IEnumerable<Session>>(_sessions);
         }
 
-        //Tilføjer en ny session til listen
+        //JBS: Tilføjer en ny session til listen
         public Task AddAsync(Session session)
         {
             _sessions.Add(session);
             return Task.CompletedTask;
         }
 
-        //Opdaterer en eksisterende session ved at fjerne den gamle og tilføje den opdaterede
+        //JBS: Opdaterer en eksisterende session ved at fjerne den gamle og tilføje den opdaterede
         public Task UpdateAsync(Session session)
         {
             var existing = _sessions.FirstOrDefault(s => s.Id == session.Id);
@@ -39,7 +39,7 @@ namespace PTServiceAPI.Repositories
             return Task.CompletedTask;
         }
 
-        //Sletter en session fra listen på id
+        //JBS: Sletter en session fra listen på id
         public Task DeleteAsync(Guid id)
         {
             var session = _sessions.FirstOrDefault(s => s.Id == id);

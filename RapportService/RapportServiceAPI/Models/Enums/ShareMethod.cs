@@ -1,6 +1,6 @@
 namespace RapportServiceAPI.Models.Enums
 {
-    //Bruges til at definere hvilken metode der bruges til at dele en statistik
+    //JBS: Bruges til at definere hvilken metode der bruges til at dele en statistik
     public enum ShareMethod
     {
         InternalUser, //Deles med en intern bruger i systemet

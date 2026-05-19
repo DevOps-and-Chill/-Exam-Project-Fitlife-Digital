@@ -19,14 +19,14 @@ namespace RapportServiceAPI.Models
         public DateTime SharedAt { get; init; } = DateTime.UtcNow;
 
         /// <summary>
-        /// Generer et nyt share link som der kan deles i en statistik/rapport til andre
+        /// JBS: Generer et nyt share link som der kan deles i en statistik/rapport til andre
         /// </summary>
         public void GenerateShareLink()
         {
             ShareToken = Guid.NewGuid().ToString();
         }
 
-        //Her kan man tilbagekalde adgang for en bruger
+        //JBS: Her kan man tilbagekalde adgang for en bruger
         public void RevokeAccess(Guid userId)
         {
             SharedWithUserId = Guid.Empty;

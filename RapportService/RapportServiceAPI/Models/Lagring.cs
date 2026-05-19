@@ -13,14 +13,14 @@ namespace RapportServiceAPI.Models
         public double Value { get; private set; }
         public DateTime RecordedAt { get; init; } = DateTime.UtcNow;
 
-        //Gemmer et nyt datapunkt
+        //JBS: Gemmer et nyt datapunkt
         public void StoreDataPoint(double value, string type)
         {
             Value = value;
             DataType = type;
         }
 
-        //Sletter datapunktet - det håndteres gennem repository
+        //JBS: Sletter datapunktet - det håndteres gennem repository
         public void DeleteDataPoint() {}
     }
 }

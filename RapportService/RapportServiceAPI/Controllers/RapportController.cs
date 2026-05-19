@@ -9,18 +9,18 @@ namespace RapportServiceAPI.Controllers
     [Route("[controller]")]
     public class RapportController : ControllerBase
     {
-        //Der bliver logget til fejlhåndtering og repository til datahåndtering
+        //JBS: Der bliver logget til fejlhåndtering og repository til datahåndtering
         private readonly ILogger<RapportController> _logger;
         private readonly IRapportRepository _rapportRepository;
 
-        //Dependency injection af logger og repository via konstruktøren.
+        //JBS: Dependency injection af logger og repository via konstruktøren.
         public RapportController(ILogger<RapportController> logger, IRapportRepository rapportRepository)
         {
             _logger = logger;
             _rapportRepository = rapportRepository;
         }
 
-        //Her henter vi alle statistikker fra repository
+        //JBS: Her henter vi alle statistikker fra repository
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -28,8 +28,8 @@ namespace RapportServiceAPI.Controllers
             return Ok(statistikker);
         }
 
-        //Vi henter en enkelt statistik baseret på id
-        //Returner fejl hvis der ikke findes det givne id
+        //JBS: Vi henter en enkelt statistik baseret på id
+        //JBS: Returner fejl hvis der ikke findes det givne id
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -39,7 +39,7 @@ namespace RapportServiceAPI.Controllers
             return Ok(statistik);
         }
 
-        //Vi opretter en ny statistik 
+        //JBS: Vi opretter en ny statistik 
         [HttpPost]
         public async Task<IActionResult> Create(Statistik statistik)
         {
@@ -47,7 +47,7 @@ namespace RapportServiceAPI.Controllers
             return CreatedAtAction(nameof(GetById), new { id = statistik.Id }, statistik);
         }
 
-        //Vi sletter en statistik baseret på baggrund af et id
+        //JBS: Vi sletter en statistik baseret på baggrund af et id
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -55,7 +55,7 @@ namespace RapportServiceAPI.Controllers
             return NoContent();
         }
 
-        //Vi gemmer et nyt datapunkt i en statistik. 
+        //JBS: Vi gemmer et nyt datapunkt i en statistik. 
         [HttpPost("{id}/lagring")]
         public async Task<IActionResult> StoreLagring(Guid id, Lagring lagring)
         {
@@ -67,8 +67,8 @@ namespace RapportServiceAPI.Controllers
             return Ok(statistik);
         }
 
-        //Vi genererer et share link til en statistik
-        //Hvis det er vi gerne vil sende det rundt 
+        //JBS: Vi genererer et share link til en statistik
+        //JBS: Hvis det er vi gerne vil sende det rundt 
         [HttpPost("{id}/deling")]
         public async Task<IActionResult> CreateDeling(Guid id, Deling deling)
         {
@@ -81,7 +81,7 @@ namespace RapportServiceAPI.Controllers
             return Ok(statistik);
         }
 
-        //Det her er til at tilbagekalde en delt statistik.
+        //JBS: Det her er til at tilbagekalde en delt statistik.
         [HttpDelete("{id}/deling/{userId}")]
         public async Task<IActionResult> RevokeDeling(Guid id, Guid userId)
         {
@@ -95,7 +95,7 @@ namespace RapportServiceAPI.Controllers
             return Ok(statistik);
         }
 
-        //Hvis vi har lyst til at køre en analyse på en statistik.
+        //JBS: Hvis vi har lyst til at køre en analyse på en statistik.
         [HttpPost("{id}/analyse")]
         public async Task<IActionResult> RunAnalyse(Guid id, Analyse analyse)
         {
@@ -107,7 +107,7 @@ namespace RapportServiceAPI.Controllers
             return Ok(statistik);
         }
 
-        //Her kan vi se en liste over tilmeldte medlemmer til en session
+        //JBS: Her kan vi se en liste over tilmeldte medlemmer til en session
         [HttpGet("{id}/tilmeldte")]
         public async Task<IActionResult> GetTilmeldte(Guid id)
         {
@@ -117,7 +117,7 @@ namespace RapportServiceAPI.Controllers
             return Ok(statistik.Registrered);
         }
 
-        //Her henter vi en liste over medlemmer der mødte på til en session
+        //JBS: Her henter vi en liste over medlemmer der mødte på til en session
         [HttpGet("{id}/fremmøde")]
         public async Task<IActionResult> GetFremmoede(Guid id)
         {
@@ -127,7 +127,7 @@ namespace RapportServiceAPI.Controllers
             return Ok(statistik.Attended);
         }
         
-        //Her kan vi hente en venteliste for en session
+        //JBS: Her kan vi hente en venteliste for en session
         [HttpGet("{id}/venteliste")]
         public async Task<IActionResult> GetVenteliste(Guid id)
         {

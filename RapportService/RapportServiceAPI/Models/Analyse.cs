@@ -19,7 +19,7 @@ namespace RapportServiceAPI.Models
         public string Comparison { get; private set; } = string.Empty;
         public DateTime CalculatedAt { get; private set; }
 
-        //Vi kører en analyse for en given type og periode
+        //JBS: Vi kører en analyse for en given type og periode
         public void RunAnalysis(AnalysisType type, DateTime period)
         {
             AnalysisType = type;
@@ -27,7 +27,7 @@ namespace RapportServiceAPI.Models
             CalculatedAt = DateTime.UtcNow;
         }
 
-        //Her sammenligner vi med den forrige periode
+        //JBS: Her sammenligner vi med den forrige periode
         public void CompareWithPrevious()
         {
             Comparison = $"Sammenlignet med forrige periode: {PeriodStart}";
