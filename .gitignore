@@ -52,7 +52,7 @@ CodeCoverage/
 [Bb]uild[Ll]og.*
 
 # NUnit
-*.VisualState.xml
+*.VisualState.xmlS
 TestResult.xml
 nunit-*.xml
 /.vs
@@ -62,3 +62,6 @@ nunit-*.xml
 
 #User-specific files
 *.csproj.user
+/FacilityService/FacilityServiceAPI/.vs/FacilityServiceAPI
+/FacilityService/FacilityServiceAPI/.vs/ProjectEvaluation
+/FacilityService/FacilityServiceAPI/.github

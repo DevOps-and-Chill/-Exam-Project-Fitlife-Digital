@@ -1,0 +1,288 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|c:\\git\\exam-project-fitlife-digital\\userservice\\userservice\\repositories\\db repos\\userrepositorydb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|solutionrelative:userservice\\repositories\\db repos\\userrepositorydb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|c:\\git\\exam-project-fitlife-digital\\userservice\\userservice\\repositories\\db repos\\employeerepositorydb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|solutionrelative:userservice\\repositories\\db repos\\employeerepositorydb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|c:\\git\\exam-project-fitlife-digital\\userservice\\userservice\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|solutionrelative:userservice\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|c:\\git\\exam-project-fitlife-digital\\userservice\\userservice\\repositories\\db repos\\memberrepositorydb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|solutionrelative:userservice\\repositories\\db repos\\memberrepositorydb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|c:\\git\\exam-project-fitlife-digital\\userservice\\userservice\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|solutionrelative:userservice\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|c:\\git\\exam-project-fitlife-digital\\userservice\\userservice\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|solutionrelative:userservice\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|c:\\git\\exam-project-fitlife-digital\\userservice\\userservice\\data\\userdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|solutionrelative:userservice\\data\\userdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|c:\\git\\exam-project-fitlife-digital\\userservice\\userservice\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|solutionrelative:userservice\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|c:\\git\\exam-project-fitlife-digital\\userservice\\userservice\\models\\employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|solutionrelative:userservice\\models\\employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|c:\\git\\exam-project-fitlife-digital\\userservice\\userservice\\models\\member.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|solutionrelative:userservice\\models\\member.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|c:\\git\\exam-project-fitlife-digital\\userservice\\userservice\\repositories\\interfaces\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|solutionrelative:userservice\\repositories\\interfaces\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|c:\\git\\exam-project-fitlife-digital\\userservice\\userservice\\controllers\\employeecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|solutionrelative:userservice\\controllers\\employeecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|c:\\git\\exam-project-fitlife-digital\\userservice\\userservice\\models\\enums\\userrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|solutionrelative:userservice\\models\\enums\\userrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|c:\\git\\exam-project-fitlife-digital\\userservice\\userservice\\models\\enums\\employeerole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|solutionrelative:userservice\\models\\enums\\employeerole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|c:\\git\\exam-project-fitlife-digital\\userservice\\userservice\\models\\enums\\membershipoptional.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|solutionrelative:userservice\\models\\enums\\membershipoptional.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|c:\\git\\exam-project-fitlife-digital\\userservice\\userservice\\models\\enums\\membershiptype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DAFB98CC-48F1-4947-B5F5-ACE30162F125}|UserService\\UserServiceAPI.csproj|solutionrelative:userservice\\models\\enums\\membershiptype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Program.cs",
+              "RelativeDocumentMoniker": "UserService\\Program.cs",
+              "ToolTip": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Program.cs",
+              "RelativeToolTip": "UserService\\Program.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAA1wBkAAABBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-18T07:13:30.077Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\appsettings.json",
+              "RelativeDocumentMoniker": "UserService\\appsettings.json",
+              "ToolTip": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\appsettings.json",
+              "RelativeToolTip": "UserService\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-05-18T07:13:45.684Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "UserDbContext.cs",
+              "DocumentMoniker": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Data\\UserDbContext.cs",
+              "RelativeDocumentMoniker": "UserService\\Data\\UserDbContext.cs",
+              "ToolTip": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Data\\UserDbContext.cs",
+              "RelativeToolTip": "UserService\\Data\\UserDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAwwBcAAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-18T07:07:21.505Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "EmployeeRepositoryDB.cs",
+              "DocumentMoniker": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Repositories\\DB Repos\\EmployeeRepositoryDB.cs",
+              "RelativeDocumentMoniker": "UserService\\Repositories\\DB Repos\\EmployeeRepositoryDB.cs",
+              "ToolTip": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Repositories\\DB Repos\\EmployeeRepositoryDB.cs",
+              "RelativeToolTip": "UserService\\Repositories\\DB Repos\\EmployeeRepositoryDB.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEsAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-18T06:49:45.51Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UserRepositoryDB.cs",
+              "DocumentMoniker": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Repositories\\DB Repos\\UserRepositoryDB.cs",
+              "RelativeDocumentMoniker": "UserService\\Repositories\\DB Repos\\UserRepositoryDB.cs",
+              "ToolTip": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Repositories\\DB Repos\\UserRepositoryDB.cs",
+              "RelativeToolTip": "UserService\\Repositories\\DB Repos\\UserRepositoryDB.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAA9wCcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-18T06:49:44.615Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MemberRepositoryDB.cs",
+              "DocumentMoniker": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Repositories\\DB Repos\\MemberRepositoryDB.cs",
+              "RelativeDocumentMoniker": "UserService\\Repositories\\DB Repos\\MemberRepositoryDB.cs",
+              "ToolTip": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Repositories\\DB Repos\\MemberRepositoryDB.cs",
+              "RelativeToolTip": "UserService\\Repositories\\DB Repos\\MemberRepositoryDB.cs",
+              "ViewState": "AgIAADoAAAAAAAAAAAAcwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-18T06:49:43.041Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "EmployeeController.cs",
+              "DocumentMoniker": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Controllers\\EmployeeController.cs",
+              "RelativeDocumentMoniker": "UserService\\Controllers\\EmployeeController.cs",
+              "ToolTip": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Controllers\\EmployeeController.cs",
+              "RelativeToolTip": "UserService\\Controllers\\EmployeeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-18T06:49:15.993Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "IUserRepository.cs",
+              "DocumentMoniker": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Repositories\\Interfaces\\IUserRepository.cs",
+              "RelativeDocumentMoniker": "UserService\\Repositories\\Interfaces\\IUserRepository.cs",
+              "ToolTip": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Repositories\\Interfaces\\IUserRepository.cs",
+              "RelativeToolTip": "UserService\\Repositories\\Interfaces\\IUserRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-12T08:49:28.855Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "UserService\\Controllers\\UserController.cs",
+              "ToolTip": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Controllers\\UserController.cs",
+              "RelativeToolTip": "UserService\\Controllers\\UserController.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAAAIwDkAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-12T08:37:11.648Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "MembershipType.cs",
+              "DocumentMoniker": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Models\\Enums\\MembershipType.cs",
+              "RelativeDocumentMoniker": "UserService\\Models\\Enums\\MembershipType.cs",
+              "ToolTip": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Models\\Enums\\MembershipType.cs",
+              "RelativeToolTip": "UserService\\Models\\Enums\\MembershipType.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-12T07:47:19.392Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "MembershipOptional.cs",
+              "DocumentMoniker": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Models\\Enums\\MembershipOptional.cs",
+              "RelativeDocumentMoniker": "UserService\\Models\\Enums\\MembershipOptional.cs",
+              "ToolTip": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Models\\Enums\\MembershipOptional.cs",
+              "RelativeToolTip": "UserService\\Models\\Enums\\MembershipOptional.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-12T07:46:42.24Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "EmployeeRole.cs",
+              "DocumentMoniker": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Models\\Enums\\EmployeeRole.cs",
+              "RelativeDocumentMoniker": "UserService\\Models\\Enums\\EmployeeRole.cs",
+              "ToolTip": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Models\\Enums\\EmployeeRole.cs",
+              "RelativeToolTip": "UserService\\Models\\Enums\\EmployeeRole.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-12T07:45:56.217Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "UserRole.cs",
+              "DocumentMoniker": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Models\\Enums\\UserRole.cs",
+              "RelativeDocumentMoniker": "UserService\\Models\\Enums\\UserRole.cs",
+              "ToolTip": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Models\\Enums\\UserRole.cs",
+              "RelativeToolTip": "UserService\\Models\\Enums\\UserRole.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-12T07:44:26.658Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Employee.cs",
+              "DocumentMoniker": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Models\\Employee.cs",
+              "RelativeDocumentMoniker": "UserService\\Models\\Employee.cs",
+              "ToolTip": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Models\\Employee.cs",
+              "RelativeToolTip": "UserService\\Models\\Employee.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-12T07:35:59.308Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Member.cs",
+              "DocumentMoniker": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Models\\Member.cs",
+              "RelativeDocumentMoniker": "UserService\\Models\\Member.cs",
+              "ToolTip": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Models\\Member.cs",
+              "RelativeToolTip": "UserService\\Models\\Member.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-12T07:35:50.044Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Models\\User.cs",
+              "RelativeDocumentMoniker": "UserService\\Models\\User.cs",
+              "ToolTip": "C:\\GIT\\Exam-Project-Fitlife-Digital\\UserService\\UserService\\Models\\User.cs",
+              "RelativeToolTip": "UserService\\Models\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-12T07:35:38.702Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
