@@ -14,9 +14,9 @@ namespace UserServiceAPI.Data
         //AO: Represents the Users container/collection (in this case its a container in CosmosDB that contains "User"-objects)
         public DbSet<User> Users => Set<User>();
 
-        public DbSet<Member> Members => Set<Member>();
+        //public DbSet<Member> Members => Set<Member>();
 
-        public DbSet<Employee> Employees => Set<Employee>();
+        //public DbSet<Employee> Employees => Set<Employee>();
 
         //AO: Configures how the entity is mapped to the database. Defines how models are saved, keys, partitions, containers etc. 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -39,11 +39,11 @@ namespace UserServiceAPI.Data
                .HasValue<Member>("Member")
                .HasValue<Employee>("Employee");
 
-            //CS: Registrerer Member eksplicit så EF Core Cosmos lettere kan håndtere queries på den afledte type
-            modelBuilder.Entity<Member>();
+            ////CS: Registrerer Member eksplicit så EF Core Cosmos lettere kan håndtere queries på den afledte type
+            //modelBuilder.Entity<Member>();
 
-            //CS: Registrerer Employee eksplicit så EF Core Cosmos lettere kan håndtere queries på den afledte type
-            modelBuilder.Entity<Employee>();
+            ////CS: Registrerer Employee eksplicit så EF Core Cosmos lettere kan håndtere queries på den afledte type
+            //modelBuilder.Entity<Employee>();
         }
 
     }
