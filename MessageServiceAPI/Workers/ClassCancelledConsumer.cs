@@ -51,8 +51,7 @@ public class ClassCancelledConsumer : BackgroundService
         };
 
         await channel.BasicConsumeAsync("class.cancelled", autoAck: true, consumer);
-
-        // Hold worker i live
+        
         await Task.Delay(Timeout.Infinite, stoppingToken);
     }
 
@@ -66,10 +65,10 @@ public class ClassCancelledConsumer : BackgroundService
             message.MemberIds.Count,
             string.Join(", ", message.MemberIds));
 
-        // TODO: kald service
-        // foreach (var memberId in message.MemberIds)
-        //     await _emailService.SendCancellationEmailAsync(memberId, message);
-
+        /* TODO: kald service
+        foreach (var memberId in message.MemberIds)
+        await _Service.SendCancellationEmailAsync(memberId, message);
+        */
         return Task.CompletedTask;
     }
 
