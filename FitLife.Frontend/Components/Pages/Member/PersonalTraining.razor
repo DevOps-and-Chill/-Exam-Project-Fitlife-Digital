@@ -1,6 +1,10 @@
 @page "/personal-training"
 @rendermode InteractiveServer
 @using FitLife.Frontend.Models
+@using FitLife.Frontend.Services
+@inject PTService PTService
+@inject CenterService CenterService
+@inject TrainerService TrainerService
 
 <div class="container-fluid px-0">
 
@@ -49,8 +53,7 @@
         <div class="row g-4">
 
             <!-- Loop gennem alle trænere -->
-            <!-- TODO:
-                 Senere skal Trainers hentes fra backend/API -->
+            <!-- Trænere hentes fra UserService via TrainerService -->
             @foreach (var trainer in Trainers)
             {
                 <div class="col-md-4">
@@ -137,10 +140,36 @@
                     </h4>
 
                     <p class="text-muted">
-                        Vælg dato og tidspunkt for din personlige træning.
+                        Vælg center, dato og tidspunkt for din personlige træning.
                     </p>
 
                     <div class="row g-3 mt-2">
+
+                        <!-- Valg af center -->
+                        <!-- Centre hentes fra FacilityService via CenterService -->
+                        <div class="col-md-12">
+
+                            <label class="form-label">
+                                Vælg center
+                            </label>
+
+                            <select class="form-select"
+                                    @bind="SelectedCenterId">
+
+                                <option value="">
+                                    Vælg center
+                                </option>
+
+                                @foreach (var center in Centers)
+                                {
+                                    <option value="@center.Id">
+                                        @center.Name - @center.City
+                                    </option>
+                                }
+
+                            </select>
+
+                        </div>
 
                         <!-- Valg af dato -->
                         <div class="col-md-6">
@@ -181,8 +210,7 @@
                     <div class="d-flex gap-3 mt-4">
 
                         <!-- Opretter booking -->
-                        <!-- TODO:
-                             Senere skal dette sende booking til backend/API -->
+                        <!-- Sender booking til PTService/API -->
                         <button class="btn btn-success"
                                 @onclick="BookSession">
                             Book
@@ -192,69 +220,6 @@
                         <button class="btn btn-outline-secondary"
                                 @onclick="CancelBooking">
                             Afbryd booking
-                        </button>
-
-                    </div>
-
-                </div>
-            </div>
-        }
-
-        <!-- Beskedpanel -->
-        @if (SelectedTrainerForMessage is not null)
-        {
-            <div class="card shadow-sm border-0 mt-5">
-
-                <div class="card-body p-4">
-
-                    <h4 class="fw-bold">
-                        Send besked til @SelectedTrainerForMessage.Name
-                    </h4>
-
-                    <p class="text-muted">
-                        Skriv en kort besked til træneren om dit behov eller spørgsmål.
-                    </p>
-
-                    <!-- Message-modellen bruges nu i stedet for separate strings -->
-                    <!-- Dette gør løsningen mere domain-driven og nemmere at koble til backend -->
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Emne
-                        </label>
-
-                        <input class="form-control"
-                               @bind="NewMessage.Subject" />
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Besked
-                        </label>
-
-                        <textarea class="form-control"
-                                  rows="5"
-                                  @bind="NewMessage.Content">
-                        </textarea>
-
-                    </div>
-
-                    <div class="d-flex gap-3">
-
-                        <!-- Sender besked -->
-                        <!-- TODO:
-                             Senere skal beskeden gemmes via MessageService/API -->
-                        <button class="btn btn-success"
-                                @onclick="SendMessage">
-                            Send
-                        </button>
-
-                        <!-- Lukker beskedformular -->
-                        <button class="btn btn-outline-secondary"
-                                @onclick="CancelMessage">
-                            Afbryd
                         </button>
 
                     </div>
@@ -289,6 +254,13 @@
     private DateTime? SelectedDate;
     private string SelectedTime = "";
 
+    // Liste over centre hentet fra FacilityService
+    // TODO:
+    // Senere kan valgt center evt. komme fra brugerens profil eller valgte center i navigationen
+    private List<Center> Centers = new();
+
+    private string SelectedCenterId = "";
+
     // Message-model bruges til beskedsystemet
     // TODO:
     // Skal senere sendes til backend via MessageService/API
@@ -297,35 +269,28 @@
     // Feedback til bruger
     private string StatusMessage = "";
 
-    // Midlertidig mock data til prototype
+    // Trænere hentes fra UserService
     // TODO:
-    // Skal senere hentes fra backend/API
-    private List<Trainer> Trainers = new()
+    // Senere kan data udvides med speciale, profiltekst og bookingkalender
+    private List<Trainer> Trainers = new();
+
+    // Henter centre og trænere når siden indlæses
+    protected override async Task OnInitializedAsync()
     {
-        new Trainer
+        try
         {
-            Name = "Frederikke",
-            Description = "Styrketræning, holdtræning og motivation.",
-            Specialty = "Styrketræning",
-            IsAvailable = true
-        },
+            Centers = await CenterService.GetCentersAsync();
 
-        new Trainer
-        {
-            Name = "Jonas",
-            Description = "Vægttab, teknik og personlige programmer.",
-            Specialty = "Vægttab",
-            IsAvailable = false
-        },
+            // Vælger første center som standard hvis der findes centre
+            SelectedCenterId = Centers.FirstOrDefault()?.Id ?? "";
 
-        new Trainer
-        {
-            Name = "Mikkel",
-            Description = "Kondition, spinning og funktionel træning.",
-            Specialty = "Kondition",
-            IsAvailable = true
+            Trainers = await TrainerService.GetTrainersAsync();
         }
-    };
+        catch (Exception ex)
+        {
+            StatusMessage = $"Kunne ikke hente data: {ex.Message}";
+        }
+    }
 
     // Åbner bookingpanel
     private void SelectTrainerForBooking(Trainer trainer)
@@ -367,15 +332,66 @@
     }
 
     // Opretter booking
-    // TODO:
-    // Skal senere sende booking til backend/API
-    private void BookSession()
+    // Sender booking til PTService/API
+    private async Task BookSession()
     {
         if (SelectedTrainerForBooking is null ||
             SelectedDate is null ||
-            string.IsNullOrWhiteSpace(SelectedTime))
+            string.IsNullOrWhiteSpace(SelectedTime) ||
+            string.IsNullOrWhiteSpace(SelectedCenterId))
         {
-            StatusMessage = "Vælg både dato og tid.";
+            StatusMessage = "Vælg både center, dato og tid.";
+            return;
+        }
+
+        if (!Guid.TryParse(SelectedCenterId, out var centerId))
+        {
+            StatusMessage = "Det valgte center har ikke et gyldigt Guid-id.";
+            return;
+        }
+
+        if (!Guid.TryParse(SelectedTrainerForBooking.Id, out var trainerId))
+        {
+            StatusMessage = "Den valgte træner har ikke et gyldigt Guid-id.";
+            return;
+        }
+
+        if (!TimeSpan.TryParse(SelectedTime, out var selectedTime))
+        {
+            StatusMessage = "Tidspunktet er ugyldigt.";
+            return;
+        }
+
+        var startDate = SelectedDate.Value.Date.Add(selectedTime);
+
+        var newSession = new PersonalTrainingSession
+        {
+            // Midlertidigt member-id
+            // TODO:
+            // Senere skal MemberId hentes fra den bruger der er logget ind
+            MemberId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+
+            // PersonalTrainerId kommer fra UserService via den valgte træner
+            PersonalTrainerId = trainerId,
+
+            // CenterId kommer fra FacilityService via det valgte center
+            CenterId = centerId,
+
+            // Midlertidigt mål
+            // TODO:
+            // Senere kan brugeren selv vælge mål, fx vægttab, styrke eller kondition
+            Goal = 0,
+
+            StartDate = startDate,
+
+            EndDate = startDate.AddHours(1)
+        };
+
+        var bookedSession = await PTService.BookSessionAsync(newSession);
+
+        if (bookedSession is null)
+        {
+            StatusMessage = "Bookingen kunne ikke oprettes. Tjek at PTService kører.";
             return;
         }
 
