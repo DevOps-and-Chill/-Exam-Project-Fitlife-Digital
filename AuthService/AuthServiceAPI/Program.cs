@@ -28,6 +28,8 @@ try
 
     builder.Services.AddScoped<ICredentialRepository, CredentialRepositoryDB>();
     builder.Services.AddScoped<IPasswordService, PasswordService>();
+    builder.Services.AddScoped<ICredentialService, CredentialService>();
+    builder.Services.AddScoped<IJWTService, JWTService>();
 
     builder.Services.AddDbContext<CredentialDbContext>(options =>
     {

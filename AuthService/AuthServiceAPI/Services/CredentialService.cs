@@ -49,7 +49,7 @@ namespace AuthServiceAPI.Services
         public async Task<bool> ValidateCredential(LoginRequestDTO validationRequest)
         {
             bool result = false;
-            if (string.IsNullOrEmpty(validationRequest.Email))
+            if (!string.IsNullOrEmpty(validationRequest.Email))
             {
                 Credential credentialsToValidate = await _authRepository.GetCredentialsByEmail(validationRequest.Email);
                 if (string.IsNullOrWhiteSpace(validationRequest.Password))
