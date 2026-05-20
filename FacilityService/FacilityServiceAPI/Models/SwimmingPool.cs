@@ -6,6 +6,8 @@
 		{
 			Swimlanes = swimLanes;
 		}
+
+		public SwimmingPool() { }
 		public int Swimlanes { get; set; }
 	}
 }

@@ -35,7 +35,7 @@ namespace FacilityServiceAPI.Controllers
 			catch (Exception ex)
 			{
 
-				return BadRequest(ex);
+				return BadRequest(ex.Message);
 			}
 		}
 
@@ -55,7 +55,7 @@ namespace FacilityServiceAPI.Controllers
 			}
 			catch (Exception ex)
 			{
-				return BadRequest(ex);
+				return BadRequest(ex.Message);
 			}
 		}
 
@@ -75,7 +75,7 @@ namespace FacilityServiceAPI.Controllers
 			catch (Exception ex)
 			{
 
-				return BadRequest(ex);
+				return BadRequest(ex.Message);
 			}
 		}
 		/// <summary>
@@ -94,7 +94,7 @@ namespace FacilityServiceAPI.Controllers
 			}
 			catch (Exception ex)
 			{
-				return BadRequest(ex);
+				return BadRequest(ex.Message);
 			}
 		}
 
@@ -113,7 +113,7 @@ namespace FacilityServiceAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
         }
         /// <summary>
@@ -132,7 +132,7 @@ namespace FacilityServiceAPI.Controllers
             catch (Exception ex)
             {
 
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -154,7 +154,7 @@ namespace FacilityServiceAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -176,7 +176,7 @@ namespace FacilityServiceAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -198,9 +198,22 @@ namespace FacilityServiceAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
         }
 
+        [HttpGet("addtestdata")]
+        public async Task<IActionResult> loadtestdata()
+        {
+            try
+            {
+                await _facilityRepository.AddTestData();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
