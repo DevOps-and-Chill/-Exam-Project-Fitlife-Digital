@@ -51,15 +51,12 @@ public class ClassCancelledConsumer : BackgroundService
         };
 
         await channel.BasicConsumeAsync("class.cancelled", autoAck: true, consumer);
-
-        // Hold worker i live
+        
         await Task.Delay(Timeout.Infinite, stoppingToken);
     }
 
     private Task HandleMessageAsync(ClassCancelledMessage message)
     {
-        // Her sender du faktiske notifikationer — email, SMS, push osv.
-        // Foreløbig logger vi blot:
         _logger.LogInformation(
             "Klasse '{Title}' (ID: {ClassId}) er aflyst. " +
             "Notificerer {Count} members: {MemberIds}",
@@ -68,10 +65,10 @@ public class ClassCancelledConsumer : BackgroundService
             message.MemberIds.Count,
             string.Join(", ", message.MemberIds));
 
-        // TODO: kald f.eks. en EmailService eller NotificationService her
-        // foreach (var memberId in message.MemberIds)
-        //     await _emailService.SendCancellationEmailAsync(memberId, message);
-
+        /* TODO: kald service
+        foreach (var memberId in message.MemberIds)
+        await _Service.SendCancellationEmailAsync(memberId, message);
+        */
         return Task.CompletedTask;
     }
 

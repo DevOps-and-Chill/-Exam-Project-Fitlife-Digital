@@ -3,13 +3,26 @@ using NLog.Web;
 using ClassServiceAPI.Messaging;
 using ClassServiceAPI.Repositories;
 using ClassServiceAPI.Repositories.Interfaces;
-using MassTransit;
 
 var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
 logger.Debug("ClassServiceAPI starter op");
 
-try
+builder.Services.AddControllers();
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddOpenApi();
+builder.Services.AddScoped<IClassRepository, ClassRepository>();
+
+builder.Services.AddSingleton<IMessagePublisher>(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    return RabbitMqPublisher.CreateAsync(config).GetAwaiter().GetResult();
+});
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
 {
     var builder = WebApplication.CreateBuilder(args);
 
