@@ -1,3 +1,5 @@
+using NLog;
+using NLog.Web;
 
 using FacilityServiceAPI.Contexts;
 using FacilityServiceAPI.Repositories;
@@ -7,13 +9,22 @@ using System.Configuration;
 
 namespace FacilityServiceAPI
 {
-	public class Program
-	{
-		public static async Task Main(string[] args)
-		{
-			var builder = WebApplication.CreateBuilder(args);
+    public class Program
+    {
+        public static async Task Main(string[] args)
+        {
+            // Opsæt NLog og hent en logger instans til at logge opstart og fejl
+            var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
-			// Add services to the container.
+            logger.Debug("FacilityService starter op");
+
+            try
+            {
+                var builder = WebApplication.CreateBuilder(args);
+
+                // Ryd eksisterende logging providers og brug NLog i stedet
+                builder.Logging.ClearProviders();
+                builder.Host.UseNLog();
 
 			builder.Services.AddControllers();
 			// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -27,7 +38,7 @@ namespace FacilityServiceAPI
 				builder.Configuration["CosmosDb:AccountKey"]!,
 				builder.Configuration["CosmosDb:DatabaseName"]!));
 
-			var app = builder.Build();
+                var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())
@@ -41,14 +52,22 @@ namespace FacilityServiceAPI
 				await db.Database.EnsureCreatedAsync();
 			}
 
-			app.UseHttpsRedirection();
-
-			app.UseAuthorization();
-
-
-			app.MapControllers();
-
-			app.Run();
-		}
-	}
+                app.UseHttpsRedirection();
+                app.UseAuthorization();
+                app.MapControllers();
+                app.Run();
+            }
+            catch (Exception ex)
+            {
+                // Logger fejl hvis applikationen crasher ved opstart
+                logger.Error(ex, "FacilityService stoppede på grund af en fejl!");
+                throw;
+            }
+            finally
+            {
+                // Sørg for at alle logs bliver skrevet færdigt før applikationen lukker
+                NLog.LogManager.Shutdown();
+            }
+        }
+    }
 }
