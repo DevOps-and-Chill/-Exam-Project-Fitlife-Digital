@@ -3,6 +3,7 @@ using AuthServiceAPI.Models;
 using AuthServiceAPI.Repositories.Interfaces;
 using AuthServiceAPI.Services;
 using AuthServiceAPI.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -60,6 +61,7 @@ namespace AuthServiceAPI.Controllers
             }
         }
 
+        [Authorize]
         [HttpDelete("DeleteCredentials")]
         public async Task<ActionResult> DeleteCredentials([FromBody] string userId)
         {
@@ -77,7 +79,5 @@ namespace AuthServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
     }
 }
