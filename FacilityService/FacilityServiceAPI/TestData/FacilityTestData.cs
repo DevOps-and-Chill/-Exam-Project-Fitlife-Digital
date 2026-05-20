@@ -4,7 +4,7 @@ namespace FacilityServiceAPI.TestData
 {
     public static class FacilityTestData
     {
-        public static List<Facility> Facilities => new()
+        public static List<ExerciseGym> ExerciseGyms => new()
     {
         new ExerciseGym(
             name: "Downtown Fitness Center",
@@ -61,16 +61,20 @@ namespace FacilityServiceAPI.TestData
             },
             roomsForClasses: 2,
             managerId: Guid.Parse("33333333-3333-3333-3333-333333333333")
-        ),
-		 new SwimmingPool(
+        )
+        
+
+    };
+
+        public static List<SwimmingPool> SwimmingPools => new() { new SwimmingPool(
 			name: "AquaLife Pool Center",
 			address: "200 Ocean Drive, Copenhagen",
 			telephone: "+45 44 55 66 77",
 			email: "info@aqualife.dk",
 			openingHours: new List<OpeningHoursSpecification>
 			{
-				new() { DayOfWeek = DayOfWeek.Monday, Opens = "06:00", Closes = "20:00" },
-				new() { DayOfWeek = DayOfWeek.Tuesday, Opens = "06:00", Closes = "20:00" },
+				new () { DayOfWeek = DayOfWeek.Monday, Opens = "06:00", Closes = "20:00" },
+				new () { DayOfWeek = DayOfWeek.Tuesday, Opens = "06:00", Closes = "20:00" },
 				new() { DayOfWeek = DayOfWeek.Wednesday, Opens = "06:00", Closes = "20:00" },
 				new() { DayOfWeek = DayOfWeek.Thursday, Opens = "06:00", Closes = "20:00" },
 				new() { DayOfWeek = DayOfWeek.Friday, Opens = "06:00", Closes = "18:00" },
@@ -114,10 +118,8 @@ namespace FacilityServiceAPI.TestData
 				new() { DayOfWeek = DayOfWeek.Sunday, Opens = "10:00", Closes = "16:00" },
 			},
 			swimLanes: 5
-		)
+		)};
+	
 
-	};
-
-    
-    }
+	}
 }

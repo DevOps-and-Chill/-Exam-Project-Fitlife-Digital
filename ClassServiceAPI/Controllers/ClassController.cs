@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ClassServiceAPI.Messaging;
+using Microsoft.AspNetCore.Mvc;
 using ClassServiceAPI.Models;
 using ClassServiceAPI.Repositories.Interfaces;
 

@@ -25,7 +25,10 @@ namespace FacilityServiceTest
 
 			_logger = loggerFactory.CreateLogger<FacilityController>();
 
-			facilitiesForTest = FacilityTestData.Facilities;
+			
+			facilitiesForTest = new List<Facility>();
+			facilitiesForTest.AddRange(FacilityTestData.ExerciseGyms);
+			facilitiesForTest.AddRange(FacilityTestData.SwimmingPools);
 		}
 
 		[TestMethod(DisplayName = "GetFacility")]
