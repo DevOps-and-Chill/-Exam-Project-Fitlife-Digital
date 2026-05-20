@@ -52,8 +52,4 @@ public class RabbitMqPublisher : IMessagePublisher, IAsyncDisposable
         await _channel.CloseAsync();
         await _connection.CloseAsync();
     }
-    public void Publish<T>(T message, string queueName)
-    {
-        throw new NotImplementedException();
-    }
 }
