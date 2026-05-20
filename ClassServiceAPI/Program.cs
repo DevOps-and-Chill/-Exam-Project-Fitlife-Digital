@@ -1,22 +1,20 @@
-using NLog;
-using NLog.Web;
+using ClassServiceAPI.Data;
 using ClassServiceAPI.Messaging;
 using ClassServiceAPI.Repositories;
 using ClassServiceAPI.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using ClassServiceAPI.Data;
 
+using NLog;
+using NLog.Web;
 
 var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
-
 logger.Debug("ClassServiceAPI starter op");
-
 
 try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    // Ryd eksisterende logging providers og brug NLog i stedet
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
 
@@ -40,6 +38,12 @@ try
     });
 
     var app = builder.Build();
+
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<ClassDbContext>();
+        await context.Database.EnsureCreatedAsync();
+    }
 
     if (app.Environment.IsDevelopment())
     {
