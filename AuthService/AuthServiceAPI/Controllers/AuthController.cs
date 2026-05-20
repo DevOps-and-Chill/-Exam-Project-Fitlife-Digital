@@ -3,6 +3,7 @@ using AuthServiceAPI.Models;
 using AuthServiceAPI.Repositories.Interfaces;
 using AuthServiceAPI.Services;
 using AuthServiceAPI.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -37,26 +38,22 @@ namespace AuthServiceAPI.Controllers
             }
         }
 
-        [HttpPost("ValidateCredentials")]
-        public async Task<ActionResult> ValidateCredentials([FromBody] ValidateCredentialsRequestDTO validateDTO)
+        [HttpPost("Login")]
+        public async Task<ActionResult> Login([FromBody] LoginRequestDTO loginRequestDTO)
         {
             try
             {
-                bool result = await _credentialService.ValidateCredential(validateDTO);
-                if (result)
+                string? token = await _credentialService.Login(loginRequestDTO);
+
+                if (string.IsNullOrEmpty(token))
                 {
-                    return Ok(new
-                    {
-                        message = "Validation successful"
-                    });
+                    return Unauthorized();
                 }
-                else
+
+                return Ok(new
                 {
-                    return Unauthorized(new
-                    {
-                        message = "Validation failed"
-                    });
-                }
+                    token
+                });
             }
             catch (ArgumentException ex)
             {
@@ -64,6 +61,7 @@ namespace AuthServiceAPI.Controllers
             }
         }
 
+        [Authorize]
         [HttpDelete("DeleteCredentials")]
         public async Task<ActionResult> DeleteCredentials([FromBody] string userId)
         {
@@ -81,7 +79,5 @@ namespace AuthServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
     }
 }
