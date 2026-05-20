@@ -1,4 +1,5 @@
 ﻿using FacilityServiceAPI.Models;
+using FacilityServiceAPI.Repositories.Interfaces;
 using FacilityServiceAPI.TestData;
 
 namespace FacilityServiceAPI.Repositories
@@ -42,7 +43,12 @@ namespace FacilityServiceAPI.Repositories
 			return Task.FromResult(concatList.Single(f => f.Id.ToString() == facilityId));
 		}
 
-		public Task InsertFacility(Facility facility)
+        public Task InsertExerciseGym(ExerciseGym exerciseGym)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task InsertFacility(Facility facility)
 		{
 			if (facility.GetType() == typeof(ExerciseGym))
 			{
@@ -56,7 +62,17 @@ namespace FacilityServiceAPI.Repositories
 			return Task.CompletedTask;
 		}
 
-		public Task UpdateFacility(Facility facility)
+        public Task InsertSwimmingpool(SwimmingPool swimmingPool)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateExerciseGym(ExerciseGym exerciseGym)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateFacility(Facility facility)
 		{
 			if (facility.GetType() == typeof(ExerciseGym))
 			{
@@ -71,5 +87,10 @@ namespace FacilityServiceAPI.Repositories
 
 			return Task.CompletedTask;
 		}
-	}
+
+        public Task UpdateSwimmingPool(SwimmingPool swimmingPool)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

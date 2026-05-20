@@ -6,6 +6,7 @@ using FacilityServiceAPI.Repositories;
 using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using System.Configuration;
+using FacilityServiceAPI.Repositories.Interfaces;
 
 namespace FacilityServiceAPI
 {
