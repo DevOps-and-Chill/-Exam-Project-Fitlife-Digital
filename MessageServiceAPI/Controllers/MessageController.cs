@@ -20,7 +20,7 @@ public class MessageController : ControllerBase
     public async Task<IActionResult> SendMessage([FromBody] DirectMessage message)
     {
         await _messageService.SendDirectMessageAsync(message);
-        return Ok();
+        return Ok("Message sent");
     }
     
     // GET
@@ -28,8 +28,8 @@ public class MessageController : ControllerBase
     [HttpGet("{receiverId}/get-all-messages")]
     public async Task<IActionResult> GetAllMessages(Guid receiverId)
     { 
-        await _messageService.GetAllMessagesAsync(receiverId);
-        return Ok();
+        var messages = await _messageService.GetAllMessagesAsync(receiverId);
+        return Ok(messages);
     }
     
     // PUT
@@ -38,7 +38,7 @@ public class MessageController : ControllerBase
     public async Task<IActionResult> MarkAsRead(Guid messageId)
     {
         await  _messageService.MarkAsReadAsync(messageId);
-        return Ok();
+        return Ok("Marked as read");
     }
     
     // DELETE
