@@ -12,7 +12,7 @@ try
 
     // Ryd eksisterende logging providers og brug NLog i stedet
     builder.Logging.ClearProviders();
-    builder.Logging.AddNLog();
+    builder.Logging.AddNLog("NLog.config");
 
     builder.Services.AddHostedService<ClassCancelledConsumer>();
 

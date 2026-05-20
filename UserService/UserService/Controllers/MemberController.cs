@@ -10,10 +10,12 @@ namespace UserServiceAPI.Controllers
     public class MemberController : ControllerBase
     {
         private readonly IMemberRepository _memberRepository;
+        private readonly ILogger<MemberController> _logger;
 
-        public MemberController(IMemberRepository memberRepository)
+        public MemberController(IMemberRepository memberRepository, ILogger<MemberController> logger)
         {
             _memberRepository = memberRepository;
+            _logger = logger;
         }
 
         /// <summary>
@@ -25,12 +27,14 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetAllMembers")]
         public async Task<ActionResult> GetAllMembers()
         {
+            _logger.LogInformation("Henter alle medlemmer");
             try
             {
                 return Ok(await _memberRepository.GetAllMembers());
             }
             catch (Exception ex)
             {
+                _logger.LogError("Fejl ved hentning af alle medlemmer: {message}", ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -47,12 +51,14 @@ namespace UserServiceAPI.Controllers
         [HttpPut("CancelMembership/{userId}")]
         public async Task<ActionResult> CancelMembership(string userId)
         {
+            _logger.LogInformation("Annullerer medlemskab for bruger: {userId}", userId);
             try
             {
                 return Ok(await _memberRepository.CancelMembershipForMember(userId));
             }
             catch (Exception ex)
             {
+                _logger.LogError("Fejl ved annullering af medlemskab for {userId}: {message}", userId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -69,14 +75,16 @@ namespace UserServiceAPI.Controllers
         [HttpPost("UpsertMember")]
         public async Task<ActionResult> UpsertMember([FromBody] Member member)
         {
+            _logger.LogInformation("Opretter eller opdaterer medlem: {memberId}", member.Id);
             try
             {
                 Member updatedMember = await _memberRepository.UpsertMember(member);
-
+                _logger.LogInformation("Medlem oprettet/opdateret: {memberId}", member.Id);
                 return Ok(updatedMember);
             }
             catch (InvalidOperationException ex)
             {
+                _logger.LogWarning("Ugyldig operation ved upsert af medlem {memberId}: {message}", member.Id, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -93,12 +101,14 @@ namespace UserServiceAPI.Controllers
         [HttpDelete("DeleteMember/{userId}")]
         public async Task<ActionResult> DeleteMember(string userId)
         {
+            _logger.LogInformation("Sletter medlem: {userId}", userId);
             try
             {
                 return Ok(await _memberRepository.DeleteMember(userId));
             }
             catch (Exception ex)
             {
+                _logger.LogError("Fejl ved sletning af medlem {userId}: {message}", userId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -115,12 +125,14 @@ namespace UserServiceAPI.Controllers
         [HttpPut("SetAccountAsInactive/{userId}")]
         public async Task<ActionResult> SetMemberAccountAsInactive(string userId)
         {
+            _logger.LogInformation("Sætter konto som inaktiv for bruger: {userId}", userId);
             try
             {
                 return Ok(await _memberRepository.SetAccountAsInactive(userId));
             }
             catch (Exception ex)
             {
+                _logger.LogError("Fejl ved deaktivering af konto for {userId}: {message}", userId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -138,12 +150,14 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetMemberById/{userId}")]
         public async Task<ActionResult> GetMemberById(string userId)
         {
+            _logger.LogInformation("Henter medlem med id: {userId}", userId);
             try
             {
                 Member? member = await _memberRepository.GetMemberById(userId);
 
                 if (member is null)
                 {
+                    _logger.LogWarning("Medlem med id {userId} blev ikke fundet", userId);
                     return NotFound(
                         $"Member with id '{userId}' was not found");
                 }
@@ -152,6 +166,7 @@ namespace UserServiceAPI.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("Fejl ved hentning af medlem {userId}: {message}", userId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -168,6 +183,7 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetMemberByAffiliation/{affiliationId}")]
         public async Task<ActionResult> GetMemberByAffiliation(Guid affiliationId)
         {
+            _logger.LogInformation("Henter medlemmer for tilknytning: {affiliationId}", affiliationId);
             try
             {
                 var members = await _memberRepository.GetMembersByAffiliation(affiliationId);
@@ -175,6 +191,7 @@ namespace UserServiceAPI.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("Fejl ved hentning af medlemmer for tilknytning {affiliationId}: {message}", affiliationId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }

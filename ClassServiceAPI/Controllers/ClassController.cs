@@ -23,16 +23,16 @@ public class ClassController : ControllerBase
     [HttpPost("create-class")]
     public async Task<IActionResult> CreateClassAsync([FromBody] Class classModel)
     {
-        _logger.LogInformation("Opretter ny klasse: {className}", classModel.Name);
+        _logger.LogInformation("Opretter ny klasse: {className}", classModel.Title);
         try
         {
             var created = await _repo.CreateClassAsync(classModel);
-            _logger.LogInformation("Klasse oprettet: {className}", classModel.Name);
+            _logger.LogInformation("Klasse oprettet: {className}", classModel.Title);
             return Ok(created);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Fejl ved oprettelse af klasse: {className}", classModel.Name);
+            _logger.LogError(ex, "Fejl ved oprettelse af klasse: {className}", classModel.Title);
             return BadRequest(ex.Message);
         }
     }
