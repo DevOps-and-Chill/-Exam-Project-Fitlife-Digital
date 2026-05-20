@@ -17,10 +17,20 @@ try
     builder.Host.UseNLog();
 
     builder.Services.AddControllers();
-    builder.Services.AddDbContext<MessageDbContext>(options =>
+    
+    builder.Services.AddDbContextFactory<MessageDbContext>(options => options.UseCosmos(
+        builder.Configuration["CosmosDb:AccountEndpoint"]!,
+        builder.Configuration["CosmosDb:AccountKey"]!,
+        builder.Configuration["CosmosDb:DatabaseName"]!));
+    
+    /*
+     builder.Services.AddDbContext<MessageDbContext>(options =>
         options.UseInMemoryDatabase("MessageDb"));
+     */
+    
     builder.Services.AddScoped<IMessageService, MessageService>();
     builder.Services.AddHostedService<ClassCancelledConsumer>();
+    
 
     var app = builder.Build();
 
