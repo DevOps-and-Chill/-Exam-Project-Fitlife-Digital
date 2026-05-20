@@ -24,6 +24,9 @@ namespace PTServiceAPI.Models
 		public DateTime EndDate { get; private set; }
 		public DateTime CreatedDate { get; init; } = DateTime.UtcNow;
 
+		//Bruges af CosmosDB til at gruppere og fordele data i containeren
+		public string PartitionKey { get; set; } = "sessions";
+		
 		public void CompleteProgram() => Status = SessionStatus.Completed;
 		public void CancelProgram() => Status = SessionStatus.Cancelled;
 		public void SetStartDate(DateTime date) => StartDate = date;

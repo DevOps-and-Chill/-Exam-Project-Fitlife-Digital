@@ -10,7 +10,7 @@ namespace FacilityServiceAPI.Models
 			ManagerId = managerId;
 		}
 
-		public int RoomsForClasses { get; private set; }
-		public Guid ManagerId { get; private set; }
+		public int RoomsForClasses { get; set; }
+		public Guid ManagerId { get; set; }
 	}
 }

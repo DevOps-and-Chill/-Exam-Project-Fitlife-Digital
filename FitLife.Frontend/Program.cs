@@ -13,6 +13,18 @@ builder.Services.AddRazorComponents()
         builder.Configuration["UserService:BaseUrl"]!);
 });
 
+builder.Services.AddHttpClient("FacilityService", client =>
+{
+    client.BaseAddress = new Uri(
+    builder.Configuration["FacilityService:BaseUrl"]!);
+});
+
+builder.Services.AddHttpClient("PTService", client =>
+{
+    client.BaseAddress = new Uri(
+    builder.Configuration["PTService:BaseUrl"]!);
+});
+
 builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<MemberService>();
 builder.Services.AddScoped<TrainerService>();
@@ -20,6 +32,7 @@ builder.Services.AddScoped<DigitalTrainingService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<CenterService>();
 builder.Services.AddScoped<RegistrationStateService>();
+builder.Services.AddScoped<PTService>();
 
 var app = builder.Build();
 
