@@ -1,10 +1,18 @@
-using MessageServiceAPI;
+using MessageServiceAPI.Data;
+using MessageServiceAPI.Services;
+using MessageServiceAPI.Services.Interfaces;
 using MessageServiceAPI.Workers;
+using Microsoft.EntityFrameworkCore;
 
-var builder = Host.CreateApplicationBuilder(args);
-builder.Services.AddHostedService<MessageServiceAPI.Workers.ClassCancelledConsumer>();
+var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllers();
+builder.Services.AddDbContext<MessageDbContext>(options =>
+    options.UseInMemoryDatabase("MessageDb"));
+builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddHostedService<ClassCancelledConsumer>();
 
-var host = builder.Build();
-host.Run();
+var app = builder.Build();
 
+app.MapControllers();
+app.Run();

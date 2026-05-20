@@ -3,7 +3,8 @@ using System.Text;
 using System.Text.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using MessageServiceAPI.Messaging;
+using MessageServiceAPI.Models;
+using MessageServiceAPI.Services.Interfaces;
 
 namespace MessageServiceAPI.Workers;
 
@@ -11,17 +12,15 @@ public class ClassCancelledConsumer : BackgroundService
 {
     private readonly ILogger<ClassCancelledConsumer> _logger;
     private readonly IConfiguration _config;
-    private readonly HttpClient _httpClient;
+    private readonly IMessageService _messageService;
 
-    private IConnection? _connection;
-
-    public ClassCancelledConsumer(ILogger<ClassCancelledConsumer> logger, IConfiguration config, HttpClient httpClient)
+    public ClassCancelledConsumer(ILogger<ClassCancelledConsumer> logger, IConfiguration config, IMessageService messageService)
     {
         _logger = logger;
         _config = config;
-        _httpClient = httpClient;
+  		_messageService = messageService;
     }
-
+  
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var factory = new ConnectionFactory
@@ -42,41 +41,36 @@ public class ClassCancelledConsumer : BackgroundService
         var consumer = new AsyncEventingBasicConsumer(channel);
         consumer.ReceivedAsync += async (model, ea) =>
         {
-            var body    = ea.Body.ToArray();
-            var message = Encoding.UTF8.GetString(body);
-            var obj     = JsonSerializer.Deserialize<ClassCancelledMessage>(message);
+            var body  = ea.Body.ToArray();
+            var json  = Encoding.UTF8.GetString(body);
+            var evt   = JsonSerializer.Deserialize<ClassCancelledMessage>(json);
 
-            if (obj is not null)
-                await HandleMessageAsync(obj);
+            if (evt is not null)
+                await HandleMessageAsync(evt);
         };
 
         await channel.BasicConsumeAsync("class.cancelled", autoAck: true, consumer);
         
         await Task.Delay(Timeout.Infinite, stoppingToken);
     }
-
+    
     private async Task HandleMessageAsync(ClassCancelledMessage message)
     {
-        _logger.LogInformation(
-            "Klasse '{Title}' (ID: {ClassId}) er aflyst. " +
-            "Notificerer {Count} members: {MemberIds}",
-            message.Title,
-            message.ClassId,
-            message.MemberIds.Count,
-            string.Join(", ", message.MemberIds));
-
-        foreach (var memberId in message.MemberIds)
+        foreach (var receiverId in message.ReceiverIds)
         {
-            await _httpClient.PostAsJsonAsync("http://inboxservice/api/inbox", new
+            var classMessage = new ClassMessage
             {
-                MemberId = memberId,
-                Title = "Klasse aflyst",
-                Body = $"Din klasse '{message.Title}' d. {message.TimeStart:dd/MM/yyyy} er aflyst."
-            });
+                ReceiverId = receiverId,
+                ClassId    = message.ClassId,
+                Topic      = "Klasse aflyst",
+                Content    = $"Din klasse '{message.Topic}' d. {message.TimeStart:dd/MM/yyyy} er aflyst.",
+                TimeStart  = message.TimeStart,
+                TimeEnd    = message.TimeEnd
+            };
+
+            await _messageService.SendClassCancellationMessageAsync(classMessage);
         }
     }
-
-
     public override void Dispose()
     {
         base.Dispose();
