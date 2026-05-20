@@ -1,5 +1,9 @@
 @page "/login"
 @rendermode InteractiveServer
+@using FitLife.Frontend.Services
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+@inject CurrentUserService CurrentUserService
 
 <div class="container-fluid px-0">
 
@@ -62,8 +66,7 @@
                 <div class="d-grid gap-3">
 
                     <!-- Starter loginprocessen -->
-                    <!-- TODO:
-                         Skal senere sende login-request til backend/auth-service -->
+                    <!-- Kalder AuthServiceAPI via frontend AuthService -->
                     <button class="btn btn-success"
                             @onclick="LoginUser">
                         LOGIN
@@ -107,22 +110,32 @@
     // Bruges til feedbackbeskeder i UI'et
     private string Message = "";
 
-    // Midlertidig loginlogik
-    // TODO:
-    // Senere skal denne metode sende loginoplysninger til backend/authentication service
-    private void LoginUser()
+    // Sender loginoplysninger til AuthServiceAPI via AuthService
+    private async Task LoginUser()
     {
-        // Simpel validering
-        if (string.IsNullOrWhiteSpace(Email) ||
-            string.IsNullOrWhiteSpace(Password))
+        var result = await AuthService.LoginAsync(Email, Password);
+
+        Message = result.Message;
+
+        if (!result.Success || result.User is null)
         {
-            Message = "Indtast både email og password.";
             return;
         }
 
-        // Midlertidig prototypebesked
-        // TODO:
-        // Senere skal brugeren logges ind og modtage JWT/token/session
-        Message = $"Login forsøgt for {Email}.";
+        // Gemmer token og brugerinfo i CurrentUserService for at holde styr på den loggede bruger
+        CurrentUserService.SetCurrentUser(result.Token!, result.User);
+
+        if (result.User.RoleName == "Member")
+        {
+            Navigation.NavigateTo("/member-dashboard");
+        }
+        else if (result.User.RoleName == "Employee")
+        {
+            Navigation.NavigateTo("/employee-dashboard");
+        }
+        else
+        {
+            Message = "Ukendt brugerrolle.";
+        }
     }
 }
