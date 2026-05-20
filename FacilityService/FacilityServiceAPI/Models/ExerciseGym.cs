@@ -9,7 +9,10 @@ namespace FacilityServiceAPI.Models
 			RoomsForClasses = roomsForClasses;
 			ManagerId = managerId;
 		}
-
+		
+		public ExerciseGym() 
+		{ 
+		}
 		public int RoomsForClasses { get; set; }
 		public Guid ManagerId { get; set; }
 	}

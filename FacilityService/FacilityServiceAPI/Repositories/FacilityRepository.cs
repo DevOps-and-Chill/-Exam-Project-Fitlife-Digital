@@ -33,13 +33,13 @@ namespace FacilityServiceAPI.Repositories
 		/// <inheritdoc/>
 		/// </summary>
 		/// <returns></returns>
-		/// <exception cref="NotImplementedException"></exception>
+		/// <exception></exception>
 		public async Task<List<Facility>> GetFacilities()
 		{
 			using (var facilityContext = await GetDbContextAsync())
 			{
-				var result = facilityContext.Facilities;
-				return result.ToList();
+				var result = await facilityContext.Facilities.ToListAsync();
+				return result;
 			}
 		}
 
@@ -51,7 +51,7 @@ namespace FacilityServiceAPI.Repositories
 		{
 			using (var facilityContext = await GetDbContextAsync())
 			{
-				var result = facilityContext.Facilities.OfType<ExerciseGym>().ToList();
+				var result = await facilityContext.Facilities.OfType<ExerciseGym>().ToListAsync();
 				return result;
 			}
 		}
@@ -65,7 +65,7 @@ namespace FacilityServiceAPI.Repositories
 		{
 			using (var facilityContext = await GetDbContextAsync())
 			{
-				var result = facilityContext.Facilities.OfType<SwimmingPool>().ToList();
+				var result = await facilityContext.Facilities.OfType<SwimmingPool>().ToListAsync();
 				return result;
 			}
 		}
@@ -122,8 +122,12 @@ namespace FacilityServiceAPI.Repositories
 		{
 			using (var facilityContext = await GetDbContextAsync())
 			{
-				await facilityContext.AddRangeAsync(FacilityTestData.ExerciseGyms, FacilityTestData.SwimmingPools);
-				await facilityContext.SaveChangesAsync();
+                await facilityContext.AddRangeAsync(
+					FacilityTestData.ExerciseGyms);
+
+                await facilityContext.AddRangeAsync(
+                    FacilityTestData.SwimmingPools);
+                await facilityContext.SaveChangesAsync();
 			}
 		}
 

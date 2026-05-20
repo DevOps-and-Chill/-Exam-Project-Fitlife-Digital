@@ -10,6 +10,10 @@
 			Email = email;
 			OpeningHours = openingHours;
 		}
+		public Facility()
+		{
+
+		}
 
 		public string Id { get; init; } = Guid.NewGuid().ToString();
 		public string PartitionKey { get; set; } = "Facilities";
