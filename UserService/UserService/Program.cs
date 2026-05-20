@@ -7,79 +7,79 @@ using UserServiceAPI.Data;
 
 namespace UserServiceAPI
 {
-    public class Program
-    {
-        public static async Task Main(string[] args)
-        {
-            // Opsæt NLog og hent en logger instans til at logge opstart og fejl
-            var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+	public class Program
+	{
+		public static async Task Main(string[] args)
+		{
+			// Opsæt NLog og hent en logger instans til at logge opstart og fejl
+			var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
-            logger.Debug("UserService starter op");
+			logger.Debug("UserService starter op");
 
-            try
-            {
-                var builder = WebApplication.CreateBuilder(args);
+			try
+			{
+				var builder = WebApplication.CreateBuilder(args);
 
-                // Ryd eksisterende logging providers og brug NLog i stedet
-                builder.Logging.ClearProviders();
-                builder.Host.UseNLog();
+				// Ryd eksisterende logging providers og brug NLog i stedet
+				builder.Logging.ClearProviders();
+				builder.Host.UseNLog();
 
-                // AccountKey og endpoint tilføjes til vault - ligger i appsettings indtil videre
-                builder.Services.AddDbContext<UserDbContext>(options =>
-                {
-                    options.UseCosmos(
-                        builder.Configuration["CosmosDb:AccountEndpoint"]!,
-                        builder.Configuration["CosmosDb:AccountKey"]!,
-                        builder.Configuration["CosmosDb:DatabaseName"]!);
-                });
+				// AccountKey og endpoint tilføjes til vault - ligger i appsettings indtil videre
+				builder.Services.AddDbContext<UserDbContext>(options =>
+				{
+					options.UseCosmos(
+						builder.Configuration["CosmosDb:AccountEndpoint"]!,
+						builder.Configuration["CosmosDb:AccountKey"]!,
+						builder.Configuration["CosmosDb:DatabaseName"]!);
+				});
 
-                builder.Services.AddControllers()
-                    .AddJsonOptions(options =>
-                    {
-                        options.JsonSerializerOptions.Converters.Add(
-                            new System.Text.Json.Serialization.JsonStringEnumConverter());
-                    });
+				builder.Services.AddControllers()
+					.AddJsonOptions(options =>
+					{
+						options.JsonSerializerOptions.Converters.Add(
+							new System.Text.Json.Serialization.JsonStringEnumConverter());
+					});
 
-                // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-                builder.Services.AddOpenApi();
+				// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+				builder.Services.AddOpenApi();
 
-                builder.Services.AddScoped<IUserRepository, UserRepositoryDB>();
-                builder.Services.AddScoped<IMemberRepository, MemberRepositoryDB>();
-                builder.Services.AddScoped<IEmployeeRepository, EmployeeRepositoryDB>();
+				builder.Services.AddScoped<IUserRepository, UserRepositoryDB>();
+				builder.Services.AddScoped<IMemberRepository, MemberRepositoryDB>();
+				builder.Services.AddScoped<IEmployeeRepository, EmployeeRepositoryDB>();
 
-                var app = builder.Build();
+				var app = builder.Build();
 
-                // Sikrer at DB og container eksisterer
-                using (var scope = app.Services.CreateScope())
-                {
-                    var db = scope.ServiceProvider.GetRequiredService<UserDbContext>();
-                    await db.Database.EnsureCreatedAsync();
-                }
+				// Sikrer at DB og container eksisterer
+				using (var scope = app.Services.CreateScope())
+				{
+					var db = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+					await db.Database.EnsureCreatedAsync();
+				}
 
-                if (app.Environment.IsDevelopment())
-                {
-                    app.MapOpenApi();
-                }
+				if (app.Environment.IsDevelopment())
+				{
+					app.MapOpenApi();
+				}
 
-                app.UseHttpsRedirection();
+				app.UseHttpsRedirection();
 
-                app.UseAuthorization();
+				app.UseAuthorization();
 
-                app.MapControllers();
+				app.MapControllers();
 
-                app.Run();
-            }
-            catch (Exception ex)
-            {
-                // Logger fejl hvis applikationen crasher ved opstart
-                logger.Error(ex, "UserService stoppede på grund af en fejl!");
-                throw;
-            }
-            finally
-            {
-                // Sørg for at alle logs bliver skrevet færdigt før applikationen lukker
-                NLog.LogManager.Shutdown();
-            }
-        }
-    }
+				app.Run();
+			}
+			catch (Exception ex)
+			{
+				// Logger fejl hvis applikationen crasher ved opstart
+				logger.Error(ex, "UserService stoppede på grund af en fejl!");
+				throw;
+			}
+			finally
+			{
+				// Sørg for at alle logs bliver skrevet færdigt før applikationen lukker
+				NLog.LogManager.Shutdown();
+			}
+		}
+	}
 }
