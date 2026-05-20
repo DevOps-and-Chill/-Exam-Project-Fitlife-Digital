@@ -10,11 +10,13 @@ namespace AuthServiceAPI.Services
     {
         private readonly IPasswordService _passwordService;
         private readonly ICredentialRepository _authRepository;
+        private readonly IJWTService _jwtService;
 
-        public CredentialService(IPasswordService passwordService, ICredentialRepository authRepository)
+        public CredentialService(IPasswordService passwordService, ICredentialRepository authRepository, IJWTService jwtService)
         {
             _passwordService = passwordService;
             _authRepository = authRepository;
+            _jwtService = jwtService;
         }
 
         public async Task CreateCredential(RegisterCredentialsRequestDTO credentialRequest)
@@ -44,10 +46,10 @@ namespace AuthServiceAPI.Services
             }
         }
 
-        public async Task<bool> ValidateCredential(ValidateCredentialsRequestDTO validationRequest)
+        public async Task<bool> ValidateCredential(LoginRequestDTO validationRequest)
         {
             bool result = false;
-            if (string.IsNullOrEmpty(validationRequest.Email))
+            if (!string.IsNullOrEmpty(validationRequest.Email))
             {
                 Credential credentialsToValidate = await _authRepository.GetCredentialsByEmail(validationRequest.Email);
                 if (string.IsNullOrWhiteSpace(validationRequest.Password))
@@ -65,9 +67,35 @@ namespace AuthServiceAPI.Services
 
         public async Task RemoveCredentials(string credentialId)
         {
+           await _authRepository.RemoveCredentials(credentialId);  
+        }
 
-           await _authRepository.RemoveCredentials(credentialId);
-                
+        public async Task<Credential> GetCredentialsByEmail(string email)
+        {
+            Credential credential = await _authRepository.GetCredentialsByEmail(email);
+            if(credential == null)
+            {
+                throw new KeyNotFoundException($"usercredentials not found with email {email}");
+            }
+            return credential;
+        }
+
+        public async Task<string?> Login(LoginRequestDTO loginRequest)
+        {
+            Credential credential = await _authRepository.GetCredentialsByEmail(loginRequest.Email);
+
+            if (credential == null)
+            {
+                return null;
+            }
+
+            bool validPassword = await ValidateCredential(loginRequest);
+            if (!validPassword)
+            {
+                return null;
+            }
+
+            return _jwtService.GenerateToken(credential);
         }
     }
 }

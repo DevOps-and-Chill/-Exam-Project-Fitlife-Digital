@@ -1,3 +1,4 @@
+using System.Net.Http.Json;
 using FitLife.Frontend.Models;
 
 namespace FitLife.Frontend.Services;
@@ -6,52 +7,62 @@ public class TrainerService
 {
     // Denne service håndterer personlige trænere og PT-funktionalitet.
     // Service-laget fungerer som bindeled mellem frontend og data.
-    // TODO:
-    // Senere skal denne service kommunikere med backend/API/database.
 
-    // Midlertidig mock data til trænere
-    // TODO:
-    // Skal senere hentes fra backend/database.
-    private readonly List<Trainer> _trainers = new()
+    // HttpClient bruges til at kommunikere med UserService API
+    private readonly HttpClient _httpClient;
+
+    public TrainerService(IHttpClientFactory httpClientFactory)
     {
-        new Trainer
+        // Opretter HttpClient med base URL fra Program.cs/appsettings.json
+        _httpClient = httpClientFactory.CreateClient("UserService");
+    }
+
+    // Henter alle ansatte fra UserService og filtrerer kun dem der er personlige trænere
+    // Kalder endpoint:
+    // GET /employee/GetAllEmployees
+    public async Task<List<Trainer>> GetTrainersAsync()
+    {
+        try
         {
-            Name = "Frederikke",
+            var employees =
+                await _httpClient.GetFromJsonAsync<List<Employee>>(
+                    "employee/GetAllEmployees");
 
-            // Kort beskrivelse som vises i UI
-            Description = "Styrketræning, holdtræning og motivation.",
+            return employees?
+                .Where(employee => employee.IsPT && employee.ActiveUser)
+                .Select(employee => new Trainer
+                {
+                    // Id kommer fra UserService
+                    // Bruges senere som PersonalTrainerId ved booking i PTService
+                    Id = employee.Id,
 
-            // Trænerens specialeområde
-            Specialty = "Styrketræning",
+                    // Samler fornavn og efternavn til visning i UI
+                    Name = $"{employee.GivenName} {employee.FamilyName}",
 
-            // Bruges til bookinglogik i frontend
-            IsAvailable = true
-        },
+                    // Midlertidig visningstekst
+                    // TODO:
+                    // Senere kan dette komme fra UserService, hvis Employee får profiltekst/speciale
+                    Description = "Personlig træner hos FitLife.",
 
-        new Trainer
-        {
-            Name = "Jonas",
-            Description = "Vægttab, teknik og personlige programmer.",
-            Specialty = "Vægttab",
-            IsAvailable = false
-        },
+                    // Midlertidigt speciale
+                    // TODO:
+                    // Senere kan dette komme fra UserService eller PTService
+                    Specialty = "Personlig træning",
 
-        new Trainer
-        {
-            Name = "Mikkel",
-            Description = "Kondition, spinning og funktionel træning.",
-            Specialty = "Kondition",
-            IsAvailable = true
+                    // Midlertidig availability
+                    // TODO:
+                    // Senere kan dette beregnes ud fra bookingkalender/sessioner
+                    IsAvailable = true
+                })
+                .ToList()
+                ?? new List<Trainer>();
         }
-    };
-
-    // Returnerer alle trænere
-    // Bruges af frontend til at vise oversigt over PT-trænere.
-    // TODO:
-    // Senere skal data hentes via API/backend.
-    public List<Trainer> GetTrainers()
-    {
-        return _trainers;
+        catch (Exception ex)
+        {
+            throw new Exception(
+                $"Kunne ikke hente trænere fra UserService. Fejl: {ex.Message}",
+                ex);
+        }
     }
 
     // Midlertidig ventelistefunktion
@@ -69,14 +80,6 @@ public class TrainerService
     public string ShowProfile(Trainer trainer)
     {
         return $"Profil for {trainer.Name} vises ikke som separat side endnu.";
-    }
-
-    // Opretter booking af personlig træning
-    // TODO:
-    // Senere skal booking gemmes via backend/API/database.
-    public string BookSession(Trainer trainer, DateTime date, string time)
-    {
-        return $"Du har booket en session med {trainer.Name} den {date:dd/MM} kl. {time}.";
     }
 
     // Midlertidig beskedfunktion
