@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -10,13 +11,15 @@ public class ClassCancelledConsumer : BackgroundService
 {
     private readonly ILogger<ClassCancelledConsumer> _logger;
     private readonly IConfiguration _config;
+    private readonly HttpClient _httpClient;
 
     private IConnection? _connection;
 
-    public ClassCancelledConsumer(ILogger<ClassCancelledConsumer> logger, IConfiguration config)
+    public ClassCancelledConsumer(ILogger<ClassCancelledConsumer> logger, IConfiguration config, HttpClient httpClient)
     {
         _logger = logger;
         _config = config;
+        _httpClient = httpClient;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -37,17 +40,14 @@ public class ClassCancelledConsumer : BackgroundService
             arguments:  null);
 
         var consumer = new AsyncEventingBasicConsumer(channel);
-        consumer.ReceivedAsync += (model, ea) =>
+        consumer.ReceivedAsync += async (model, ea) =>
         {
             var body    = ea.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
             var obj     = JsonSerializer.Deserialize<ClassCancelledMessage>(message);
 
             if (obj is not null)
-                _logger.LogInformation("Klasse '{Title}' aflyst for {Count} members",
-                    obj.Title, obj.MemberIds.Count);
-
-            return Task.CompletedTask;
+                await HandleMessageAsync(obj);
         };
 
         await channel.BasicConsumeAsync("class.cancelled", autoAck: true, consumer);
@@ -55,7 +55,7 @@ public class ClassCancelledConsumer : BackgroundService
         await Task.Delay(Timeout.Infinite, stoppingToken);
     }
 
-    private Task HandleMessageAsync(ClassCancelledMessage message)
+    private async Task HandleMessageAsync(ClassCancelledMessage message)
     {
         _logger.LogInformation(
             "Klasse '{Title}' (ID: {ClassId}) er aflyst. " +
@@ -65,12 +65,17 @@ public class ClassCancelledConsumer : BackgroundService
             message.MemberIds.Count,
             string.Join(", ", message.MemberIds));
 
-        /* TODO: kald service
         foreach (var memberId in message.MemberIds)
-        await _Service.SendCancellationMessageAsync(memberId, message);
-        */
-        return Task.CompletedTask;
+        {
+            await _httpClient.PostAsJsonAsync("http://inboxservice/api/inbox", new
+            {
+                MemberId = memberId,
+                Title = "Klasse aflyst",
+                Body = $"Din klasse '{message.Title}' d. {message.TimeStart:dd/MM/yyyy} er aflyst."
+            });
+        }
     }
+
 
     public override void Dispose()
     {
