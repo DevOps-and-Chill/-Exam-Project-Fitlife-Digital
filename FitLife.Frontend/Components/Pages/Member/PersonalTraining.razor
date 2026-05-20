@@ -228,6 +228,69 @@
             </div>
         }
 
+        <!-- Beskedpanel -->
+@if (SelectedTrainerForMessage is not null)
+{
+    <div class="card shadow-sm border-0 mt-5">
+
+        <div class="card-body p-4">
+
+            <h4 class="fw-bold">
+                Send besked til @SelectedTrainerForMessage.Name
+            </h4>
+
+            <p class="text-muted">
+                Skriv en kort besked til træneren om dit behov eller spørgsmål.
+            </p>
+
+            <!-- Message-modellen bruges nu i stedet for separate strings -->
+            <!-- Dette gør løsningen mere domain-driven og nemmere at koble til backend -->
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Emne
+                </label>
+
+                <input class="form-control"
+                       @bind="NewMessage.Subject" />
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Besked
+                </label>
+
+                <textarea class="form-control"
+                          rows="5"
+                          @bind="NewMessage.Content">
+                </textarea>
+
+            </div>
+
+            <div class="d-flex gap-3">
+
+                <!-- Sender besked -->
+                <!-- TODO:
+                     Senere skal beskeden gemmes via MessageService/API -->
+                <button class="btn btn-success"
+                        @onclick="SendMessage">
+                    Send
+                </button>
+
+                <!-- Lukker beskedformular -->
+                <button class="btn btn-outline-secondary"
+                        @onclick="CancelMessage">
+                    Afbryd
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+}
+
         <!-- Feedback til bruger -->
         @if (!string.IsNullOrWhiteSpace(StatusMessage))
         {
