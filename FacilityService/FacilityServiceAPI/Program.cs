@@ -1,12 +1,17 @@
 using NLog;
 using NLog.Web;
+
+using FacilityServiceAPI.Contexts;
 using FacilityServiceAPI.Repositories;
+using Microsoft.Azure.Cosmos;
+using Microsoft.EntityFrameworkCore;
+using System.Configuration;
 
 namespace FacilityServiceAPI
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             // Opsæt NLog og hent en logger instans til at logge opstart og fejl
             var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
@@ -21,16 +26,31 @@ namespace FacilityServiceAPI
                 builder.Logging.ClearProviders();
                 builder.Host.UseNLog();
 
-                builder.Services.AddControllers();
-                builder.Services.AddOpenApi();
-                builder.Services.AddTransient<IFacilityRepository, FacilityRepositoryMoq>();
+			builder.Services.AddControllers();
+			// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+			builder.Services.AddOpenApi();
+
+			builder.Services.AddTransient<IFacilityRepository, FacilityRepository>();
+
+			//Enables dependency injection of Factory pattern for DBContext. This way the application is more threadsafe, because each 
+			builder.Services.AddDbContextFactory<FacilityContext>(options => options.UseCosmos(
+				builder.Configuration["CosmosDb:AccountEndpoint"]!,
+				builder.Configuration["CosmosDb:AccountKey"]!,
+				builder.Configuration["CosmosDb:DatabaseName"]!));
 
                 var app = builder.Build();
 
-                if (app.Environment.IsDevelopment())
-                {
-                    app.MapOpenApi();
-                }
+			// Configure the HTTP request pipeline.
+			if (app.Environment.IsDevelopment())
+			{
+				app.MapOpenApi();
+			}
+			using (var scope = app.Services.CreateScope())
+			{
+				var db = scope.ServiceProvider.GetRequiredService<FacilityContext>();
+
+				await db.Database.EnsureCreatedAsync();
+			}
 
                 app.UseHttpsRedirection();
                 app.UseAuthorization();
