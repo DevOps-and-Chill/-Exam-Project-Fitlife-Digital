@@ -1,21 +1,19 @@
 services:
   facilityserviceapi:
+    
     image: facilityserviceapi
     build:
-      context: .
-      dockerfile: /FacilityService/FacilityServiceAPI\Dockerfile
-    ports:
-      - 5000:8080 
+      context: ./FacilityService/FacilityServiceAPI
+      dockerfile: Dockerfile
     expose:
-    - "8080"
-  nginx:
-    image: nginx:latest
-    volumes:
-    - ./nginx.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-    - facilityserviceapi
-    ports:
-    - "4000:4000"
+     - "8080"
+    networks:
+    - backend
+
+networks:
+   backend:
+     external: true
+ 
 
 
 
