@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddDbContext<MessageDbContext>(options =>
     options.UseInMemoryDatabase("MessageDb"));
+
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddHostedService<ClassCancelledConsumer>();
 
