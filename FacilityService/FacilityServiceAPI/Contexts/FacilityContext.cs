@@ -25,6 +25,9 @@ namespace FacilityServiceAPI.Contexts
 			modelBuilder.Entity<Facility>().HasDiscriminator<string>("facilityType")
 				.HasValue<ExerciseGym>("ExerciseGym")
 				.HasValue<SwimmingPool>("SwimmingPool");
-		}
+
+            modelBuilder.Entity<Facility>()
+				.OwnsMany(f => f.OpeningHours);
+        }
 	}
 }
