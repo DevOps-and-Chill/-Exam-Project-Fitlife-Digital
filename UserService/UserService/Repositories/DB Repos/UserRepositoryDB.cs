@@ -13,6 +13,7 @@ namespace UserServiceAPI.Repositories
         {
             _context = context;
         }
+
         /// <summary>
         /// Retrieves all User entities from the database context asynchronously.
         /// </summary>
@@ -23,6 +24,17 @@ namespace UserServiceAPI.Repositories
         {
             return await _context.Users.ToListAsync();
         }
+
+        public Task<List<User>> GetUsersByAffiliation(Guid affiliationId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<User>> GetUsersInExerciseGymByRole(Guid exerciseGymId, string role)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Asynchronously adds predefined employee and member users to the data context and saves the changes.
         /// </summary>
@@ -33,6 +45,7 @@ namespace UserServiceAPI.Repositories
             _context.Users.AddRange(TestData.EmployeeTestData.employees);
             _context.Users.AddRange(TestData.MemberTestData.members);
             await _context.SaveChangesAsync();
+
             return true;
         }
         /// <summary>

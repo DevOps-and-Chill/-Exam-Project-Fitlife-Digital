@@ -1,4 +1,5 @@
-
+using NLog;
+using NLog.Web;
 using UserServiceAPI.Repositories;
 using UserServiceAPI.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -6,55 +7,79 @@ using UserServiceAPI.Data;
 
 namespace UserServiceAPI
 {
-    public class Program
-    {
-        public static async Task Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+	public class Program
+	{
+		public static async Task Main(string[] args)
+		{
+			// Opsæt NLog og hent en logger instans til at logge opstart og fejl
+			var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
-            // Add services to the container.
-            builder.Services.AddScoped<IUserRepository, UserRepositoryDB>();
-            builder.Services.AddScoped<IMemberRepository, MemberRepositoryDB>();
-            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepositoryDB>();
+			logger.Debug("UserService starter op");
 
-            //AO: Accountkey and endpoint to be added to vault currently in appsettings
-            builder.Services.AddDbContext<UserDbContext>(options =>
-            {
-                options.UseCosmos(
-                builder.Configuration["CosmosDb:AccountEndpoint"]!,
-                builder.Configuration["CosmosDb:AccountKey"]!,
-                builder.Configuration["CosmosDb:DatabaseName"]!);
-            });
-        
+			try
+			{
+				var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
+				// Ryd eksisterende logging providers og brug NLog i stedet
+				builder.Logging.ClearProviders();
+				builder.Host.UseNLog();
 
-            var app = builder.Build();
+				// AccountKey og endpoint tilføjes til vault - ligger i appsettings indtil videre
+				builder.Services.AddDbContext<UserDbContext>(options =>
+				{
+					options.UseCosmos(
+						builder.Configuration["CosmosDb:AccountEndpoint"]!,
+						builder.Configuration["CosmosDb:AccountKey"]!,
+						builder.Configuration["CosmosDb:DatabaseName"]!);
+				});
 
-            //AO: Ensures DB and container exists. EnsureCreated() is alternative of migration
-            using (var scope = app.Services.CreateScope())
-            {
-                var db = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+				builder.Services.AddControllers()
+					.AddJsonOptions(options =>
+					{
+						options.JsonSerializerOptions.Converters.Add(
+							new System.Text.Json.Serialization.JsonStringEnumConverter());
+					});
 
-                await db.Database.EnsureCreatedAsync();
-            }
+				// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+				builder.Services.AddOpenApi();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapOpenApi();
-            }
+				builder.Services.AddScoped<IUserRepository, UserRepositoryDB>();
+				builder.Services.AddScoped<IMemberRepository, MemberRepositoryDB>();
+				builder.Services.AddScoped<IEmployeeRepository, EmployeeRepositoryDB>();
 
-            app.UseHttpsRedirection();
+				var app = builder.Build();
 
-            app.UseAuthorization();
+				// Sikrer at DB og container eksisterer
+				using (var scope = app.Services.CreateScope())
+				{
+					var db = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+					await db.Database.EnsureCreatedAsync();
+				}
 
+				if (app.Environment.IsDevelopment())
+				{
+					app.MapOpenApi();
+				}
 
-            app.MapControllers();
+				app.UseHttpsRedirection();
 
-            app.Run();
-        }
-    }
+				app.UseAuthorization();
+
+				app.MapControllers();
+
+				app.Run();
+			}
+			catch (Exception ex)
+			{
+				// Logger fejl hvis applikationen crasher ved opstart
+				logger.Error(ex, "UserService stoppede på grund af en fejl!");
+				throw;
+			}
+			finally
+			{
+				// Sørg for at alle logs bliver skrevet færdigt før applikationen lukker
+				NLog.LogManager.Shutdown();
+			}
+		}
+	}
 }

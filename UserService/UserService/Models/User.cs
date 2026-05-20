@@ -24,7 +24,7 @@ namespace UserServiceAPI.Models
         public string Email { get; set; }
 
         //AO: Might later be changed to string if necessary for setup of db in facilityservice. 
-        public Guid Affiliation {  get; set; }
+        public Guid Affiliation { get; set; }
 
         public bool ActiveUser { get; set; }
 
@@ -36,6 +36,7 @@ namespace UserServiceAPI.Models
         {
 
         }
+
         public User(
              UserRole roleName,
              string givenName,

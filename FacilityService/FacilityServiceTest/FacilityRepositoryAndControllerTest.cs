@@ -1,8 +1,11 @@
-﻿using FacilityServiceAPI.Controllers;
+﻿using Castle.Core.Logging;
+using FacilityServiceAPI.Controllers;
 using FacilityServiceAPI.Models;
 using FacilityServiceAPI.Repositories;
 using FacilityServiceAPI.TestData;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 using Moq;
 using System.Threading.Tasks;
@@ -13,11 +16,19 @@ namespace FacilityServiceTest
 	public sealed class FacilityRepositoryAndControllerTest
 	{
 		private List<Facility> facilitiesForTest;
+		private ILogger<FacilityController> _logger;
 
 		[TestInitialize]
 		public void Setup()
 		{
-			facilitiesForTest = FacilityTestData.Facilities;
+			var loggerFactory = LoggerFactory.Create(c => c.AddConsole());
+
+			_logger = loggerFactory.CreateLogger<FacilityController>();
+
+			
+			facilitiesForTest = new List<Facility>();
+			facilitiesForTest.AddRange(FacilityTestData.ExerciseGyms);
+			facilitiesForTest.AddRange(FacilityTestData.SwimmingPools);
 		}
 
 		[TestMethod(DisplayName = "GetFacility")]
@@ -27,7 +38,7 @@ namespace FacilityServiceTest
 			var mockRepo = new Mock<IFacilityRepository>();
 			mockRepo.Setup(r => r.GetFacilities()).Returns(Task.FromResult(facilitiesForTest));
 
-			var controller = new FacilityController(mockRepo.Object);
+			var controller = new FacilityController(_logger, mockRepo.Object);
 
 			//Act
 			var result = controller.GetFacilities().WaitAsync(CancellationToken.None).Result as OkObjectResult;
@@ -57,7 +68,7 @@ namespace FacilityServiceTest
 
 			mockRepo.Setup(r => r.GetFacilities()).Returns(Task.FromResult(facilitiesForTest));
 
-			var controller = new FacilityController(mockRepo.Object);
+			var controller = new FacilityController(_logger,mockRepo.Object);
 
 			//Act 
 			var insertResult = controller.InsertFacility(facilityToAdd).WaitAsync(CancellationToken.None).Result as OkObjectResult;
@@ -82,7 +93,7 @@ namespace FacilityServiceTest
 			mockRepo.Setup(r => r.DeleteFacility(facilityToRemove.Id.ToString()))
 				.Callback<string>(f => facilitiesForTest.Remove(facilitiesForTest.Single(x => x.Id.ToString() == facilityToRemove.Id.ToString())));
 
-			var controller = new FacilityController(mockRepo.Object);
+			var controller = new FacilityController(_logger ,mockRepo.Object);
 
 			//Act
 			await controller.DeleteFacility(facilityToRemove.Id.ToString());
@@ -107,7 +118,7 @@ namespace FacilityServiceTest
 				facilitiesForTest.Add(facilityToUpdate);
 			});
 
-			var controller = new FacilityController(mockRepo.Object);
+			var controller = new FacilityController(_logger,mockRepo.Object);
 
 			//Act
 
@@ -129,7 +140,7 @@ namespace FacilityServiceTest
 
 			mockRepo.Setup(r => r.GetFacility(expectedFacility.Id.ToString())).Returns(Task.FromResult(expectedFacility));
 
-			var controller = new FacilityController(mockRepo.Object);
+			var controller = new FacilityController(_logger, mockRepo.Object);
 
 			//Act
 

@@ -2,46 +2,57 @@ using ClassServiceAPI.Data;
 using ClassServiceAPI.Messaging;
 using ClassServiceAPI.Repositories;
 using ClassServiceAPI.Repositories.Interfaces;
-using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
+using NLog;
+using NLog.Web;
 
-var builder = WebApplication.CreateBuilder(args);
+var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+logger.Debug("ClassServiceAPI starter op");
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-builder.Services.AddScoped<IClassRepository, ClassRepository>();
-
-// Program.cs i ClassService
-builder.Services.AddDbContext<ClassDbContext>(options =>
-    options.UseInMemoryDatabase("FitLife"));
-
-builder.Services.AddSingleton<IMessagePublisher>(sp =>
+try
 {
-    var config = sp.GetRequiredService<IConfiguration>();
-    return RabbitMqPublisher.CreateAsync(config).GetAwaiter().GetResult();
-});
+    var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+    builder.Logging.ClearProviders();
+    builder.Host.UseNLog();
 
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<ClassDbContext>();
-    await context.Database.EnsureCreatedAsync();
+    builder.Services.AddControllers();
+    builder.Services.AddOpenApi();
+    builder.Services.AddScoped<IClassRepository, ClassRepository>();
+
+    builder.Services.AddDbContext<ClassDbContext>(options =>
+        options.UseInMemoryDatabase("FitLife"));
+
+    builder.Services.AddSingleton<IMessagePublisher>(sp =>
+    {
+        var config = sp.GetRequiredService<IConfiguration>();
+        return RabbitMqPublisher.CreateAsync(config).GetAwaiter().GetResult();
+    });
+
+    var app = builder.Build();
+
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<ClassDbContext>();
+        await context.Database.EnsureCreatedAsync();
+    }
+
+    if (app.Environment.IsDevelopment())
+    {
+        app.MapOpenApi();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseAuthorization();
+    app.MapControllers();
+    app.Run();
 }
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+catch (Exception ex)
 {
-    app.MapOpenApi();
+    logger.Error(ex, "ClassServiceAPI stoppede på grund af en fejl!");
+    throw;
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+finally
+{
+    NLog.LogManager.Shutdown();
+}

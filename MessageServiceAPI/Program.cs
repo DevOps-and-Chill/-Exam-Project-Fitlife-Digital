@@ -3,17 +3,36 @@ using MessageServiceAPI.Services;
 using MessageServiceAPI.Services.Interfaces;
 using MessageServiceAPI.Workers;
 using Microsoft.EntityFrameworkCore;
+using NLog;
+using NLog.Web;
 
-var builder = WebApplication.CreateBuilder(args);
+var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+logger.Debug("MessageService starter op");
 
-builder.Services.AddControllers();
-builder.Services.AddDbContext<MessageDbContext>(options =>
-    options.UseInMemoryDatabase("MessageDb"));
+try
+{
+    var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IMessageService, MessageService>();
-builder.Services.AddHostedService<ClassCancelledConsumer>();
+    builder.Logging.ClearProviders();
+    builder.Host.UseNLog();
 
-var app = builder.Build();
+    builder.Services.AddControllers();
+    builder.Services.AddDbContext<MessageDbContext>(options =>
+        options.UseInMemoryDatabase("MessageDb"));
+    builder.Services.AddScoped<IMessageService, MessageService>();
+    builder.Services.AddHostedService<ClassCancelledConsumer>();
 
-app.MapControllers();
-app.Run();
+    var app = builder.Build();
+
+    app.MapControllers();
+    app.Run();
+}
+catch (Exception ex)
+{
+    logger.Error(ex, "MessageService stoppede på grund af en fejl!");
+    throw;
+}
+finally
+{
+    NLog.LogManager.Shutdown();
+}
