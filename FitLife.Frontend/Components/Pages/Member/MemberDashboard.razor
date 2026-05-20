@@ -116,11 +116,11 @@
                             <div class="border rounded p-3 mb-3">
 
                                 <h6 class="mb-1 fw-bold">
-                                    @session.TrainerName
+                                    @session.PersonalTrainerId
                                 </h6>
 
                                 <p class="mb-1 text-muted">
-                                    @session.Date.ToString("dd/MM") kl. @session.Date.ToString("HH:mm")
+                                    @session.StartDate.ToString("dd/MM") kl. @session.StartDate.ToString("HH:mm")
                                 </p>
 
                                 <p class="mb-0">
@@ -285,12 +285,15 @@
     {
         new PersonalTrainingSession
         {
-            TrainerName = "Jonas",
-            Date = DateTime.Today.AddDays(2).AddHours(15),
-            Status = "Booket"
+            PersonalTrainerId = Guid.Parse("44444444-4444-4444-4444-444444444444"),
+
+            StartDate = DateTime.Today.AddDays(2).AddHours(15),
+
+            // 0 = Booket/Pending midlertidigt
+            Status = 0
         }
     };
-
+    
     private void ShowNotImplemented()
     {
         // Midlertidig metode til prototype-funktioner
