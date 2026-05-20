@@ -4,7 +4,6 @@ public class ClassMessage
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     public string PartitionKey { get; set; } = "inbox";
-    public Guid SessionId { get; set; }
     public Guid ReceiverId { get; set; }
     public Guid ClassId { get; set; }
     public string Topic { get; set; } = "";
