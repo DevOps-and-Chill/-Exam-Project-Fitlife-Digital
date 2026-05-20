@@ -16,13 +16,19 @@ builder.Services.AddRazorComponents()
 builder.Services.AddHttpClient("FacilityService", client =>
 {
     client.BaseAddress = new Uri(
-    builder.Configuration["FacilityService:BaseUrl"]!);
+        builder.Configuration["FacilityService:BaseUrl"]!);
 });
 
 builder.Services.AddHttpClient("PTService", client =>
 {
     client.BaseAddress = new Uri(
-    builder.Configuration["PTService:BaseUrl"]!);
+        builder.Configuration["PTService:BaseUrl"]!);
+});
+
+builder.Services.AddHttpClient("AuthService", client =>
+{
+    client.BaseAddress = new Uri(
+        builder.Configuration["AuthService:BaseUrl"]!);
 });
 
 builder.Services.AddScoped<SessionService>();
@@ -33,6 +39,7 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<CenterService>();
 builder.Services.AddScoped<RegistrationStateService>();
 builder.Services.AddScoped<PTService>();
+builder.Services.AddScoped<CurrentUserService>();
 
 var app = builder.Build();
 
