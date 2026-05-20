@@ -67,7 +67,7 @@ public class ClassCancelledConsumer : BackgroundService
 
         /* TODO: kald service
         foreach (var memberId in message.MemberIds)
-        await _Service.SendCancellationEmailAsync(memberId, message);
+        await _Service.SendCancellationMessageAsync(memberId, message);
         */
         return Task.CompletedTask;
     }
