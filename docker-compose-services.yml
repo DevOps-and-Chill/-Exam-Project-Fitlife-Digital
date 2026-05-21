@@ -66,6 +66,13 @@ services:
     networks:
       - backend
 
+#Test
+  gateway:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    networks:
+      - backend
 
 networks:
   backend:
