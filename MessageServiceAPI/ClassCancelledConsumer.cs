@@ -6,19 +6,20 @@ using RabbitMQ.Client.Events;
 using MessageServiceAPI.Models;
 using MessageServiceAPI.Services.Interfaces;
 
-namespace MessageServiceAPI.Workers;
+namespace MessageServiceAPI;
 
 public class ClassCancelledConsumer : BackgroundService
 {
     private readonly ILogger<ClassCancelledConsumer> _logger;
     private readonly IConfiguration _config;
     private readonly IMessageService _messageService;
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public ClassCancelledConsumer(ILogger<ClassCancelledConsumer> logger, IConfiguration config, IMessageService messageService)
+    public ClassCancelledConsumer(ILogger<ClassCancelledConsumer> logger, IConfiguration config, IServiceScopeFactory scopeFactory)
     {
         _logger = logger;
         _config = config;
-  		_messageService = messageService;
+        _scopeFactory = scopeFactory;
     }
   
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -56,6 +57,9 @@ public class ClassCancelledConsumer : BackgroundService
     
     private async Task HandleMessageAsync(ClassCancelledMessage message)
     {
+        using var scope = _scopeFactory.CreateScope();
+        var messageService = scope.ServiceProvider.GetRequiredService<IMessageService>();
+        
         foreach (var receiverId in message.ReceiverIds)
         {
             var classMessage = new ClassMessage
@@ -68,7 +72,7 @@ public class ClassCancelledConsumer : BackgroundService
                 TimeEnd    = message.TimeEnd
             };
 
-            await _messageService.SendClassCancellationMessageAsync(classMessage);
+            await messageService.SendClassCancellationMessageAsync(classMessage);
         }
     }
     public override void Dispose()

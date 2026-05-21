@@ -1,7 +1,7 @@
+using MessageServiceAPI;
 using MessageServiceAPI.Data;
 using MessageServiceAPI.Services;
 using MessageServiceAPI.Services.Interfaces;
-using MessageServiceAPI.Workers;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
@@ -18,7 +18,7 @@ try
 
     builder.Services.AddControllers();
     
-    builder.Services.AddDbContextFactory<MessageDbContext>(options => options.UseCosmos(
+    builder.Services.AddDbContext<MessageDbContext>(options => options.UseCosmos(
         builder.Configuration["CosmosDb:AccountEndpoint"]!,
         builder.Configuration["CosmosDb:AccountKey"]!,
         builder.Configuration["CosmosDb:DatabaseName"]!));
