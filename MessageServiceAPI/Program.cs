@@ -14,7 +14,7 @@ try
     var builder = WebApplication.CreateBuilder(args);
 
     builder.Logging.ClearProviders();
-    builder.Host.UseNLog();
+    builder.Logging.AddNLog("NLog.config");
 
     builder.Services.AddControllers();
     

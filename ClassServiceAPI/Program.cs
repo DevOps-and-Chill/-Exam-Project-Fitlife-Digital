@@ -3,6 +3,8 @@ using ClassServiceAPI.Messaging;
 using ClassServiceAPI.Repositories;
 using ClassServiceAPI.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using ClassServiceAPI.Data;
+
 using NLog;
 using NLog.Web;
 
@@ -21,7 +23,13 @@ try
     builder.Services.AddScoped<IClassRepository, ClassRepository>();
 
     builder.Services.AddDbContext<ClassDbContext>(options =>
-        options.UseInMemoryDatabase("FitLife"));
+    {
+        options.UseCosmos(
+            builder.Configuration["CosmosDb:AccountEndpoint"]!,
+            builder.Configuration["CosmosDb:AccountKey"]!,
+            builder.Configuration["CosmosDb:DatabaseName"]!
+        );
+    });
 
     builder.Services.AddSingleton<IMessagePublisher>(sp =>
     {
