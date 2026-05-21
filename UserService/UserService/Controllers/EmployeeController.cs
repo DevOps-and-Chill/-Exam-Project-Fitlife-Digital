@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using UserServiceAPI.Models;
 using UserServiceAPI.Repositories;
 using UserServiceAPI.Repositories.Interfaces;
@@ -10,10 +11,12 @@ namespace UserServiceAPI.Controllers
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeRepository _employeeRepository;
+        private readonly ILogger<EmployeeController> _logger;
 
-        public EmployeeController(IEmployeeRepository employeeRepository)
+        public EmployeeController(IEmployeeRepository employeeRepository, ILogger<EmployeeController> logger)
         {
             _employeeRepository = employeeRepository;
+            _logger = logger;
         }
         /// <summary>
         /// Retrieves all employees.
@@ -25,12 +28,14 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetAllEmployees")]
         public async Task<ActionResult> GetAllEmployees()
         {
+            _logger.LogInformation("Henter alle medarbejdere");
             try
             {
                 return Ok(await _employeeRepository.GetAllEmployees());
             }
             catch (Exception ex)
             {
+                _logger.LogError("Fejl ved hentning af alle medarbejdere: {message}", ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -45,12 +50,14 @@ namespace UserServiceAPI.Controllers
         [HttpPut("EndEmploymentForEmployee/{userId}")]
         public async Task<ActionResult> EndEmployment(string userId)
         {
+            _logger.LogInformation("Afslutter ansættelse for medarbejder: {userId}", userId);
             try
             {
                 return Ok(await _employeeRepository.EndEmploymentForEmployee(userId));
             }
             catch (Exception ex)
             {
+                _logger.LogError("Fejl ved afslutning af ansættelse for {userId}: {message}", userId, ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -63,12 +70,14 @@ namespace UserServiceAPI.Controllers
         [HttpPut("SetEmployeeAsManager/{userId}")]
         public async Task<ActionResult> SetEmployeeAsManager(string userId)
         {
+            _logger.LogInformation("Sætter medarbejder {userId} som manager", userId);
             try
             {
                 return Ok(await _employeeRepository.SetEmployeeAsManager(userId));
             }
             catch (Exception ex)
             {
+                _logger.LogError("Fejl ved promovering af medarbejder {userId}: {message}", userId, ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -83,13 +92,16 @@ namespace UserServiceAPI.Controllers
         [HttpPost("UpsertEmployee")]
         public async Task<ActionResult> UpsertEmployee([FromBody] Employee employee)
         {
+            _logger.LogInformation("Opretter eller opdaterer medarbejder: {employeeId}", employee);
             try
             {
                 Employee updatedEmployee = await _employeeRepository.UpsertEmployee(employee);
+                _logger.LogInformation("Medarbejder oprettet/opdateret: {employeeId}", employee.Id);
                 return Ok(updatedEmployee);
             }
             catch (InvalidOperationException ex)
             {
+                _logger.LogWarning("Ugyldig operation ved upsert af medarbejder {employeeId}: {message}", employee.Id, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -105,12 +117,14 @@ namespace UserServiceAPI.Controllers
         [HttpDelete("DeleteEmployee/{userId}")]
         public async Task<ActionResult> DeleteEmployee(string userId)
         {
+            _logger.LogInformation("Sletter medarbejder: {userId}", userId);
             try
             {
                 return Ok(await _employeeRepository.DeleteEmployee(userId));
             }
             catch (Exception ex)
             {
+                _logger.LogError("Fejl ved sletning af medarbejder {userId}: {message}", userId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -121,12 +135,14 @@ namespace UserServiceAPI.Controllers
         [HttpPut("SetAccountAsInactive/{userId}")]
         public async Task<ActionResult> SetEmployeeAccountAsInactive(string userId)
         {
+            _logger.LogInformation("Sætter medarbejderkonto som inaktiv: {userId}", userId);
             try
             {
                 return Ok(await _employeeRepository.SetAccountAsInactive(userId));
             }
             catch (Exception ex)
             {
+                _logger.LogError("Fejl ved deaktivering af medarbejderkonto {userId}: {message}", userId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -144,12 +160,14 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetEmployeeById/{userId}")]
         public async Task<ActionResult> GetEmployeeById(string userId)
         {
+            _logger.LogInformation("Henter medarbejder med id: {userId}", userId);
             try
             {
                 Employee? employee = await _employeeRepository.GetEmployeeById(userId);
 
                 if (employee is null)
                 {
+                    _logger.LogWarning("Medarbejder med id {userId} blev ikke fundet", userId);
                     return NotFound(
                         $"Employee with id '{userId}' was not found");
                 }
@@ -158,6 +176,7 @@ namespace UserServiceAPI.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("Fejl ved hentning af medarbejder {userId}: {message}", userId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -174,6 +193,7 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetEmployeeByAffiliation/{affiliationId}")]
         public async Task<ActionResult> GetEmployeeByAffiliation(Guid affiliationId)
         {
+            _logger.LogInformation("Henter medarbejdere for tilknytning: {affiliationId}", affiliationId);
             try
             {
                 var employees = await _employeeRepository.GetEmployeesByAffiliation(affiliationId);
@@ -181,6 +201,7 @@ namespace UserServiceAPI.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("Fejl ved hentning af medarbejdere for tilknytning {affiliationId}: {message}", affiliationId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }

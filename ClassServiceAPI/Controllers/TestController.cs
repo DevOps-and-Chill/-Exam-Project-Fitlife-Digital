@@ -18,7 +18,7 @@ public class TestController : ControllerBase
     [HttpPost("test-rabbitmq")]
     public async Task<IActionResult> TestRabbitMq()
     {
-        var message = new ClassCancelledMessage
+        var classMessage = new ClassCancelledMessage
         {
             ClassId   = Guid.NewGuid(),
             Title     = "Test Yoga Class",
@@ -27,7 +27,7 @@ public class TestController : ControllerBase
             MemberIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() }
         };
 
-        await _publisher.PublishAsync(message, "class.cancelled");
+        await _publisher.PublishAsync(classMessage, "class.cancelled");
         return Ok("Besked sendt!");
     }
 }

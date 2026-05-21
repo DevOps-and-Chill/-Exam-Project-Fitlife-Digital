@@ -12,10 +12,18 @@ namespace UserServiceAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IUserRepository userRepository, ILogger<UserController> logger)
         {
             _userRepository = userRepository;
+            _logger = logger;
+
+            // Logger hvilken server og IP der svarer
+            var hostName = System.Net.Dns.GetHostName();
+            var ips = System.Net.Dns.GetHostAddresses(hostName);
+            var ipaddr = ips.First().MapToIPv4().ToString();
+            _logger.LogInformation(1, $"UserService responding from {ipaddr}");
         }
 
         /// <summary>
@@ -27,12 +35,14 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetAllUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
+            _logger.LogInformation("Henter alle brugere");
             try
             {
                 return Ok(await _userRepository.GetAllUsers());
             }
             catch (Exception ex)
             {
+                _logger.LogError("Fejl ved hentning af alle brugere: {message}", ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -49,12 +59,15 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetUserById/{userId}")]
         public async Task<IActionResult> GetUserById(string userId)
         {
+            
+            _logger.LogInformation("Henter bruger med id: {userId}", userId);
             try
             {
                 return Ok(await _userRepository.GetUserById(userId));
             }
             catch (Exception ex)
             {
+                _logger.LogError("Fejl ved hentning af bruger med id {userId}: {message}", userId, ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -72,12 +85,14 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetUserIdByEmail/{email}")]
         public async Task<IActionResult> GetUserIdByEmail(string email)
         {
+            _logger.LogInformation("Henter bruger-id for email: {email}", email);
             try
             {
                 string? userId = await _userRepository.GetUserIdByEmail(email);
 
                 if (string.IsNullOrWhiteSpace(userId))
                 {
+                    _logger.LogWarning("Ingen bruger fundet med email: {email}", email);
                     return NotFound();
                 }
                 else
@@ -87,6 +102,7 @@ namespace UserServiceAPI.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("Fejl ved hentning af bruger-id for email {email}: {message}", email, ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -100,21 +116,25 @@ namespace UserServiceAPI.Controllers
         [HttpGet("addtestdata")]
         public async Task<ActionResult> AddData()
         {
+            _logger.LogInformation("Indlæser testdata");
             try
             {
                 var result = await _userRepository.LoadTestData();
 
                 if (result)
                 {
+                    _logger.LogInformation("Testdata indlæst succesfuldt");
                     return Ok();
                 }
                 else
                 {
+                    _logger.LogWarning("Fejl ved indlæsning af testdata");
                     return Ok("error in loading data");
                 }
             }
             catch (Exception ex)
             {
+                _logger.LogError("Fejl ved indlæsning af testdata: {message}", ex.Message);
                 return BadRequest(ex);
             }
         }

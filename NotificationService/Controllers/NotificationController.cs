@@ -9,11 +9,12 @@ namespace NotificationService.Controllers;
 public class NotificationController : ControllerBase
 {
     private readonly INotificationRepository _repo;
+    private readonly ILogger<NotificationController> _logger;
 
-
-    public NotificationController(INotificationRepository repo)
+    public NotificationController(INotificationRepository repo, ILogger<NotificationController> logger)
     {
         _repo = repo;
+        _logger = logger;
     }
     
     // POST

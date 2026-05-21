@@ -20,31 +20,31 @@ public class ClassController : ControllerBase
 
     // POST
 
-    [HttpPost("create-class")]
+    [HttpPost]
     public async Task<IActionResult> CreateClassAsync([FromBody] Class classModel)
     {
-        _logger.LogInformation("Opretter ny klasse: {className}", classModel.Name);
+        _logger.LogInformation("Opretter ny klasse: {className}", classModel.Title);
         try
         {
             var created = await _repo.CreateClassAsync(classModel);
-            _logger.LogInformation("Klasse oprettet: {className}", classModel.Name);
+            _logger.LogInformation("Klasse oprettet: {className}", classModel.Title);
             return Ok(created);
+            return CreatedAtAction(nameof(GetClassByIdAsync), new { id = created.Id }, created);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Fejl ved oprettelse af klasse: {className}", classModel.Name);
+            _logger.LogError(ex, "Fejl ved oprettelse af klasse: {className}", classModel.Title);
             return BadRequest(ex.Message);
         }
     }
 
-    [HttpPost("{classId}/register-member")]
+    [HttpPost("{classId}/members")]
     public async Task<IActionResult> RegisterMemberToClassAsync(Guid classId, [FromBody] Member member)
     {
         _logger.LogInformation("Tilmelder medlem {memberId} til klasse {classId}", member.Id, classId);
         try
         {
             var updated = await _repo.RegisterMemberToClassAsync(classId, member);
-            _logger.LogInformation("Medlem {memberId} tilmeldt klasse {classId}", member.Id, classId);
             return Ok(updated);
         }
         catch (InvalidOperationException ex)
@@ -54,7 +54,7 @@ public class ClassController : ControllerBase
         }
     }
 
-    [HttpPost("{classId}/register-member-to-waitinglist")]
+    [HttpPost("{classId}/waitinglist")]
     public async Task<IActionResult> RegisterMemberToWaitingListAsync(Guid classId, [FromBody] Member member)
     {
         _logger.LogInformation("Tilmelder medlem {memberId} til venteliste for klasse {classId}", member.Id, classId);
@@ -72,7 +72,7 @@ public class ClassController : ControllerBase
 
     // GET
 
-    [HttpGet("get-all-classes")]
+    [HttpGet]
     public async Task<IActionResult> GetAllClassesAsync()
     {
         _logger.LogInformation("Henter alle klasser");
@@ -87,7 +87,7 @@ public class ClassController : ControllerBase
         }
     }
 
-    [HttpGet("get-classes-by-gym/{exerciseGymId}")]
+    [HttpGet("gym/{exerciseGymId}")]
     public async Task<IActionResult> GetAllClassesByExerciseGymAsync(Guid exerciseGymId)
     {
         _logger.LogInformation("Henter klasser for gym {exerciseGymId}", exerciseGymId);
@@ -102,7 +102,7 @@ public class ClassController : ControllerBase
         }
     }
 
-    [HttpGet("get-class-by-id/{id}")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> GetClassByIdAsync(Guid id)
     {
         _logger.LogInformation("Henter klasse med id: {id}", id);
@@ -138,7 +138,7 @@ public class ClassController : ControllerBase
         }
     }
 
-    [HttpGet("{id}/registered-members")]
+    [HttpGet("{id}/members")]
     public async Task<IActionResult> GetRegisteredByClassAsync(Guid id)
     {
         _logger.LogInformation("Henter tilmeldte medlemmer for klasse {id}", id);
@@ -200,7 +200,7 @@ public class ClassController : ControllerBase
         }
     }
 
-    [HttpPut("{classId}/unregister-member/{memberId}")]
+    [HttpDelete("{classId}/members/{memberId}")]
     public async Task<IActionResult> UnRegisterMemberFromClassAsync(Guid classId, Guid memberId)
     {
         _logger.LogInformation("Afmelder medlem {memberId} fra klasse {classId}", memberId, classId);
@@ -215,7 +215,7 @@ public class ClassController : ControllerBase
         }
     }
 
-    [HttpPut("{classId}/unregister-member-from-waitinglist/{memberId}")]
+    [HttpDelete("{classId}/waitinglist/{memberId}")]
     public async Task<IActionResult> UnRegisterMemberFromWaitingListAsync(Guid classId, Guid memberId)
     {
         _logger.LogInformation("Afmelder medlem {memberId} fra venteliste for klasse {classId}", memberId, classId);
@@ -232,7 +232,7 @@ public class ClassController : ControllerBase
 
     // DELETE
 
-    [HttpDelete("{id}/delete")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteClassByIdAsync(Guid id)
     {
         _logger.LogInformation("Sletter klasse med id: {id}", id);
