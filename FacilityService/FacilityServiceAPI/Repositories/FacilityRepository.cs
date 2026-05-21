@@ -1,5 +1,6 @@
 ﻿using FacilityServiceAPI.Contexts;
 using FacilityServiceAPI.Models;
+using FacilityServiceAPI.Repositories.Interfaces;
 using FacilityServiceAPI.TestData;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,7 +20,6 @@ namespace FacilityServiceAPI.Repositories
 		/// </summary>
 		/// <param name="facilityId"></param>
 		/// <returns></returns>
-		/// <exception cref="NotImplementedException"></exception>
 		public async Task<Facility> GetFacility(string facilityId)
 		{
 			using (var facilityContext = await GetDbContextAsync())
@@ -33,7 +33,6 @@ namespace FacilityServiceAPI.Repositories
 		/// <inheritdoc/>
 		/// </summary>
 		/// <returns></returns>
-		/// <exception></exception>
 		public async Task<List<Facility>> GetFacilities()
 		{
 			using (var facilityContext = await GetDbContextAsync())
@@ -43,70 +42,13 @@ namespace FacilityServiceAPI.Repositories
 			}
 		}
 
-		/// <summary>
-		/// <inheritdoc/>
-		/// </summary>
-		/// <returns></returns>
-		public async Task<List<ExerciseGym>> GetAllExerciseGyms()
-		{
-			using (var facilityContext = await GetDbContextAsync())
-			{
-				var result = await facilityContext.Facilities.OfType<ExerciseGym>().ToListAsync();
-				return result;
-			}
-		}
-
-		/// <summary>
-		/// <inheritdoc/>
-		/// </summary>
-		/// <returns></returns>
-		/// <exception cref="NotImplementedException"></exception>
-		public async Task<List<SwimmingPool>> GetAllSwimmingPools()
-		{
-			using (var facilityContext = await GetDbContextAsync())
-			{
-				var result = await facilityContext.Facilities.OfType<SwimmingPool>().ToListAsync();
-				return result;
-			}
-		}
-
-		/// <summary>
-		/// <inheritdoc/>
-		/// </summary>
-		/// <param name="facility"></param>
-		/// <returns></returns>
-		/// <exception cref="NotImplementedException"></exception>
-		public async Task InsertFacility(Facility facility)
-		{
-			using (var facilityContext = await GetDbContextAsync())
-			{
-				await facilityContext.Facilities.AddAsync(facility);
-				await facilityContext.SaveChangesAsync();
-			}
-		}
-
-		/// <summary>
-		/// <inheritdoc/>
-		/// </summary>
-		/// <param name="facility"></param>
-		/// <returns></returns>
-		/// <exception cref="NotImplementedException"></exception>
-		public async Task UpdateFacility(Facility facility)
-		{
-			using (var facilityContext = await GetDbContextAsync())
-			{
-				facilityContext.Update(facility);
-				await facilityContext.SaveChangesAsync();
-			}
-		}
-
-		/// <summary>
-		/// <inheritdoc/>
-		/// </summary>
-		/// <param name="facilityId"></param>
-		/// <returns></returns>
-		/// <exception cref="NotImplementedException"></exception>
-		public async Task DeleteFacility(string facilityId)
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="facilityId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task DeleteFacility(string facilityId)
 		{
 			using (var facilityContext = await GetDbContextAsync())
 			{
