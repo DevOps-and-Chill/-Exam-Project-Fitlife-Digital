@@ -1,5 +1,4 @@
-﻿using ClassServiceAPI.Messaging;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ClassServiceAPI.Models;
 using ClassServiceAPI.Repositories.Interfaces;
 
@@ -23,13 +22,11 @@ public class ClassController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateClassAsync([FromBody] Class classModel)
     {
-        _logger.LogInformation("Opretter ny klasse: {className}", classModel.Title);
         try
         {
             var created = await _repo.CreateClassAsync(classModel);
             _logger.LogInformation("Klasse oprettet: {className}", classModel.Title);
             return Ok(created);
-            return CreatedAtAction(nameof(GetClassByIdAsync), new { id = created.Id }, created);
         }
         catch (Exception ex)
         {
@@ -41,10 +38,10 @@ public class ClassController : ControllerBase
     [HttpPost("{classId}/members")]
     public async Task<IActionResult> RegisterMemberToClassAsync(Guid classId, [FromBody] Member member)
     {
-        _logger.LogInformation("Tilmelder medlem {memberId} til klasse {classId}", member.Id, classId);
         try
         {
             var updated = await _repo.RegisterMemberToClassAsync(classId, member);
+            _logger.LogInformation("Medlem {memberId} tilmeldt klasse {classId}", member.Id, classId);
             return Ok(updated);
         }
         catch (InvalidOperationException ex)
@@ -57,10 +54,10 @@ public class ClassController : ControllerBase
     [HttpPost("{classId}/waitinglist")]
     public async Task<IActionResult> RegisterMemberToWaitingListAsync(Guid classId, [FromBody] Member member)
     {
-        _logger.LogInformation("Tilmelder medlem {memberId} til venteliste for klasse {classId}", member.Id, classId);
         try
         {
             var updated = await _repo.RegisterMemberToWaitingListAsync(classId, member);
+            _logger.LogInformation("Medlem {memberId} tilmeldt venteliste for klasse {classId}", member.Id, classId);
             return Ok(updated);
         }
         catch (InvalidOperationException ex)
@@ -75,7 +72,6 @@ public class ClassController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllClassesAsync()
     {
-        _logger.LogInformation("Henter alle klasser");
         try
         {
             return Ok(await _repo.GetAllClassesAsync());
@@ -90,7 +86,6 @@ public class ClassController : ControllerBase
     [HttpGet("gym/{exerciseGymId}")]
     public async Task<IActionResult> GetAllClassesByExerciseGymAsync(Guid exerciseGymId)
     {
-        _logger.LogInformation("Henter klasser for gym {exerciseGymId}", exerciseGymId);
         try
         {
             return Ok(await _repo.GetAllClassesByExerciseGymAsync(exerciseGymId));
@@ -105,14 +100,13 @@ public class ClassController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetClassByIdAsync(Guid id)
     {
-        _logger.LogInformation("Henter klasse med id: {id}", id);
         try
         {
             var fitnessClass = await _repo.GetClassByIdAsync(id);
             if (fitnessClass is null)
             {
                 _logger.LogWarning("Klasse med id {id} blev ikke fundet", id);
-                return NotFound($"Class with id '{id}' was not found");
+                return NotFound($"Klassen med id '{id}' blev ikke fundet");
             }
             return Ok(fitnessClass);
         }
@@ -126,7 +120,6 @@ public class ClassController : ControllerBase
     [HttpGet("{id}/waitinglist")]
     public async Task<IActionResult> GetWaitingListByClassAsync(Guid id)
     {
-        _logger.LogInformation("Henter venteliste for klasse {id}", id);
         try
         {
             return Ok(await _repo.GetWaitingListByClassAsync(id));
@@ -141,7 +134,6 @@ public class ClassController : ControllerBase
     [HttpGet("{id}/members")]
     public async Task<IActionResult> GetRegisteredByClassAsync(Guid id)
     {
-        _logger.LogInformation("Henter tilmeldte medlemmer for klasse {id}", id);
         try
         {
             return Ok(await _repo.GetRegisteredByClassAsync(id));
@@ -156,7 +148,6 @@ public class ClassController : ControllerBase
     [HttpGet("{id}/attendees-count")]
     public async Task<IActionResult> GetNumberOfAttendeesByClassAsync(Guid id)
     {
-        _logger.LogInformation("Henter antal deltagere for klasse {id}", id);
         try
         {
             return Ok(await _repo.GetNumberOfAttendeesByClassAsync(id));
@@ -171,7 +162,6 @@ public class ClassController : ControllerBase
     [HttpGet("{id}/absence")]
     public async Task<IActionResult> CalculateAbsenceByClassAsync(Guid id)
     {
-        _logger.LogInformation("Beregner fravær for klasse {id}", id);
         try
         {
             return Ok(await _repo.CalculateAbsenceByClassAsync(id));
@@ -188,10 +178,11 @@ public class ClassController : ControllerBase
     [HttpPut("{id}/cancel")]
     public async Task<IActionResult> CancelClassByIdAsync(Guid id)
     {
-        _logger.LogInformation("Aflysser klasse med id: {id}", id);
         try
         {
-            return Ok(await _repo.CancelClassByIdAsync(id));
+            var cancelled = await _repo.CancelClassByIdAsync(id);
+            _logger.LogInformation("Klasse {id} aflyst", id);
+            return Ok(cancelled);
         }
         catch (InvalidOperationException ex)
         {
@@ -200,13 +191,16 @@ public class ClassController : ControllerBase
         }
     }
 
+    // DELETE
+
     [HttpDelete("{classId}/members/{memberId}")]
     public async Task<IActionResult> UnRegisterMemberFromClassAsync(Guid classId, Guid memberId)
     {
-        _logger.LogInformation("Afmelder medlem {memberId} fra klasse {classId}", memberId, classId);
         try
         {
-            return Ok(await _repo.UnRegisterMemberFromClassAsync(classId, memberId));
+            var updated = await _repo.UnRegisterMemberFromClassAsync(classId, memberId);
+            _logger.LogInformation("Medlem {memberId} afmeldt klasse {classId}", memberId, classId);
+            return Ok(updated);
         }
         catch (InvalidOperationException ex)
         {
@@ -218,10 +212,11 @@ public class ClassController : ControllerBase
     [HttpDelete("{classId}/waitinglist/{memberId}")]
     public async Task<IActionResult> UnRegisterMemberFromWaitingListAsync(Guid classId, Guid memberId)
     {
-        _logger.LogInformation("Afmelder medlem {memberId} fra venteliste for klasse {classId}", memberId, classId);
         try
         {
-            return Ok(await _repo.UnRegisterMemberFromWaitingListAsync(classId, memberId));
+            var updated = await _repo.UnRegisterMemberFromWaitingListAsync(classId, memberId);
+            _logger.LogInformation("Medlem {memberId} afmeldt venteliste for klasse {classId}", memberId, classId);
+            return Ok(updated);
         }
         catch (InvalidOperationException ex)
         {
@@ -230,15 +225,14 @@ public class ClassController : ControllerBase
         }
     }
 
-    // DELETE
-
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteClassByIdAsync(Guid id)
     {
-        _logger.LogInformation("Sletter klasse med id: {id}", id);
         try
         {
-            return Ok(await _repo.DeleteClassByIdAsync(id));
+            var deleted = await _repo.DeleteClassByIdAsync(id);
+            _logger.LogInformation("Klasse {id} slettet", id);
+            return Ok(deleted);
         }
         catch (InvalidOperationException ex)
         {

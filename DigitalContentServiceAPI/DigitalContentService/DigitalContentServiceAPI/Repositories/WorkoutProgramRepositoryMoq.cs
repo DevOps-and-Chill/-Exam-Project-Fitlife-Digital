@@ -9,5 +9,10 @@ namespace DigitalContentServiceAPI.Repositories
 		{
 			throw new NotImplementedException();
 		}
+
+		public Task GetWorkoutProgram(Guid id)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

@@ -8,7 +8,7 @@ namespace DigitalContentServiceAPI.Testdata
 {
 	public static class TestData
 	{
-		static List<WorkoutVideo> workoutVideos = new List<WorkoutVideo>
+		public static List<WorkoutVideo> workoutVideos = new List<WorkoutVideo>
 		{
 	new WorkoutVideo
 	{

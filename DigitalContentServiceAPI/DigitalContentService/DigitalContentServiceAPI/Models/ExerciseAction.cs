@@ -18,9 +18,4 @@ public class ExerciseAction
         if (AmountOfSets != amountOfSets)
             AmountOfSets = amountOfSets;
     }
-
-    public void AddVideo(WorkoutVideo video)
-    {
-        RelatedVideos.Add(video);
-    }
 }
