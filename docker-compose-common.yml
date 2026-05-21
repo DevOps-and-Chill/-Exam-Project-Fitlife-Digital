@@ -79,8 +79,8 @@ services:
     image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
     container_name: cosmos
     #Test
-    #ports:
-    #  - "8081:8081"
+    ports:
+      - "8081:8081"
 
     restart: unless-stopped
 
