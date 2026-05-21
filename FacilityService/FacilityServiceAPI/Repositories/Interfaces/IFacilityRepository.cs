@@ -1,6 +1,6 @@
 ﻿using FacilityServiceAPI.Models;
 
-namespace FacilityServiceAPI.Repositories
+namespace FacilityServiceAPI.Repositories.Interfaces
 {
     public interface IFacilityRepository
     {
@@ -17,32 +17,6 @@ namespace FacilityServiceAPI.Repositories
         /// </summary>
         /// <returns>a list<Facility></Facility></returns>
         public Task<List<Facility>> GetFacilities();
-
-		/// <summary>
-		/// Gets all the facilities of facility type ExerciseGym
-		/// </summary>
-		/// <returns>returns a list of all the exercise gyms </returns>
-		public Task<List<ExerciseGym>> GetAllExerciseGyms();
-
-        /// <summary>
-        /// Gets al the facilities of facility type SwimmingPool
-        /// </summary>
-        /// <returns></returns>
-        public Task<List<SwimmingPool>> GetAllSwimmingPools();
-       
-        /// <summary>
-        /// Insert method for adding a facility, that is parsed as a parameter
-        /// </summary>
-        /// <param name="facility"></param>
-        /// <returns>Task.CompletedTask</returns>
-        public Task InsertFacility(Facility facility);
-        
-        /// <summary>
-        /// Updates the parsed parameter.  
-        /// </summary>
-        /// <param name="facility"></param>
-        /// <returns>Task.CompletedTask</returns>
-        public Task UpdateFacility(Facility facility);
 
         /// <summary>
         /// Method for deleting a single facility, takes a facilityId as parameter
