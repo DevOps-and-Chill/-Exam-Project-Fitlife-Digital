@@ -3,6 +3,18 @@
   "WorkspaceRootPath": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\facilityservice\\facilityserviceapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|solutionrelative:facilityserviceapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\facilityservice\\facilityserviceapi\\contexts\\facilitycontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|solutionrelative:facilityserviceapi\\contexts\\facilitycontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\facilityservice\\facilityserviceapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|solutionrelative:facilityserviceapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A4F0197E-6FF9-4067-9B8E-90BABFAFDD46}|FacilityServiceTest\\FacilityServiceTest.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\facilityservice\\facilityservicetest\\facilityrepositoryandcontrollertest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A4F0197E-6FF9-4067-9B8E-90BABFAFDD46}|FacilityServiceTest\\FacilityServiceTest.csproj|solutionrelative:facilityservicetest\\facilityrepositoryandcontrollertest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -47,10 +59,6 @@
       "RelativeMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|solutionrelative:facilityserviceapi\\repositories\\facilityrepositorymoq.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\facilityservice\\facilityserviceapi\\contexts\\facilitycontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|solutionrelative:facilityserviceapi\\contexts\\facilitycontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\facilityservice\\facilityserviceapi\\models\\exercisegym.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|FacilityServiceAPI\\FacilityServiceAPI.csproj|solutionrelative:facilityserviceapi\\models\\exercisegym.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -82,24 +90,36 @@
       "DocumentGroups": [
         {
           "DockedHeight": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "FacilityRepositoryAndControllerTest.cs",
-              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceTest\\FacilityRepositoryAndControllerTest.cs",
-              "RelativeDocumentMoniker": "FacilityServiceTest\\FacilityRepositoryAndControllerTest.cs",
-              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceTest\\FacilityRepositoryAndControllerTest.cs",
-              "RelativeToolTip": "FacilityServiceTest\\FacilityRepositoryAndControllerTest.cs",
-              "ViewState": "AgIAALkAAAAAAAAAAAA0wNEAAAAJAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Program.cs",
+              "RelativeDocumentMoniker": "FacilityServiceAPI\\Program.cs",
+              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Program.cs",
+              "RelativeToolTip": "FacilityServiceAPI\\Program.cs",
+              "ViewState": "AgIAACAAAAAAAAAAAAA0wC4AAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-20T19:26:05.049Z",
+              "WhenOpened": "2026-05-21T15:03:30.603Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\appsettings.json",
+              "RelativeDocumentMoniker": "FacilityServiceAPI\\appsettings.json",
+              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\appsettings.json",
+              "RelativeToolTip": "FacilityServiceAPI\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-05-21T10:53:49.982Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 9,
               "Title": "SwimmingPoolRepository.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Repositories\\SwimmingPoolRepository.cs",
               "RelativeDocumentMoniker": "FacilityServiceAPI\\Repositories\\SwimmingPoolRepository.cs",
@@ -107,12 +127,11 @@
               "RelativeToolTip": "FacilityServiceAPI\\Repositories\\SwimmingPoolRepository.cs",
               "ViewState": "AgIAADQAAAAAAAAAAAAAAD4AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-20T19:21:23.769Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-20T19:21:23.769Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 10,
               "Title": "ISwimmingPoolRepository.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Repositories\\Interfaces\\ISwimmingPoolRepository.cs",
               "RelativeDocumentMoniker": "FacilityServiceAPI\\Repositories\\Interfaces\\ISwimmingPoolRepository.cs",
@@ -120,12 +139,11 @@
               "RelativeToolTip": "FacilityServiceAPI\\Repositories\\Interfaces\\ISwimmingPoolRepository.cs",
               "ViewState": "AgIAAAIAAAAAAAAAAAA2wBgAAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-20T19:20:43.314Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-20T19:20:43.314Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "ExerciseGymRepository.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Repositories\\ExerciseGymRepository.cs",
               "RelativeDocumentMoniker": "FacilityServiceAPI\\Repositories\\ExerciseGymRepository.cs",
@@ -133,12 +151,11 @@
               "RelativeToolTip": "FacilityServiceAPI\\Repositories\\ExerciseGymRepository.cs",
               "ViewState": "AgIAADYAAAAAAAAAAAAAADwAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-20T19:18:23.207Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-20T19:18:23.207Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "FacilityRepository.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Repositories\\FacilityRepository.cs",
               "RelativeDocumentMoniker": "FacilityServiceAPI\\Repositories\\FacilityRepository.cs",
@@ -146,12 +163,11 @@
               "RelativeToolTip": "FacilityServiceAPI\\Repositories\\FacilityRepository.cs",
               "ViewState": "AgIAAAQAAAAAAAAAAAAIwBQAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-20T09:44:59.235Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-20T09:44:59.235Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "IFacilityRepository.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Repositories\\Interfaces\\IFacilityRepository.cs",
               "RelativeDocumentMoniker": "FacilityServiceAPI\\Repositories\\Interfaces\\IFacilityRepository.cs",
@@ -159,12 +175,36 @@
               "RelativeToolTip": "FacilityServiceAPI\\Repositories\\Interfaces\\IFacilityRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-20T19:23:15.935Z",
+              "WhenOpened": "2026-05-20T19:23:15.935Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "FacilityContext.cs",
+              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Contexts\\FacilityContext.cs",
+              "RelativeDocumentMoniker": "FacilityServiceAPI\\Contexts\\FacilityContext.cs",
+              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Contexts\\FacilityContext.cs",
+              "RelativeToolTip": "FacilityServiceAPI\\Contexts\\FacilityContext.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-20T12:21:11.466Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
+              "Title": "FacilityRepositoryAndControllerTest.cs",
+              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceTest\\FacilityRepositoryAndControllerTest.cs",
+              "RelativeDocumentMoniker": "FacilityServiceTest\\FacilityRepositoryAndControllerTest.cs",
+              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceTest\\FacilityRepositoryAndControllerTest.cs",
+              "RelativeToolTip": "FacilityServiceTest\\FacilityRepositoryAndControllerTest.cs",
+              "ViewState": "AgIAALkAAAAAAAAAAAA0wNEAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-20T19:26:05.049Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "SwimmingPoolController.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Controllers\\SwimmingPoolController.cs",
               "RelativeDocumentMoniker": "FacilityServiceAPI\\Controllers\\SwimmingPoolController.cs",
@@ -172,12 +212,11 @@
               "RelativeToolTip": "FacilityServiceAPI\\Controllers\\SwimmingPoolController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-20T19:05:14.022Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-20T19:05:14.022Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "ExerciseGymController .cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Controllers\\ExerciseGymController .cs",
               "RelativeDocumentMoniker": "FacilityServiceAPI\\Controllers\\ExerciseGymController .cs",
@@ -185,12 +224,11 @@
               "RelativeToolTip": "FacilityServiceAPI\\Controllers\\ExerciseGymController .cs",
               "ViewState": "AgIAABUAAAAAAAAAAAAAABAAAAA7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-20T19:09:26.397Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-20T19:09:26.397Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 11,
               "Title": "IExerciseGymRepository.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Repositories\\Interfaces\\IExerciseGymRepository.cs",
               "RelativeDocumentMoniker": "FacilityServiceAPI\\Repositories\\Interfaces\\IExerciseGymRepository.cs",
@@ -198,12 +236,11 @@
               "RelativeToolTip": "FacilityServiceAPI\\Repositories\\Interfaces\\IExerciseGymRepository.cs",
               "ViewState": "AgIAAAIAAAAAAAAAAAA2wBkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-20T19:19:08.594Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-20T19:19:08.594Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 13,
               "Title": "FacilityRepositoryMoq.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Repositories\\FacilityRepositoryMoq.cs",
               "RelativeDocumentMoniker": "FacilityServiceAPI\\Repositories\\FacilityRepositoryMoq.cs",
@@ -211,25 +248,11 @@
               "RelativeToolTip": "FacilityServiceAPI\\Repositories\\FacilityRepositoryMoq.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-20T18:49:40.089Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-20T18:49:40.089Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "FacilityContext.cs",
-              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Contexts\\FacilityContext.cs",
-              "RelativeDocumentMoniker": "FacilityServiceAPI\\Contexts\\FacilityContext.cs",
-              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Contexts\\FacilityContext.cs",
-              "RelativeToolTip": "FacilityServiceAPI\\Contexts\\FacilityContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-20T12:21:11.466Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "ExerciseGym.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Models\\ExerciseGym.cs",
               "RelativeDocumentMoniker": "FacilityServiceAPI\\Models\\ExerciseGym.cs",
@@ -241,7 +264,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 17,
               "Title": "Facility.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Models\\Facility.cs",
               "RelativeDocumentMoniker": "FacilityServiceAPI\\Models\\Facility.cs",
@@ -253,7 +276,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 16,
               "Title": "OpeningHoursSpecification.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Models\\OpeningHoursSpecification.cs",
               "RelativeDocumentMoniker": "FacilityServiceAPI\\Models\\OpeningHoursSpecification.cs",
@@ -265,7 +288,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 12,
               "Title": "FacilityController.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Controllers\\FacilityController.cs",
               "RelativeDocumentMoniker": "FacilityServiceAPI\\Controllers\\FacilityController.cs",
@@ -273,12 +296,11 @@
               "RelativeToolTip": "FacilityServiceAPI\\Controllers\\FacilityController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAEkAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-20T19:08:50.121Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-20T19:08:50.121Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 15,
               "Title": "SwimmingPool.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\Models\\SwimmingPool.cs",
               "RelativeDocumentMoniker": "FacilityServiceAPI\\Models\\SwimmingPool.cs",
@@ -290,7 +312,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 18,
               "Title": "FacilityTestData.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\TestData\\FacilityTestData.cs",
               "RelativeDocumentMoniker": "FacilityServiceAPI\\TestData\\FacilityTestData.cs",
@@ -302,7 +324,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 19,
               "Title": "compose.yaml",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\FacilityService\\FacilityServiceAPI\\compose.yaml",
               "RelativeDocumentMoniker": "FacilityServiceAPI\\compose.yaml",

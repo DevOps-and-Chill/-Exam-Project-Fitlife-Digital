@@ -1,10 +1,10 @@
 using ClassServiceAPI.Data;
+using ClassServiceAPI.Data;
 using ClassServiceAPI.Messaging;
 using ClassServiceAPI.Repositories;
 using ClassServiceAPI.Repositories.Interfaces;
+using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
-using ClassServiceAPI.Data;
-
 using NLog;
 using NLog.Web;
 
@@ -25,10 +25,23 @@ try
     builder.Services.AddDbContext<ClassDbContext>(options =>
     {
         options.UseCosmos(
-            builder.Configuration["CosmosDb:AccountEndpoint"]!,
-            builder.Configuration["CosmosDb:AccountKey"]!,
-            builder.Configuration["CosmosDb:DatabaseName"]!
-        );
+                        builder.Configuration["CosmosDb:AccountEndpoint"]!,
+                        builder.Configuration["CosmosDb:AccountKey"]!,
+                        builder.Configuration["CosmosDb:DatabaseName"]!,
+                        cosmosOptions =>
+                        {
+                            cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+
+                            cosmosOptions.HttpClientFactory(() =>
+                            {
+                                var handler = new HttpClientHandler();
+
+                                handler.ServerCertificateCustomValidationCallback =
+                                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+
+                                return new HttpClient(handler);
+                            });
+                        });
     });
 
     builder.Services.AddSingleton<IMessagePublisher>(sp =>

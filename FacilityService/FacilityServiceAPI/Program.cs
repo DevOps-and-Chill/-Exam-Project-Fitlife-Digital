@@ -34,10 +34,27 @@ namespace FacilityServiceAPI
 			builder.Services.AddTransient<IFacilityRepository, FacilityRepository>();
 
 			//Enables dependency injection of Factory pattern for DBContext. This way the application is more threadsafe, because each 
-			builder.Services.AddDbContextFactory<FacilityContext>(options => options.UseCosmos(
-				builder.Configuration["CosmosDb:AccountEndpoint"]!,
-				builder.Configuration["CosmosDb:AccountKey"]!,
-				builder.Configuration["CosmosDb:DatabaseName"]!));
+			builder.Services.AddDbContext<FacilityContext>(options =>
+            {
+                options.UseCosmos(
+                    builder.Configuration["CosmosDb:AccountEndpoint"]!,
+                    builder.Configuration["CosmosDb:AccountKey"]!,
+                    builder.Configuration["CosmosDb:DatabaseName"]!,
+                    cosmosOptions =>
+                    {
+                        cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+
+                        cosmosOptions.HttpClientFactory(() =>
+                        {
+                            var handler = new HttpClientHandler();
+
+                            handler.ServerCertificateCustomValidationCallback =
+                                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+
+                            return new HttpClient(handler);
+                        });
+                    });
+            });
 
                 var app = builder.Build();
 
