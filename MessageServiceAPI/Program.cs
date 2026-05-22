@@ -2,7 +2,6 @@ using MessageServiceAPI;
 using MessageServiceAPI.Data;
 using MessageServiceAPI.Services;
 using MessageServiceAPI.Services.Interfaces;
-using MessageServiceAPI.Workers;
 using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using NLog;
