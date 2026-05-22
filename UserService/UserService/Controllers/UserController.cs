@@ -35,14 +35,14 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetAllUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
-            _logger.LogInformation("Henter alle brugere");
+            _logger.LogInformation("GetAllUsers called");
             try
             {
                 return Ok(await _userRepository.GetAllUsers());
             }
             catch (Exception ex)
             {
-                _logger.LogError("Fejl ved hentning af alle brugere: {message}", ex.Message);
+                _logger.LogError($"Error getting all users \n {ex.Message}");
                 return BadRequest(ex);
             }
         }
@@ -60,14 +60,14 @@ namespace UserServiceAPI.Controllers
         public async Task<IActionResult> GetUserById(string userId)
         {
             
-            _logger.LogInformation("Henter bruger med id: {userId}", userId);
+            _logger.LogInformation($"GetUserByID: id = {userId}");
             try
             {
                 return Ok(await _userRepository.GetUserById(userId));
             }
             catch (Exception ex)
             {
-                _logger.LogError("Fejl ved hentning af bruger med id {userId}: {message}", userId, ex.Message);
+                _logger.LogError($"Error GetUserByID: id = {userId} \n {ex.Message}");
                 return BadRequest(ex);
             }
         }
