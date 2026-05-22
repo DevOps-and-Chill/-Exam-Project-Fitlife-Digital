@@ -1,3 +1,4 @@
+using MessageServiceAPI;
 using MessageServiceAPI.Data;
 using MessageServiceAPI.Services;
 using MessageServiceAPI.Services.Interfaces;
