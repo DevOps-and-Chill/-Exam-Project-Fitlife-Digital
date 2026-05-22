@@ -31,6 +31,11 @@ builder.Services.AddHttpClient("AuthService", client =>
         builder.Configuration["AuthService:BaseUrl"]!);
 });
 
+builder.Services.AddHttpClient("MessageService", client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5001");
+});
+
 builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<MemberService>();
 builder.Services.AddScoped<TrainerService>();
@@ -40,6 +45,7 @@ builder.Services.AddScoped<CenterService>();
 builder.Services.AddScoped<RegistrationStateService>();
 builder.Services.AddScoped<PTService>();
 builder.Services.AddScoped<CurrentUserService>();
+builder.Services.AddScoped<MessageService>();
 
 var app = builder.Build();
 

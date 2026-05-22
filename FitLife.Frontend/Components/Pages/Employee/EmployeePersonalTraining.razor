@@ -251,7 +251,7 @@
                         </label>
 
                         <input class="form-control"
-                               @bind="NewMessage.Subject" />
+                               @bind="NewMessage.Topic" />
                     </div>
 
                     <div class="mb-3">
@@ -479,7 +479,7 @@
     private void SendMessage()
     {
         if (SelectedTrainerForMessage is null ||
-            string.IsNullOrWhiteSpace(NewMessage.Subject) ||
+            string.IsNullOrWhiteSpace(NewMessage.Topic) ||
             string.IsNullOrWhiteSpace(NewMessage.Content))
         {
             StatusMessage = "Udfyld både emne og besked.";

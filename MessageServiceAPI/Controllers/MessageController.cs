@@ -17,9 +17,18 @@ public class MessageController : ControllerBase
     // POST
     
     [HttpPost("send-message")]
-    public async Task<IActionResult> SendMessage([FromBody] DirectMessage message)
+    public async Task<IActionResult> SendMessage([FromBody] MessageDto dto)
     {
+        var message = new DirectMessage
+        {
+            SenderId = dto.SenderId,
+            ReceiverId = dto.ReceiverId,
+            Content = dto.Content,
+            Subject = dto.Subject
+        };
+
         await _messageService.SendDirectMessageAsync(message);
+
         return Ok("Message sent");
     }
     
