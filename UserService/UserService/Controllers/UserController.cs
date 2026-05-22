@@ -23,7 +23,8 @@ namespace UserServiceAPI.Controllers
             var hostName = System.Net.Dns.GetHostName();
             var ips = System.Net.Dns.GetHostAddresses(hostName);
             var ipaddr = ips.First().MapToIPv4().ToString();
-            _logger.LogInformation(1, $"UserService responding from {ipaddr}");
+
+            _logger.LogInformation("UserService responding from {IpAddress}", ipaddr);
         }
 
         /// <summary>
@@ -35,14 +36,15 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetAllUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
-            _logger.LogInformation("GetAllUsers called");
+            _logger.LogInformation("Retrieving all users");
+
             try
             {
                 return Ok(await _userRepository.GetAllUsers());
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error getting all users \n {ex.Message}");
+                _logger.LogError("Failed to retrieve all users: {Message}", ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -59,15 +61,15 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetUserById/{userId}")]
         public async Task<IActionResult> GetUserById(string userId)
         {
-            
-            _logger.LogInformation($"GetUserByID: id = {userId}");
+            _logger.LogInformation("Retrieving user with id {UserId}", userId);
+
             try
             {
                 return Ok(await _userRepository.GetUserById(userId));
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error GetUserByID: id = {userId} \n {ex.Message}");
+                _logger.LogError("Failed to retrieve user with id {UserId}: {Message}", userId, ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -85,24 +87,23 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetUserIdByEmail/{email}")]
         public async Task<IActionResult> GetUserIdByEmail(string email)
         {
-            _logger.LogInformation("Henter bruger-id for email: {email}", email);
+            _logger.LogInformation("Retrieving user id for email {Email}", email);
+
             try
             {
                 string? userId = await _userRepository.GetUserIdByEmail(email);
 
                 if (string.IsNullOrWhiteSpace(userId))
                 {
-                    _logger.LogWarning("Ingen bruger fundet med email: {email}", email);
+                    _logger.LogWarning("No user found for email {Email}", email);
                     return NotFound();
                 }
-                else
-                {
-                    return Ok(userId);
-                }
+
+                return Ok(userId);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Fejl ved hentning af bruger-id for email {email}: {message}", email, ex.Message);
+                _logger.LogError("Failed to retrieve user id for email {Email}: {Message}", email, ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -116,25 +117,26 @@ namespace UserServiceAPI.Controllers
         [HttpGet("addtestdata")]
         public async Task<ActionResult> AddData()
         {
-            _logger.LogInformation("Indlæser testdata");
+            _logger.LogInformation("Loading test data into the database");
+
             try
             {
                 var result = await _userRepository.LoadTestData();
 
                 if (result)
                 {
-                    _logger.LogInformation("Testdata indlæst succesfuldt");
+                    _logger.LogInformation("Test data loaded successfully");
                     return Ok();
                 }
                 else
                 {
-                    _logger.LogWarning("Fejl ved indlæsning af testdata");
-                    return Ok("error in loading data");
+                    _logger.LogWarning("Failed to load test data");
+                    return Ok("error loading data");
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError("Fejl ved indlæsning af testdata: {message}", ex.Message);
+                _logger.LogError("Exception occurred while loading test data: {Message}", ex.Message);
                 return BadRequest(ex);
             }
         }
