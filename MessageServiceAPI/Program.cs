@@ -2,6 +2,8 @@ using MessageServiceAPI;
 using MessageServiceAPI.Data;
 using MessageServiceAPI.Services;
 using MessageServiceAPI.Services.Interfaces;
+using MessageServiceAPI.Workers;
+using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
@@ -17,17 +19,29 @@ try
     builder.Host.UseNLog();
 
     builder.Services.AddControllers();
-    
-    builder.Services.AddDbContext<MessageDbContext>(options => options.UseCosmos(
-        builder.Configuration["CosmosDb:AccountEndpoint"]!,
-        builder.Configuration["CosmosDb:AccountKey"]!,
-        builder.Configuration["CosmosDb:DatabaseName"]!));
-    
-    /*
-     builder.Services.AddDbContext<MessageDbContext>(options =>
-        options.UseInMemoryDatabase("MessageDb"));
-     */
-    
+
+    builder.Services.AddDbContext<MessageDbContext>(options =>
+    {
+        options.UseCosmos(
+            builder.Configuration["CosmosDb:AccountEndpoint"]!,
+            builder.Configuration["CosmosDb:AccountKey"]!,
+            builder.Configuration["CosmosDb:DatabaseName"]!,
+            cosmosOptions =>
+            {
+                cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+
+                cosmosOptions.HttpClientFactory(() =>
+                {
+                    var handler = new HttpClientHandler();
+
+                    handler.ServerCertificateCustomValidationCallback =
+                        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+
+                    return new HttpClient(handler);
+                });
+            });
+    });
+
     builder.Services.AddScoped<IMessageService, MessageService>();
     builder.Services.AddHostedService<ClassCancelledConsumer>();
     
