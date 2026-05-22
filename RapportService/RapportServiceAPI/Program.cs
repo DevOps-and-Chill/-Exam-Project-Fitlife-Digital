@@ -1,9 +1,10 @@
+using Microsoft.Azure.Cosmos;
+using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
-using RapportServiceAPI.Repositories;
 using RapportServiceAPI.Data;
+using RapportServiceAPI.Repositories;
 using Scalar.AspNetCore;
-using Microsoft.EntityFrameworkCore;
 
 namespace RapportServiceAPI
 {
@@ -34,8 +35,21 @@ namespace RapportServiceAPI
                     options.UseCosmos(
                         builder.Configuration["CosmosDb:AccountEndpoint"]!,
                         builder.Configuration["CosmosDb:AccountKey"]!,
-                        builder.Configuration["CosmosDb:DatabaseName"]!
-                    );
+                        builder.Configuration["CosmosDb:DatabaseName"]!,
+                        cosmosOptions =>
+                        {
+                            cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+
+                            cosmosOptions.HttpClientFactory(() =>
+                            {
+                                var handler = new HttpClientHandler();
+
+                                handler.ServerCertificateCustomValidationCallback =
+                                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+
+                                return new HttpClient(handler);
+                            });
+                        });
                 });
 
                 var app = builder.Build();

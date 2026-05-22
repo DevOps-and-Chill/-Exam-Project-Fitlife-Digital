@@ -11,14 +11,14 @@ namespace RapportServiceAPI.Data
         }
 
         // Repræsenterer Statistikker-containeren i CosmosDB
-        public DbSet<Statistik> Statistikker => Set<Statistik>();
+        public DbSet<Statistik> Statistics => Set<Statistik>();
 
         // Konfigurerer hvordan Statistik-objekter gemmes i CosmosDB
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Statistik>(entity =>
             {
-                entity.ToContainer("Statistikker");
+                entity.ToContainer("Statistics");
                 entity.HasKey(s => s.Id);
                 entity.HasPartitionKey(s => s.PartitionKey);
 

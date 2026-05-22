@@ -1,9 +1,10 @@
+using Microsoft.Azure.Cosmos;
+using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
+using UserServiceAPI.Data;
 using UserServiceAPI.Repositories;
 using UserServiceAPI.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using UserServiceAPI.Data;
 
 namespace UserServiceAPI
 {
@@ -24,16 +25,30 @@ namespace UserServiceAPI
 				builder.Logging.ClearProviders();
 				builder.Host.UseNLog();
 
-				// AccountKey og endpoint tilføjes til vault - ligger i appsettings indtil videre
-				builder.Services.AddDbContext<UserDbContext>(options =>
-				{
-					options.UseCosmos(
-						builder.Configuration["CosmosDb:AccountEndpoint"]!,
-						builder.Configuration["CosmosDb:AccountKey"]!,
-						builder.Configuration["CosmosDb:DatabaseName"]!);
-				});
+                // AccountKey og endpoint tilføjes til vault - ligger i appsettings indtil videre
+                builder.Services.AddDbContext<UserDbContext>(options =>
+                {
+                    options.UseCosmos(
+                        builder.Configuration["CosmosDb:AccountEndpoint"]!,
+                        builder.Configuration["CosmosDb:AccountKey"]!,
+                        builder.Configuration["CosmosDb:DatabaseName"]!,
+                        cosmosOptions =>
+                        {
+                            cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
 
-				builder.Services.AddControllers()
+                            cosmosOptions.HttpClientFactory(() =>
+                            {
+                                var handler = new HttpClientHandler();
+
+                                handler.ServerCertificateCustomValidationCallback =
+                                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+
+                                return new HttpClient(handler);
+                            });
+                        });
+                });
+
+                builder.Services.AddControllers()
 					.AddJsonOptions(options =>
 					{
 						options.JsonSerializerOptions.Converters.Add(
