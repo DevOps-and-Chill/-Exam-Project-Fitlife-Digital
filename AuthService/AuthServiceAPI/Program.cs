@@ -1,13 +1,14 @@
-using NLog;
-using NLog.Web;
 using AuthServiceAPI.Data;
 using AuthServiceAPI.Repositories;
 using AuthServiceAPI.Repositories.Interfaces;
 using AuthServiceAPI.Services;
 using AuthServiceAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NLog;
+using NLog.Web;
 using System.Text;
 
 var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
@@ -34,10 +35,23 @@ try
     builder.Services.AddDbContext<CredentialDbContext>(options =>
     {
         options.UseCosmos(
-            builder.Configuration["CosmosDb:AccountEndpoint"]!,
-            builder.Configuration["CosmosDb:AccountKey"]!,
-            builder.Configuration["CosmosDb:DatabaseName"]!
-        );
+                        builder.Configuration["CosmosDb:AccountEndpoint"]!,
+                        builder.Configuration["CosmosDb:AccountKey"]!,
+                        builder.Configuration["CosmosDb:DatabaseName"]!,
+                        cosmosOptions =>
+                        {
+                            cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+
+                            cosmosOptions.HttpClientFactory(() =>
+                            {
+                                var handler = new HttpClientHandler();
+
+                                handler.ServerCertificateCustomValidationCallback =
+                                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+
+                                return new HttpClient(handler);
+                            });
+                        });
     });
 
     builder.Services
