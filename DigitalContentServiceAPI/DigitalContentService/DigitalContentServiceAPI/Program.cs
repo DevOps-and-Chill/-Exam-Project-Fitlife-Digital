@@ -1,4 +1,9 @@
 
+using DigitalContentServiceAPI.Data;
+using DigitalContentServiceAPI.Repositories;
+using DigitalContentServiceAPI.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
+
 namespace DigitalContentServiceAPI
 {
     public class Program
@@ -8,6 +13,15 @@ namespace DigitalContentServiceAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddScoped<IWorkoutProgramRepository, WorkoutProgramRepository>();
+            builder.Services.AddScoped<IWorkoutVideoRepository, WorkoutVideoRepository>();
+            
+            builder.Services.AddDbContext<DigitalContentDbContext>(options =>
+                options.UseCosmos(
+                    builder.Configuration["CosmosDb:AccountEndpoint"],
+                    builder.Configuration["CosmosDb:AccountKey"],
+                    builder.Configuration["CosmosDb:DatabaseName"]
+                ));
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

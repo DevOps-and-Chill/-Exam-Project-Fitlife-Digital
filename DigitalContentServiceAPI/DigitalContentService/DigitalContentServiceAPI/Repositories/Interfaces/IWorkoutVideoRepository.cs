@@ -4,7 +4,16 @@ namespace DigitalContentServiceAPI.Repositories.Interfaces;
 
 public interface IWorkoutVideoRepository
 {
-    Task InsertWorkoutVideo(WorkoutVideo workoutVideoToInsert);
     
-    Task<WorkoutVideo> GetWorkoutVideo(Guid id);
+    // POST
+    
+    Task InsertWorkoutVideoAsync(WorkoutVideo workoutVideoToInsert);
+   
+    // GET
+    
+    Task<WorkoutVideo?> GetWorkoutVideoAsync(Guid id);
+    
+    // DELETE
+    
+    Task<bool> DeleteWorkoutVideoAsync(Guid id);
 }

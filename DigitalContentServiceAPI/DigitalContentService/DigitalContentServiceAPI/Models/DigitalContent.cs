@@ -3,6 +3,7 @@
 public abstract class DigitalContent
 {
 	public Guid Id { get; set; } = Guid.NewGuid();
+    public string PartitionKey { get; set; } = "DigitalContent";
     public string Name { get; set; }
     public string Description { get; set; }
     public DateTime DateCreated { get; set; }

@@ -4,8 +4,21 @@ namespace DigitalContentServiceAPI.Repositories.Interfaces
 {
 	public interface IWorkoutProgramRepository
 	{
-		public Task InsertWorkoutProgram(WorkoutProgram workoutProgramToInsert);
 		
-		public Task GetWorkoutProgram(Guid id);
+		// POST
+		
+		Task InsertWorkoutProgramAsync(WorkoutProgram workoutProgramToInsert);
+		
+		// GET
+		
+		Task<WorkoutProgram?> GetWorkoutProgramAsync(Guid id);
+		
+		// PUT
+
+		Task<bool> UpdateWorkoutProgramAsync(Guid id, WorkoutProgram workoutProgramToChange);
+		
+		// DELETE
+		
+		Task<bool> DeleteWorkoutProgramAsync(Guid id);
 	}
 }
