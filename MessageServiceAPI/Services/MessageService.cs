@@ -62,18 +62,28 @@ public class MessageService : IMessageService
 
     public async Task MarkAsReadAsync(Guid messageId)
     {
-        var direct = await _context.DirectMessages.FindAsync(messageId);
-        if (direct is not null)
+        var directMessage = await _context.DirectMessages.FindAsync(messageId);
+        if (directMessage is not null)
         {
-            direct.IsRead = true;
+            directMessage.IsRead = true;
             await _context.SaveChangesAsync();
             return;
         }
 
-        var classMsg = await _context.ClassMessages.FindAsync(messageId);
-        if (classMsg is not null)
+        var classMessage = await _context.ClassMessages.FindAsync(messageId);
+        if (classMessage is not null)
         {
-            classMsg.IsRead = true;
+            classMessage.IsRead = true;
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public async Task DeleteMessageAsync(Guid messageId)
+    {
+        var  directMessage = await _context.DirectMessages.FindAsync(messageId);
+        if (directMessage is not null)
+        {
+            _context.DirectMessages.Remove(directMessage);
             await _context.SaveChangesAsync();
         }
     }

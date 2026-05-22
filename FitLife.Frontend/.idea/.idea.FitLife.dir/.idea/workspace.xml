@@ -9,22 +9,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="89a88d04-207f-42cc-9451-69971c2d049a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Models/ClassMessage.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Models/DirectMessage.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Services/MessageService.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../MessageServiceAPI/Models/MessageDto.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Components/Shared/Inbox.razor" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Models/DTOs/DirectMessageDto.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Models/DTOs/MessageDto.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.FitLife.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FitLife.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Components/Pages/Employee/EmployeePersonalTraining.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Components/Pages/Employee/EmployeePersonalTraining.razor" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Components/Pages/Member/PersonalTraining.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Components/Pages/Member/PersonalTraining.razor" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Models/Message.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Message.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../MessageServiceAPI/ClassCancelledConsumer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../MessageServiceAPI/ClassCancelledConsumer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/MessageService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/MessageService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../MessageServiceAPI/Controllers/MessageController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../MessageServiceAPI/Controllers/MessageController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../MessageServiceAPI/Models/ClassCancelledMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../MessageServiceAPI/Models/ClassCancelledMessage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../MessageServiceAPI/Models/ClassMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../MessageServiceAPI/Models/ClassMessage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../MessageServiceAPI/Models/DirectMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../MessageServiceAPI/Models/DirectMessage.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MessageServiceAPI/Models/MessageDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../MessageServiceAPI/Models/DTOs/MessageDto.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../MessageServiceAPI/Services/Interfaces/IMessageService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../MessageServiceAPI/Services/Interfaces/IMessageService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../MessageServiceAPI/Services/MessageService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../MessageServiceAPI/Services/MessageService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UserService/.idea/.idea.UserServiceAPI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../UserService/.idea/.idea.UserServiceAPI/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +37,10 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Components/Shared/Inbox.razor" root0="FORCE_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Models/ClassMessage.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Models/DTOs/DirectMessageDto.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Models/DTOs/MessageDto.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Models/DirectMessage.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Services/MessageService.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -53,21 +53,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feature/FitLifeFrontendMessageService",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/FitLifeFrontendMessageService&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.FitLife.Frontend: http">
     <configuration name="FitLife.Frontend: http" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/FitLife.Frontend.csproj" />
@@ -111,6 +111,7 @@
       <updated>1779377166301</updated>
       <workItem from="1779377167382" duration="236000" />
       <workItem from="1779377410970" duration="1377000" />
+      <workItem from="1779451044978" duration="2208000" />
     </task>
     <task id="LOCAL-00001" summary="Tests, repos">
       <option name="closed" value="true" />

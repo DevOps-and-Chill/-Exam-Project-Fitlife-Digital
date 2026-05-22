@@ -5,7 +5,7 @@ public class Message
     public string SenderName { get; set; } = "";
     public string ReceiverName { get; set; } = "";
 
-    public string Topic { get; set; } = "";
+    public string Subject { get; set; } = "";
     public string Content { get; set; } = "";
 
     public DateTime SentDate { get; set; }

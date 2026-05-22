@@ -10,4 +10,6 @@ namespace MessageServiceAPI.Services.Interfaces;
         Task<List<MessageDto>> GetAllMessagesAsync(Guid receiverId);
         Task MarkAsReadAsync(Guid messageId);
         
+        Task DeleteMessageAsync(Guid messageId);
+        
     }
