@@ -22,21 +22,34 @@ namespace AuthServiceAPI.Controllers
             _credentialService = credentialService;
             _logger = logger;
 
-            //
             var hostName = System.Net.Dns.GetHostName();
             var ips = System.Net.Dns.GetHostAddresses(hostName);
             var ipaddr = ips.First().MapToIPv4().ToString();
-            _logger.LogInformation(1, $"AuthService responding from {ipaddr}");
+
+            _logger.LogInformation("AuthService responding from {IpAddress}", ipaddr);
         }
 
+        /// <summary>
+        /// Registers credentials for a new user.
+        /// </summary>
+        /// <param name="registerDTO">
+        /// Contains the information required to create credentials.
+        /// </param>
+        /// <returns>
+        /// Returns 200 (OK) when credentials are created successfully.
+        /// Returns 400 (BadRequest) if the registration request is invalid.
+        /// </returns>
         [HttpPost("RegisterCredentials")]
         public async Task<ActionResult> RegisterCredentials([FromBody] RegisterCredentialsRequestDTO registerDTO)
         {
-            _logger.LogInformation("Registrerer nye credentials for bruger");
+            _logger.LogInformation("Registering new credentials");
+
             try
             {
                 await _credentialService.CreateCredential(registerDTO);
-                _logger.LogInformation("Credentials oprettet succesfuldt");
+
+                _logger.LogInformation("Credentials created successfully");
+
                 return Ok(new
                 {
                     message = "Credential created successfully"
@@ -44,26 +57,41 @@ namespace AuthServiceAPI.Controllers
             }
             catch (ArgumentException ex)
             {
-                _logger.LogWarning("Ugyldig registreringsanmodning: {message}", ex.Message);
+                _logger.LogWarning("Invalid registration request: {Message}", ex.Message);
+
                 return BadRequest(ex.Message);
             }
         }
 
+        /// <summary>
+        /// Authenticates a user and returns an JWT.
+        /// </summary>
+        /// <param name="loginRequestDTO">
+        /// Contains the login credentials used for authentication.
+        /// </param>
+        /// <returns>
+        /// Returns 200 (OK) with a JWT token when authentication succeeds.
+        /// Returns 401 (Unauthorized) if the credentials are invalid.
+        /// Returns 400 (BadRequest) if the login request is invalid.
+        /// </returns>
         [HttpPost("Login")]
         public async Task<ActionResult> Login([FromBody] LoginRequestDTO loginRequestDTO)
         {
-            _logger.LogInformation("Login forsøg");
+            _logger.LogInformation("Login attempt");
+
             try
             {
                 string? token = await _credentialService.Login(loginRequestDTO);
 
                 if (string.IsNullOrEmpty(token))
                 {
-                    _logger.LogWarning("Login mislykkedes — ugyldige credentials");
+                    _logger.LogWarning("Login failed due to invalid credentials");
+
                     return Unauthorized();
                 }
 
-                _logger.LogInformation("Login succesfuldt");
+                _logger.LogInformation("Login completed successfully");
+
                 return Ok(new
                 {
                     token
@@ -71,30 +99,51 @@ namespace AuthServiceAPI.Controllers
             }
             catch (ArgumentException ex)
             {
-                _logger.LogWarning("Ugyldig login anmodning: {message}", ex.Message);
+                _logger.LogWarning("Invalid login request: {Message}", ex.Message);
+
                 return BadRequest(ex.Message);
             }
         }
 
+        /// <summary>
+        /// Deletes credentials for the specified user.
+        /// </summary>
+        /// <remarks>
+        /// Requires authorization.
+        /// Removes stored credentials associated with the provided user id.
+        /// </remarks>
+        /// <param name="userId">
+        /// The unique identifier of the user whose credentials should be deleted.
+        /// </param>
+        /// <returns>
+        /// Returns 200 (OK) when credentials are deleted successfully.
+        /// Returns 404 (NotFound) if no credentials exist for the specified user.
+        /// Returns 400 (BadRequest) if an unexpected error occurs.
+        /// </returns>
         [Authorize]
         [HttpDelete("DeleteCredentials")]
         public async Task<ActionResult> DeleteCredentials([FromBody] string userId)
         {
-            _logger.LogInformation("Sletter credentials for bruger: {userId}", userId);
+            _logger.LogInformation("Deleting credentials for user {UserId}", userId);
+
             try
             {
                 await _credentialService.RemoveCredentials(userId);
-                _logger.LogInformation("Credentials slettet for bruger: {userId}", userId);
+
+                _logger.LogInformation("Credentials deleted for user {UserId}", userId);
+
                 return Ok();
             }
             catch (KeyNotFoundException ex)
             {
-                _logger.LogWarning("Credentials ikke fundet for bruger: {userId}", userId);
+                _logger.LogWarning("Credentials not found for user {UserId}", userId);
+
                 return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Fejl ved sletning af credentials for bruger: {userId} - {message}", userId, ex.Message);
+                _logger.LogError("Failed to delete credentials for user {UserId}: {Message}", userId, ex.Message);
+
                 return BadRequest(ex.Message);
             }
         }
