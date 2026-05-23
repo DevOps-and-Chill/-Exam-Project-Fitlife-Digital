@@ -26,36 +26,64 @@ public class MessageService : IMessageService
         await _context.SaveChangesAsync();
     }
     
-    public async Task<List<object>> GetAllMessagesAsync(Guid receiverId)
+    public async Task<List<MessageDto>> GetAllMessagesAsync(Guid receiverId)
     {
         var directMessages = await _context.DirectMessages
             .Where(m => m.ReceiverId == receiverId)
+            .Select(m => new MessageDto
+            {
+                Id = m.Id,
+                SenderId = m.SenderId,
+                ReceiverId = m.ReceiverId,
+                Content = m.Content,
+                CreatedAt = m.CreatedAt,
+                Type = "direct"
+            })
             .ToListAsync();
 
         var classMessages = await _context.ClassMessages
             .Where(m => m.ReceiverId == receiverId)
+            .Select(m => new MessageDto
+            {
+                Id = m.Id,
+                SenderId = m.ClassId,
+                ReceiverId = m.ReceiverId,
+                Content = m.Content,
+                CreatedAt = m.CreatedAt,
+                Type = "class"
+            })
             .ToListAsync();
 
-        return directMessages.Cast<object>()
-            .Concat(classMessages.Cast<object>())
-            .OrderByDescending(m => m is DirectMessage dm ? dm.CreatedAt : ((ClassMessage)m).CreatedAt)
+        return directMessages
+            .Concat(classMessages)
+            .OrderByDescending(m => m.CreatedAt)
             .ToList();
     }
 
     public async Task MarkAsReadAsync(Guid messageId)
     {
-        var direct = await _context.DirectMessages.FindAsync(messageId);
-        if (direct is not null)
+        var directMessage = await _context.DirectMessages.FindAsync(messageId);
+        if (directMessage is not null)
         {
-            direct.IsRead = true;
+            directMessage.IsRead = true;
             await _context.SaveChangesAsync();
             return;
         }
 
-        var classMsg = await _context.ClassMessages.FindAsync(messageId);
-        if (classMsg is not null)
+        var classMessage = await _context.ClassMessages.FindAsync(messageId);
+        if (classMessage is not null)
         {
-            classMsg.IsRead = true;
+            classMessage.IsRead = true;
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public async Task DeleteMessageAsync(Guid messageId)
+    {
+        var  directMessage = await _context.DirectMessages.FindAsync(messageId);
+        if (directMessage is not null)
+        {
+            _context.DirectMessages.Remove(directMessage);
             await _context.SaveChangesAsync();
         }
     }
