@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-    builder.Services.AddHttpClient("UserService", client =>
+builder.Services.AddHttpClient("UserService", client =>
 {
     client.BaseAddress = new Uri(
         builder.Configuration["UserService:BaseUrl"]!);
@@ -34,6 +34,10 @@ builder.Services.AddHttpClient("AuthService", client =>
 builder.Services.AddHttpClient("MessageService", client =>
 {
     client.BaseAddress = new Uri("http://localhost:5001");
+builder.Services.AddHttpClient("ClassService",client =>
+{
+    client.BaseAddress =new Uri(
+        builder.Configuration["ClassService:BaseUrl"]!);
 });
 
 builder.Services.AddScoped<SessionService>();
