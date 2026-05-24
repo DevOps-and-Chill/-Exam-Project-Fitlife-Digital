@@ -34,6 +34,9 @@ builder.Services.AddHttpClient("AuthService", client =>
 builder.Services.AddHttpClient("MessageService", client =>
 {
     client.BaseAddress = new Uri("http://localhost:5001");
+    
+    });
+    
 builder.Services.AddHttpClient("ClassService",client =>
 {
     client.BaseAddress =new Uri(

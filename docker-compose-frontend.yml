@@ -1,12 +1,11 @@
 services:
 
-  FrontendService:
+  frontendservice:
 
     # Bygger Docker image ud fra mappen
     # hvor Dockerfile ligger
     build:
       context: ./FitLife.Frontend
-
 
     # Navnet containeren får i Docker
     container_name: frontend
