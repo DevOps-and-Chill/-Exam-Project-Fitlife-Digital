@@ -2,6 +2,7 @@ using MessageServiceAPI;
 using MessageServiceAPI.Data;
 using MessageServiceAPI.Services;
 using MessageServiceAPI.Services.Interfaces;
+using Azure.Identity;
 using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using NLog;
@@ -14,32 +15,44 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
+    //AO: Config for KeyVault
+    builder.Configuration.AddAzureKeyVault(
+        new Uri("https://fitlifedigitalkv.vault.azure.net/"),
+        new DefaultAzureCredential());
+
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
 
     builder.Services.AddControllers();
 
+    //AO: Config of Cosmos for EF
     builder.Services.AddDbContext<MessageDbContext>(options =>
     {
         options.UseCosmos(
             builder.Configuration["CosmosDb:AccountEndpoint"]!,
             builder.Configuration["CosmosDb:AccountKey"]!,
             builder.Configuration["CosmosDb:DatabaseName"]!,
-            cosmosOptions =>
-            {
-                cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+               //AO: Used during dev for CosmosDB Emulator 
+               //cosmosOptions =>
+               //{
+               //    cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
 
-                cosmosOptions.HttpClientFactory(() =>
-                {
-                    var handler = new HttpClientHandler();
+               //    cosmosOptions.HttpClientFactory(() =>
+               //    {
+               //        var handler = new HttpClientHandler();
 
-                    handler.ServerCertificateCustomValidationCallback =
-                        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+               //        handler.ServerCertificateCustomValidationCallback =
+               //            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
-                    return new HttpClient(handler);
-                });
-            });
+               //        return new HttpClient(handler);
+               //    });
+               //});
+               cosmosOptions =>
+               {
+                   cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+               });
     });
+
 
     builder.Services.AddScoped<IMessageService, MessageService>();
     builder.Services.AddHostedService<ClassCancelledConsumer>();
