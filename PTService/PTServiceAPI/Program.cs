@@ -1,4 +1,5 @@
 using Microsoft.Azure.Cosmos;
+using Azure.Identity;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
@@ -22,6 +23,12 @@ namespace PTServiceAPI
                 //JBS: Opsæt NLog og hent en logger instans til at logge opstart og fejl 
                 var builder = WebApplication.CreateBuilder(args);
 
+                //AO: Config for KeyVault
+                builder.Configuration.AddAzureKeyVault(
+                    new Uri("https://fitlifedigitalkv.vault.azure.net/"),
+                    new DefaultAzureCredential());
+
+
                 //JBS: Ryd eksisterende logging providers og så bruger vi NLog i stedet for.
                 builder.Logging.ClearProviders();
                 builder.Host.UseNLog();
@@ -32,28 +39,34 @@ namespace PTServiceAPI
                 builder.Services.AddOpenApi();
                 builder.Services.AddScoped<ISessionRepository, SessionRepositoryDB>();
 
-                //JBS: Tilføj cosmos via EF
+                //AO: Config of Cosmos for EF
                 builder.Services.AddDbContext<PTDbContext>(options =>
                 {
                     options.UseCosmos(
                         builder.Configuration["CosmosDb:AccountEndpoint"]!,
                         builder.Configuration["CosmosDb:AccountKey"]!,
                         builder.Configuration["CosmosDb:DatabaseName"]!,
-                        cosmosOptions =>
-                        {
-                            cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+                           //AO: Used during dev for CosmosDB Emulator 
+                           //cosmosOptions =>
+                           //{
+                           //    cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
 
-                            cosmosOptions.HttpClientFactory(() =>
-                            {
-                                var handler = new HttpClientHandler();
+                           //    cosmosOptions.HttpClientFactory(() =>
+                           //    {
+                           //        var handler = new HttpClientHandler();
 
-                                handler.ServerCertificateCustomValidationCallback =
-                                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                           //        handler.ServerCertificateCustomValidationCallback =
+                           //            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
-                                return new HttpClient(handler);
-                            });
-                        });
+                           //        return new HttpClient(handler);
+                           //    });
+                           //});
+                           cosmosOptions =>
+                           {
+                               cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+                           });
                 });
+
 
                 var app = builder.Build();
 
