@@ -77,6 +77,21 @@ $images = @(
         Name = "ptservice"
         Dockerfile = "PTService\PTServiceAPI\Dockerfile"
         Context = "PTService\PTServiceAPI"
+    },
+    @{
+        Name = "userservice"
+        Dockerfile = "UserService\UserService\Dockerfile"
+        Context = "UserService\UserService"
+    },
+    @{
+        Name = "rapportservice"
+        Dockerfile = "RapportService\RapportServiceAPI\Dockerfile"
+        Context = "RapportService\RapportServiceAPI"
+    },
+    @{
+        Name ="nginxgateway"
+        Dockerfile = "nginxForAzure\Dockerfile"
+        Context ="nginxForAzure"
     }
 )
 

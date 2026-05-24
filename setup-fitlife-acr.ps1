@@ -1,5 +1,6 @@
 param(
-    [string]$SubscriptionId = "69ec6f54-eaf4-4096-98b2-d63f140114c3", #Remove THIS!! should not be public and unique for each group member! 
+    
+    [string]$SubscriptionId = "", #Remove THIS!! should not be public and unique for each group member! 
     [string]$ResourceGroupName = "rg-fitlife-digital",
     [string]$Location = "westeurope",
 
