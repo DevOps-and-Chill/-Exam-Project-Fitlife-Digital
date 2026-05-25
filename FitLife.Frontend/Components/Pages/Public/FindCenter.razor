@@ -53,7 +53,7 @@
                                 </p>
 
                                 <p class="mb-3">
-                                    @center.City
+                                    @center.Address
                                 </p>
 
                                 <div class="d-grid gap-2">
@@ -89,7 +89,7 @@
 </div>
 
 @code {
-    private List<Center> Centers = new();
+    private List<ExerciseGym> Centers = new();
 
     private bool IsLoadingCenters = true;
     private string? ErrorMessage;
@@ -111,7 +111,7 @@
         }
     }
 
-    private void SelectCenter(Center center)
+    private void SelectCenter(Facility center)
     {
         Message = $"{center.Name} er valgt som dit center.";
     }

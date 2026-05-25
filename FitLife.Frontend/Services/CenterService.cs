@@ -17,15 +17,15 @@ public class CenterService
     // Henter alle centre fra FacilityService
     // Kalder endpoint:
     // GET /Facility/getall
-    public async Task<List<Center>> GetCentersAsync()
+    public async Task<List<ExerciseGym>> GetCentersAsync()
     {
         try
         {
             var centers =
-                await _httpClient.GetFromJsonAsync<List<Center>>(
-                    "Facility/getall");
+                await _httpClient.GetFromJsonAsync<List<ExerciseGym>>(
+                    "exercisegym/getall");
 
-            return centers ?? new List<Center>();
+            return centers ?? new List<ExerciseGym>();
         }
         catch (Exception ex)
         {

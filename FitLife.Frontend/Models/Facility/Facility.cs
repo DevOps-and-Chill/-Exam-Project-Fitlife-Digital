@@ -16,7 +16,6 @@ public abstract class Facility
 		}
 
 		public string Id { get; init; } = Guid.NewGuid().ToString();
-		public string PartitionKey { get; set; } = "Facilities";
 		public string Name { get; set; }
 		public string Address { get; set; }
 		public string Telephone { get; set; }
