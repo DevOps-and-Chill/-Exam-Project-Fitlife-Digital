@@ -3,12 +3,28 @@
   "WorkspaceRootPath": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7090BE10-C516-484A-7ED3-E391CC17EA8A}|AuthServiceAPI\\AuthServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\authservice\\authserviceapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{7090BE10-C516-484A-7ED3-E391CC17EA8A}|AuthServiceAPI\\AuthServiceAPI.csproj|solutionrelative:authserviceapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{7090BE10-C516-484A-7ED3-E391CC17EA8A}|AuthServiceAPI\\AuthServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\authservice\\authserviceapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7090BE10-C516-484A-7ED3-E391CC17EA8A}|AuthServiceAPI\\AuthServiceAPI.csproj|solutionrelative:authserviceapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66CC84D-ABDF-429D-A9B4-C039CDABA520}|AuthService_Tests\\AuthService_Tests.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\authservice\\authservice_tests\\integrationtests\\repositories\\crendentialrepository_inttest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66CC84D-ABDF-429D-A9B4-C039CDABA520}|AuthService_Tests\\AuthService_Tests.csproj|solutionrelative:authservice_tests\\integrationtests\\repositories\\crendentialrepository_inttest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66CC84D-ABDF-429D-A9B4-C039CDABA520}|AuthService_Tests\\AuthService_Tests.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\authservice\\authservice_tests\\unittests\\controller\\authcontroller_unittest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66CC84D-ABDF-429D-A9B4-C039CDABA520}|AuthService_Tests\\AuthService_Tests.csproj|solutionrelative:authservice_tests\\unittests\\controller\\authcontroller_unittest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66CC84D-ABDF-429D-A9B4-C039CDABA520}|AuthService_Tests\\AuthService_Tests.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\authservice\\authservice_tests\\unittests\\services\\credentialservice_unittest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66CC84D-ABDF-429D-A9B4-C039CDABA520}|AuthService_Tests\\AuthService_Tests.csproj|solutionrelative:authservice_tests\\unittests\\services\\credentialservice_unittest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A66CC84D-ABDF-429D-A9B4-C039CDABA520}|AuthService_Tests\\AuthService_Tests.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\authservice\\authservice_tests\\unittests\\services\\passwordservice_unittest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A66CC84D-ABDF-429D-A9B4-C039CDABA520}|AuthService_Tests\\AuthService_Tests.csproj|solutionrelative:authservice_tests\\unittests\\services\\passwordservice_unittest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7090BE10-C516-484A-7ED3-E391CC17EA8A}|AuthServiceAPI\\AuthServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\authservice\\authserviceapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{7090BE10-C516-484A-7ED3-E391CC17EA8A}|AuthServiceAPI\\AuthServiceAPI.csproj|solutionrelative:authserviceapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7090BE10-C516-484A-7ED3-E391CC17EA8A}|AuthServiceAPI\\AuthServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\authservice\\authserviceapi\\nlog.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
@@ -58,24 +74,63 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
+              "Title": "CrendentialRepository_IntTest.cs",
+              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthService_Tests\\IntegrationTests\\Repositories\\CrendentialRepository_IntTest.cs",
+              "RelativeDocumentMoniker": "AuthService_Tests\\IntegrationTests\\Repositories\\CrendentialRepository_IntTest.cs",
+              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthService_Tests\\IntegrationTests\\Repositories\\CrendentialRepository_IntTest.cs",
+              "RelativeToolTip": "AuthService_Tests\\IntegrationTests\\Repositories\\CrendentialRepository_IntTest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-23T13:29:44.37Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CredentialService_UnitTest.cs",
+              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthService_Tests\\UnitTests\\Services\\CredentialService_UnitTest.cs",
+              "RelativeDocumentMoniker": "AuthService_Tests\\UnitTests\\Services\\CredentialService_UnitTest.cs",
+              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthService_Tests\\UnitTests\\Services\\CredentialService_UnitTest.cs",
+              "RelativeToolTip": "AuthService_Tests\\UnitTests\\Services\\CredentialService_UnitTest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-23T13:23:31.169Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AuthController_UnitTest.cs",
+              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthService_Tests\\UnitTests\\Controller\\AuthController_UnitTest.cs",
+              "RelativeDocumentMoniker": "AuthService_Tests\\UnitTests\\Controller\\AuthController_UnitTest.cs",
+              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthService_Tests\\UnitTests\\Controller\\AuthController_UnitTest.cs",
+              "RelativeToolTip": "AuthService_Tests\\UnitTests\\Controller\\AuthController_UnitTest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAABCAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-23T13:14:51.319Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthServiceAPI\\appsettings.json",
               "RelativeDocumentMoniker": "AuthServiceAPI\\appsettings.json",
               "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthServiceAPI\\appsettings.json",
               "RelativeToolTip": "AuthServiceAPI\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAgAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2026-05-22T14:54:22.69Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 6,
               "Title": "NLog.config",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthServiceAPI\\NLog.config",
               "RelativeDocumentMoniker": "AuthServiceAPI\\NLog.config",
@@ -88,7 +143,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 8,
               "Title": "PasswordService.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthServiceAPI\\Services\\PasswordService.cs",
               "RelativeDocumentMoniker": "AuthServiceAPI\\Services\\PasswordService.cs",
@@ -101,7 +156,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 10,
               "Title": "CredentialRepositoryDB.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthServiceAPI\\Repositories\\CredentialRepositoryDB.cs",
               "RelativeDocumentMoniker": "AuthServiceAPI\\Repositories\\CredentialRepositoryDB.cs",
@@ -114,7 +169,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthServiceAPI\\Program.cs",
+              "RelativeDocumentMoniker": "AuthServiceAPI\\Program.cs",
+              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthServiceAPI\\Program.cs",
+              "RelativeToolTip": "AuthServiceAPI\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAF0AAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-19T15:28:13.235Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "PasswordService_UnitTest.cs",
+              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthService_Tests\\UnitTests\\Services\\PasswordService_UnitTest.cs",
+              "RelativeDocumentMoniker": "AuthService_Tests\\UnitTests\\Services\\PasswordService_UnitTest.cs",
+              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthService_Tests\\UnitTests\\Services\\PasswordService_UnitTest.cs",
+              "RelativeToolTip": "AuthService_Tests\\UnitTests\\Services\\PasswordService_UnitTest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-23T13:27:37.763Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
               "Title": "LoginRequestDTO.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthServiceAPI\\DTOs\\LoginRequestDTO.cs",
               "RelativeDocumentMoniker": "AuthServiceAPI\\DTOs\\LoginRequestDTO.cs",
@@ -127,7 +208,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 12,
               "Title": "RegisterCredentialsRequestDTO.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthServiceAPI\\DTOs\\RegisterCredentialsRequestDTO.cs",
               "RelativeDocumentMoniker": "AuthServiceAPI\\DTOs\\RegisterCredentialsRequestDTO.cs",
@@ -140,7 +221,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
               "Title": "JWTService.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthServiceAPI\\Services\\JWTService.cs",
               "RelativeDocumentMoniker": "AuthServiceAPI\\Services\\JWTService.cs",
@@ -153,7 +234,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 15,
               "Title": "ICredentialService.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthServiceAPI\\Services\\Interfaces\\ICredentialService.cs",
               "RelativeDocumentMoniker": "AuthServiceAPI\\Services\\Interfaces\\ICredentialService.cs",
@@ -166,20 +247,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthServiceAPI\\Program.cs",
-              "RelativeDocumentMoniker": "AuthServiceAPI\\Program.cs",
-              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthServiceAPI\\Program.cs",
-              "RelativeToolTip": "AuthServiceAPI\\Program.cs",
-              "ViewState": "AgIAACcAAAAAAAAAAAAxwCkAAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T15:28:13.235Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 7,
               "Title": "CredentialService.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthServiceAPI\\Services\\CredentialService.cs",
               "RelativeDocumentMoniker": "AuthServiceAPI\\Services\\CredentialService.cs",
@@ -192,7 +260,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 14,
               "Title": "IJWTService.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthServiceAPI\\Services\\Interfaces\\IJWTService.cs",
               "RelativeDocumentMoniker": "AuthServiceAPI\\Services\\Interfaces\\IJWTService.cs",
@@ -205,7 +273,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 11,
               "Title": "AuthController.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthServiceAPI\\Controllers\\AuthController.cs",
               "RelativeDocumentMoniker": "AuthServiceAPI\\Controllers\\AuthController.cs",
