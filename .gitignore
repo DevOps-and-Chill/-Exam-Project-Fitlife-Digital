@@ -79,3 +79,6 @@ nunit-*.xml
 /DigitalContentServiceAPI/DigitalContentService/.github
 /DigitalContentServiceAPI/DigitalContentService/.vs/DigitalContentService/DesignTimeBuild
 /UserService/packages/
+.idea/
+!.idea/codeStyles/
+!.idea/runConfigurations/
