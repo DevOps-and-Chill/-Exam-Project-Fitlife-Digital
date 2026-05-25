@@ -1,5 +1,6 @@
 using Azure.Identity;
 using DigitalContentServiceAPI.Data;
+using DigitalContentServiceAPI.Extensions;
 using DigitalContentServiceAPI.Repositories;
 using DigitalContentServiceAPI.Repositories.Interfaces;
 using Microsoft.Azure.Cosmos;
@@ -13,10 +14,10 @@ namespace DigitalContentServiceAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            //AO: Config for KeyVault
-            builder.Configuration.AddAzureKeyVault(
-                new Uri("https://fitlifedigitalkv.vault.azure.net/"),
-                new DefaultAzureCredential());
+            await builder.LoadVault();
+            //builder.Configuration.AddAzureKeyVault(
+            //        new Uri("https://fitlifedigitalkv.vault.azure.net/"),
+            //        new DefaultAzureCredential());
 
 
             // Add services to the container.
