@@ -4,6 +4,7 @@ namespace FitLife.Frontend.Services;
 
 public class CurrentUserService
 {
+    private readonly TokenService _tokenService;
     public string? Token { get; private set; }
 
     public Member? CurrentUser { get; private set; }
@@ -12,10 +13,10 @@ public class CurrentUserService
 
     public string RoleName => CurrentUser?.RoleName ?? "";
 
-    public void SetCurrentUser(string token, Member user)
+    public async Task SetCurrentUser()
     {
-        Token = token;
-        CurrentUser = user;
+        var userId = _tokenService.GetUserIdFromCachedToken()
+
     }
 
     public void Logout()
