@@ -40,9 +40,9 @@ services:
       - backend
 
 
-  rapportservice:
+  statisticservice:
     build:
-      context: ./RapportService/RapportServiceAPI
+      context: ./StatisticService/StatisticServiceAPI
     expose:
       - "8080"
     networks:
