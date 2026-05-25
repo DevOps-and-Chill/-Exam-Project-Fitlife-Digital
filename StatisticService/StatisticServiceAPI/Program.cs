@@ -3,11 +3,11 @@ using Azure.Identity;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
-using RapportServiceAPI.Data;
-using RapportServiceAPI.Repositories;
+using StatisticServiceAPI.Data;
+using StatisticServiceAPI.Repositories;
 using Scalar.AspNetCore;
 
-namespace RapportServiceAPI
+namespace StatisticServiceAPI
 {
     public class Program
     {
@@ -15,7 +15,7 @@ namespace RapportServiceAPI
         {
             var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
-            logger.Debug("RapportService starter op");
+            logger.Debug("StatisticService starter op");
 
             try
             {
@@ -34,10 +34,10 @@ namespace RapportServiceAPI
                 builder.Services.AddOpenApi();
 
                 // Skiftet fra in-memory til CosmosDB repository
-                builder.Services.AddScoped<IRapportRepository, StatistikRepositoryDB>();
+                builder.Services.AddScoped<IStatisticRepository, StatistikRepositoryDB>();
 
                 //AO: Config of Cosmos for EF
-                builder.Services.AddDbContext<RapportDbContext>(options =>
+                builder.Services.AddDbContext<StatisticDbContext>(options =>
                 {
                     options.UseCosmos(
                         builder.Configuration["CosmosDb:AccountEndpoint"]!,
@@ -70,7 +70,7 @@ namespace RapportServiceAPI
                 // Opret database og container i CosmosDB hvis de ikke findes
                 using (var scope = app.Services.CreateScope())
                 {
-                    var db = scope.ServiceProvider.GetRequiredService<RapportDbContext>();
+                    var db = scope.ServiceProvider.GetRequiredService<StatisticDbContext>();
                     await db.Database.EnsureCreatedAsync();
                 }
 
@@ -87,7 +87,7 @@ namespace RapportServiceAPI
             }
             catch (Exception ex)
             {
-                logger.Error(ex, "RapportService stoppede på grund af en fejl!");
+                logger.Error(ex, "StatisticService stoppede på grund af en fejl!");
                 throw;
             }
             finally
