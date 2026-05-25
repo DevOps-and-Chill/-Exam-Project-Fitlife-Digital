@@ -45,6 +45,7 @@ builder.Services.AddHttpClient("ClassService",client =>
     client.BaseAddress =new Uri(
         builder.Configuration["Gateway:BaseUrl"]! + "class/");
 });
+
 //AO: Not yet added to nginx.conf
 builder.Services.AddHttpClient("DigitalContentService", client =>
 {
@@ -53,6 +54,12 @@ builder.Services.AddHttpClient("DigitalContentService", client =>
 });
 
 builder.Services.AddMemoryCache();
+
+builder.Services.AddHttpClient("StatisticService", client =>
+{
+    client.BaseAddress = new Uri(
+        builder.Configuration["StatisticService:BaseUrl"]!);
+});
 
 builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<MemberService>();
@@ -64,6 +71,7 @@ builder.Services.AddScoped<RegistrationStateService>();
 builder.Services.AddScoped<PTService>();
 builder.Services.AddScoped<CurrentUserService>();
 builder.Services.AddScoped<MessageService>();
+builder.Services.AddScoped<StatisticService>();
 
 builder.Services.AddSingleton<TokenService>();
 

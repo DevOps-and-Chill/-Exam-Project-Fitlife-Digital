@@ -61,11 +61,9 @@ services:
       - backend
 
 
-
   statisticservice:
     build:
-      context: ./statisticservice/statisticServiceAPI
-
+      context: ./StatisticService/StatisticServiceAPI
     expose:
       - "8080"
 
