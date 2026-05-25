@@ -31,30 +31,30 @@ namespace FacilityServiceAPI
 			// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 			builder.Services.AddOpenApi();
 
-			builder.Services.AddTransient<IFacilityRepository, FacilityRepository>();
+			builder.Services.AddTransient<IFacilityRepository, FacilityRepositoryMoq>();
 
                 //Enables dependency injection of Factory pattern for DBContext. This way the application is more threadsafe, because each 
-                builder.Services.AddDbContextFactory<FacilityContext>(options =>
-                {
-                    options.UseCosmos(
-                        builder.Configuration["CosmosDb:AccountEndpoint"]!,
-                        builder.Configuration["CosmosDb:AccountKey"]!,
-                        builder.Configuration["CosmosDb:DatabaseName"]!,
-                        cosmosOptions =>
-                        {
-                            cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+                // builder.Services.AddDbContextFactory<FacilityContext>(options =>
+                // {
+                //     options.UseCosmos(
+                //         builder.Configuration["CosmosDb:AccountEndpoint"]!,
+                //         builder.Configuration["CosmosDb:AccountKey"]!,
+                //         builder.Configuration["CosmosDb:DatabaseName"]!,
+                //         cosmosOptions =>
+                //         {
+                //             cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
 
-                            cosmosOptions.HttpClientFactory(() =>
-                            {
-                                var handler = new HttpClientHandler();
+                //             cosmosOptions.HttpClientFactory(() =>
+                //             {
+                //                 var handler = new HttpClientHandler();
 
-                                handler.ServerCertificateCustomValidationCallback =
-                                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                //                 handler.ServerCertificateCustomValidationCallback =
+                //                     HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
-                                return new HttpClient(handler);
-                            });
-                        });
-                });
+                //                 return new HttpClient(handler);
+                //             });
+                //         });
+                // });
 
                 var app = builder.Build();
 
@@ -63,12 +63,12 @@ namespace FacilityServiceAPI
 			{
 				app.MapOpenApi();
 			}
-			using (var scope = app.Services.CreateScope())
-			{
-				var db = scope.ServiceProvider.GetRequiredService<FacilityContext>();
+			// using (var scope = app.Services.CreateScope())
+			// {
+			// 	var db = scope.ServiceProvider.GetRequiredService<FacilityContext>();
 
-				await db.Database.EnsureCreatedAsync();
-			}
+			// 	await db.Database.EnsureCreatedAsync();
+			// }
 
                 app.UseHttpsRedirection();
                 app.UseAuthorization();
