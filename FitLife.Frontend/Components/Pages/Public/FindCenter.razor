@@ -20,43 +20,60 @@
             </p>
         </div>
 
-        <div class="row g-4">
+        @if (IsLoadingCenters)
+        {
+            <p class="text-muted">Indlæser centre...</p>
+        }
+        else if (!string.IsNullOrWhiteSpace(ErrorMessage))
+        {
+            <div class="alert alert-warning">
+                @ErrorMessage
+            </div>
+        }
+        else if (!Centers.Any())
+        {
+            <p class="text-muted">Der er ingen centre at vise lige nu.</p>
+        }
+        else
+        {
+            <div class="row g-4">
 
-            @foreach (var center in Centers)
-            {
-                <div class="col-md-4">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-body p-4">
+                @foreach (var center in Centers)
+                {
+                    <div class="col-md-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body p-4">
 
-                            <h4 class="fw-bold">
-                                @center.Name
-                            </h4>
+                                <h4 class="fw-bold">
+                                    @center.Name
+                                </h4>
 
-                            <p class="text-muted mb-1">
-                                @center.Address
-                            </p>
+                                <p class="text-muted mb-1">
+                                    @center.Address
+                                </p>
 
-                            <p class="mb-3">
-                                @center.City
-                            </p>
+                                <p class="mb-3">
+                                    @center.City
+                                </p>
 
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-success"
-                                        @onclick="() => SelectCenter(center)">
-                                    Vælg center
-                                </button>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-success"
+                                            @onclick="() => SelectCenter(center)">
+                                        Vælg center
+                                    </button>
 
-                                <a href="/find-hold" class="btn btn-outline-secondary">
-                                    Se hold
-                                </a>
+                                    <a href="/find-hold" class="btn btn-outline-secondary">
+                                        Se hold
+                                    </a>
+                                </div>
+
                             </div>
-
                         </div>
                     </div>
-                </div>
-            }
+                }
 
-        </div>
+            </div>
+        }
 
         @if (!string.IsNullOrWhiteSpace(Message))
         {
@@ -73,6 +90,9 @@
 
 @code {
     private List<Center> Centers = new();
+
+    private bool IsLoadingCenters = true;
+    private string? ErrorMessage;
     private string Message = "";
 
     protected override async Task OnInitializedAsync()
@@ -81,9 +101,13 @@
         {
             Centers = await CenterService.GetCentersAsync();
         }
-        catch (Exception ex)
+        catch
         {
-            Message = $"Kunne ikke hente centre fra FacilityService. Fejl: {ex.Message}";
+            ErrorMessage = "Centre kunne ikke hentes lige nu.";
+        }
+        finally
+        {
+            IsLoadingCenters = false;
         }
     }
 

@@ -6,7 +6,7 @@ public class ClassMessage
     public string PartitionKey { get; set; } = "inbox";
     public Guid ReceiverId { get; set; }
     public Guid ClassId { get; set; }
-    public string Topic { get; set; } = "";
+    public string Subject { get; set; } = "";
     public string Content { get; set; } = "";
     public DateTime TimeStart { get; set; }
     public DateTime TimeEnd { get; set; }

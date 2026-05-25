@@ -25,13 +25,14 @@ namespace FacilityServiceAPI.Controllers
 		[HttpGet("getbyid")]
         public async Task<IActionResult> GetFacility([FromBody] string facilityId)
         {
-            _logger.LogDebug("Starting getfacilitybyid for facility" + facilityId);
+            _logger.LogDebug("Starting getfacilitybyid for facility {facilityId}", facilityId);
             try
             {
                 return Ok(await _facilityRepository.GetFacility(facilityId));
             }
             catch (Exception ex)
             {
+                _logger.LogError("Error in getfacilitybyid for {facilityId}: {message}", facilityId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -50,7 +51,7 @@ namespace FacilityServiceAPI.Controllers
             }
             catch (Exception ex)
             {
-
+                _logger.LogError("Error in getfacilities: {message}", ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -63,16 +64,17 @@ namespace FacilityServiceAPI.Controllers
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteFacility([FromBody] string facilityId)
         {
-            _logger.LogDebug("starting deletefacility for facility" + facilityId);
+            _logger.LogDebug("starting deletefacility for facility {facilityId}", facilityId);
 
             try
             {
                 await _facilityRepository.DeleteFacility(facilityId);
-
+                _logger.LogInformation("Facility {facilityId} deleted successfully", facilityId);
                 return Ok();
             }
             catch (Exception ex)
             {
+                _logger.LogError("Error deleting facility {facilityId}: {message}", facilityId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -80,13 +82,16 @@ namespace FacilityServiceAPI.Controllers
         [HttpGet("addtestdata")]
         public async Task<IActionResult> loadtestdata()
         {
+            _logger.LogDebug("Starting loadtestdata");
             try
             {
                 await _facilityRepository.AddTestData();
+                _logger.LogInformation("Test data loaded successfully");
                 return Ok();
             }
             catch (Exception ex)
             {
+                _logger.LogError("Error loading test data: {message}", ex.Message);
                 return BadRequest(ex.Message);
             }
         }

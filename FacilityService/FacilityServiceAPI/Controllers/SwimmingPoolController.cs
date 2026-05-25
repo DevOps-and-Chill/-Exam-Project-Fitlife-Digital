@@ -32,7 +32,7 @@ namespace FacilityServiceAPI.Controllers
 			}
 			catch (Exception ex)
 			{
-
+                _logger.LogError("Error in getswimmingpools: {message}", ex.Message);
 				return BadRequest(ex.Message);
 			}
 		}
@@ -45,15 +45,16 @@ namespace FacilityServiceAPI.Controllers
 		[HttpGet("getbyid")]
 		public async Task<IActionResult> GetSwimmingPool([FromBody] string swimmingPoolId)
 		{
-			_logger.LogDebug("Starting getswimmingpoolbyid for Swimming Pool" + swimmingPoolId);
+			_logger.LogDebug("Starting getswimmingpoolbyid for Swimming Pool {swimmingPoolId}", swimmingPoolId);
 			try
 			{
 				var result = await _swimmingPoolRepository.GetAllSwimmingPools();
 				return Ok(result.Single(sp => sp.Id == swimmingPoolId));
 			}
 			catch (Exception ex)
-			{
-				return BadRequest(ex.Message);
+            {
+				_logger.LogError("Error in getswimmingpoolbyid for {swimmingPoolId}: {message}", swimmingPoolId, ex.Message);
+                return BadRequest(ex.Message);
 			}
 		}
 
@@ -65,16 +66,17 @@ namespace FacilityServiceAPI.Controllers
         [HttpPost("insert")]
         public async Task<IActionResult> Insertswimmingpool([FromBody] SwimmingPool swimmingPool)
         {
-            _logger.LogDebug("Starting insertswimmingppol for swimmingpool" + swimmingPool.Name);
+            _logger.LogDebug("Starting insertswimmingppol for swimmingpool {name}", swimmingPool.Name);
 
             try
             {
                 await _swimmingPoolRepository.InsertSwimmingpool(swimmingPool);
-
+                _logger.LogInformation("SwimmingPool {name} inserted successfully", swimmingPool.Name);
                 return Ok();
             }
             catch (Exception ex)
             {
+                _logger.LogError("Error inserting swimmingpool {name}: {message}", swimmingPool.Name, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -87,16 +89,17 @@ namespace FacilityServiceAPI.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> Updateswimmingpool([FromBody] SwimmingPool swimmingPool)
         {
-            _logger.LogDebug("starting updateswimmingpool for facility" + swimmingPool.Id);
+            _logger.LogDebug("starting updateswimmingpool for swimmingpool {id}", swimmingPool.Id);
 
             try
             {
                 await _swimmingPoolRepository.UpdateSwimmingPool(swimmingPool);
-
+                _logger.LogInformation("SwimmingPool {id} updated successfully", swimmingPool.Id);
                 return Ok();
             }
             catch (Exception ex)
             {
+                _logger.LogError("Error updating swimmingpool {id}: {message}", swimmingPool.Id, ex.Message);
                 return BadRequest(ex.Message);
             }
         }

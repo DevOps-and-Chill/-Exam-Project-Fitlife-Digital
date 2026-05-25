@@ -21,20 +21,17 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Retrieves all members.
         /// </summary>
-        /// <returns>
-        /// Returns a list of all members.
-        /// </returns>
         [HttpGet("GetAllMembers")]
         public async Task<ActionResult> GetAllMembers()
         {
-            _logger.LogInformation("Henter alle medlemmer");
+            _logger.LogDebug("Fetching all members");
             try
             {
                 return Ok(await _memberRepository.GetAllMembers());
             }
             catch (Exception ex)
             {
-                _logger.LogError("Fejl ved hentning af alle medlemmer: {message}", ex.Message);
+                _logger.LogError("Error fetching all members: {message}", ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -42,23 +39,17 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Cancels the membership for a member.
         /// </summary>
-        /// <param name="userId">
-        /// The id of the member.
-        /// </param>
-        /// <returns>
-        /// Returns the updated member object with the membership set as inactive.
-        /// </returns>
         [HttpPut("CancelMembership/{userId}")]
         public async Task<ActionResult> CancelMembership(string userId)
         {
-            _logger.LogInformation("Annullerer medlemskab for bruger: {userId}", userId);
+            _logger.LogDebug("Cancelling membership for user: {userId}", userId);
             try
             {
                 return Ok(await _memberRepository.CancelMembershipForMember(userId));
             }
             catch (Exception ex)
             {
-                _logger.LogError("Fejl ved annullering af medlemskab for {userId}: {message}", userId, ex.Message);
+                _logger.LogError("Error cancelling membership for {userId}: {message}", userId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -66,25 +57,19 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Creates or updates a member.
         /// </summary>
-        /// <param name="member">
-        /// The member object to create or update.
-        /// </param>
-        /// <returns>
-        /// Returns the created or updated member object.
-        /// </returns>
         [HttpPost("UpsertMember")]
         public async Task<ActionResult> UpsertMember([FromBody] Member member)
         {
-            _logger.LogInformation("Opretter eller opdaterer medlem: {memberId}", member.Id);
+            _logger.LogDebug("Upserting member: {memberId}", member.Id);
             try
             {
                 Member updatedMember = await _memberRepository.UpsertMember(member);
-                _logger.LogInformation("Medlem oprettet/opdateret: {memberId}", member.Id);
+                _logger.LogInformation("Member upserted: {memberId}", member.Id);
                 return Ok(updatedMember);
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogWarning("Ugyldig operation ved upsert af medlem {memberId}: {message}", member.Id, ex.Message);
+                _logger.LogWarning("Invalid operation upserting member {memberId}: {message}", member.Id, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -92,23 +77,17 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Deletes a member.
         /// </summary>
-        /// <param name="userId">
-        /// The id of the member.
-        /// </param>
-        /// <returns>
-        /// Returns the deleted member object.
-        /// </returns>
         [HttpDelete("DeleteMember/{userId}")]
         public async Task<ActionResult> DeleteMember(string userId)
         {
-            _logger.LogInformation("Sletter medlem: {userId}", userId);
+            _logger.LogDebug("Deleting member: {userId}", userId);
             try
             {
                 return Ok(await _memberRepository.DeleteMember(userId));
             }
             catch (Exception ex)
             {
-                _logger.LogError("Fejl ved sletning af medlem {userId}: {message}", userId, ex.Message);
+                _logger.LogError("Error deleting member {userId}: {message}", userId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -116,23 +95,17 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Sets a member account as inactive.
         /// </summary>
-        /// <param name="userId">
-        /// The id of the member.
-        /// </param>
-        /// <returns>
-        /// Returns the updated member object with ActiveUser set to false.
-        /// </returns>
         [HttpPut("SetAccountAsInactive/{userId}")]
         public async Task<ActionResult> SetMemberAccountAsInactive(string userId)
         {
-            _logger.LogInformation("Sætter konto som inaktiv for bruger: {userId}", userId);
+            _logger.LogDebug("Setting account as inactive for user: {userId}", userId);
             try
             {
                 return Ok(await _memberRepository.SetAccountAsInactive(userId));
             }
             catch (Exception ex)
             {
-                _logger.LogError("Fejl ved deaktivering af konto for {userId}: {message}", userId, ex.Message);
+                _logger.LogError("Error deactivating account for {userId}: {message}", userId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -140,24 +113,17 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Retrieves a member by id.
         /// </summary>
-        /// <param name="userId">
-        /// The id of the member.
-        /// </param>
-        /// <returns>
-        /// Returns the member object if found.
-        /// Returns NotFound if no member exists with the provided id.
-        /// </returns>
         [HttpGet("GetMemberById/{userId}")]
         public async Task<ActionResult> GetMemberById(string userId)
         {
-            _logger.LogInformation("Henter medlem med id: {userId}", userId);
+            _logger.LogDebug("Fetching member with id: {userId}", userId);
             try
             {
                 Member? member = await _memberRepository.GetMemberById(userId);
 
                 if (member is null)
                 {
-                    _logger.LogWarning("Medlem med id {userId} blev ikke fundet", userId);
+                    _logger.LogWarning("Member with id {userId} was not found", userId);
                     return NotFound(
                         $"Member with id '{userId}' was not found");
                 }
@@ -166,7 +132,7 @@ namespace UserServiceAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Fejl ved hentning af medlem {userId}: {message}", userId, ex.Message);
+                _logger.LogError("Error fetching member {userId}: {message}", userId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -174,28 +140,21 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Retrieves all members affiliated with a specific gym.
         /// </summary>
-        /// <param name="affiliationId">
-        /// The affiliation id of the gym.
-        /// </param>
-        /// <returns>
-        /// Returns a list of members associated with the provided affiliation id.
-        /// </returns>
         [HttpGet("GetMemberByAffiliation/{affiliationId}")]
         public async Task<ActionResult> GetMemberByAffiliation(Guid affiliationId)
         {
-            _logger.LogInformation("Henter medlemmer for tilknytning: {affiliationId}", affiliationId);
+            _logger.LogDebug("Fetching members for affiliation: {affiliationId}", affiliationId);
             try
             {
                 var members = await _memberRepository.GetMembersByAffiliation(affiliationId);
+
                 return Ok(members);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Fejl ved hentning af medlemmer for tilknytning {affiliationId}: {message}", affiliationId, ex.Message);
+                _logger.LogError("Error fetching members for affiliation {affiliationId}: {message}", affiliationId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
-
-
     }
 }

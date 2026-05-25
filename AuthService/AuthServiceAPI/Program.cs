@@ -1,22 +1,29 @@
-using NLog;
-using NLog.Web;
 using AuthServiceAPI.Data;
 using AuthServiceAPI.Repositories;
 using AuthServiceAPI.Repositories.Interfaces;
 using AuthServiceAPI.Services;
 using AuthServiceAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NLog;
+using NLog.Web;
 using System.Text;
+using Azure.Identity;
 
 var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
-logger.Debug("AuthService starter op");
+logger.Debug("AuthService starting");
 
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+
+    //AO: Config for KeyVault
+    builder.Configuration.AddAzureKeyVault(
+        new Uri("https://fitlifedigitalkv.vault.azure.net/"),
+        new DefaultAzureCredential());
 
     // Ryd eksisterende logging providers og brug NLog i stedet
     builder.Logging.ClearProviders();
@@ -31,14 +38,34 @@ try
     builder.Services.AddScoped<ICredentialService, CredentialService>();
     builder.Services.AddScoped<IJWTService, JWTService>();
 
+    //AO: Config of Cosmos for EF
     builder.Services.AddDbContext<CredentialDbContext>(options =>
     {
         options.UseCosmos(
             builder.Configuration["CosmosDb:AccountEndpoint"]!,
             builder.Configuration["CosmosDb:AccountKey"]!,
-            builder.Configuration["CosmosDb:DatabaseName"]!
-        );
+            builder.Configuration["CosmosDb:DatabaseName"]!,
+               //AO: Used during dev for CosmosDB Emulator 
+               //cosmosOptions =>
+               //{
+               //    cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+
+               //    cosmosOptions.HttpClientFactory(() =>
+               //    {
+               //        var handler = new HttpClientHandler();
+
+               //        handler.ServerCertificateCustomValidationCallback =
+               //            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+
+               //        return new HttpClient(handler);
+               //    });
+               //});
+               cosmosOptions =>
+               {
+                   cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+               });
     });
+
 
     builder.Services
         //AO: Tells the app that we use JWT as authentication

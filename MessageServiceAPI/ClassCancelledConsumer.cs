@@ -66,8 +66,8 @@ public class ClassCancelledConsumer : BackgroundService
             {
                 ReceiverId = receiverId,
                 ClassId    = message.ClassId,
-                Topic      = "Klasse aflyst",
-                Content    = $"Din klasse '{message.Topic}' d. {message.TimeStart:dd/MM/yyyy} er aflyst.",
+                Subject      = "Klasse aflyst",
+                Content    = $"Din klasse '{message.Subject}' d. {message.TimeStart:dd/MM/yyyy} er aflyst.",
                 TimeStart  = message.TimeStart,
                 TimeEnd    = message.TimeEnd
             };
