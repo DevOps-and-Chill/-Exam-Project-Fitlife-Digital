@@ -22,6 +22,14 @@ public class MessageController : ControllerBase
     [HttpPost("send")]
     public async Task<IActionResult> SendMessage(MessageDto dto)
     {
+        
+        var message = new DirectMessage
+        {
+            SenderId = dto.SenderId,
+            ReceiverId = dto.ReceiverId,
+            Content = dto.Content,
+            Subject = dto.Subject
+        };
         _logger.LogDebug("Sending message from {senderId} to {receiverId}", message.SenderId, message.ReceiverId);
         try
         {
