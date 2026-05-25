@@ -22,13 +22,23 @@ namespace AuthServiceAPI.Controllers
             _credentialService = credentialService;
             _logger = logger;
 
-            //
             var hostName = System.Net.Dns.GetHostName();
             var ips = System.Net.Dns.GetHostAddresses(hostName);
             var ipaddr = ips.First().MapToIPv4().ToString();
-            _logger.LogInformation(1, $"AuthService responding from {ipaddr}");
+
+            _logger.LogInformation("AuthService responding from {IpAddress}", ipaddr);
         }
 
+        /// <summary>
+        /// Registers credentials for a new user.
+        /// </summary>
+        /// <param name="registerDTO">
+        /// Contains the information required to create credentials.
+        /// </param>
+        /// <returns>
+        /// Returns 200 (OK) when credentials are created successfully.
+        /// Returns 400 (BadRequest) if the registration request is invalid.
+        /// </returns>
         [HttpPost("RegisterCredentials")]
         public async Task<ActionResult> RegisterCredentials([FromBody] RegisterCredentialsRequestDTO registerDTO)
         {
@@ -49,6 +59,17 @@ namespace AuthServiceAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Authenticates a user and returns an JWT.
+        /// </summary>
+        /// <param name="loginRequestDTO">
+        /// Contains the login credentials used for authentication.
+        /// </param>
+        /// <returns>
+        /// Returns 200 (OK) with a JWT token when authentication succeeds.
+        /// Returns 401 (Unauthorized) if the credentials are invalid.
+        /// Returns 400 (BadRequest) if the login request is invalid.
+        /// </returns>
         [HttpPost("Login")]
         public async Task<ActionResult> Login([FromBody] LoginRequestDTO loginRequestDTO)
         {
@@ -76,6 +97,21 @@ namespace AuthServiceAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes credentials for the specified user.
+        /// </summary>
+        /// <remarks>
+        /// Requires authorization.
+        /// Removes stored credentials associated with the provided user id.
+        /// </remarks>
+        /// <param name="userId">
+        /// The unique identifier of the user whose credentials should be deleted.
+        /// </param>
+        /// <returns>
+        /// Returns 200 (OK) when credentials are deleted successfully.
+        /// Returns 404 (NotFound) if no credentials exist for the specified user.
+        /// Returns 400 (BadRequest) if an unexpected error occurs.
+        /// </returns>
         [Authorize]
         [HttpDelete("DeleteCredentials")]
         public async Task<ActionResult> DeleteCredentials([FromBody] string userId)

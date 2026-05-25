@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MessageServiceAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("message")]
 [ApiController]
 public class MessageController : ControllerBase
 {
@@ -16,10 +16,11 @@ public class MessageController : ControllerBase
         _messageService = messageService;
         _logger = logger;
     }
+    
     // POST
     
-    [HttpPost("send-message")]
-    public async Task<IActionResult> SendMessage([FromBody] DirectMessage message)
+    [HttpPost("send")]
+    public async Task<IActionResult> SendMessage(MessageDto dto)
     {
         _logger.LogDebug("Sending message from {senderId} to {receiverId}", message.SenderId, message.ReceiverId);
         try
@@ -37,7 +38,7 @@ public class MessageController : ControllerBase
     
     // GET
 
-    [HttpGet("{receiverId}/get-all-messages")]
+    [HttpGet("get-all/{receiverId}")]
     public async Task<IActionResult> GetAllMessages(Guid receiverId)
     { 
         _logger.LogDebug("Fetching all messages for receiver {receiverId}", receiverId);
@@ -55,7 +56,7 @@ public class MessageController : ControllerBase
     
     // PUT
 
-    [HttpPut("{messageId}/mark-as-read")]
+    [HttpPut("mark-as-read/{messageId}")]
     public async Task<IActionResult> MarkAsRead(Guid messageId)
     {
         _logger.LogDebug("Marking message {messageId} as read", messageId);
@@ -73,4 +74,12 @@ public class MessageController : ControllerBase
     }
     
     // DELETE
+    
+    [HttpDelete("delete/{messageId}")]
+    public async Task<IActionResult> DeleteMessage(Guid messageId)
+    {
+        await  _messageService.DeleteMessageAsync(messageId);
+        return Ok("Marked as read");
+    }
+
 }

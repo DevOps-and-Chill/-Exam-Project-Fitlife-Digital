@@ -19,11 +19,12 @@ namespace UserServiceAPI.Controllers
             _userRepository = userRepository;
             _logger = logger;
 
-            // Logger hvilken server og IP der svarer
+            // Log which server and IP is responding
             var hostName = System.Net.Dns.GetHostName();
             var ips = System.Net.Dns.GetHostAddresses(hostName);
             var ipaddr = ips.First().MapToIPv4().ToString();
-            _logger.LogInformation(1, $"UserService responding from {ipaddr}");
+
+            _logger.LogInformation("UserService responding from {IpAddress}", ipaddr);
         }
 
         /// <summary>
@@ -95,10 +96,8 @@ namespace UserServiceAPI.Controllers
                     _logger.LogWarning("No user found with email: {email}", email);
                     return NotFound();
                 }
-                else
-                {
-                    return Ok(userId);
-                }
+
+                return Ok(userId);
             }
             catch (Exception ex)
             {

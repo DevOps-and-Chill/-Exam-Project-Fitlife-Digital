@@ -18,6 +18,7 @@ namespace UserServiceAPI.Controllers
             _employeeRepository = employeeRepository;
             _logger = logger;
         }
+
         /// <summary>
         /// Retrieves all employees.
         /// </summary>
@@ -39,14 +40,10 @@ namespace UserServiceAPI.Controllers
                 return BadRequest(ex);
             }
         }
+
         /// <summary>
         /// End an employee's employment by user identifier.
         /// </summary>
-        /// <remarks>Exposed as an HTTP PUT endpoint at 'EndEmploymentForEmployee/{userId}'. The operation
-        /// is performed asynchronously via the employee repository.</remarks>
-        /// <param name="userId">The identifier of the employee whose employment is to be ended.</param>
-        /// <returns>An ActionResult containing the repository result; returns 200 OK with the result on success or 400 Bad
-        /// Request with the exception on failure.</returns>
         [HttpPut("EndEmploymentForEmployee/{userId}")]
         public async Task<ActionResult> EndEmployment(string userId)
         {
@@ -61,12 +58,10 @@ namespace UserServiceAPI.Controllers
                 return BadRequest(ex);
             }
         }
+
         /// <summary>
         /// Sets the specified employee as a manager.
         /// </summary>
-        /// <param name="userId">The identifier of the employee to promote to manager.</param>
-        /// <returns>An ActionResult containing the repository result on success (HTTP 200) or a BadRequest with the exception on
-        /// failure.</returns>
         [HttpPut("SetEmployeeAsManager/{userId}")]
         public async Task<ActionResult> SetEmployeeAsManager(string userId)
         {
@@ -81,14 +76,10 @@ namespace UserServiceAPI.Controllers
                 return BadRequest(ex);
             }
         }
+
         /// <summary>
         /// Upserts the specified employee and returns the created or updated employee.
         /// </summary>
-        /// <remarks>Performs the operation asynchronously via the employee repository.
-        /// InvalidOperationException is translated to a 400 BadRequest containing the exception message.</remarks>
-        /// <param name="employee">Employee to create or update; an existing employee is updated when an identifier is present.</param>
-        /// <returns>An ActionResult containing the upserted Employee (200 OK) on success, or a 400 BadRequest with an error
-        /// message if the operation is invalid.</returns>
         [HttpPost("UpsertEmployee")]
         public async Task<ActionResult> UpsertEmployee([FromBody] Employee employee)
         {
@@ -109,18 +100,23 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Deletes the employee identified by the provided userId.
         /// </summary>
-        /// <remarks>Invoked via HTTP DELETE at DeleteEmployee/{userId}. Executes
-        /// asynchronously.</remarks>
-        /// <param name="userId">The unique identifier of the employee to delete.</param>
-        /// <returns>An ActionResult containing the deletion result: 200 (OK) with the deletion result on success, or 400
-        /// (BadRequest) with an error message on failure.</returns>
         [HttpDelete("DeleteEmployee/{userId}")]
         public async Task<ActionResult> DeleteEmployee(string userId)
         {
             _logger.LogDebug("Deleting employee: {userId}", userId);
             try
             {
-                return Ok(await _employeeRepository.DeleteEmployee(userId));
+                Employee? deletedEmployee = await _employeeRepository.DeleteEmployee(userId);
+
+                if (deletedEmployee == null)
+                {
+                    _logger.LogWarning("Employee with id {UserId} was not found", userId);
+                    return NotFound("Employee not found");
+                }
+
+                _logger.LogInformation("Employee {UserId} deleted successfully", userId);
+
+                return Ok(deletedEmployee);
             }
             catch (Exception ex)
             {
@@ -129,9 +125,9 @@ namespace UserServiceAPI.Controllers
             }
         }
 
-        /// <summary> Sets an employee account as inactive.</summary>
-        /// <param name="userId">The id of the employee account. </param>
-        /// <returns> Returns the updated employee object with ActiveUser set to false. </returns>
+        /// <summary>
+        /// Sets an employee account as inactive.
+        /// </summary>
         [HttpPut("SetAccountAsInactive/{userId}")]
         public async Task<ActionResult> SetEmployeeAccountAsInactive(string userId)
         {
@@ -150,13 +146,6 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Retrieves an employee by id.
         /// </summary>
-        /// <param name="userId">
-        /// The id of the employee.
-        /// </param>
-        /// <returns>
-        /// Returns the employee object if found.
-        /// Returns NotFound if no employee exists with the provided id.
-        /// </returns>
         [HttpGet("GetEmployeeById/{userId}")]
         public async Task<ActionResult> GetEmployeeById(string userId)
         {
@@ -184,12 +173,6 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Retrieves all employees affiliated with a specific gym.
         /// </summary>
-        /// <param name="affiliationId">
-        /// The affiliation id of the gym.
-        /// </param>
-        /// <returns>
-        /// Returns a list of employees associated with the provided affiliation id.
-        /// </returns>
         [HttpGet("GetEmployeeByAffiliation/{affiliationId}")]
         public async Task<ActionResult> GetEmployeeByAffiliation(Guid affiliationId)
         {
@@ -205,6 +188,5 @@ namespace UserServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
     }
 }

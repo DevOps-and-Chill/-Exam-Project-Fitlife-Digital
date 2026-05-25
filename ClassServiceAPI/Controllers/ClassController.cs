@@ -1,5 +1,4 @@
-﻿using ClassServiceAPI.Messaging;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ClassServiceAPI.Models;
 using ClassServiceAPI.Repositories.Interfaces;
 
@@ -29,7 +28,6 @@ public class ClassController : ControllerBase
             var created = await _repo.CreateClassAsync(classModel);
             _logger.LogInformation("Class created: {className}", classModel.Title);
             return Ok(created);
-            return CreatedAtAction(nameof(GetClassByIdAsync), new { id = created.Id }, created);
         }
         catch (Exception ex)
         {
@@ -193,7 +191,9 @@ public class ClassController : ControllerBase
         _logger.LogDebug("Cancelling class with id: {id}", id);
         try
         {
-            return Ok(await _repo.CancelClassByIdAsync(id));
+            var cancelled = await _repo.CancelClassByIdAsync(id);
+            _logger.LogInformation("Klasse {id} aflyst", id);
+            return Ok(cancelled);
         }
         catch (InvalidOperationException ex)
         {
@@ -202,13 +202,17 @@ public class ClassController : ControllerBase
         }
     }
 
+    // DELETE
+
     [HttpDelete("{classId}/members/{memberId}")]
     public async Task<IActionResult> UnRegisterMemberFromClassAsync(Guid classId, Guid memberId)
     {
         _logger.LogDebug("Unregistering member {memberId} from class {classId}", memberId, classId);
         try
         {
-            return Ok(await _repo.UnRegisterMemberFromClassAsync(classId, memberId));
+            var updated = await _repo.UnRegisterMemberFromClassAsync(classId, memberId);
+            _logger.LogInformation("Medlem {memberId} afmeldt klasse {classId}", memberId, classId);
+            return Ok(updated);
         }
         catch (InvalidOperationException ex)
         {
@@ -223,7 +227,9 @@ public class ClassController : ControllerBase
         _logger.LogDebug("Unregistering member {memberId} from waiting list for class {classId}", memberId, classId);
         try
         {
-            return Ok(await _repo.UnRegisterMemberFromWaitingListAsync(classId, memberId));
+            var updated = await _repo.UnRegisterMemberFromWaitingListAsync(classId, memberId);
+            _logger.LogInformation("Medlem {memberId} afmeldt venteliste for klasse {classId}", memberId, classId);
+            return Ok(updated);
         }
         catch (InvalidOperationException ex)
         {
@@ -232,15 +238,15 @@ public class ClassController : ControllerBase
         }
     }
 
-    // DELETE
-
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteClassByIdAsync(Guid id)
     {
         _logger.LogDebug("Deleting class with id: {id}", id);
         try
         {
-            return Ok(await _repo.DeleteClassByIdAsync(id));
+            var deleted = await _repo.DeleteClassByIdAsync(id);
+            _logger.LogInformation("Class {id} deleted", id);
+            return Ok(deleted);
         }
         catch (InvalidOperationException ex)
         {

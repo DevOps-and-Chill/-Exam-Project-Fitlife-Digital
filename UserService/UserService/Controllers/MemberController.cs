@@ -21,9 +21,6 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Retrieves all members.
         /// </summary>
-        /// <returns>
-        /// Returns a list of all members.
-        /// </returns>
         [HttpGet("GetAllMembers")]
         public async Task<ActionResult> GetAllMembers()
         {
@@ -42,12 +39,6 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Cancels the membership for a member.
         /// </summary>
-        /// <param name="userId">
-        /// The id of the member.
-        /// </param>
-        /// <returns>
-        /// Returns the updated member object with the membership set as inactive.
-        /// </returns>
         [HttpPut("CancelMembership/{userId}")]
         public async Task<ActionResult> CancelMembership(string userId)
         {
@@ -66,12 +57,6 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Creates or updates a member.
         /// </summary>
-        /// <param name="member">
-        /// The member object to create or update.
-        /// </param>
-        /// <returns>
-        /// Returns the created or updated member object.
-        /// </returns>
         [HttpPost("UpsertMember")]
         public async Task<ActionResult> UpsertMember([FromBody] Member member)
         {
@@ -92,12 +77,6 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Deletes a member.
         /// </summary>
-        /// <param name="userId">
-        /// The id of the member.
-        /// </param>
-        /// <returns>
-        /// Returns the deleted member object.
-        /// </returns>
         [HttpDelete("DeleteMember/{userId}")]
         public async Task<ActionResult> DeleteMember(string userId)
         {
@@ -116,12 +95,6 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Sets a member account as inactive.
         /// </summary>
-        /// <param name="userId">
-        /// The id of the member.
-        /// </param>
-        /// <returns>
-        /// Returns the updated member object with ActiveUser set to false.
-        /// </returns>
         [HttpPut("SetAccountAsInactive/{userId}")]
         public async Task<ActionResult> SetMemberAccountAsInactive(string userId)
         {
@@ -140,13 +113,6 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Retrieves a member by id.
         /// </summary>
-        /// <param name="userId">
-        /// The id of the member.
-        /// </param>
-        /// <returns>
-        /// Returns the member object if found.
-        /// Returns NotFound if no member exists with the provided id.
-        /// </returns>
         [HttpGet("GetMemberById/{userId}")]
         public async Task<ActionResult> GetMemberById(string userId)
         {
@@ -174,12 +140,6 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Retrieves all members affiliated with a specific gym.
         /// </summary>
-        /// <param name="affiliationId">
-        /// The affiliation id of the gym.
-        /// </param>
-        /// <returns>
-        /// Returns a list of members associated with the provided affiliation id.
-        /// </returns>
         [HttpGet("GetMemberByAffiliation/{affiliationId}")]
         public async Task<ActionResult> GetMemberByAffiliation(Guid affiliationId)
         {
@@ -187,6 +147,7 @@ namespace UserServiceAPI.Controllers
             try
             {
                 var members = await _memberRepository.GetMembersByAffiliation(affiliationId);
+
                 return Ok(members);
             }
             catch (Exception ex)
@@ -195,7 +156,5 @@ namespace UserServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
     }
 }

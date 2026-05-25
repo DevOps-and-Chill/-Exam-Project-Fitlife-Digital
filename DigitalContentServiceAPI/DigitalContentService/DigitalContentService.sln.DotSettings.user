@@ -1,0 +1,8 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=426ba6ec_002D539d_002D4093_002Db20f_002Ded3e5f671fc9/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="TestInsertWorkoutProgramSuccess" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;MSTest::BADA5CFB-61BC-438B-BEAF-C1D69193231F::net9.0::DigitalContentServiceTest.DigitalContentServiceTest.TestInsertWorkoutProgramSuccess&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;MSTest::BADA5CFB-61BC-438B-BEAF-C1D69193231F::net9.0::DigitalContentServiceTest.DigitalContentServiceTest.TestInsertWorkoutVideoSuccess&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;MSTest::BADA5CFB-61BC-438B-BEAF-C1D69193231F::net9.0::DigitalContentServiceTest.DigitalContentServiceTest.TestGetWorkoutProgramSuccess&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
