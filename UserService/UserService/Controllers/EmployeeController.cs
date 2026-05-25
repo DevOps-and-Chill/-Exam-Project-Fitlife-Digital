@@ -18,6 +18,7 @@ namespace UserServiceAPI.Controllers
             _employeeRepository = employeeRepository;
             _logger = logger;
         }
+
         /// <summary>
         /// Retrieves all employees.
         /// </summary>
@@ -28,80 +29,80 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetAllEmployees")]
         public async Task<ActionResult> GetAllEmployees()
         {
-            _logger.LogInformation("Henter alle medarbejdere");
+            _logger.LogInformation("Retrieving all employees");
+
             try
             {
                 return Ok(await _employeeRepository.GetAllEmployees());
             }
             catch (Exception ex)
             {
-                _logger.LogError("Fejl ved hentning af alle medarbejdere: {message}", ex.Message);
+                _logger.LogError("Failed to retrieve all employees: {Message}", ex.Message);
                 return BadRequest(ex);
             }
         }
+
         /// <summary>
         /// End an employee's employment by user identifier.
         /// </summary>
-        /// <remarks>Exposed as an HTTP PUT endpoint at 'EndEmploymentForEmployee/{userId}'. The operation
-        /// is performed asynchronously via the employee repository.</remarks>
-        /// <param name="userId">The identifier of the employee whose employment is to be ended.</param>
-        /// <returns>An ActionResult containing the repository result; returns 200 OK with the result on success or 400 Bad
-        /// Request with the exception on failure.</returns>
         [HttpPut("EndEmploymentForEmployee/{userId}")]
         public async Task<ActionResult> EndEmployment(string userId)
         {
-            _logger.LogInformation("Afslutter ansættelse for medarbejder: {userId}", userId);
+            _logger.LogInformation("Ending employment for employee {UserId}", userId);
+
             try
             {
                 return Ok(await _employeeRepository.EndEmploymentForEmployee(userId));
             }
             catch (Exception ex)
             {
-                _logger.LogError("Fejl ved afslutning af ansættelse for {userId}: {message}", userId, ex.Message);
+                _logger.LogError("Failed to end employment for employee {UserId}: {Message}", userId, ex.Message);
                 return BadRequest(ex);
             }
         }
+
         /// <summary>
         /// Sets the specified employee as a manager.
         /// </summary>
-        /// <param name="userId">The identifier of the employee to promote to manager.</param>
-        /// <returns>An ActionResult containing the repository result on success (HTTP 200) or a BadRequest with the exception on
-        /// failure.</returns>
         [HttpPut("SetEmployeeAsManager/{userId}")]
         public async Task<ActionResult> SetEmployeeAsManager(string userId)
         {
-            _logger.LogInformation("Sætter medarbejder {userId} som manager", userId);
+            _logger.LogInformation("Setting employee {UserId} as manager", userId);
+
             try
             {
                 return Ok(await _employeeRepository.SetEmployeeAsManager(userId));
             }
             catch (Exception ex)
             {
-                _logger.LogError("Fejl ved promovering af medarbejder {userId}: {message}", userId, ex.Message);
+                _logger.LogError("Failed to set employee {UserId} as manager: {Message}", userId, ex.Message);
                 return BadRequest(ex);
             }
         }
+
         /// <summary>
         /// Upserts the specified employee and returns the created or updated employee.
         /// </summary>
-        /// <remarks>Performs the operation asynchronously via the employee repository.
-        /// InvalidOperationException is translated to a 400 BadRequest containing the exception message.</remarks>
-        /// <param name="employee">Employee to create or update; an existing employee is updated when an identifier is present.</param>
-        /// <returns>An ActionResult containing the upserted Employee (200 OK) on success, or a 400 BadRequest with an error
-        /// message if the operation is invalid.</returns>
         [HttpPost("UpsertEmployee")]
         public async Task<ActionResult> UpsertEmployee([FromBody] Employee employee)
         {
-            _logger.LogInformation("Opretter eller opdaterer medarbejder: {employeeId}", employee);
+            _logger.LogInformation("Creating or updating employee {EmployeeId}", employee.Id);
+
             try
             {
                 Employee updatedEmployee = await _employeeRepository.UpsertEmployee(employee);
-                _logger.LogInformation("Medarbejder oprettet/opdateret: {employeeId}", employee.Id);
+
+                _logger.LogInformation("Successfully created or updated employee {EmployeeId}", employee.Id);
+
                 return Ok(updatedEmployee);
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogWarning("Ugyldig operation ved upsert af medarbejder {employeeId}: {message}", employee.Id, ex.Message);
+                _logger.LogWarning(
+                    "Invalid operation while creating or updating employee {EmployeeId}: {Message}",
+                    employee.Id,
+                    ex.Message);
+
                 return BadRequest(ex.Message);
             }
         }
@@ -109,40 +110,48 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Deletes the employee identified by the provided userId.
         /// </summary>
-        /// <remarks>Invoked via HTTP DELETE at DeleteEmployee/{userId}. Executes
-        /// asynchronously.</remarks>
-        /// <param name="userId">The unique identifier of the employee to delete.</param>
-        /// <returns>An ActionResult containing the deletion result: 200 (OK) with the deletion result on success, or 400
-        /// (BadRequest) with an error message on failure.</returns>
         [HttpDelete("DeleteEmployee/{userId}")]
         public async Task<ActionResult> DeleteEmployee(string userId)
         {
-            _logger.LogInformation("Sletter medarbejder: {userId}", userId);
+            _logger.LogInformation("Deleting employee {UserId}", userId);
+
             try
             {
-                return Ok(await _employeeRepository.DeleteEmployee(userId));
+                Employee? deletedEmployee = await _employeeRepository.DeleteEmployee(userId);
+
+                if (deletedEmployee == null)
+                {
+                    _logger.LogWarning("Employee with id {UserId} was not found", userId);
+                    return NotFound("Employee not found");
+                }
+
+                _logger.LogInformation("Employee {UserId} deleted successfully", userId);
+
+                return Ok(deletedEmployee);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Fejl ved sletning af medarbejder {userId}: {message}", userId, ex.Message);
-                return BadRequest(ex.Message);
+                _logger.LogError(ex, "Failed to delete employee {UserId}", userId);
+
+                return StatusCode(500, "An unexpected error occurred");
             }
         }
 
-        /// <summary> Sets an employee account as inactive.</summary>
-        /// <param name="userId">The id of the employee account. </param>
-        /// <returns> Returns the updated employee object with ActiveUser set to false. </returns>
+        /// <summary>
+        /// Sets an employee account as inactive.
+        /// </summary>
         [HttpPut("SetAccountAsInactive/{userId}")]
         public async Task<ActionResult> SetEmployeeAccountAsInactive(string userId)
         {
-            _logger.LogInformation("Sætter medarbejderkonto som inaktiv: {userId}", userId);
+            _logger.LogInformation("Setting employee account as inactive for user {UserId}", userId);
+
             try
             {
                 return Ok(await _employeeRepository.SetAccountAsInactive(userId));
             }
             catch (Exception ex)
             {
-                _logger.LogError("Fejl ved deaktivering af medarbejderkonto {userId}: {message}", userId, ex.Message);
+                _logger.LogError("Failed to deactivate account for user {UserId}: {Message}", userId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -150,33 +159,26 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Retrieves an employee by id.
         /// </summary>
-        /// <param name="userId">
-        /// The id of the employee.
-        /// </param>
-        /// <returns>
-        /// Returns the employee object if found.
-        /// Returns NotFound if no employee exists with the provided id.
-        /// </returns>
         [HttpGet("GetEmployeeById/{userId}")]
         public async Task<ActionResult> GetEmployeeById(string userId)
         {
-            _logger.LogInformation("Henter medarbejder med id: {userId}", userId);
+            _logger.LogInformation("Retrieving employee with id {UserId}", userId);
+
             try
             {
                 Employee? employee = await _employeeRepository.GetEmployeeById(userId);
 
                 if (employee is null)
                 {
-                    _logger.LogWarning("Medarbejder med id {userId} blev ikke fundet", userId);
-                    return NotFound(
-                        $"Employee with id '{userId}' was not found");
+                    _logger.LogWarning("Employee with id {UserId} was not found", userId);
+                    return NotFound($"Employee with ID '{userId}' was not found");
                 }
 
                 return Ok(employee);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Fejl ved hentning af medarbejder {userId}: {message}", userId, ex.Message);
+                _logger.LogError("Failed to retrieve employee {UserId}: {Message}", userId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -184,16 +186,11 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Retrieves all employees affiliated with a specific gym.
         /// </summary>
-        /// <param name="affiliationId">
-        /// The affiliation id of the gym.
-        /// </param>
-        /// <returns>
-        /// Returns a list of employees associated with the provided affiliation id.
-        /// </returns>
         [HttpGet("GetEmployeeByAffiliation/{affiliationId}")]
         public async Task<ActionResult> GetEmployeeByAffiliation(Guid affiliationId)
         {
-            _logger.LogInformation("Henter medarbejdere for tilknytning: {affiliationId}", affiliationId);
+            _logger.LogInformation("Retrieving employees for affiliation {AffiliationId}", affiliationId);
+
             try
             {
                 var employees = await _employeeRepository.GetEmployeesByAffiliation(affiliationId);
@@ -201,10 +198,9 @@ namespace UserServiceAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Fejl ved hentning af medarbejdere for tilknytning {affiliationId}: {message}", affiliationId, ex.Message);
+                _logger.LogError("Failed to retrieve employees for affiliation {AffiliationId}: {Message}", affiliationId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
-
     }
 }

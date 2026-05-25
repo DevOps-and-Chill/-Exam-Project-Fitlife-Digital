@@ -1,4 +1,5 @@
 using Microsoft.Azure.Cosmos;
+using Azure.Identity;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
@@ -20,6 +21,12 @@ namespace RapportServiceAPI
             {
                 var builder = WebApplication.CreateBuilder(args);
 
+                //AO: Config for KeyVault
+                builder.Configuration.AddAzureKeyVault(
+                    new Uri("https://fitlifedigitalkv.vault.azure.net/"),
+                    new DefaultAzureCredential());
+
+
                 builder.Logging.ClearProviders();
                 builder.Host.UseNLog();
 
@@ -29,28 +36,34 @@ namespace RapportServiceAPI
                 // Skiftet fra in-memory til CosmosDB repository
                 builder.Services.AddScoped<IRapportRepository, StatistikRepositoryDB>();
 
-                // Tilføj CosmosDB via Entity Framework
+                //AO: Config of Cosmos for EF
                 builder.Services.AddDbContext<RapportDbContext>(options =>
                 {
                     options.UseCosmos(
                         builder.Configuration["CosmosDb:AccountEndpoint"]!,
                         builder.Configuration["CosmosDb:AccountKey"]!,
                         builder.Configuration["CosmosDb:DatabaseName"]!,
-                        cosmosOptions =>
-                        {
-                            cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+                           //AO: Used during dev for CosmosDB Emulator 
+                           //cosmosOptions =>
+                           //{
+                           //    cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
 
-                            cosmosOptions.HttpClientFactory(() =>
-                            {
-                                var handler = new HttpClientHandler();
+                           //    cosmosOptions.HttpClientFactory(() =>
+                           //    {
+                           //        var handler = new HttpClientHandler();
 
-                                handler.ServerCertificateCustomValidationCallback =
-                                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                           //        handler.ServerCertificateCustomValidationCallback =
+                           //            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
-                                return new HttpClient(handler);
+                           //        return new HttpClient(handler);
+                           //    });
+                           //});
+                           cosmosOptions =>
+                           {
+                               cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
                             });
-                        });
                 });
+
 
                 var app = builder.Build();
 
