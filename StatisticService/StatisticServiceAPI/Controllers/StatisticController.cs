@@ -1,23 +1,23 @@
 using System.Runtime.Versioning;
 using Microsoft.AspNetCore.Mvc;
-using RapportServiceAPI.Models;
-using RapportServiceAPI.Repositories;
+using StatisticServiceAPI.Models;
+using StatisticServiceAPI.Repositories;
 
-namespace RapportServiceAPI.Controllers
+namespace StatisticServiceAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class RapportController : ControllerBase
+    public class StatisticController : ControllerBase
     {
         //JBS: Logger is injected for error handling, repository for data processing
-        private readonly ILogger<RapportController> _logger;
-        private readonly IRapportRepository _rapportRepository;
+        private readonly ILogger<StatisticController> _logger;
+        private readonly IStatisticRepository _StatisticRepository;
 
         //JBS: Dependency injection of logger and repository via constructor
-        public RapportController(ILogger<RapportController> logger, IRapportRepository rapportRepository)
+        public StatisticController(ILogger<StatisticController> logger, IStatisticRepository StatisticRepository)
         {
             _logger = logger;
-            _rapportRepository = rapportRepository;
+            _StatisticRepository = StatisticRepository;
         }
 
         //JBS: Fetches all statistics from the repository
@@ -27,7 +27,7 @@ namespace RapportServiceAPI.Controllers
             _logger.LogDebug("Fetching all statistics");
             try
             {
-                var statistikker = await _rapportRepository.GetAllAsync();
+                var statistikker = await _StatisticRepository.GetAllAsync();
                 return Ok(statistikker);
             }
             catch (Exception ex)
@@ -44,7 +44,7 @@ namespace RapportServiceAPI.Controllers
             _logger.LogDebug("Fetching statistic with id: {id}", id);
             try
             {
-                var statistik = await _rapportRepository.GetByIdAsync(id);
+                var statistik = await _StatisticRepository.GetByIdAsync(id);
                 if (statistik == null)
                 {
                     _logger.LogWarning("Statistic with id: {id} was not found", id);
@@ -66,7 +66,7 @@ namespace RapportServiceAPI.Controllers
             _logger.LogDebug("Creating new statistic");
             try
             {
-                await _rapportRepository.AddAsync(statistik);
+                await _StatisticRepository.AddAsync(statistik);
                 _logger.LogInformation("Statistic created with id: {id}", statistik.Id);
                 return CreatedAtAction(nameof(GetById), new { id = statistik.Id }, statistik);
             }
@@ -84,7 +84,7 @@ namespace RapportServiceAPI.Controllers
             _logger.LogDebug("Deleting statistic with id: {id}", id);
             try
             {
-                await _rapportRepository.DeleteAsync(id);
+                await _StatisticRepository.DeleteAsync(id);
                 _logger.LogInformation("Statistic with id: {id} deleted", id);
                 return NoContent();
             }
@@ -102,14 +102,14 @@ namespace RapportServiceAPI.Controllers
             _logger.LogDebug("Storing data point for statistic with id: {id}", id);
             try
             {
-                var statistik = await _rapportRepository.GetByIdAsync(id);
+                var statistik = await _StatisticRepository.GetByIdAsync(id);
                 if (statistik == null)
                 {
                     _logger.LogWarning("Statistic with id: {id} was not found", id);
                     return NotFound();
                 }
                 statistik.Lagrings.Add(lagring);
-                await _rapportRepository.UpdateAsync(statistik);
+                await _StatisticRepository.UpdateAsync(statistik);
                 _logger.LogInformation("Data point stored for statistic with id: {id}", id);
                 return Ok(statistik);
             }
@@ -127,7 +127,7 @@ namespace RapportServiceAPI.Controllers
             _logger.LogDebug("Creating share link for statistic with id: {id}", id);
             try
             {
-                var statistik = await _rapportRepository.GetByIdAsync(id);
+                var statistik = await _StatisticRepository.GetByIdAsync(id);
                 if (statistik == null)
                 {
                     _logger.LogWarning("Statistic with id: {id} was not found", id);
@@ -135,7 +135,7 @@ namespace RapportServiceAPI.Controllers
                 }
                 deling.GenerateShareLink();
                 statistik.Delings.Add(deling);
-                await _rapportRepository.UpdateAsync(statistik);
+                await _StatisticRepository.UpdateAsync(statistik);
                 _logger.LogInformation("Share link created for statistic with id: {id}", id);
                 return Ok(statistik);
             }
@@ -153,7 +153,7 @@ namespace RapportServiceAPI.Controllers
             _logger.LogDebug("Revoking share for statistic {id} and user {userId}", id, userId);
             try
             {
-                var statistik = await _rapportRepository.GetByIdAsync(id);
+                var statistik = await _StatisticRepository.GetByIdAsync(id);
                 if (statistik == null)
                 {
                     _logger.LogWarning("Statistic with id: {id} was not found", id);
@@ -165,7 +165,7 @@ namespace RapportServiceAPI.Controllers
                     _logger.LogWarning("Share not found for statistic {id} and user {userId}", id, userId);
                     return NotFound();
                 }
-                await _rapportRepository.UpdateAsync(statistik);
+                await _StatisticRepository.UpdateAsync(statistik);
                 _logger.LogInformation("Share revoked for statistic {id} and user {userId}", id, userId);
                 return Ok(statistik);
             }
@@ -183,14 +183,14 @@ namespace RapportServiceAPI.Controllers
             _logger.LogDebug("Running analysis for statistic with id: {id}", id);
             try
             {
-                var statistik = await _rapportRepository.GetByIdAsync(id);
+                var statistik = await _StatisticRepository.GetByIdAsync(id);
                 if (statistik == null)
                 {
                     _logger.LogWarning("Statistic with id: {id} was not found", id);
                     return NotFound();
                 }
                 statistik.Analyses.Add(analyse);
-                await _rapportRepository.UpdateAsync(statistik);
+                await _StatisticRepository.UpdateAsync(statistik);
                 _logger.LogInformation("Analysis added for statistic with id: {id}", id);
                 return Ok(statistik);
             }
@@ -208,7 +208,7 @@ namespace RapportServiceAPI.Controllers
             _logger.LogDebug("Fetching registered members for statistic with id: {id}", id);
             try
             {
-                var statistik = await _rapportRepository.GetByIdAsync(id);
+                var statistik = await _StatisticRepository.GetByIdAsync(id);
                 if (statistik == null)
                 {
                     _logger.LogWarning("Statistic with id: {id} was not found", id);
@@ -230,7 +230,7 @@ namespace RapportServiceAPI.Controllers
             _logger.LogDebug("Fetching attendance for statistic with id: {id}", id);
             try
             {
-                var statistik = await _rapportRepository.GetByIdAsync(id);
+                var statistik = await _StatisticRepository.GetByIdAsync(id);
                 if (statistik == null)
                 {
                     _logger.LogWarning("Statistic with id: {id} was not found", id);
@@ -252,7 +252,7 @@ namespace RapportServiceAPI.Controllers
             _logger.LogDebug("Fetching waiting list for statistic with id: {id}", id);
             try
             {
-                var statistik = await _rapportRepository.GetByIdAsync(id);
+                var statistik = await _StatisticRepository.GetByIdAsync(id);
                 if (statistik == null)
                 {
                     _logger.LogWarning("Statistic with id: {id} was not found", id);

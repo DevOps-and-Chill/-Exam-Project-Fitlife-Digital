@@ -1,4 +1,4 @@
-namespace RapportServiceAPI.Models.Enums
+namespace StatisticServiceAPI.Models.Enums
 {
     //JBS: Bruges til at definere hvilken metode der bruges til at dele en statistik
     public enum ShareMethod

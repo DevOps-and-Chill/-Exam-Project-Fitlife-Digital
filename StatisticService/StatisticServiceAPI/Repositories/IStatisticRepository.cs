@@ -1,8 +1,8 @@
-using RapportServiceAPI.Models;
+using StatisticServiceAPI.Models;
 
-namespace RapportServiceAPI.Repositories
+namespace StatisticServiceAPI.Repositories
 {
-    public interface IRapportRepository
+    public interface IStatisticRepository
     {
         Task<Statistik?> GetByIdAsync(Guid id);
         Task<IEnumerable<Statistik>> GetAllAsync();

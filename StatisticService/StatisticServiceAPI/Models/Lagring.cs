@@ -1,4 +1,4 @@
-namespace RapportServiceAPI.Models
+namespace StatisticServiceAPI.Models
 {
     public class Lagring
     {

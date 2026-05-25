@@ -1,4 +1,4 @@
-namespace RapportServiceAPI.Models.Enums
+namespace StatisticServiceAPI.Models.Enums
 {
     public enum AnalysisType
     {
