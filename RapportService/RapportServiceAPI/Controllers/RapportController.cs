@@ -9,132 +9,262 @@ namespace RapportServiceAPI.Controllers
     [Route("[controller]")]
     public class RapportController : ControllerBase
     {
-        //JBS: Der bliver logget til fejlhåndtering og repository til datahåndtering
+        //JBS: Logger is injected for error handling, repository for data processing
         private readonly ILogger<RapportController> _logger;
         private readonly IRapportRepository _rapportRepository;
 
-        //JBS: Dependency injection af logger og repository via konstruktøren.
+        //JBS: Dependency injection of logger and repository via constructor
         public RapportController(ILogger<RapportController> logger, IRapportRepository rapportRepository)
         {
             _logger = logger;
             _rapportRepository = rapportRepository;
         }
 
-        //JBS: Her henter vi alle statistikker fra repository
+        //JBS: Fetches all statistics from the repository
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var statistikker = await _rapportRepository.GetAllAsync();
-            return Ok(statistikker);
+            _logger.LogDebug("Fetching all statistics");
+            try
+            {
+                var statistikker = await _rapportRepository.GetAllAsync();
+                return Ok(statistikker);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error fetching all statistics: {message}", ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        //JBS: Vi henter en enkelt statistik baseret på id
-        //JBS: Returner fejl hvis der ikke findes det givne id
+        //JBS: Fetches a single statistic by id - returns 404 if not found
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var statistik = await _rapportRepository.GetByIdAsync(id);
-            if (statistik == null)
-                return NotFound();
-            return Ok(statistik);
+            _logger.LogDebug("Fetching statistic with id: {id}", id);
+            try
+            {
+                var statistik = await _rapportRepository.GetByIdAsync(id);
+                if (statistik == null)
+                {
+                    _logger.LogWarning("Statistic with id: {id} was not found", id);
+                    return NotFound();
+                }
+                return Ok(statistik);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error fetching statistic with id {id}: {message}", id, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        //JBS: Vi opretter en ny statistik 
+        //JBS: Creates a new statistic
         [HttpPost]
         public async Task<IActionResult> Create(Statistik statistik)
         {
-            await _rapportRepository.AddAsync(statistik);
-            return CreatedAtAction(nameof(GetById), new { id = statistik.Id }, statistik);
+            _logger.LogDebug("Creating new statistic");
+            try
+            {
+                await _rapportRepository.AddAsync(statistik);
+                _logger.LogInformation("Statistic created with id: {id}", statistik.Id);
+                return CreatedAtAction(nameof(GetById), new { id = statistik.Id }, statistik);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error creating statistic: {message}", ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        //JBS: Vi sletter en statistik baseret på baggrund af et id
+        //JBS: Deletes a statistic by id
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await _rapportRepository.DeleteAsync(id);
-            return NoContent();
+            _logger.LogDebug("Deleting statistic with id: {id}", id);
+            try
+            {
+                await _rapportRepository.DeleteAsync(id);
+                _logger.LogInformation("Statistic with id: {id} deleted", id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error deleting statistic with id {id}: {message}", id, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        //JBS: Vi gemmer et nyt datapunkt i en statistik. 
-        [HttpPost("{id}/lagring")]
+        //JBS: Stores a new data point in a statistic
+        [HttpPost("{id}/storage")]
         public async Task<IActionResult> StoreLagring(Guid id, Lagring lagring)
         {
-            var statistik = await _rapportRepository.GetByIdAsync(id);
-            if (statistik == null)
-                return NotFound();
-            statistik.Lagrings.Add(lagring);
-            await _rapportRepository.UpdateAsync(statistik);
-            return Ok(statistik);
+            _logger.LogDebug("Storing data point for statistic with id: {id}", id);
+            try
+            {
+                var statistik = await _rapportRepository.GetByIdAsync(id);
+                if (statistik == null)
+                {
+                    _logger.LogWarning("Statistic with id: {id} was not found", id);
+                    return NotFound();
+                }
+                statistik.Lagrings.Add(lagring);
+                await _rapportRepository.UpdateAsync(statistik);
+                _logger.LogInformation("Data point stored for statistic with id: {id}", id);
+                return Ok(statistik);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error storing data point for statistic {id}: {message}", id, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        //JBS: Vi genererer et share link til en statistik
-        //JBS: Hvis det er vi gerne vil sende det rundt 
-        [HttpPost("{id}/deling")]
+        //JBS: Generates a share link for a statistic
+        [HttpPost("{id}/share")]
         public async Task<IActionResult> CreateDeling(Guid id, Deling deling)
         {
-            var statistik = await _rapportRepository.GetByIdAsync(id);
-            if (statistik == null)
-                return NotFound();
-            deling.GenerateShareLink();
-            statistik.Delings.Add(deling);
-            await _rapportRepository.UpdateAsync(statistik);
-            return Ok(statistik);
+            _logger.LogDebug("Creating share link for statistic with id: {id}", id);
+            try
+            {
+                var statistik = await _rapportRepository.GetByIdAsync(id);
+                if (statistik == null)
+                {
+                    _logger.LogWarning("Statistic with id: {id} was not found", id);
+                    return NotFound();
+                }
+                deling.GenerateShareLink();
+                statistik.Delings.Add(deling);
+                await _rapportRepository.UpdateAsync(statistik);
+                _logger.LogInformation("Share link created for statistic with id: {id}", id);
+                return Ok(statistik);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error creating share link for statistic {id}: {message}", id, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        //JBS: Det her er til at tilbagekalde en delt statistik.
-        [HttpDelete("{id}/deling/{userId}")]
+        //JBS: Revokes a shared statistic
+        [HttpDelete("{id}/share/{userId}")]
         public async Task<IActionResult> RevokeDeling(Guid id, Guid userId)
         {
-            var statistik = await _rapportRepository.GetByIdAsync(id);
-            if (statistik == null)
-                return NotFound();
-            var deling = statistik.Delings.FirstOrDefault(d => d.SharedWithUserId == userId);
-            if (deling == null)
-                return NotFound();
-            await _rapportRepository.UpdateAsync(statistik);
-            return Ok(statistik);
+            _logger.LogDebug("Revoking share for statistic {id} and user {userId}", id, userId);
+            try
+            {
+                var statistik = await _rapportRepository.GetByIdAsync(id);
+                if (statistik == null)
+                {
+                    _logger.LogWarning("Statistic with id: {id} was not found", id);
+                    return NotFound();
+                }
+                var deling = statistik.Delings.FirstOrDefault(d => d.SharedWithUserId == userId);
+                if (deling == null)
+                {
+                    _logger.LogWarning("Share not found for statistic {id} and user {userId}", id, userId);
+                    return NotFound();
+                }
+                await _rapportRepository.UpdateAsync(statistik);
+                _logger.LogInformation("Share revoked for statistic {id} and user {userId}", id, userId);
+                return Ok(statistik);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error revoking share for statistic {id}: {message}", id, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        //JBS: Hvis vi har lyst til at køre en analyse på en statistik.
-        [HttpPost("{id}/analyse")]
+        //JBS: Runs an analysis on a statistic
+        [HttpPost("{id}/analysis")]
         public async Task<IActionResult> RunAnalyse(Guid id, Analyse analyse)
         {
-            var statistik = await _rapportRepository.GetByIdAsync(id);
-            if (statistik == null)
-                return NotFound();
-            statistik.Analyses.Add(analyse);
-            await _rapportRepository.UpdateAsync(statistik);
-            return Ok(statistik);
+            _logger.LogDebug("Running analysis for statistic with id: {id}", id);
+            try
+            {
+                var statistik = await _rapportRepository.GetByIdAsync(id);
+                if (statistik == null)
+                {
+                    _logger.LogWarning("Statistic with id: {id} was not found", id);
+                    return NotFound();
+                }
+                statistik.Analyses.Add(analyse);
+                await _rapportRepository.UpdateAsync(statistik);
+                _logger.LogInformation("Analysis added for statistic with id: {id}", id);
+                return Ok(statistik);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error running analysis for statistic {id}: {message}", id, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        //JBS: Her kan vi se en liste over tilmeldte medlemmer til en session
-        [HttpGet("{id}/tilmeldte")]
+        //JBS: Fetches a list of registered members for a session
+        [HttpGet("{id}/registered")]
         public async Task<IActionResult> GetTilmeldte(Guid id)
         {
-            var statistik = await _rapportRepository.GetByIdAsync(id);
-            if (statistik == null)
-                return NotFound();
-            return Ok(statistik.Registrered);
+            _logger.LogDebug("Fetching registered members for statistic with id: {id}", id);
+            try
+            {
+                var statistik = await _rapportRepository.GetByIdAsync(id);
+                if (statistik == null)
+                {
+                    _logger.LogWarning("Statistic with id: {id} was not found", id);
+                    return NotFound();
+                }
+                return Ok(statistik.Registrered);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error fetching registered members for statistic {id}: {message}", id, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        //JBS: Her henter vi en liste over medlemmer der mødte på til en session
-        [HttpGet("{id}/fremmøde")]
+        //JBS: Fetches a list of members who attended a session
+        [HttpGet("{id}/attendance")]
         public async Task<IActionResult> GetFremmoede(Guid id)
         {
-            var statistik = await _rapportRepository.GetByIdAsync(id);
-            if (statistik == null)
-                return NotFound();
-            return Ok(statistik.Attended);
+            _logger.LogDebug("Fetching attendance for statistic with id: {id}", id);
+            try
+            {
+                var statistik = await _rapportRepository.GetByIdAsync(id);
+                if (statistik == null)
+                {
+                    _logger.LogWarning("Statistic with id: {id} was not found", id);
+                    return NotFound();
+                }
+                return Ok(statistik.Attended);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error fetching attendance for statistic {id}: {message}", id, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
-        
-        //JBS: Her kan vi hente en venteliste for en session
-        [HttpGet("{id}/venteliste")]
+
+        //JBS: Fetches the waiting list for a session
+        [HttpGet("{id}/waitinglist")]
         public async Task<IActionResult> GetVenteliste(Guid id)
         {
-            var statistik = await _rapportRepository.GetByIdAsync(id);
-            if (statistik == null)
-                return NotFound();
-            return Ok(statistik.WaitingList);
+            _logger.LogDebug("Fetching waiting list for statistic with id: {id}", id);
+            try
+            {
+                var statistik = await _rapportRepository.GetByIdAsync(id);
+                if (statistik == null)
+                {
+                    _logger.LogWarning("Statistic with id: {id} was not found", id);
+                    return NotFound();
+                }
+                return Ok(statistik.WaitingList);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error fetching waiting list for statistic {id}: {message}", id, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }
