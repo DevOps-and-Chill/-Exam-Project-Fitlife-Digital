@@ -1,15 +1,15 @@
 using Microsoft.EntityFrameworkCore;
-using RapportServiceAPI.Data;
-using RapportServiceAPI.Models;
+using StatisticServiceAPI.Data;
+using StatisticServiceAPI.Models;
 
-namespace RapportServiceAPI.Repositories
+namespace StatisticServiceAPI.Repositories
 {
-    public class StatistikRepositoryDB : IRapportRepository
+    public class StatistikRepositoryDB : IStatisticRepository
     {
-        private readonly RapportDbContext _context;
+        private readonly StatisticDbContext _context;
 
-        // Modtager RapportDbContext via dependency injection
-        public StatistikRepositoryDB(RapportDbContext context)
+        // Modtager StatisticDbContext via dependency injection
+        public StatistikRepositoryDB(StatisticDbContext context)
         {
             _context = context;
         }

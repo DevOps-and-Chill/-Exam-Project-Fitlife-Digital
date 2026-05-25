@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using RapportServiceAPI.Models;
+using StatisticServiceAPI.Models;
 
-namespace RapportServiceAPI.Data
+namespace StatisticServiceAPI.Data
 {
-    public class RapportDbContext : DbContext
+    public class StatisticDbContext : DbContext
     {
         // Constructor som modtager konfiguration fra Program.cs via dependency injection
-        public RapportDbContext(DbContextOptions<RapportDbContext> options) : base(options)
+        public StatisticDbContext(DbContextOptions<StatisticDbContext> options) : base(options)
         {
         }
 

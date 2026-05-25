@@ -1,6 +1,6 @@
-using RapportServiceAPI.Models.Enums; 
+using StatisticServiceAPI.Models.Enums; 
 
-namespace RapportServiceAPI.Models
+namespace StatisticServiceAPI.Models
 {
     public class Analyse
     {

@@ -1,8 +1,8 @@
-using RapportServiceAPI.Models;
+using StatisticServiceAPI.Models;
 
-namespace RapportServiceAPI.Repositories
+namespace StatisticServiceAPI.Repositories
 {
-    public class RapportRepository : IRapportRepository
+    public class StatisticRepository : IStatisticRepository
     {
         //JBS: En in-memory liste der fungerer som midlertidig database
         //JBS: Kan erstattes når vi får en database op og køre

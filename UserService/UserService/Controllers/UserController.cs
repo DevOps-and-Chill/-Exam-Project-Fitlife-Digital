@@ -19,7 +19,7 @@ namespace UserServiceAPI.Controllers
             _userRepository = userRepository;
             _logger = logger;
 
-            // Logger hvilken server og IP der svarer
+            // Log which server and IP is responding
             var hostName = System.Net.Dns.GetHostName();
             var ips = System.Net.Dns.GetHostAddresses(hostName);
             var ipaddr = ips.First().MapToIPv4().ToString();
@@ -36,15 +36,14 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetAllUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
-            _logger.LogInformation("Retrieving all users");
-
+            _logger.LogDebug("Fetching all users");
             try
             {
                 return Ok(await _userRepository.GetAllUsers());
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to retrieve all users: {Message}", ex.Message);
+                _logger.LogError("Error fetching all users: {message}", ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -61,15 +60,15 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetUserById/{userId}")]
         public async Task<IActionResult> GetUserById(string userId)
         {
-            _logger.LogInformation("Retrieving user with id {UserId}", userId);
-
+            
+            _logger.LogDebug("Fetching user with id: {userId}", userId);
             try
             {
                 return Ok(await _userRepository.GetUserById(userId));
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to retrieve user with id {UserId}: {Message}", userId, ex.Message);
+                _logger.LogError("Error fetching user with id {userId}: {message}", userId, ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -87,15 +86,14 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetUserIdByEmail/{email}")]
         public async Task<IActionResult> GetUserIdByEmail(string email)
         {
-            _logger.LogInformation("Retrieving user id for email {Email}", email);
-
+            _logger.LogDebug("Fetching user id for email: {email}", email);
             try
             {
                 string? userId = await _userRepository.GetUserIdByEmail(email);
 
                 if (string.IsNullOrWhiteSpace(userId))
                 {
-                    _logger.LogWarning("No user found for email {Email}", email);
+                    _logger.LogWarning("No user found with email: {email}", email);
                     return NotFound();
                 }
 
@@ -103,7 +101,7 @@ namespace UserServiceAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to retrieve user id for email {Email}: {Message}", email, ex.Message);
+                _logger.LogError("Error fetching user id for email {email}: {message}", email, ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -117,8 +115,7 @@ namespace UserServiceAPI.Controllers
         [HttpGet("addtestdata")]
         public async Task<ActionResult> AddData()
         {
-            _logger.LogInformation("Loading test data into the database");
-
+            _logger.LogDebug("Loading test data");
             try
             {
                 var result = await _userRepository.LoadTestData();
@@ -130,13 +127,13 @@ namespace UserServiceAPI.Controllers
                 }
                 else
                 {
-                    _logger.LogWarning("Failed to load test data");
-                    return Ok("error loading data");
+                    _logger.LogWarning("Error loading test data");
+                    return Ok("error in loading data");
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError("Exception occurred while loading test data: {Message}", ex.Message);
+                _logger.LogError("Error loading test data: {message}", ex.Message);
                 return BadRequest(ex);
             }
         }
