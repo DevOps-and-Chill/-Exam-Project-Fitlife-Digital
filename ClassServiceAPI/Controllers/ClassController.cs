@@ -29,7 +29,6 @@ public class ClassController : ControllerBase
             var created = await _repo.CreateClassAsync(classModel);
             _logger.LogInformation("Klasse oprettet: {className}", classModel.Title);
             return Ok(created);
-            return CreatedAtAction(nameof(GetClassByIdAsync), new { id = created.Id }, created);
         }
         catch (Exception ex)
         {

@@ -31,6 +31,13 @@ builder.Services.AddHttpClient("AuthService", client =>
         builder.Configuration["AuthService:BaseUrl"]!);
 });
 
+builder.Services.AddHttpClient("ClassService", client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ClassService:BaseUrl"]!);
+});
+
+builder.Services.AddScoped<ClassService>();
+
 builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<MemberService>();
 builder.Services.AddScoped<TrainerService>();
