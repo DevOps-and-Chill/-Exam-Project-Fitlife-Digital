@@ -1,4 +1,5 @@
 using Microsoft.Azure.Cosmos;
+using Azure.Identity;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
@@ -21,31 +22,41 @@ namespace UserServiceAPI
 			{
 				var builder = WebApplication.CreateBuilder(args);
 
-				// Ryd eksisterende logging providers og brug NLog i stedet
-				builder.Logging.ClearProviders();
+				//AO: Config for KeyVault
+                builder.Configuration.AddAzureKeyVault(
+					new Uri("https://fitlifedigitalkv.vault.azure.net/"),
+					new DefaultAzureCredential());
+
+                // Ryd eksisterende logging providers og brug NLog i stedet
+                builder.Logging.ClearProviders();
 				builder.Host.UseNLog();
 
-                // AccountKey og endpoint tilføjes til vault - ligger i appsettings indtil videre
+                //AO: Config of Cosmos for EF
                 builder.Services.AddDbContext<UserDbContext>(options =>
                 {
                     options.UseCosmos(
                         builder.Configuration["CosmosDb:AccountEndpoint"]!,
                         builder.Configuration["CosmosDb:AccountKey"]!,
                         builder.Configuration["CosmosDb:DatabaseName"]!,
-                        cosmosOptions =>
-                        {
-                            cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+                   //AO: Used during dev for CosmosDB Emulator 
+                   //cosmosOptions =>
+                   //{
+                   //    cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
 
-                            cosmosOptions.HttpClientFactory(() =>
-                            {
-                                var handler = new HttpClientHandler();
+                   //    cosmosOptions.HttpClientFactory(() =>
+                   //    {
+                   //        var handler = new HttpClientHandler();
 
-                                handler.ServerCertificateCustomValidationCallback =
-                                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                   //        handler.ServerCertificateCustomValidationCallback =
+                   //            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
-                                return new HttpClient(handler);
-                            });
-                        });
+                   //        return new HttpClient(handler);
+                   //    });
+                   //});
+                   cosmosOptions =>
+                   {
+                       cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+                   });
                 });
 
                 builder.Services.AddControllers()
