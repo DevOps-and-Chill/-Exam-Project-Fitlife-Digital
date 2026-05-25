@@ -8,13 +8,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="07d61a80-5e8c-4418-97ff-e696b34d97dd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Models/Class.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Services/ClassService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ClassServiceAPI/Controllers/ClassController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../ClassServiceAPI/Controllers/ClassController.cs" afterDir="false" />
+    <list default="true" id="07d61a80-5e8c-4418-97ff-e696b34d97dd" name="Changes" comment="ClassService Frontend">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.FitLife.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FitLife.dir/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Components/Pages/Employee/CreateSession.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Components/Pages/Employee/CreateSession.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Components/Pages/Member/FindHold.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Components/Pages/Member/FindHold.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Models/Class.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Class.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/appsettings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/ClassService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/ClassService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/MemberService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Services/MemberService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../UserService/.idea/.idea.UserServiceAPI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../UserService/.idea/.idea.UserServiceAPI/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,9 +27,13 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock://D:/Fitlife/Eksamen/-Exam-Project-Fitlife-Digital/FitLife.Frontend/Components/Pages/Employee/CreateSession.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Models/Class.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://D:/Fitlife/Eksamen/-Exam-Project-Fitlife-Digital/FitLife.Frontend/Models/Class.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Services/ClassService.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://D:/Fitlife/Eksamen/-Exam-Project-Fitlife-Digital/FitLife.Frontend/Services/ClassService.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
+  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo"><![CDATA[{
   "associatedIndex": 4
 }]]></component>
@@ -91,12 +97,26 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1779707535067</updated>
-      <workItem from="1779707536154" duration="360000" />
+      <workItem from="1779707536154" duration="2010000" />
     </task>
+    <task id="LOCAL-00001" summary="ClassService Frontend">
+      <option name="closed" value="true" />
+      <created>1779707908289</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1779707908289</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="ClassService Frontend" />
+    <option name="LAST_COMMIT_MESSAGE" value="ClassService Frontend" />
+  </component>
 </project>

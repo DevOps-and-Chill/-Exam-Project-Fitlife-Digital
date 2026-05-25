@@ -48,6 +48,8 @@ builder.Services.AddScoped<RegistrationStateService>();
 builder.Services.AddScoped<PTService>();
 builder.Services.AddScoped<CurrentUserService>();
 
+builder.Services.AddScoped<ClassService>();
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

@@ -2,7 +2,8 @@ namespace FitLife.Frontend.Models;
 
 public class Class
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public string Id { get; set; } = Guid.NewGuid().ToString();
+    
     public string PartitionKey { get; set; } = "classes";
     
     public string Title { get; set; } = "";
@@ -16,7 +17,7 @@ public class Class
     public bool ActiveClass { get; set; }
     
     // FK
-    public Guid CoachId { get; set; }
+    public string CoachId { get; set; }
     public Guid ExerciseGymId { get; set; }
     public Guid RoomId { get; set; }
     

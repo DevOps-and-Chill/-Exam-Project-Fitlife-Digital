@@ -11,25 +11,31 @@ public class ClassService
     {
         _httpClient = httpClientFactory.CreateClient("ClassService");
     }
+    
+    public async Task CreateClassAsync(Class newClass)
+    {
+        var response = await _httpClient.PostAsJsonAsync("class", newClass);
+        response.EnsureSuccessStatusCode();
+    }
 
     public async Task<List<Class>> GetAllClassesAsync()
     {
         return await _httpClient.GetFromJsonAsync<List<Class>>("class") ?? new();
     }
 
-    public async Task RegisterMemberAsync(Guid classId, Member member)
+    public async Task RegisterMemberAsync(string classId, Member member)
     {
         var response = await _httpClient.PostAsJsonAsync($"class/{classId}/members", member);
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task UnregisterMemberAsync(Guid classId, Guid memberId)
+    public async Task UnregisterMemberAsync(string classId, string memberId)
     {
         var response = await _httpClient.DeleteAsync($"class/{classId}/members/{memberId}");
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task JoinWaitlistAsync(Guid classId, Member member)
+    public async Task JoinWaitlistAsync(string classId, Member member)
     {
         var response = await _httpClient.PostAsJsonAsync($"class/{classId}/waitinglist", member);
         response.EnsureSuccessStatusCode();

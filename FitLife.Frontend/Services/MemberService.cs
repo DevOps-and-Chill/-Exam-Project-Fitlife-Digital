@@ -36,6 +36,18 @@ public class MemberService
                 ex);
         }
     }
+    
+    public async Task<Member?> GetMemberByIdAsync(string id)
+    {
+        try
+        {
+            return await _httpClient.GetFromJsonAsync<Member>($"/member/GetMemberById/{id}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Kunne ikke hente medlem med id {id}. Fejl: {ex.Message}", ex);
+        }
+    }
 
     // Opretter eller opdaterer et medlem via UserService.
     // Kalder endpoint:
