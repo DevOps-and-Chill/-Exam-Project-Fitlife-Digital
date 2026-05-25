@@ -12,13 +12,13 @@ builder.Services.AddRazorComponents()
 builder.Services.AddHttpClient("UserService", client =>
 {
     client.BaseAddress = new Uri(
-        builder.Configuration["Gateway:BaseUrl"]! + "user/");. Nu 
+        builder.Configuration["Gateway:BaseUrl"]! + "user/"); 
 });
 
 builder.Services.AddHttpClient("FacilityService", client =>
 {
     client.BaseAddress = new Uri(
-         builder.Configuration["Gateway:BaseUrl"]! + "facility/");
+         builder.Configuration["Gateway:BaseUrl"]! + "facility/"); 
 });
 
 builder.Services.AddHttpClient("PTService", client =>

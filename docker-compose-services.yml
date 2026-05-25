@@ -5,6 +5,9 @@ services:
       context: ./FacilityService/FacilityServiceAPI
     expose:
       - "8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      AZURE_TENANT_ID: ${AZURE_TENANT_ID}
     networks:
       - backend
 

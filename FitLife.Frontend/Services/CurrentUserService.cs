@@ -13,9 +13,10 @@ public class CurrentUserService
 
     public string RoleName => CurrentUser?.RoleName ?? "";
 
+    //AO: Mangler at implementere at hente den konkrete bruger fra userservcie
     public async Task SetCurrentUser()
     {
-        var userId = _tokenService.GetUserIdFromCachedToken()
+        var userId = _tokenService.GetUserIdFromCachedToken();
 
     }
 

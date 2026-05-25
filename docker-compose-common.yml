@@ -52,43 +52,20 @@ services:
     networks:
       - backend
 
+  # cosmos:
+  #   image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
+  #   container_name: cosmos
+  #   #Test
+  #   ports:
+  #     - "8081:8081"
 
-  vault:
-    image: hashicorp/vault:latest
-    container_name: vault
+  #   restart: unless-stopped
 
-    command: server -dev
+  #   environment:
+  #     AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE: true
 
-    ports:
-      - "8200:8200"
-
-    environment:
-      VAULT_DEV_ROOT_TOKEN_ID: root
-      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
-
-    cap_add:
-      - IPC_LOCK
-
-    volumes:
-      - vault_data:/vault/data
-
-    networks:
-      - backend
-
-  cosmos:
-    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
-    container_name: cosmos
-    #Test
-    ports:
-      - "8081:8081"
-
-    restart: unless-stopped
-
-    environment:
-      AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE: true
-
-    networks:
-      - backend
+  #   networks:
+  #     - backend
 
 
 networks:
@@ -99,4 +76,4 @@ networks:
 volumes:
   vault_data:
   grafana_data:
-  cosmos_data:
+  # cosmos_data:

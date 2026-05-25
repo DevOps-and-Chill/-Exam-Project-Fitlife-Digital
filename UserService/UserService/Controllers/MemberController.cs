@@ -148,7 +148,7 @@ namespace UserServiceAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to retrieve member {UserId}: {Message}", userId, ex.Message)
+                _logger.LogError("Failed to retrieve member {UserId}: {Message}", userId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
