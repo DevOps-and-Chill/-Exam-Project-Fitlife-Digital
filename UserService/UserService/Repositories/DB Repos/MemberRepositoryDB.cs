@@ -110,17 +110,16 @@ namespace UserServiceAPI.Repositories
         /// <exception cref="InvalidOperationException">Thrown when another user already exists with the same Email.</exception>
         public async Task<Member> UpsertMember(Member member)
         {
-            //CS: Midlertidigt slået fra pga. Cosmos query-fejl ved AnyAsync på inheritance hierarchy
-            // bool emailExists = await _context.Set<Member>()
-            //     .AnyAsync(u =>
-            //         u.Email == member.Email &&
-            //         u.Id != member.Id);
+             bool emailExists = await _context.Set<Member>()
+                 .AnyAsync(u =>
+                     u.Email == member.Email &&
+                     u.Id != member.Id);
 
-            // if (emailExists)
-            // {
-            //     throw new InvalidOperationException(
-            //         $"Email '{member.Email}' is already in use");
-            // }
+            if (emailExists)
+            {
+                throw new InvalidOperationException(
+                    $"Email '{member.Email}' is already in use");
+            }
 
             Member? existingMember = await GetMemberById(member.Id);
 
