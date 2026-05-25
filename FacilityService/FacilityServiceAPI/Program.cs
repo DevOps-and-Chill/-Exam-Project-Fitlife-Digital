@@ -1,6 +1,6 @@
 using NLog;
 using NLog.Web;
-
+using Azure.Identity;
 using FacilityServiceAPI.Contexts;
 using FacilityServiceAPI.Repositories;
 using Microsoft.Azure.Cosmos;
@@ -23,6 +23,11 @@ namespace FacilityServiceAPI
             {
                 var builder = WebApplication.CreateBuilder(args);
 
+                builder.Configuration.AddAzureKeyVault(
+                        new Uri("https://fitlifedigitalkv.vault.azure.net/"),
+                        new DefaultAzureCredential());
+
+
                 // Ryd eksisterende logging providers og brug NLog i stedet
                 builder.Logging.ClearProviders();
                 builder.Host.UseNLog();
@@ -34,27 +39,31 @@ namespace FacilityServiceAPI
 			builder.Services.AddTransient<IFacilityRepository, FacilityRepositoryMoq>();
 
                 //Enables dependency injection of Factory pattern for DBContext. This way the application is more threadsafe, because each 
-                // builder.Services.AddDbContextFactory<FacilityContext>(options =>
-                // {
-                //     options.UseCosmos(
-                //         builder.Configuration["CosmosDb:AccountEndpoint"]!,
-                //         builder.Configuration["CosmosDb:AccountKey"]!,
-                //         builder.Configuration["CosmosDb:DatabaseName"]!,
-                //         cosmosOptions =>
-                //         {
-                //             cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+                builder.Services.AddDbContextFactory<FacilityContext>(options =>
+                {
+                    options.UseCosmos(
+                        builder.Configuration["CosmosDb:AccountEndpoint"]!,
+                        builder.Configuration["CosmosDb:AccountKey"]!,
+                        builder.Configuration["CosmosDb:DatabaseName"]!,
+                        //cosmosOptions =>
+                        //{
+                        //    cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
 
-                //             cosmosOptions.HttpClientFactory(() =>
-                //             {
-                //                 var handler = new HttpClientHandler();
+                        //    cosmosOptions.HttpClientFactory(() =>
+                        //    {
+                        //        var handler = new HttpClientHandler();
 
-                //                 handler.ServerCertificateCustomValidationCallback =
-                //                     HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                        //        handler.ServerCertificateCustomValidationCallback =
+                        //            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
-                //                 return new HttpClient(handler);
-                //             });
-                //         });
-                // });
+                        //        return new HttpClient(handler);
+                        //    });
+                        //});
+                        cosmosOptions =>
+                        {
+                            cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+                        });
+            });
 
                 var app = builder.Build();
 
