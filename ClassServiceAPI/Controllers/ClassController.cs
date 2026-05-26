@@ -87,7 +87,7 @@ public class ClassController : ControllerBase
         }
     }
 
-    [HttpGet("gym/{exerciseGymId}")]
+    [HttpGet("gym/{exercisegymid}")]
     public async Task<IActionResult> GetAllClassesByExerciseGymAsync(Guid exerciseGymId)
     {
         _logger.LogDebug("Fetching classes for gym {exerciseGymId}", exerciseGymId);
