@@ -49,7 +49,7 @@ namespace UserServiceAPI.Repositories
                 return null;
             }
 
-            _context.Users.Remove(member);
+            _context.Members.Remove(member);
 
             await _context.SaveChangesAsync();
 
@@ -62,7 +62,7 @@ namespace UserServiceAPI.Repositories
         /// <returns>Returns a list of members</returns>
         public async Task<List<Member>> GetAllMembers()
         {
-            return await _context.Set<Member>().ToListAsync();
+            return await _context.Members.ToListAsync();
         }
 
         /// <summary>
@@ -93,8 +93,7 @@ namespace UserServiceAPI.Repositories
         /// <returns>Returns member-object, returns null if not found</returns>
         public async Task<Member?> GetMemberById(string userId)
         {
-            var member = await _context.Set<Member>()
-                .FirstOrDefaultAsync(m => m.Id == userId);
+            var member = await _context.Members.FirstOrDefaultAsync(m => m.Id == userId);
 
             return member;
         }
@@ -110,23 +109,24 @@ namespace UserServiceAPI.Repositories
         /// <exception cref="InvalidOperationException">Thrown when another user already exists with the same Email.</exception>
         public async Task<Member> UpsertMember(Member member)
         {
-            //CS: Midlertidigt slået fra pga. Cosmos query-fejl ved AnyAsync på inheritance hierarchy
-            // bool emailExists = await _context.Set<Member>()
-            //     .AnyAsync(u =>
-            //         u.Email == member.Email &&
-            //         u.Id != member.Id);
+            var existing = await _context.Members
+                .FirstOrDefaultAsync(u =>
+                    u.Email == member.Email &&
+                    u.Id != member.Id);
 
-            // if (emailExists)
-            // {
-            //     throw new InvalidOperationException(
-            //         $"Email '{member.Email}' is already in use");
-            // }
+            bool emailExists = existing != null;
+
+            if (emailExists)
+            {
+                throw new InvalidOperationException(
+                    $"Email '{member.Email}' is already in use");
+            }
 
             Member? existingMember = await GetMemberById(member.Id);
 
             if (existingMember is null)
             {
-                _context.Users.Add(member);
+                _context.Members.Add(member);
             }
             else
             {
@@ -160,7 +160,7 @@ namespace UserServiceAPI.Repositories
         /// <returns>Return list of members</returns>
         public async Task<List<Member>> GetMembersByAffiliation(Guid affiliationId)
         {
-            return await _context.Set<Member>()
+            return await _context.Members
                 .Where(e => e.Affiliation == affiliationId)
                 .ToListAsync();
         }

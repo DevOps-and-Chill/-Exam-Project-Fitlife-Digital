@@ -1,7 +1,8 @@
+using FitLife.Frontend.Models;
+using Microsoft.AspNetCore.Identity.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Json;
 using System.Security.Claims;
-using FitLife.Frontend.Models;
 
 namespace FitLife.Frontend.Services;
 
@@ -9,17 +10,18 @@ public class AuthService
 {
     private readonly HttpClient _authClient;
     private readonly HttpClient _userClient;
+    private readonly TokenService _tokenService;
 
-    public AuthService(IHttpClientFactory httpClientFactory)
+    public AuthService(IHttpClientFactory httpClientFactory, TokenService tokenService)
     {
         _authClient = httpClientFactory.CreateClient("AuthService");
         _userClient = httpClientFactory.CreateClient("UserService");
+        _tokenService = tokenService;
     }
 
     public async Task<LoginResult> LoginAsync(string email, string password)
     {
-        if (string.IsNullOrWhiteSpace(email) ||
-            string.IsNullOrWhiteSpace(password))
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
             return new LoginResult(false, null, null, "Indtast både email og password.");
         }
@@ -32,40 +34,30 @@ public class AuthService
 
         try
         {
-            var response = await _authClient.PostAsJsonAsync(
-                "auth/Login",
-                loginRequest);
+            var response = await _authClient.PostAsJsonAsync( "auth/Login", loginRequest);
 
             if (!response.IsSuccessStatusCode)
             {
                 return new LoginResult(false, null, null, "Email eller password er forkert.");
             }
 
-            var loginResponse =
-                await response.Content.ReadFromJsonAsync<LoginResponse>();
+            var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
 
             if (string.IsNullOrWhiteSpace(loginResponse?.Token))
             {
                 return new LoginResult(false, null, null, "Login lykkedes ikke. Token mangler.");
             }
+            Console.WriteLine("LoginAsync lineno 50:"+ loginResponse.Token);
+            _tokenService.SetToken(loginResponse.Token);
 
-            var userId = GetUserIdFromToken(loginResponse.Token);
+            string ?role = await _tokenService.GetRoleBasedOnToken();
 
-            if (string.IsNullOrWhiteSpace(userId))
+            if (string.IsNullOrWhiteSpace(role))
             {
-                return new LoginResult(false, loginResponse.Token, null, "Token mangler userId.");
+                return new LoginResult(false, loginResponse.Token, null, "Token mangler rolle.");
             }
 
-            var loggedInUser =
-                await _userClient.GetFromJsonAsync<Member>(
-                    $"user/GetUserById/{userId}");
-
-            if (loggedInUser is null)
-            {
-                return new LoginResult(false, loginResponse.Token, null, "Bruger kunne ikke hentes fra UserService.");
-            }
-
-            return new LoginResult(true, loginResponse.Token, loggedInUser, "Login lykkedes.");
+            return new LoginResult(true, loginResponse.Token, role, "Login lykkedes.");
         }
         catch (Exception ex)
         {
@@ -100,5 +92,5 @@ public class LoginResponse
 public record LoginResult(
     bool Success,
     string? Token,
-    Member? User,
+    string? Role,
     string Message);

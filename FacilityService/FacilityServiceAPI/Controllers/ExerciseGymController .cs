@@ -32,7 +32,7 @@ namespace FacilityServiceAPI.Controllers
 			}
 			catch (Exception ex)
 			{
-
+                _logger.LogError("Error in getexercisegyms: {message}", ex.Message);
 				return BadRequest(ex.Message);
 			}
 		}
@@ -44,15 +44,16 @@ namespace FacilityServiceAPI.Controllers
 		[HttpGet("getbyid")]
 		public async Task<IActionResult> GetExerciseGym([FromBody] string exerciseGymId)
 		{
-			_logger.LogDebug("Starting getexercisegymbyid for ExerciseGym" + exerciseGymId);
+			_logger.LogDebug("Starting getexercisegymbyid for ExerciseGym", exerciseGymId);
 			try
 			{
                 var result = await _exerciseGymRepository.GetAllExerciseGyms();
 				return Ok(result.Single(ex => ex.Id == exerciseGymId));
 			}
 			catch (Exception ex)
-			{
-				return BadRequest(ex.Message);
+            {
+				_logger.LogError("Error in getexercisegymbyid for {exerciseGymId}: {message}", exerciseGymId, ex.Message);
+                return BadRequest(ex.Message);
 			}
 		}
 
@@ -65,16 +66,17 @@ namespace FacilityServiceAPI.Controllers
         [HttpPost("insert")]
         public async Task<IActionResult> InsertExerciseGym([FromBody] ExerciseGym exerciseGym)
         {
-            _logger.LogDebug("Starting InsertExerciseGym for exerciseGym" + exerciseGym.Name);
+            _logger.LogDebug("Starting InsertExerciseGym for exerciseGym", exerciseGym.Name);
 
             try
             {
                 await _exerciseGymRepository.InsertExerciseGym(exerciseGym);
-
+                _logger.LogInformation("ExerciseGym {name} inserted successfully", exerciseGym.Name);
                 return Ok();
             }
             catch (Exception ex)
             {
+                _logger.LogError("Error inserting exerciseGym {name}: {message}", exerciseGym.Name, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -87,16 +89,17 @@ namespace FacilityServiceAPI.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> UpdateExerciseGym([FromBody] ExerciseGym exerciseGym)
         {
-            _logger.LogDebug("starting updateexercisegym for exercisegym" + exerciseGym.Id);
+            _logger.LogDebug("starting updateexercisegym for exercisegym", exerciseGym.Id);
 
             try
             {
                 await _exerciseGymRepository.UpdateExerciseGym(exerciseGym);
-
+                _logger.LogInformation("ExerciseGym {id} updated successfully", exerciseGym.Id);
                 return Ok();
             }
             catch (Exception ex)
             {
+                _logger.LogError("Error updating exerciseGym {id}: {message}", exerciseGym.Id, ex.Message);
                 return BadRequest(ex.Message);
             }
         }

@@ -25,16 +25,6 @@ namespace UserServiceAPI.Repositories
             return await _context.Users.ToListAsync();
         }
 
-        public Task<List<User>> GetUsersByAffiliation(Guid affiliationId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<User>> GetUsersInExerciseGymByRole(Guid exerciseGymId, string role)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// Asynchronously adds predefined employee and member users to the data context and saves the changes.
         /// </summary>

@@ -8,96 +8,147 @@ namespace PTServiceAPI.Controllers
     [Route("[controller]")]
     public class PTController : ControllerBase
     {
-        //JBS: Der bliver logget til fejlhåndtering og repository til databehandling her. 
+        //JBS: Logger is injected for error handling, repository for data processing
         private readonly ILogger<PTController> _logger;
         private readonly ISessionRepository _sessionRepository;
 
-        //JBS: Dependency injection af logger og repository vha. konstruktøren
+        //JBS: Dependency injection of logger and repository via constructor
         public PTController(ILogger<PTController> logger, ISessionRepository sessionRepository)
         {
             _logger = logger;
             _sessionRepository = sessionRepository;
 
-            //Vi logger hvilke server og IP der svarer
+            //JBS: Log which server and IP is responding
             var hostName = System.Net.Dns.GetHostName();
             var ips = System.Net.Dns.GetHostAddresses(hostName);
             var ipaddr = ips.First().MapToIPv4().ToString();
-            _logger.LogInformation(1, $"PTService responding from {ipaddr}");
+            _logger.LogInformation("PTService responding from {IpAddress}", ipaddr);
         }
 
-        //JBS: Her bliver alle sessioner fra repository hentet
+        //JBS: Fetches all sessions from the repository
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            _logger.LogInformation("Henter alle sessioner");
-            var sessions = await _sessionRepository.GetAllAsync();
-            return Ok(sessions);
+            _logger.LogDebug("Fetching all sessions");
+            try
+            {
+                var sessions = await _sessionRepository.GetAllAsync();
+                return Ok(sessions);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error fetching all sessions: {message}", ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        //JBS: Henter en enkelt session baseret på id - returnerer 404 hvis den ikke bliver fundet
+        //JBS: Fetches a single session by id - returns 404 if not found
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            _logger.LogInformation("Henter session med id: {id}", id);
-            var session = await _sessionRepository.GetByIdAsync(id);
-            if (session == null)
+            _logger.LogDebug("Fetching session with id: {id}", id);
+            try
             {
-                _logger.LogWarning("Session med id: {id} blev ikke fundet!", id);
-                return NotFound();
+                var session = await _sessionRepository.GetByIdAsync(id);
+                if (session == null)
+                {
+                    _logger.LogWarning("Session with id: {id} was not found", id);
+                    return NotFound();
+                }
+                return Ok(session);
             }
-            return Ok(session);
+            catch (Exception ex)
+            {
+                _logger.LogError("Error fetching session with id {id}: {message}", id, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        //JBS: Opretter en ny booking af personlig træning
-        //JBS: Returnerer en 201 Created med link til den nye ressource
+        //JBS: Creates a new personal training booking
+        //JBS: Returns 201 Created with a link to the new resource
         [HttpPost]
         public async Task<IActionResult> Book(Session session)
         {
-            _logger.LogInformation("Booker ny session for medlem: {memberId}", session.MemberId);
-            await _sessionRepository.AddAsync(session);
-            return CreatedAtAction(nameof(GetById), new { id = session.Id }, session);
+            _logger.LogDebug("Booking new session for member: {memberId}", session.MemberId);
+            try
+            {
+                await _sessionRepository.AddAsync(session);
+                _logger.LogInformation("Session booked for member: {memberId}", session.MemberId);
+                return CreatedAtAction(nameof(GetById), new { id = session.Id }, session);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error booking session for member {memberId}: {message}", session.MemberId, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        //JBS: Accepterer en personlig træningsession og markerer den som gennemført
+        //JBS: Accepts a personal training session and marks it as completed
         [HttpPut("{id}/accept")]
         public async Task<IActionResult> Accept(Guid id)
         {
-            _logger.LogInformation("Accepterer session med id: {id}", id);
-            var session = await _sessionRepository.GetByIdAsync(id);
-            if (session == null)
+            _logger.LogDebug("Accepting session with id: {id}", id);
+            try
             {
-                _logger.LogWarning("Session med id: {id} blev ikke fundet", id);
-                return NotFound();
+                var session = await _sessionRepository.GetByIdAsync(id);
+                if (session == null)
+                {
+                    _logger.LogWarning("Session with id: {id} was not found", id);
+                    return NotFound();
+                }
+                session.CompleteProgram();
+                await _sessionRepository.UpdateAsync(session);
+                _logger.LogInformation("Session with id: {id} accepted", id);
+                return Ok(session);
             }
-            session.CompleteProgram();
-            await _sessionRepository.UpdateAsync(session);
-            return Ok(session);
+            catch (Exception ex)
+            {
+                _logger.LogError("Error accepting session with id {id}: {message}", id, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        //JBS: Afmelder en personlig træningsession og sletter den fra repository
+        //JBS: Cancels a personal training session and removes it from the repository
         [HttpDelete("{id}")]
         public async Task<IActionResult> Cancel(Guid id)
         {
-            _logger.LogInformation("Afmelder session med id: {id}", id);
-            await _sessionRepository.DeleteAsync(id);
-            return NoContent();
+            _logger.LogDebug("Cancelling session with id: {id}", id);
+            try
+            {
+                await _sessionRepository.DeleteAsync(id);
+                _logger.LogInformation("Session with id: {id} cancelled", id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error cancelling session with id {id}: {message}", id, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
-        
-        //JBS: Afviser en personlig træningsession og markerer den som annulleret
+
+        //JBS: Rejects a personal training session and marks it as cancelled
         [HttpPut("{id}/reject")]
         public async Task<IActionResult> Reject(Guid id)
         {
-            _logger.LogInformation("Afviser session med id: {id}", id);
-            var session = await _sessionRepository.GetByIdAsync(id);
-            if (session == null)
+            _logger.LogDebug("Rejecting session with id: {id}", id);
+            try
             {
-                _logger.LogWarning("Session med id: {id} blev ikke fundet", id);
-                return NotFound();
+                var session = await _sessionRepository.GetByIdAsync(id);
+                if (session == null)
+                {
+                    _logger.LogWarning("Session with id: {id} was not found", id);
+                    return NotFound();
+                }
+                session.CancelProgram();
+                await _sessionRepository.UpdateAsync(session);
+                _logger.LogInformation("Session with id: {id} rejected", id);
+                return Ok(session);
             }
-            session.CancelProgram();
-            await _sessionRepository.UpdateAsync(session);
-            return Ok(session);
+            catch (Exception ex)
+            {
+                _logger.LogError("Error rejecting session with id {id}: {message}", id, ex.Message);
+                return StatusCode(500, ex.Message);
+            }
         }
-
     }
 }

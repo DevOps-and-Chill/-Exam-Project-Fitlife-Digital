@@ -24,15 +24,14 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetAllMembers")]
         public async Task<ActionResult> GetAllMembers()
         {
-            _logger.LogInformation("Retrieving all members");
-
+            _logger.LogDebug("Fetching all members");
             try
             {
                 return Ok(await _memberRepository.GetAllMembers());
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to retrieve all members: {Message}", ex.Message);
+                _logger.LogError("Error fetching all members: {message}", ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -43,15 +42,14 @@ namespace UserServiceAPI.Controllers
         [HttpPut("CancelMembership/{userId}")]
         public async Task<ActionResult> CancelMembership(string userId)
         {
-            _logger.LogInformation("Cancelling membership for user {UserId}", userId);
-
+            _logger.LogDebug("Cancelling membership for user: {userId}", userId);
             try
             {
                 return Ok(await _memberRepository.CancelMembershipForMember(userId));
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to cancel membership for user {UserId}: {Message}", userId, ex.Message);
+                _logger.LogError("Error cancelling membership for {userId}: {message}", userId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -62,22 +60,16 @@ namespace UserServiceAPI.Controllers
         [HttpPost("UpsertMember")]
         public async Task<ActionResult> UpsertMember([FromBody] Member member)
         {
-            _logger.LogInformation("Creating or updating member {MemberId}", member.Id);
-
+            _logger.LogDebug("Upserting member: {memberId}", member.Id);
             try
             {
                 Member updatedMember = await _memberRepository.UpsertMember(member);
-
-                _logger.LogInformation("Successfully created or updated member {MemberId}", member.Id);
-
+                _logger.LogInformation("Member upserted: {memberId}", member.Id);
                 return Ok(updatedMember);
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogWarning(
-                    "Invalid operation while upserting member {MemberId}: {Message}",
-                    member.Id,
-                    ex.Message);
+                _logger.LogWarning("Invalid operation while upserting member {MemberId}: {Message}", member.Id, ex.Message);
 
                 return BadRequest(ex.Message);
             }
@@ -89,18 +81,14 @@ namespace UserServiceAPI.Controllers
         [HttpDelete("DeleteMember/{userId}")]
         public async Task<ActionResult> DeleteMember(string userId)
         {
-            _logger.LogInformation("Deleting member {UserId}", userId);
-
+            _logger.LogDebug("Deleting member: {userId}", userId);
             try
             {
                 return Ok(await _memberRepository.DeleteMember(userId));
             }
             catch (Exception ex)
             {
-                _logger.LogError(
-                    "Failed to delete member {UserId}: {Message}",
-                    userId,
-                    ex.Message);
+                _logger.LogError("Failed to delete member {UserId}: {Message}", userId, ex.Message);
 
                 return BadRequest(ex.Message);
             }
@@ -112,21 +100,14 @@ namespace UserServiceAPI.Controllers
         [HttpPut("SetAccountAsInactive/{userId}")]
         public async Task<ActionResult> SetMemberAccountAsInactive(string userId)
         {
-            _logger.LogInformation(
-                "Setting account as inactive for user {UserId}",
-                userId);
-
+            _logger.LogDebug("Setting account as inactive for user: {userId}", userId);
             try
             {
                 return Ok(await _memberRepository.SetAccountAsInactive(userId));
             }
             catch (Exception ex)
             {
-                _logger.LogError(
-                    "Failed to deactivate account for user {UserId}: {Message}",
-                    userId,
-                    ex.Message);
-
+                _logger.LogError("Error deactivating account for {userId}: {message}", userId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -137,9 +118,7 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetMemberById/{userId}")]
         public async Task<ActionResult> GetMemberById(string userId)
         {
-            _logger.LogInformation(
-                "Retrieving member with id {UserId}",
-                userId);
+            _logger.LogInformation("Retrieving member with id {UserId}", userId);
 
             try
             {
@@ -147,23 +126,16 @@ namespace UserServiceAPI.Controllers
 
                 if (member is null)
                 {
-                    _logger.LogWarning(
-                        "Member with id {UserId} was not found",
-                        userId);
+                    _logger.LogWarning("Member with id {UserId} was not found", userId);
 
-                    return NotFound(
-                        $"Member with id '{userId}' was not found");
+                    return NotFound($"Member with id '{userId}' was not found");
                 }
 
                 return Ok(member);
             }
             catch (Exception ex)
             {
-                _logger.LogError(
-                    "Failed to retrieve member {UserId}: {Message}",
-                    userId,
-                    ex.Message);
-
+                _logger.LogError("Failed to retrieve member {UserId}: {Message}", userId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -174,9 +146,7 @@ namespace UserServiceAPI.Controllers
         [HttpGet("GetMemberByAffiliation/{affiliationId}")]
         public async Task<ActionResult> GetMemberByAffiliation(Guid affiliationId)
         {
-            _logger.LogInformation(
-                "Retrieving members for affiliation {AffiliationId}",
-                affiliationId);
+            _logger.LogInformation("Retrieving members for affiliation {AffiliationId}", affiliationId);
 
             try
             {
@@ -186,10 +156,7 @@ namespace UserServiceAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(
-                    "Failed to retrieve members for affiliation {AffiliationId}: {Message}",
-                    affiliationId,
-                    ex.Message);
+                _logger.LogError("Failed to retrieve members for affiliation {AffiliationId}: {Message}", affiliationId, ex.Message);
 
                 return BadRequest(ex.Message);
             }

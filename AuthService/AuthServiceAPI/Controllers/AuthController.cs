@@ -42,14 +42,11 @@ namespace AuthServiceAPI.Controllers
         [HttpPost("RegisterCredentials")]
         public async Task<ActionResult> RegisterCredentials([FromBody] RegisterCredentialsRequestDTO registerDTO)
         {
-            _logger.LogInformation("Registering new credentials");
-
+            _logger.LogDebug("Registering new credentials for user");
             try
             {
                 await _credentialService.CreateCredential(registerDTO);
-
                 _logger.LogInformation("Credentials created successfully");
-
                 return Ok(new
                 {
                     message = "Credential created successfully"
@@ -57,8 +54,7 @@ namespace AuthServiceAPI.Controllers
             }
             catch (ArgumentException ex)
             {
-                _logger.LogWarning("Invalid registration request: {Message}", ex.Message);
-
+                _logger.LogWarning("Invalid registration request: {message}", ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -77,21 +73,18 @@ namespace AuthServiceAPI.Controllers
         [HttpPost("Login")]
         public async Task<ActionResult> Login([FromBody] LoginRequestDTO loginRequestDTO)
         {
-            _logger.LogInformation("Login attempt");
-
+            _logger.LogDebug("Login attempt");
             try
             {
                 string? token = await _credentialService.Login(loginRequestDTO);
 
                 if (string.IsNullOrEmpty(token))
                 {
-                    _logger.LogWarning("Login failed due to invalid credentials");
-
+                    _logger.LogWarning("Login failed — invalid credentials");
                     return Unauthorized();
                 }
 
-                _logger.LogInformation("Login completed successfully");
-
+                _logger.LogInformation("Login successful");
                 return Ok(new
                 {
                     token
@@ -99,8 +92,7 @@ namespace AuthServiceAPI.Controllers
             }
             catch (ArgumentException ex)
             {
-                _logger.LogWarning("Invalid login request: {Message}", ex.Message);
-
+                _logger.LogWarning("Invalid login request: {message}", ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -124,26 +116,21 @@ namespace AuthServiceAPI.Controllers
         [HttpDelete("DeleteCredentials")]
         public async Task<ActionResult> DeleteCredentials([FromBody] string userId)
         {
-            _logger.LogInformation("Deleting credentials for user {UserId}", userId);
-
+            _logger.LogDebug("Deleting credentials for user: {userId}", userId);
             try
             {
                 await _credentialService.RemoveCredentials(userId);
-
-                _logger.LogInformation("Credentials deleted for user {UserId}", userId);
-
+                _logger.LogInformation("Credentials deleted for user: {userId}", userId);
                 return Ok();
             }
             catch (KeyNotFoundException ex)
             {
-                _logger.LogWarning("Credentials not found for user {UserId}", userId);
-
+                _logger.LogWarning("Credentials not found for user: {userId}", userId);
                 return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to delete credentials for user {UserId}: {Message}", userId, ex.Message);
-
+                _logger.LogError("Error deleting credentials for user: {userId} - {message}", userId, ex.Message);
                 return BadRequest(ex.Message);
             }
         }

@@ -86,7 +86,7 @@ namespace AuthServiceAPI.Repositories
         public async Task<Credential?> GetCredentialsByEmail(string email)
         {
             return await _context.UserCredential
-                .SingleOrDefaultAsync(c => c.Email == email);
+                .SingleOrDefaultAsync(c => c.Email == email.ToLower());
         }
     }
 }

@@ -1,5 +1,6 @@
-using System.Net.Http.Json;
 using FitLife.Frontend.Models;
+using System.Diagnostics.Metrics;
+using System.Net.Http.Json;
 
 namespace FitLife.Frontend.Services;
 
@@ -25,7 +26,7 @@ public class MemberService
         {
             var members =
                 await _httpClient.GetFromJsonAsync<List<Member>>(
-                    "/member/GetAllMembers");
+                    "member/GetAllMembers");
 
             return members ?? new List<Member>();
         }
@@ -34,6 +35,35 @@ public class MemberService
             throw new Exception(
                 $"Kunne ikke hente medlemmer fra UserService. Fejl: {ex.Message}",
                 ex);
+        }
+    }
+    
+    public async Task<Member?> GetMemberByIdAsync(string id)
+    {
+        try
+        {
+            return await _httpClient.GetFromJsonAsync<Member>($"member/GetMemberById/{id}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Kunne ikke hente medlem med id {id}. Fejl: {ex.Message}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Get member from userservice
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns>Memberobject or null</returns>
+    public async Task<Member?> GetMemberAsync(string userId)
+    {
+        try
+        {
+            return await _httpClient.GetFromJsonAsync<Member>($"member/GetMemberById/{userId}");
+        }
+        catch
+        {
+            return null;
         }
     }
 
@@ -46,7 +76,7 @@ public class MemberService
         {
             var response =
                 await _httpClient.PostAsJsonAsync(
-                    "/member/UpsertMember",
+                    "member/UpsertMember",
                     member);
 
             if (!response.IsSuccessStatusCode)
