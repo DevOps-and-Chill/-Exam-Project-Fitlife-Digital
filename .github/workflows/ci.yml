@@ -19,7 +19,7 @@ jobs:
     - name: Login to ACR
       uses: azure/docker-login@v2
       with:
-        login-server: fitlifedigitaljfl.azurecr.io
+        login-server: fitlifedigital.azurecr.io
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
     
