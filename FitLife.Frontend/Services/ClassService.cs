@@ -20,7 +20,7 @@ public class ClassService
 
     public async Task<List<Class>> GetAllClassesAsync()
     {
-        return await _httpClient.GetFromJsonAsync<List<Class>>("class") ?? new();
+        return await _httpClient.GetFromJsonAsync<List<Class>>("class/gym/{exercisegymid}") ?? new();
     }
 
     public async Task RegisterMemberAsync(string classId, Member member)
