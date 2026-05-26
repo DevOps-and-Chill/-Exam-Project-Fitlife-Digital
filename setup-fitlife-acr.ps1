@@ -1,14 +1,14 @@
 param(
     
-    [string]$SubscriptionId = "", #Remove THIS!! should not be public and unique for each group member! 
-    [string]$ResourceGroupName = "rg-fitlife-digital",
-    [string]$Location = "westeurope",
+    [string]$SubscriptionId = "c073dbb4-c517-4b8b-9614-3bfe50abeb2d", #Remove THIS!! should not be public and unique for each group member! 
+    [string]$ResourceGroupName = "FitLifeDigital_RG",
+    [string]$Location = "poland central",
 
     # Must be globally unique, lowercase, 5-50 characters, only letters/numbers.
     # Example: fitlifedigitaljfl
     
-    [string]$AcrName = "fitlifedigitaljfl", #Change this to a unique name
-    [string]$Sku = "Basic"
+    [string]$AcrName = "fitlifedigital", #Change this to a unique name
+    [string]$Sku = "Standard"
 
 )
 
@@ -47,17 +47,17 @@ if ($AcrName -notmatch '^[a-z0-9]{5,50}$') {
 }
 
 # 5. Create resource group
-Write-Host "Creating resource group '$ResourceGroupName' in '$Location'..." -ForegroundColor Cyan
+# Write-Host "Creating resource group '$ResourceGroupName' in '$Location'..." -ForegroundColor Cyan
 
-az group create `
-    --name $ResourceGroupName `
-    --location $Location `
-    --tags project=fitlife-digital
+# az group create `
+#    --name $ResourceGroupName `
+#    --location $Location `
+#    --tags project=fitlife-digital
 
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to create resource group."
-    exit 1
-}
+# if ($LASTEXITCODE -ne 0) {
+#    Write-Error "Failed to create resource group."
+#    exit 1
+# }
 
 # 6. Create Azure Container Registry
 Write-Host "Creating Azure Container Registry '$AcrName'..." -ForegroundColor Cyan
@@ -65,6 +65,7 @@ Write-Host "Creating Azure Container Registry '$AcrName'..." -ForegroundColor Cy
 az acr create `
     --resource-group $ResourceGroupName `
     --name $AcrName `
+    --location $Location `
     --sku $Sku `
     --admin-enabled false `
     --tags project=fitlife-digital

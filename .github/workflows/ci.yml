@@ -22,3 +22,6 @@ jobs:
         login-server: fitlifedigitaljfl.azurecr.io
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
+    
+    - name: Verify login
+      run: docker info

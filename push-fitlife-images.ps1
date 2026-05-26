@@ -1,8 +1,8 @@
 param(
     
-    [string]$AcrName = "fitlifedigitaljfl",
+    [string]$AcrName = "fitlifedigital",
 
-    [string]$ResourceGroupName = "rg-fitlife-digital",
+    [string]$ResourceGroupName = "FitLifeDigital_RG",
 
     [string]$ImageTag = "latest"
 )
@@ -65,7 +65,7 @@ $images = @(
     },
     @{
         Name = "frontend"
-        Dockerfile = "FitLife.Frontend\Dockerfile.yml"
+        Dockerfile = "FitLife.Frontend\Dockerfile"
         Context = "FitLife.Frontend"
     },
     @{
@@ -84,9 +84,9 @@ $images = @(
         Context = "UserService\UserService"
     },
     @{
-        Name = "rapportservice"
-        Dockerfile = "RapportService\RapportServiceAPI\Dockerfile"
-        Context = "RapportService\RapportServiceAPI"
+        Name = "statisticservice"
+        Dockerfile = "StatisticService\StatisticServiceAPI\Dockerfile"
+        Context = "StatisticService\StatisticServiceAPI"
     },
     @{
         Name ="nginxgateway"
