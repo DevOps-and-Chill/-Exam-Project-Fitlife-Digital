@@ -5,6 +5,10 @@ on:
     branches:
       - Release
 
+permissions:
+  contents: read
+  checks: write
+
 jobs:
 
   build:
