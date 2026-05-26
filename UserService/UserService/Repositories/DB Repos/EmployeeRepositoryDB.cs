@@ -28,7 +28,7 @@ namespace UserServiceAPI.Repositories
                 return null;
             }
 
-            _context.Users.Remove(employee);
+            _context.Employees.Remove(employee);
 
             await _context.SaveChangesAsync();
 
@@ -62,7 +62,7 @@ namespace UserServiceAPI.Repositories
         /// <returns>List of employees</returns>
         public async Task<List<Employee>> GetAllEmployees()
         {
-            return await _context.Users.OfType<Employee>().ToListAsync();
+            return await _context.Employees.ToListAsync();
         }
 
         /// <summary>
@@ -113,9 +113,7 @@ namespace UserServiceAPI.Repositories
         /// <returns>return the employee-object. Returns null if not found</returns>
         public async Task<Employee?> GetEmployeeById(string userId)
         {
-            var employee = await _context.Users
-                .OfType<Employee>()
-                .FirstOrDefaultAsync(m => m.Id == userId);
+            var employee = await _context.Employees.FirstOrDefaultAsync(m => m.Id == userId);
             return employee;
         }
 
@@ -127,10 +125,12 @@ namespace UserServiceAPI.Repositories
         /// <exception cref="InvalidOperationException"></exception>
         public async Task<Employee> UpsertEmployee(Employee employee)
         {
-            bool emailExists = await _context.Users
-               .AnyAsync(u =>
-                   u.Email == employee.Email &&
-                   u.Id != employee.Id);
+            var existing = await _context.Employees
+                .FirstOrDefaultAsync(u =>
+                    u.Email == employee.Email &&
+                    u.Id != employee.Id);
+
+            bool emailExists = existing != null;
 
             if (emailExists)
             {
@@ -141,7 +141,7 @@ namespace UserServiceAPI.Repositories
 
             if (existingEmployee is null)
             {
-                _context.Users.Add(employee);
+                _context.Employees.Add(employee);
             }
             else
             {
@@ -175,10 +175,7 @@ namespace UserServiceAPI.Repositories
         /// <returns>Returns list of employees</returns>
         public async Task<List<Employee>> GetEmployeesByAffiliation(Guid affiliationId)
         {
-            return await _context.Users
-                .OfType<Employee>()
-                .Where(e => e.Affiliation == affiliationId)
-                .ToListAsync();
+            return await _context.Employees.Where(e => e.Affiliation == affiliationId).ToListAsync();
         }
     }
 }

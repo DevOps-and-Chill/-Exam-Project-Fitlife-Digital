@@ -126,6 +126,68 @@
 
         </div>
 
+        <!-- TILFØJET: Oversigt over indkomne PT-anmodninger med accept/afvis -->
+        <h3 class="fw-bold mb-4">Indkomne anmodninger</h3>
+
+        @if (IsLoading)
+        {
+            <div class="alert alert-info">Henter anmodninger...</div>
+        }
+        else if (Sessions.Count == 0)
+        {
+            <div class="alert alert-secondary">Ingen PT-anmodninger at vise.</div>
+        }
+        else
+        {
+            <div class="row g-4 mb-5">
+                @foreach (var session in Sessions)
+                {
+                    <div class="col-md-6">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-body p-4">
+
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="fw-bold mb-0">Session</h5>
+                                    <span class="badge @GetStatusBadgeClass(session.Status)">
+                                        @session.Status
+                                    </span>
+                                </div>
+
+                                <p class="mb-1">
+                                    <strong>Medlem ID:</strong> @session.MemberId
+                                </p>
+                                <p class="mb-1">
+                                    <strong>Træner ID:</strong> @session.PersonalTrainerId
+                                </p>
+                                <p class="mb-1">
+                                    <strong>Start:</strong> @session.StartDate.ToString("dd/MM/yyyy HH:mm")
+                                </p>
+                                <p class="mb-3">
+                                    <strong>Slut:</strong> @session.EndDate.ToString("dd/MM/yyyy HH:mm")
+                                </p>
+
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-success"
+                                            @onclick="() => AcceptSession(session)">
+                                        Accepter
+                                    </button>
+                                    <button class="btn btn-danger"
+                                            @onclick="() => RejectSession(session)">
+                                        Afvis
+                                    </button>
+                                    <button class="btn btn-outline-secondary"
+                                            @onclick="() => CancelSession(session)">
+                                        Annuller
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
         <!-- Bookingpanel -->
         @if (SelectedTrainerForBooking is not null)
         {
@@ -311,6 +373,10 @@
     // Holder styr på hvilken træner brugeren skriver til
     private Trainer? SelectedTrainerForMessage;
 
+    // List over PT-sessions and loading state
+    private List<PersonalTrainingSession> Sessions = new();
+    private bool IsLoading = true;
+
     // Midlertidige bookingfelter
     private DateTime? SelectedDate;
     private string SelectedTime = "";
@@ -341,15 +407,34 @@
         try
         {
             Centers = await CenterService.GetCentersAsync();
-
             // Vælger første center som standard hvis der findes centre
             SelectedCenterId = Centers.FirstOrDefault()?.Id ?? "";
-
             Trainers = await TrainerService.GetTrainersAsync();
+
+            // Retrieving PT sessions
+            await LoadSessions();
         }
         catch (Exception ex)
         {
             StatusMessage = $"Kunne ikke hente data: {ex.Message}";
+        }
+    }
+
+    // Retrieves all sessions from PTService
+    private async Task LoadSessions()
+    {
+        try
+        {
+            IsLoading = true;
+            Sessions = await PTService.GetSessionsAsync();
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Kunne ikke hente sessioner: {ex.Message}";
+        }
+        finally
+        {
+            IsLoading = false;
         }
     }
 
@@ -511,5 +596,59 @@
         SelectedTrainerForMessage = null;
 
         NewMessage = new Message();
+    }
+
+    // Accepting a PT session via PTService
+    private async Task AcceptSession(PersonalTrainingSession session)
+    {
+        var success = await PTService.AcceptSessionAsync(session.Id);
+        if (success)
+        {
+            StatusMessage = "Session accepteret.";
+            await LoadSessions();
+        }
+        else
+        {
+            StatusMessage = "Kunne ikke acceptere sessionen. Tjek at PTService kører.";
+        }
+    }
+
+    // Rejecting a PT session via PTService
+    private async Task RejectSession(PersonalTrainingSession session)
+    {
+        var success = await PTService.RejectSessionAsync(session.Id);
+        if (success)
+        {
+            StatusMessage = "Session afvist.";
+            await LoadSessions();
+        }
+        else
+        {
+            StatusMessage = "Kunne ikke afvise sessionen. Tjek at PTService kører.";
+        }
+    }
+
+    // Canceling a PT session via PTService
+    private async Task CancelSession(PersonalTrainingSession session)
+    {
+        var success = await PTService.CancelSessionAsync(session.Id);
+        if (success)
+        {
+            StatusMessage = "Session annulleret.";
+            await LoadSessions();
+        }
+        else
+        {
+            StatusMessage = "Kunne ikke annullere sessionen. Tjek at PTService kører.";
+        }
+    }
+
+    // Returns Bootstrap badge class based on session state
+    private string GetStatusBadgeClass(int status)
+    {
+        if (status == 0) return "bg-warning text-dark"; // Pending
+        if (status == 1) return "bg-success";            // Completed
+        if (status == 2) return "bg-danger";             // Cancelled
+        return "bg-secondary";
     }
 }

@@ -43,6 +43,7 @@ ScaffoldingReadMe.txt
 ~$*
 *~
 CodeCoverage/
+.env
 
 # MSBuild Binary and Structured Log
 *.binlog
@@ -79,3 +80,6 @@ nunit-*.xml
 /DigitalContentServiceAPI/DigitalContentService/.github
 /DigitalContentServiceAPI/DigitalContentService/.vs/DigitalContentService/DesignTimeBuild
 /UserService/packages/
+.idea/
+!.idea/codeStyles/
+!.idea/runConfigurations/

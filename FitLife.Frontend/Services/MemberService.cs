@@ -1,5 +1,6 @@
-using System.Net.Http.Json;
 using FitLife.Frontend.Models;
+using System.Diagnostics.Metrics;
+using System.Net.Http.Json;
 
 namespace FitLife.Frontend.Services;
 
@@ -46,6 +47,26 @@ public class MemberService
         catch (Exception ex)
         {
             throw new Exception($"Kunne ikke hente medlem med id {id}. Fejl: {ex.Message}", ex);
+        }
+    }
+
+  /// <summary>
+  /// Get a member by string (guid as string) 
+  /// </summary>
+  /// <param name="userId"></param>
+  /// <returns>Returns a member object from userservice</returns>
+  /// <exception cref="Exception"></exception>
+    public async Task<Member> GetMemberAsync(string userId)
+    {
+        try
+        {
+            var member = await _httpClient.GetFromJsonAsync<Member>($"/member/GetMemberById/{userId}");
+
+            return member;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Kunne ikke hente medlem fra UserService. \n Errormessage: {ex.Message}", ex);
         }
     }
 

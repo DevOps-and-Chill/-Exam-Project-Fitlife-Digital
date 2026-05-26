@@ -1,0 +1,64 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\StatisticService\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{68B72240-03A6-0841-3605-1354E139D17B}|StatisticServiceAPI\\StatisticService.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\statisticservice\\statisticserviceapi\\extensions\\vaultconfigurationextension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{68B72240-03A6-0841-3605-1354E139D17B}|StatisticServiceAPI\\StatisticService.csproj|solutionrelative:statisticserviceapi\\extensions\\vaultconfigurationextension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{68B72240-03A6-0841-3605-1354E139D17B}|StatisticServiceAPI\\StatisticService.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\statisticservice\\statisticserviceapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{68B72240-03A6-0841-3605-1354E139D17B}|StatisticServiceAPI\\StatisticService.csproj|solutionrelative:statisticserviceapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\StatisticService\\StatisticServiceAPI\\Program.cs",
+              "RelativeDocumentMoniker": "StatisticServiceAPI\\Program.cs",
+              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\StatisticService\\StatisticServiceAPI\\Program.cs",
+              "RelativeToolTip": "StatisticServiceAPI\\Program.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAiwBsAAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-25T19:40:02.507Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "VaultConfigurationExtension.cs",
+              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\StatisticService\\StatisticServiceAPI\\Extensions\\VaultConfigurationExtension.cs",
+              "RelativeDocumentMoniker": "StatisticServiceAPI\\Extensions\\VaultConfigurationExtension.cs",
+              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\StatisticService\\StatisticServiceAPI\\Extensions\\VaultConfigurationExtension.cs",
+              "RelativeToolTip": "StatisticServiceAPI\\Extensions\\VaultConfigurationExtension.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-25T19:39:07.191Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -18,23 +18,23 @@ public class MessageController : ControllerBase
     }
     
     // POST
-    
-    [HttpPost("send")]
-    public async Task<IActionResult> SendMessage(MessageDto dto)
-    {
-        _logger.LogDebug("Sending message from {senderId} to {receiverId}", message.SenderId, message.ReceiverId);
-        try
-        {
-            await _messageService.SendDirectMessageAsync(message);
-            _logger.LogInformation("Message sent successfully");
-            return Ok("Message sent");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Error sending message: {message}", ex.Message);
-            return BadRequest(ex.Message);
-        }
-    }
+    //AO: Skal fikses. 
+    //[HttpPost("send")]
+    //public async Task<IActionResult> SendMessage(MessageDto dto)
+    //{
+    //    _logger.LogDebug("Sending message from {senderId} to {receiverId}", dto.SenderId, dto.ReceiverId);
+    //    try
+    //    {
+    //        await _messageService.SendDirectMessageAsync(dto);
+    //        _logger.LogInformation("Message sent successfully");
+    //        return Ok("Message sent");
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        _logger.LogError("Error sending message: {message}", ex.Message);
+    //        return BadRequest(ex.Message);
+    //    }
+    //}
     
     // GET
 

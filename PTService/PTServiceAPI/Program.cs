@@ -1,9 +1,10 @@
-using Microsoft.Azure.Cosmos;
 using Azure.Identity;
+using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
 using PTServiceAPI.Data;
+using PTServiceAPI.Extensions;
 using PTServiceAPI.Repositories;
 using Scalar.AspNetCore;
 using System.Threading.Tasks;
@@ -23,10 +24,10 @@ namespace PTServiceAPI
                 //JBS: Opsæt NLog og hent en logger instans til at logge opstart og fejl 
                 var builder = WebApplication.CreateBuilder(args);
 
-                //AO: Config for KeyVault
-                builder.Configuration.AddAzureKeyVault(
-                    new Uri("https://fitlifedigitalkv.vault.azure.net/"),
-                    new DefaultAzureCredential());
+                await builder.LoadVault();
+                //builder.Configuration.AddAzureKeyVault(
+                //        new Uri("https://fitlifedigitalkv.vault.azure.net/"),
+                //        new DefaultAzureCredential());
 
 
                 //JBS: Ryd eksisterende logging providers og så bruger vi NLog i stedet for.
