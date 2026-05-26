@@ -18,7 +18,7 @@ public static class VaultConfigurationExtensions
         var client =
             new VaultClient(
                 new VaultClientSettings(
-                    "http://vault:8200",
+                    "http://localhost:8200",
                     auth));
 
         var secret =

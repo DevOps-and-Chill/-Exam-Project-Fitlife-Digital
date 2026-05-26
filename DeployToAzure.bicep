@@ -2,20 +2,20 @@
 param containerGroupName string = 'fitlife-services'
 
 @description('Azure region')
-param location string = resourceGroup().location
+param location string = 'poland central'
 
 @description('ACR image prefix')
-param imageLocationPrefix string = 'fitlifedigitaljfl.azurecr.io'
+param imageLocationPrefix string = 'fitlifedigital.azurecr.io'
 
 @description('Image tag for custom FitLife images')
-param imageTag string
+param imageTag string = 'latest'
 
 @description('ACR username')
-param acrUsername string
+param acrUsername string = 'fitlifedigital'
 
 @secure()
 @description('ACR password')
-param acrPassword string
+param acrPassword string = 'BQUCQ4NyKhYvGqEPjqm4Qc9dMDbnOZviu1By7Q1r5yHvu1t3tfIxJQQJ99CEACE1PydEqg7NAAACAZCRYNPa'
 
 @description('Restart behavior for the container group')
 @allowed([
@@ -26,7 +26,7 @@ param acrPassword string
 param restartPolicy string = 'Always'
 
 @secure()
-param vaultToken string
+param vaultToken string = 'fitlife-root-token'
 
 param frontendPort int = 8080
 param gatewayPort int = 4000
@@ -79,7 +79,7 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
           ]
           resources: {
             requests: {
-              cpu: json('0.25')
+              cpu: json('0.2')
               memoryInGB: json('0.5')
             }
           }
@@ -98,8 +98,8 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
           ]
           resources: {
             requests: {
-              cpu: json('0.25')
-              memoryInGB: json('0.25')
+              cpu: json('0.3')
+              memoryInGB: json('0.3')
             }
           }
         }
@@ -121,13 +121,25 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
               value: 'http://+:${authServicePort}'
             }
             {
+              name: 'Vault__Address'
+              value: 'http://localhost:8200'
+            }
+            {
+              name: 'VAULT_TOKEN'
+              secureValue: vaultToken
+            }
+            {
+              name: 'Vault__SecretPath'
+              value: 'secret/fitlife'
+            }
+            {
               name: 'Loki__Url'
               value: 'http://localhost:${lokiPort}'
             }
           ]
           resources: {
             requests: {
-              cpu: json('0.25')
+              cpu: json('0.2')
               memoryInGB: json('0.5')
             }
           }
@@ -161,10 +173,22 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
               name: 'Loki__Url'
               value: 'http://localhost:${lokiPort}'
             }
+                        {
+              name: 'Vault__Address'
+              value: 'http://localhost:8200'
+            }
+            {
+              name: 'VAULT_TOKEN'
+              secureValue: vaultToken
+            }
+            {
+              name: 'Vault__SecretPath'
+              value: 'secret/fitlife'
+            }
           ]
           resources: {
             requests: {
-              cpu: json('0.25')
+              cpu: json('0.2')
               memoryInGB: json('0.5')
             }
           }
@@ -190,10 +214,22 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
               name: 'Loki__Url'
               value: 'http://localhost:${lokiPort}'
             }
+            {
+              name: 'Vault__Address'
+              value: 'http://localhost:8200'
+            }
+            {
+              name: 'VAULT_TOKEN'
+              secureValue: vaultToken
+            }
+            {
+              name: 'Vault__SecretPath'
+              value: 'secret/fitlife'
+            }
           ]
           resources: {
             requests: {
-              cpu: json('0.25')
+              cpu: json('0.2')
               memoryInGB: json('0.5')
             }
           }
@@ -227,10 +263,22 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
               name: 'Loki__Url'
               value: 'http://localhost:${lokiPort}'
             }
+            {
+              name: 'Vault__Address'
+              value: 'http://localhost:8200'
+            }
+            {
+              name: 'VAULT_TOKEN'
+              secureValue: vaultToken
+            }
+            {
+              name: 'Vault__SecretPath'
+              value: 'secret/fitlife'
+            }
           ]
           resources: {
             requests: {
-              cpu: json('0.25')
+              cpu: json('0.2')
               memoryInGB: json('0.5')
             }
           }
@@ -256,10 +304,22 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
               name: 'Loki__Url'
               value: 'http://localhost:${lokiPort}'
             }
+            {
+              name: 'Vault__Address'
+              value: 'http://localhost:8200'
+            }
+            {
+              name: 'VAULT_TOKEN'
+              secureValue: vaultToken
+            }
+            {
+              name: 'Vault__SecretPath'
+              value: 'secret/fitlife'
+            }
           ]
           resources: {
             requests: {
-              cpu: json('0.25')
+              cpu: json('0.2')
               memoryInGB: json('0.5')
             }
           }
@@ -285,10 +345,22 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
               name: 'Loki__Url'
               value: 'http://localhost:${lokiPort}'
             }
+            {
+              name: 'Vault__Address'
+              value: 'http://localhost:8200'
+            }
+            {
+              name: 'VAULT_TOKEN'
+              secureValue: vaultToken
+            }
+            {
+              name: 'Vault__SecretPath'
+              value: 'secret/fitlife'
+            }
           ]
           resources: {
             requests: {
-              cpu: json('0.25')
+              cpu: json('0.2')
               memoryInGB: json('0.5')
             }
           }
@@ -314,10 +386,22 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
               name: 'Loki__Url'
               value: 'http://localhost:${lokiPort}'
             }
+            {
+              name: 'Vault__Address'
+              value: 'http://localhost:8200'
+            }
+            {
+              name: 'VAULT_TOKEN'
+              secureValue: vaultToken
+            }
+            {
+              name: 'Vault__SecretPath'
+              value: 'secret/fitlife'
+            }
           ]
           resources: {
             requests: {
-              cpu: json('0.25')
+              cpu: json('0.2')
               memoryInGB: json('0.5')
             }
           }
@@ -369,7 +453,7 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
           ]
           resources: {
             requests: {
-              cpu: json('0.25')
+              cpu: json('0.2')
               memoryInGB: json('0.5')
             }
           }
@@ -388,7 +472,7 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
           ]
           resources: {
             requests: {
-              cpu: json('0.25')
+              cpu: json('0.2')
               memoryInGB: json('0.5')
             }
           }
@@ -397,17 +481,14 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
       {
         name: 'vault'
         properties: {
-          image: 'hashicorp/vault:latest'
+          image: 'hashicorp/vault:1.20'
+
           command: [
+            'vault'
             'server'
             '-dev'
           ]
-          ports: [
-            {
-              port: vaultPort
-              protocol: 'TCP'
-            }
-          ]
+
           environmentVariables: [
             {
               name: 'VAULT_DEV_ROOT_TOKEN_ID'
@@ -417,17 +498,27 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
               name: 'VAULT_DEV_LISTEN_ADDRESS'
               value: '0.0.0.0:8200'
             }
+            {
+              name: 'VAULT_DISABLE_MLOCK'
+              value: 'true'
+            }
           ]
+
+          ports: [
+            {
+              port: 8200
+            }
+          ]
+
           resources: {
             requests: {
-              cpu: json('0.25')
-              memoryInGB: json('0.5')
+              cpu: json('0.5')
+              memoryInGB: json('1')
             }
           }
         }
       }
     ]
-
     ipAddress: {
       type: 'Public'
       ports: [
@@ -439,10 +530,13 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
           port: gatewayPort
           protocol: 'TCP'
         }
+        {
+          port: vaultPort
+          protocol: 'TCP'
+        }
       ]
     }
   }
-
   dependsOn: [
   ]
 }
