@@ -110,14 +110,14 @@ jobs:
       run: |
         docker build \
         -t fitlifedigital.azurecr.io/facilityservice:latest \
-        ./FacilityService
+        ./FacilityService/FacilityServiceAPI
 
     - name: Push FacilityService
       run: docker push fitlifedigital.azurecr.io/facilityservice:latest
 
 
     # RapportService
-    - name: Build RapportService
+    - name: Build StatisticService
       run: |
         docker build \
         -t fitlifedigital.azurecr.io/rapportservice:latest \
