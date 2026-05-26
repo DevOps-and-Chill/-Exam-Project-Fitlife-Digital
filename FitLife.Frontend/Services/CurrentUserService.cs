@@ -11,25 +11,34 @@ public class CurrentUserService
 
     private readonly IMemoryCache _cache;
 
-    public CurrentUserService(IMemoryCache cache, TokenService tokenService)
+    public CurrentUserService(IMemoryCache cache, TokenService tokenService, MemberService memberService, TrainerService trainerService)
     {
         _cache = cache;
         _tokenService = tokenService;
+        _memberService = memberService;
+        _trainerService = trainerService;
     }
-    public string? Token { get; private set; }
-
     public User? CurrentUser { get; private set; }
-
-    //public bool IsLoggedIn => _tokenService.G);
 
     public async Task SetCurrentUser()
     {
         CurrentUser ??= new User();
 
         var userId = await _tokenService.GetUserIdFromCachedToken();
+
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return;
+        }
+
         var role = await _tokenService.GetRoleBasedOnToken();
 
-        if (role?.ToLower() == "member")
+        if (string.IsNullOrWhiteSpace(role))
+        {
+            return;
+        }
+
+        if (role.Equals("member", StringComparison.OrdinalIgnoreCase))
         {
             var member = await _memberService.GetMemberAsync(userId);
 
@@ -40,8 +49,7 @@ public class CurrentUserService
                 _cache.Set("currentUser", member, TimeSpan.FromMinutes(60));
             }
         }
-
-        else if (role?.ToLower() == "employee")
+        else if (role.Equals("employee", StringComparison.OrdinalIgnoreCase))
         {
             var employee = await _trainerService.GetEmployeeById(userId);
 
@@ -56,7 +64,7 @@ public class CurrentUserService
 
     public void Logout()
     {
-        Token = null;
+        _tokenService.Clear();
         CurrentUser = null;
     }
 }

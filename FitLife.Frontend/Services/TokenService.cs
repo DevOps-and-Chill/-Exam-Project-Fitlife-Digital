@@ -48,19 +48,19 @@ public class TokenService
     }
 
     //AO: Pulls userId from token
-    public async Task<string?> GetUserIdFromCachedToken()
+    public Task<string?> GetUserIdFromCachedToken()
     {
         var handler = new JwtSecurityTokenHandler();
 
         var jwt = handler.ReadJwtToken(GetToken());
 
-        return jwt.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
+        string id = jwt.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        return Task.FromResult(id);
     }
 
     public async Task<string?> GetRoleBasedOnToken()
     {
-        var userId = GetUserIdFromCachedToken();
+        var userId = await GetUserIdFromCachedToken();
         var user = await _httpClient.GetFromJsonAsync<UserDto>($"user/GetUserById/{userId}");
         return user?.RoleName;
     }

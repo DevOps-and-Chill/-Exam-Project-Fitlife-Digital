@@ -26,7 +26,7 @@ public class MemberService
         {
             var members =
                 await _httpClient.GetFromJsonAsync<List<Member>>(
-                    "/member/GetAllMembers");
+                    "member/GetAllMembers");
 
             return members ?? new List<Member>();
         }
@@ -42,7 +42,7 @@ public class MemberService
     {
         try
         {
-            return await _httpClient.GetFromJsonAsync<Member>($"/member/GetMemberById/{id}");
+            return await _httpClient.GetFromJsonAsync<Member>($"member/GetMemberById/{id}");
         }
         catch (Exception ex)
         {
@@ -59,7 +59,7 @@ public class MemberService
     {
         try
         {
-            return await _httpClient.GetFromJsonAsync<Member>($"/member/GetMemberById/{userId}");
+            return await _httpClient.GetFromJsonAsync<Member>($"member/GetMemberById/{userId}");
         }
         catch
         {
@@ -76,7 +76,7 @@ public class MemberService
         {
             var response =
                 await _httpClient.PostAsJsonAsync(
-                    "/member/UpsertMember",
+                    "member/UpsertMember",
                     member);
 
             if (!response.IsSuccessStatusCode)

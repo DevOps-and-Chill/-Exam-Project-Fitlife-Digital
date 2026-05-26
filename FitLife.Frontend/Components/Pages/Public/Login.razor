@@ -110,12 +110,12 @@
     // Bruges til feedbackbeskeder i UI'et
     private string Message = "";
 
-   private async Task LoginUser()
+    private async Task LoginUser()
     {
         var result = await AuthService.LoginAsync(Email, Password);
 
         Message = result.Message;
-
+        Console.WriteLine($"Token: {result.Token}");
         if (!result.Success)
         {
             return;
