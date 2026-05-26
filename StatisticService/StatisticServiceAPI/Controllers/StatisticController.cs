@@ -165,6 +165,7 @@ namespace StatisticServiceAPI.Controllers
                     _logger.LogWarning("Share not found for statistic {id} and user {userId}", id, userId);
                     return NotFound();
                 }
+                statistik.Delings.Remove(deling);
                 await _StatisticRepository.UpdateAsync(statistik);
                 _logger.LogInformation("Share revoked for statistic {id} and user {userId}", id, userId);
                 return Ok(statistik);
