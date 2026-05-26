@@ -83,3 +83,9 @@ nunit-*.xml
 .idea/
 !.idea/codeStyles/
 !.idea/runConfigurations/
+/AuthService/.github/copilot-instructions.md
+/AuthService/.vs/AuthService/CopilotIndices/17.14.1661.41761
+/AuthService/.vs/AuthService.slnx/FileContentIndex
+/AuthService/.vs/AuthService.slnx/v17
+/AuthService/.vs/ProjectEvaluation
+/DigitalContentServiceAPI/DigitalContentService/.vs/ProjectEvaluation
