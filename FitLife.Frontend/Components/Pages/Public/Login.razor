@@ -110,26 +110,23 @@
     // Bruges til feedbackbeskeder i UI'et
     private string Message = "";
 
-    // Sender loginoplysninger til AuthServiceAPI via AuthService
     private async Task LoginUser()
     {
         var result = await AuthService.LoginAsync(Email, Password);
 
         Message = result.Message;
-
-        if (!result.Success || result.User is null)
+        Console.WriteLine($"Token: {result.Token}");
+        if (!result.Success)
         {
             return;
         }
+        await CurrentUserService.SetCurrentUser();
 
-        // Gemmer token og brugerinfo i CurrentUserService for at holde styr på den loggede bruger
-        CurrentUserService.SetCurrentUser();
-
-        if (result.User.RoleName == "Member")
+        if (CurrentUserService.CurrentUser?.GetUserType() == "member")
         {
             Navigation.NavigateTo("/member-dashboard");
         }
-        else if (result.User.RoleName == "Employee")
+        else if (CurrentUserService.CurrentUser?.GetUserType() == "employee")
         {
             Navigation.NavigateTo("/employee-dashboard");
         }

@@ -1,7 +1,8 @@
+using FitLife.Frontend.Models;
+using Microsoft.AspNetCore.Identity.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Json;
 using System.Security.Claims;
-using FitLife.Frontend.Models;
 
 namespace FitLife.Frontend.Services;
 
@@ -33,7 +34,7 @@ public class AuthService
 
         try
         {
-            var response = await _authClient.PostAsJsonAsync("auth/Login", loginRequest);
+            var response = await _authClient.PostAsJsonAsync( "auth/Login", loginRequest);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -46,24 +47,17 @@ public class AuthService
             {
                 return new LoginResult(false, null, null, "Login lykkedes ikke. Token mangler.");
             }
-
-            var userId = GetUserIdFromToken(loginResponse.Token);
-
-            if (string.IsNullOrWhiteSpace(userId))
-            {
-                return new LoginResult(false, loginResponse.Token, null, "Token mangler userId.");
-            }
-
-            var loggedInUser = await _userClient.GetFromJsonAsync<Member>($"user/GetUserById/{userId}");
-
-            if (loggedInUser is null)
-            {
-                return new LoginResult(false, loginResponse.Token, null, "Bruger kunne ikke hentes fra UserService.");
-            }
-            //AO: Caching of JWT if login completes sucessfully
+            Console.WriteLine("LoginAsync lineno 50:"+ loginResponse.Token);
             _tokenService.SetToken(loginResponse.Token);
 
-            return new LoginResult(true, loginResponse.Token, loggedInUser, "Login lykkedes.");
+            string ?role = await _tokenService.GetRoleBasedOnToken();
+
+            if (string.IsNullOrWhiteSpace(role))
+            {
+                return new LoginResult(false, loginResponse.Token, null, "Token mangler rolle.");
+            }
+
+            return new LoginResult(true, loginResponse.Token, role, "Login lykkedes.");
         }
         catch (Exception ex)
         {
@@ -98,5 +92,5 @@ public class LoginResponse
 public record LoginResult(
     bool Success,
     string? Token,
-    Member? User,
+    string? Role,
     string Message);
