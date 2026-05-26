@@ -35,15 +35,32 @@ jobs:
 
     - name: Run UserService tests
       run: |
-        dotnet test ./UserService/UserService_Tests --no-build
+        dotnet test \
+        ./UserService/UserService_Tests \
+        --logger trx \
+        --results-directory TestResults
 
     - name: Run AuthService tests
       run: |
-        dotnet test ./AuthService/AuthService_Tests --no-build
+        dotnet test \
+        ./AuthService/AuthService_Tests \
+        --logger trx \
+        --results-directory TestResults
 
     - name: Run FacilityService tests
       run: |
-        dotnet test ./FacilityService/FacilityServiceTest --no-build
+        dotnet test \
+        ./FacilityService/FacilityServiceTest \
+        --logger trx \
+        --results-directory TestResults
+
+    - name: Publish Test Results
+      uses: dorny/test-reporter@v1
+      if: success() || failure()
+      with:
+        name: Unit Tests
+        path: '**/*.trx'
+        reporter: dotnet-trx
 
 
     # ACR
