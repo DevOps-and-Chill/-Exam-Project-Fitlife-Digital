@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Login to ACR
+      uses: azure/docker-login@v2
+      with:
+        login-server: fitlifedigitaljfl.azurecr.io
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+    
+    - name: Verify login
+      run: docker info
