@@ -1,9 +1,10 @@
+using Azure.Identity;
 using ClassServiceAPI.Data;
+using ClassServiceAPI.Extensions;
 using ClassServiceAPI.Messaging;
 using ClassServiceAPI.Repositories;
 using ClassServiceAPI.Repositories.Interfaces;
 using Microsoft.Azure.Cosmos;
-using Azure.Identity;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
@@ -15,10 +16,10 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    //AO: Config for KeyVault
-    builder.Configuration.AddAzureKeyVault(
-        new Uri("https://fitlifedigitalkv.vault.azure.net/"),
-        new DefaultAzureCredential());
+    await builder.LoadVault();
+    //builder.Configuration.AddAzureKeyVault(
+    //        new Uri("https://fitlifedigitalkv.vault.azure.net/"),
+    //        new DefaultAzureCredential());
 
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();

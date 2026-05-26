@@ -1,11 +1,13 @@
-using Microsoft.Azure.Cosmos;
 using Azure.Identity;
+using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
 using UserServiceAPI.Data;
+using UserServiceAPI.Extensions;
 using UserServiceAPI.Repositories;
 using UserServiceAPI.Repositories.Interfaces;
+
 
 namespace UserServiceAPI
 {
@@ -22,10 +24,10 @@ namespace UserServiceAPI
 			{
 				var builder = WebApplication.CreateBuilder(args);
 
-				//AO: Config for KeyVault
-                builder.Configuration.AddAzureKeyVault(
-					new Uri("https://fitlifedigitalkv.vault.azure.net/"),
-					new DefaultAzureCredential());
+                await builder.LoadVault();
+                //builder.Configuration.AddAzureKeyVault(
+                //        new Uri("https://fitlifedigitalkv.vault.azure.net/"),
+                //        new DefaultAzureCredential());
 
                 // Ryd eksisterende logging providers og brug NLog i stedet
                 builder.Logging.ClearProviders();

@@ -1,11 +1,12 @@
-using Microsoft.Azure.Cosmos;
 using Azure.Identity;
+using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
-using StatisticServiceAPI.Data;
-using StatisticServiceAPI.Repositories;
 using Scalar.AspNetCore;
+using StatisticServiceAPI.Data;
+using StatisticServiceAPI.Extensions;
+using StatisticServiceAPI.Repositories;
 
 namespace StatisticServiceAPI
 {
@@ -21,10 +22,10 @@ namespace StatisticServiceAPI
             {
                 var builder = WebApplication.CreateBuilder(args);
 
-                //AO: Config for KeyVault
-                builder.Configuration.AddAzureKeyVault(
-                    new Uri("https://fitlifedigitalkv.vault.azure.net/"),
-                    new DefaultAzureCredential());
+                await builder.LoadVault();
+                //builder.Configuration.AddAzureKeyVault(
+                //        new Uri("https://fitlifedigitalkv.vault.azure.net/"),
+                //        new DefaultAzureCredential());
 
 
                 builder.Logging.ClearProviders();

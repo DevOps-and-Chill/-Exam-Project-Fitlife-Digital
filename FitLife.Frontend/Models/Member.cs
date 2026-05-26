@@ -30,20 +30,20 @@ public class Member
 
     // Backend bruger string værdier.
     // Fx "Standard" eller "Premium".
-    public string MembershipType { get; set; } = "";
+    public string MembershipType { get; set; }
 
 
-    public string MembershipOptional { get; set; } = "";
+    public string MembershipOptional { get; set; }
 
-    public DateTime StartDate { get; set; } = DateTime.Today;
+    public DateTime StartDate { get; set; }
 
-    public DateTime EndDate { get; set; } = DateTime.Today.AddYears(1);
+    public DateTime EndDate { get; set; }
 
-    public bool ActiveMembership { get; set; } = true;
+    public bool ActiveMembership { get; set; }
 
-    public DateTime DateCreated { get; set; } = DateTime.UtcNow;
+    public DateTime DateCreated { get; set; }
 
-    public DateTime DateModified { get; set; } = DateTime.UtcNow;
+    public DateTime DateModified { get; set; }
 
     // Computed property.
     // Gemmes normalt ikke i databasen,

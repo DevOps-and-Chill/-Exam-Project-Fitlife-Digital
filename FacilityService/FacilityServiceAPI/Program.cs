@@ -7,6 +7,7 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using System.Configuration;
 using FacilityServiceAPI.Repositories.Interfaces;
+using FacilityServiceAPI.Extensions;
 
 namespace FacilityServiceAPI
 {
@@ -23,6 +24,7 @@ namespace FacilityServiceAPI
             {
                 var builder = WebApplication.CreateBuilder(args);
 
+                await builder.LoadVault();
                 //builder.Configuration.AddAzureKeyVault(
                 //        new Uri("https://fitlifedigitalkv.vault.azure.net/"),
                 //        new DefaultAzureCredential());

@@ -1,31 +1,18 @@
 services:
 
-  frontendservice:
+  frontend:
 
-    # Bygger Docker image ud fra mappen
-    # hvor Dockerfile ligger
     build:
       context: ./FitLife.Frontend
 
-    # Navnet containeren får i Docker
     container_name: frontend
 
-
-    # Gør frontend tilgængelig i browseren
-    # Format:
-    # <port på pc>:<port i container>
     ports:
       - "8080:8080"
 
-
-    # Fortæller ASP.NET hvilken port
-    # Blazor skal lytte på
     environment:
       ASPNETCORE_URLS: http://+:8080
 
-
-    # Tilkobler frontend til samme netværk
-    # som gateway og microservices
     networks:
       - backend
 
@@ -33,8 +20,4 @@ services:
 networks:
 
   backend:
-
-    # Bruger eksisterende netværk
-    # Opret én gang:
-    # docker network create backend
     external: true

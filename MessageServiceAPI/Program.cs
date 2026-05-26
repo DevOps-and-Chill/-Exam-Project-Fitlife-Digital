@@ -1,8 +1,9 @@
+using Azure.Identity;
+using MessageServiceAPI.Extensions;
 using MessageServiceAPI;
 using MessageServiceAPI.Data;
 using MessageServiceAPI.Services;
 using MessageServiceAPI.Services.Interfaces;
-using Azure.Identity;
 using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using NLog;
@@ -15,10 +16,10 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    //AO: Config for KeyVault
-    builder.Configuration.AddAzureKeyVault(
-        new Uri("https://fitlifedigitalkv.vault.azure.net/"),
-        new DefaultAzureCredential());
+    await builder.LoadVault();
+    //builder.Configuration.AddAzureKeyVault(
+    //        new Uri("https://fitlifedigitalkv.vault.azure.net/"),
+    //        new DefaultAzureCredential());
 
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();

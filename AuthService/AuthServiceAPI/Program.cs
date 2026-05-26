@@ -1,8 +1,10 @@
 using AuthServiceAPI.Data;
+using AuthServiceAPI.Extensions;
 using AuthServiceAPI.Repositories;
 using AuthServiceAPI.Repositories.Interfaces;
 using AuthServiceAPI.Services;
 using AuthServiceAPI.Services.Interfaces;
+using Azure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +12,6 @@ using Microsoft.IdentityModel.Tokens;
 using NLog;
 using NLog.Web;
 using System.Text;
-using Azure.Identity;
 
 var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
@@ -20,10 +21,10 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    //AO: Config for KeyVault
-    builder.Configuration.AddAzureKeyVault(
-        new Uri("https://fitlifedigitalkv.vault.azure.net/"),
-        new DefaultAzureCredential());
+    await builder.LoadVault();
+    //builder.Configuration.AddAzureKeyVault(
+    //        new Uri("https://fitlifedigitalkv.vault.azure.net/"),
+    //        new DefaultAzureCredential());
 
     // Ryd eksisterende logging providers og brug NLog i stedet
     builder.Logging.ClearProviders();

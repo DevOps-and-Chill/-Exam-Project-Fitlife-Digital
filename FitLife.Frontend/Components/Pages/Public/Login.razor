@@ -123,7 +123,7 @@
         }
 
         // Gemmer token og brugerinfo i CurrentUserService for at holde styr på den loggede bruger
-        CurrentUserService.SetCurrentUser(result.Token!, result.User);
+        CurrentUserService.SetCurrentUser();
 
         if (result.User.RoleName == "Member")
         {
