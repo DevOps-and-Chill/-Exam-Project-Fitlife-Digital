@@ -9,17 +9,18 @@ public class AuthService
 {
     private readonly HttpClient _authClient;
     private readonly HttpClient _userClient;
+    private readonly TokenService _tokenService;
 
-    public AuthService(IHttpClientFactory httpClientFactory)
+    public AuthService(IHttpClientFactory httpClientFactory, TokenService tokenService)
     {
         _authClient = httpClientFactory.CreateClient("AuthService");
         _userClient = httpClientFactory.CreateClient("UserService");
+        _tokenService = tokenService;
     }
 
     public async Task<LoginResult> LoginAsync(string email, string password)
     {
-        if (string.IsNullOrWhiteSpace(email) ||
-            string.IsNullOrWhiteSpace(password))
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
             return new LoginResult(false, null, null, "Indtast både email og password.");
         }
@@ -32,17 +33,14 @@ public class AuthService
 
         try
         {
-            var response = await _authClient.PostAsJsonAsync(
-                "auth/Login",
-                loginRequest);
+            var response = await _authClient.PostAsJsonAsync("auth/Login", loginRequest);
 
             if (!response.IsSuccessStatusCode)
             {
                 return new LoginResult(false, null, null, "Email eller password er forkert.");
             }
 
-            var loginResponse =
-                await response.Content.ReadFromJsonAsync<LoginResponse>();
+            var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
 
             if (string.IsNullOrWhiteSpace(loginResponse?.Token))
             {
@@ -56,14 +54,14 @@ public class AuthService
                 return new LoginResult(false, loginResponse.Token, null, "Token mangler userId.");
             }
 
-            var loggedInUser =
-                await _userClient.GetFromJsonAsync<Member>(
-                    $"user/GetUserById/{userId}");
+            var loggedInUser = await _userClient.GetFromJsonAsync<Member>($"user/GetUserById/{userId}");
 
             if (loggedInUser is null)
             {
                 return new LoginResult(false, loginResponse.Token, null, "Bruger kunne ikke hentes fra UserService.");
             }
+            //AO: Caching of JWT if login completes sucessfully
+            _tokenService.SetToken(loginResponse.Token);
 
             return new LoginResult(true, loginResponse.Token, loggedInUser, "Login lykkedes.");
         }
