@@ -18,7 +18,7 @@ jobs:
     - name: Login to ACR
       uses: docker/login-action@v3
       with:
-        registry: fitlifedigitaljfl.azurecr.io
+        registry: fitlifedigital.azurecr.io
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
 
