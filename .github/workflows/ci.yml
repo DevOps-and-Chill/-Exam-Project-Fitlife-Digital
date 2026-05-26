@@ -35,21 +35,15 @@ jobs:
 
     - name: Run UserService tests
       run: |
-        dotnet test \
-        ./UserService/UserService.Tests \
-        --no-build
+        dotnet test ./UserService/UserService_Tests --no-build
 
     - name: Run AuthService tests
       run: |
-        dotnet test \
-        ./AuthService/AuthService.Tests \
-        --no-build
+        dotnet test ./AuthService/AuthService_Tests --no-build
 
     - name: Run FacilityService tests
       run: |
-        dotnet test \
-        ./FacilityService/FacilityService.Tests \
-        --no-build
+        dotnet test ./FacilityService/FacilityServiceTest --no-build
 
 
     # ACR
