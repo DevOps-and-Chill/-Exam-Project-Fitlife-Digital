@@ -16,6 +16,44 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+
+    # .NET
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+
+    - name: Restore
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore
+
+
+    # Tests
+
+    - name: Run UserService tests
+      run: |
+        dotnet test \
+        ./UserService/UserService.Tests \
+        --no-build
+
+    - name: Run AuthService tests
+      run: |
+        dotnet test \
+        ./AuthService/AuthService.Tests \
+        --no-build
+
+    - name: Run FacilityService tests
+      run: |
+        dotnet test \
+        ./FacilityService/FacilityService.Tests \
+        --no-build
+
+
+    # ACR
+
     - name: Login to ACR
       uses: docker/login-action@v3
       with:
@@ -28,6 +66,7 @@ jobs:
 
 
     # Frontend
+
     - name: Build Frontend
       run: |
         docker build \
@@ -39,6 +78,7 @@ jobs:
 
 
     # Gateway
+
     - name: Build Gateway
       run: |
         docker build \
@@ -46,11 +86,11 @@ jobs:
         ./nginxForAzure
 
     - name: Push Gateway
-      run: |
-        docker push \
-        fitlifedigital.azurecr.io/gateway:latest
+      run: docker push fitlifedigital.azurecr.io/gateway:latest
+
 
     # AuthService
+
     - name: Build AuthService
       run: |
         docker build \
@@ -62,6 +102,7 @@ jobs:
 
 
     # UserService
+
     - name: Build UserService
       run: |
         docker build \
@@ -73,6 +114,7 @@ jobs:
 
 
     # ClassService
+
     - name: Build ClassService
       run: |
         docker build \
@@ -84,6 +126,7 @@ jobs:
 
 
     # MessageService
+
     - name: Build MessageService
       run: |
         docker build \
@@ -95,6 +138,7 @@ jobs:
 
 
     # PTService
+
     - name: Build PTService
       run: |
         docker build \
@@ -106,6 +150,7 @@ jobs:
 
 
     # FacilityService
+
     - name: Build FacilityService
       run: |
         docker build \
@@ -116,7 +161,8 @@ jobs:
       run: docker push fitlifedigital.azurecr.io/facilityservice:latest
 
 
-    # RapportService
+    # StatisticService
+
     - name: Build StatisticService
       run: |
         docker build \
