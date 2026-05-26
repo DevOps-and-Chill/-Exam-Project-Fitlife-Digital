@@ -50,23 +50,20 @@ public class MemberService
         }
     }
 
-  /// <summary>
-  /// Get a member by string (guid as string) 
-  /// </summary>
-  /// <param name="userId"></param>
-  /// <returns>Returns a member object from userservice</returns>
-  /// <exception cref="Exception"></exception>
-    public async Task<Member> GetMemberAsync(string userId)
+    /// <summary>
+    /// Get member from userservice
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns>Memberobject or null</returns>
+    public async Task<Member?> GetMemberAsync(string userId)
     {
         try
         {
-            var member = await _httpClient.GetFromJsonAsync<Member>($"/member/GetMemberById/{userId}");
-
-            return member;
+            return await _httpClient.GetFromJsonAsync<Member>($"/member/GetMemberById/{userId}");
         }
-        catch (Exception ex)
+        catch
         {
-            throw new Exception($"Kunne ikke hente medlem fra UserService. \n Errormessage: {ex.Message}", ex);
+            return null;
         }
     }
 

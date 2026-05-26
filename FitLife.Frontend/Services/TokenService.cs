@@ -1,14 +1,16 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
 
 public class TokenService
 {
     private readonly IMemoryCache _cache;
-
-    public TokenService(IMemoryCache cache)
+    private readonly HttpClient _httpClient;
+    public TokenService(IMemoryCache cache, IHttpClientFactory httpClientFactory)
     {
         _cache = cache;
+        _httpClient = httpClientFactory.CreateClient("UserService");
     }
 
     public void SetToken(string token)
@@ -46,15 +48,27 @@ public class TokenService
     }
 
     //AO: Pulls userId from token
-    public string? GetUserIdFromCachedToken()
+    public async Task<string?> GetUserIdFromCachedToken()
     {
-        var handler =
-            new JwtSecurityTokenHandler();
+        var handler = new JwtSecurityTokenHandler();
 
-        var jwt =
-            handler.ReadJwtToken(GetToken());
+        var jwt = handler.ReadJwtToken(GetToken());
 
         return jwt.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
+    }
+
+    public async Task<string?> GetRoleBasedOnToken()
+    {
+        var userId = GetUserIdFromCachedToken();
+        var user = await _httpClient.GetFromJsonAsync<UserDto>($"user/GetUserById/{userId}");
+        return user?.RoleName;
+    }
+
+    public class UserDto
+    {
+        public string Id { get; set; }
+
+        public string RoleName { get; set; }
     }
 }
