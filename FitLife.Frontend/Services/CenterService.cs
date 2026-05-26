@@ -34,4 +34,26 @@ public class CenterService
                 ex);
         }
     }
+    /// <summary>
+    /// Method for fetching all the swimming pools 
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<List<SwimmingPool>> GetSwimmingPoolsAsync()
+    {
+		try
+		{
+			var swimmingPools =
+				await _httpClient.GetFromJsonAsync<List<SwimmingPool>>(
+					"swimmingpool/getall");
+
+			return swimmingPools ?? new List<SwimmingPool>();
+		}
+		catch (Exception ex)
+		{
+			throw new Exception(
+				$"Kunne ikke hente swimming pools fra FacilityService. Fejl: {ex.Message}",
+				ex);
+		}
+	}
 }

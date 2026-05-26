@@ -37,8 +37,45 @@
         else
         {
             <div class="row g-4">
+                <h3>træningscentre</h3>
+                @foreach (var center in Centers.FindAll(sp => sp.GetType() == typeof(ExerciseGym)))
+                {
+                    <div class="col-md-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body p-4">
 
-                @foreach (var center in Centers)
+                                <h4 class="fw-bold">
+                                    @center.Name
+                                </h4>
+
+                                <p class="text-muted mb-1">
+                                    @center.Address
+                                </p>
+
+                                <p class="mb-3">
+                                    @center.Address
+                                </p>
+
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-success"
+                                            @onclick="() => SelectCenter(center)">
+                                        Vælg center
+                                    </button>
+
+                                    <a href="/find-hold" class="btn btn-outline-secondary">
+                                        Se hold
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+            <div class="row g-4">
+                <h3>Svømmehaller</h3>
+                @foreach (var center in Centers.FindAll(sp => sp.GetType() == typeof (SwimmingPool)))
                 {
                     <div class="col-md-4">
                         <div class="card shadow-sm h-100">
@@ -89,7 +126,7 @@
 </div>
 
 @code {
-    private List<ExerciseGym> Centers = new();
+    private List<Facility> Centers = new();
 
     private bool IsLoadingCenters = true;
     private string? ErrorMessage;
@@ -99,7 +136,8 @@
     {
         try
         {
-            Centers = await CenterService.GetCentersAsync();
+            Centers.AddRange(await CenterService.GetCentersAsync());
+            Centers.AddRange(await CenterService.GetSwimmingPoolsAsync());
         }
         catch
         {
