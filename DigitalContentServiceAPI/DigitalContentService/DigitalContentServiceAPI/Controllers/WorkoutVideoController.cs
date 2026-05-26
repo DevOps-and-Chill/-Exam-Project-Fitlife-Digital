@@ -57,6 +57,19 @@ namespace DigitalContentServiceAPI.Controllers
             }
         }
 
+        [HttpGet("getall")]
+        public async Task<IActionResult> GetWorkoutVideosAsync()
+        {
+            try
+            {
+                return Ok(await _videoRepo.GetWorkoutVideosAsync());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occured when trying to fetch all workout videos", ex.StackTrace);
+                return BadRequest(ex.Message);
+            }
+        }
         // DELETE
 
         [HttpDelete("delete/{id}")]

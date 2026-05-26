@@ -51,7 +51,21 @@ namespace DigitalContentServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
+        [HttpGet("getall")]
+        public async Task<IActionResult> getWorkoutProgramsAsync()
+        {
+            try
+            {
+                return Ok( await _programRepo.GetWorkoutProgramsAsync());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "failed to get all workoutprograms");
+                return BadRequest(ex.Message);
+            }
+        }
+
         // PUT
         
         [HttpPut("update/{id}")]

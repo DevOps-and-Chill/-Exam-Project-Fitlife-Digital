@@ -32,6 +32,11 @@ public class WorkoutVideoRepository : IWorkoutVideoRepository
         
         return workoutVideo;
     }
+    
+    public async Task<List<WorkoutVideo>> GetWorkoutVideosAsync()
+    {
+        return await _context.Set<WorkoutVideo>().ToListAsync();
+    }
 
     public async Task<bool> DeleteWorkoutVideoAsync(Guid id)
     {

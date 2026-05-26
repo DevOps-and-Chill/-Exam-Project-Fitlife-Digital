@@ -12,6 +12,8 @@ namespace DigitalContentServiceAPI.Repositories.Interfaces
 		// GET
 		
 		Task<WorkoutProgram?> GetWorkoutProgramAsync(Guid id);
+
+		Task<List<WorkoutProgram>> GetWorkoutProgramsAsync();
 		
 		// PUT
 
