@@ -1,0 +1,95 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{7A94BF29-B535-450D-854D-AFFA97ABB3C8}|DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\digitalcontentserviceapi\\digitalcontentservice\\digitalcontentserviceapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A94BF29-B535-450D-854D-AFFA97ABB3C8}|DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj|solutionrelative:digitalcontentserviceapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A94BF29-B535-450D-854D-AFFA97ABB3C8}|DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\digitalcontentserviceapi\\digitalcontentservice\\digitalcontentserviceapi\\extensions\\vaultconfigurationextension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A94BF29-B535-450D-854D-AFFA97ABB3C8}|DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj|solutionrelative:digitalcontentserviceapi\\extensions\\vaultconfigurationextension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A94BF29-B535-450D-854D-AFFA97ABB3C8}|DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\digitalcontentserviceapi\\digitalcontentservice\\digitalcontentserviceapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{7A94BF29-B535-450D-854D-AFFA97ABB3C8}|DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj|solutionrelative:digitalcontentserviceapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A94BF29-B535-450D-854D-AFFA97ABB3C8}|DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\digitalcontentserviceapi\\digitalcontentservice\\digitalcontentserviceapi\\digitalcontentserviceapi.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{7A94BF29-B535-450D-854D-AFFA97ABB3C8}|DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj|solutionrelative:digitalcontentserviceapi\\digitalcontentserviceapi.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "VaultConfigurationExtension.cs",
+              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceAPI\\Extensions\\VaultConfigurationExtension.cs",
+              "RelativeDocumentMoniker": "DigitalContentServiceAPI\\Extensions\\VaultConfigurationExtension.cs",
+              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceAPI\\Extensions\\VaultConfigurationExtension.cs",
+              "RelativeToolTip": "DigitalContentServiceAPI\\Extensions\\VaultConfigurationExtension.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-25T19:27:38.937Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceAPI\\appsettings.json",
+              "RelativeDocumentMoniker": "DigitalContentServiceAPI\\appsettings.json",
+              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceAPI\\appsettings.json",
+              "RelativeToolTip": "DigitalContentServiceAPI\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-05-24T21:16:48.657Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DigitalContentServiceAPI.csproj",
+              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj",
+              "RelativeDocumentMoniker": "DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj",
+              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj",
+              "RelativeToolTip": "DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAABZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-05-24T21:06:32.997Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceAPI\\Program.cs",
+              "RelativeDocumentMoniker": "DigitalContentServiceAPI\\Program.cs",
+              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceAPI\\Program.cs",
+              "RelativeToolTip": "DigitalContentServiceAPI\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-24T21:05:45.292Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

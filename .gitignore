@@ -43,6 +43,7 @@ ScaffoldingReadMe.txt
 ~$*
 *~
 CodeCoverage/
+.env
 
 # MSBuild Binary and Structured Log
 *.binlog
@@ -66,17 +67,19 @@ nunit-*.xml
 /FacilityService/FacilityServiceAPI/.vs/ProjectEvaluation
 /FacilityService/FacilityServiceAPI/.github
 /FacilityService/.vs/FacilityServiceAPI/CopilotIndices/17.14.1661.41761
-/FacilityService/.github
 /FacilityService/.vs/FacilityServiceAPI/DesignTimeBuild
 /FacilityService/.vs/FacilityServiceAPI/FileContentIndex
 /FacilityService/.vs/FacilityServiceAPI/v17/TestStore/0
 /FacilityService/FacilityServiceAPI/FacilityServiceAPI.csproj.lscache
 /UserService/.vs/UserServiceAPI/CopilotIndices/17.14.1661.41761
 /UserService/.vs/UserServiceAPI/FileContentIndex
-/UserService/.github
 /UserService/.vs/UserServiceAPI
 /DigitalContentServiceAPI/DigitalContentService/.vs/DigitalContentService/v17
 /DigitalContentServiceAPI/DigitalContentService/.vs/DigitalContentService/FileContentIndex
 /DigitalContentServiceAPI/DigitalContentService/.vs/DigitalContentService/CopilotIndices/17.14.1661.41761
 /DigitalContentServiceAPI/DigitalContentService/.github
 /DigitalContentServiceAPI/DigitalContentService/.vs/DigitalContentService/DesignTimeBuild
+/UserService/packages/
+.idea/
+!.idea/codeStyles/
+!.idea/runConfigurations/

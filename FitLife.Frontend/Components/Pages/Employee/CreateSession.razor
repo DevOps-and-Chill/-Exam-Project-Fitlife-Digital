@@ -1,10 +1,13 @@
 @page "/create-session"
 @rendermode InteractiveServer
 @using FitLife.Frontend.Models
+@using FitLife.Frontend.Services
+@inject ClassService ClassService
+@inject NavigationManager Navigation
+@inject MemberService MemberService
 
 <div class="container-fluid px-0">
 
-    <!-- Shared navigation for employee/admin pages -->
     <EmployeeNavbar />
 
     <section class="container py-5">
@@ -17,34 +20,26 @@
         <div class="card shadow-sm">
             <div class="card-body p-4">
 
-                <!-- Formularen binder direkte til NewSession-modellen.
-                     Senere kan NewSession sendes til backend via SessionService/API. -->
                 <div class="row g-3">
 
                     <div class="col-md-6">
                         <label class="form-label">Holdtype</label>
                         <input class="form-control"
-                               @bind="NewSession.Title"
+                               @bind="NewClass.Title"
                                placeholder="Fx Yoga, Spinning, Crossfit" />
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label">Instruktør</label>
-                        <input class="form-control"
-                               @bind="NewSession.InstructorName"
-                               placeholder="Navn på instruktør" />
+                        <label class="form-label">Coach</label>
+                        <select class="form-select" @bind="SelectedCoachId">
+                            <option value="">Vælg coach...</option>
+                            @foreach (var coach in Coaches)
+                            {
+                                <option value="@coach.Id">@coach.GivenName @coach.FamilyName</option>
+                            }
+                        </select>
                     </div>
 
-                    <div class="col-md-12">
-                        <label class="form-label">Beskrivelse af træning</label>
-                        <textarea class="form-control"
-                                  rows="4"
-                                  @bind="NewSession.Description"></textarea>
-                    </div>
-
-                    <!-- Dato og klokkeslæt holdes adskilt i UI'et,
-                         fordi det er lettere for brugeren at udfylde.
-                         De samles senere til NewSession.StartTime i SetStartTime(). -->
                     <div class="col-md-4">
                         <label class="form-label">Dato</label>
                         <input class="form-control"
@@ -53,28 +48,31 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label class="form-label">Klokkeslæt</label>
+                        <label class="form-label">Start klokkeslæt</label>
                         <input class="form-control"
                                type="time"
-                               @bind="SelectedTime" />
+                               @bind="SelectedStartTime" />
                     </div>
 
                     <div class="col-md-4">
-                        <label class="form-label">Samlet antal pladser</label>
+                        <label class="form-label">Slut klokkeslæt</label>
+                        <input class="form-control"
+                               type="time"
+                               @bind="SelectedEndTime" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Antal pladser</label>
                         <input class="form-control"
                                type="number"
-                               @bind="NewSession.Capacity" />
+                               @bind="NewClass.MemberLimit" />
                     </div>
 
                 </div>
 
-                <!-- Midlertidig UI-feedback.
-                     Senere kan denne besked komme fra SessionService/API response. -->
                 @if (!string.IsNullOrWhiteSpace(Message))
                 {
-                    <div class="alert alert-info mt-4">
-                        @Message
-                    </div>
+                    <div class="alert alert-info mt-4">@Message</div>
                 }
 
                 <div class="d-flex gap-3 mt-4">
@@ -101,84 +99,85 @@
 </div>
 
 @code {
-    // NewSession samler data for det hold, medarbejderen er ved at oprette.
-    // TODO: Senere bør dette objekt sendes til SessionService.CreateSessionAsync().
-    private TrainingSession NewSession = new()
+    
+    
+    private List<Member> Coaches = new();
+    private string SelectedCoachId = "";
+    
+    private Class NewClass = new()
     {
-        Capacity = 10,
-        RegisteredCount = 0
+        MemberLimit = 10
     };
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var all = await MemberService.GetMembersAsync();
+        Coaches = all.Where(m => m.RoleName == "Employee").ToList();
+    }
 
-    // Bruges kun i formularen, så dato og tid kan vælges separat.
-    // De bliver samlet til NewSession.StartTime før holdet gemmes.
+
     private DateTime? SelectedDate;
-    private TimeOnly? SelectedTime;
-
+    private TimeOnly? SelectedStartTime;
+    private TimeOnly? SelectedEndTime;
     private string Message = "";
-
-    [Inject]
-    private NavigationManager Navigation { get; set; } = default!;
-
     private bool Validate()
     {
-        // Simpel frontend-validering.
-        // Backend skal stadig validere data, når holdet senere oprettes via API.
-        if (string.IsNullOrWhiteSpace(NewSession.Title) ||
-            string.IsNullOrWhiteSpace(NewSession.InstructorName) ||
+        if (string.IsNullOrWhiteSpace(NewClass.Title) ||
+            string.IsNullOrWhiteSpace(SelectedCoachId) ||
             SelectedDate is null ||
-            SelectedTime is null ||
-            NewSession.Capacity <= 0)
+            SelectedStartTime is null ||
+            SelectedEndTime is null ||
+            NewClass.MemberLimit <= 0)
         {
-            Message = "Udfyld holdtype, instruktør, dato, klokkeslæt og antal pladser.";
+            Message = "Udfyld alle felter.";
             return false;
         }
-
         return true;
     }
 
-    private void SetStartTime()
+    private void SetTimes()
     {
-        // Samler dato og klokkeslæt fra formularen til én DateTime,
-        // fordi TrainingSession-modellen bruger StartTime som samlet tidspunkt.
-        if (SelectedDate is not null && SelectedTime is not null)
+        if (SelectedDate is not null && SelectedStartTime is not null && SelectedEndTime is not null)
         {
-            NewSession.StartTime = SelectedDate.Value.Date + SelectedTime.Value.ToTimeSpan();
+            NewClass.TimeStart = SelectedDate.Value.Date + SelectedStartTime.Value.ToTimeSpan();
+            NewClass.TimeEnd   = SelectedDate.Value.Date + SelectedEndTime.Value.ToTimeSpan();
+            NewClass.CoachId   = SelectedCoachId;
         }
     }
 
-    private void Save()
+    private async Task Save()
     {
-        if (!Validate())
-            return;
+        if (!Validate()) return;
+        SetTimes();
 
-        SetStartTime();
-
-        // Midlertidig prototype-handling.
-        // TODO: Erstat med kald til SessionService/API, så holdet gemmes i backend.
-        Message = $"Holdet {NewSession.Title} er oprettet.";
-
-        Navigation.NavigateTo("/manage-sessions");
+        try
+        {
+            await ClassService.CreateClassAsync(NewClass);
+            Navigation.NavigateTo("/manage-sessions");
+        }
+        catch (Exception ex)
+        {
+            Message = $"Kunne ikke oprette hold: {ex.Message}";
+        }
     }
 
-    private void SaveAndCreateMore()
+    private async Task SaveAndCreateMore()
     {
-        if (!Validate())
-            return;
+        if (!Validate()) return;
+        SetTimes();
 
-        SetStartTime();
-
-        // Midlertidig prototype-handling.
-        // TODO: Erstat med kald til SessionService/API og nulstil derefter formularen.
-        Message = $"Holdet {NewSession.Title} er oprettet. Du kan nu oprette et nyt hold.";
-
-        // Nulstiller formularen, så medarbejderen hurtigt kan oprette endnu et hold.
-        NewSession = new TrainingSession
+        try
         {
-            Capacity = 10,
-            RegisteredCount = 0
-        };
-
-        SelectedDate = null;
-        SelectedTime = null;
+            await ClassService.CreateClassAsync(NewClass);
+            Message = $"Holdet '{NewClass.Title}' er oprettet. Du kan nu oprette et nyt hold.";
+            NewClass = new Class { MemberLimit = 10 };
+            SelectedDate = null;
+            SelectedStartTime = null;
+            SelectedEndTime = null;
+        }
+        catch (Exception ex)
+        {
+            Message = $"Kunne ikke oprette hold: {ex.Message}";
+        }
     }
 }
