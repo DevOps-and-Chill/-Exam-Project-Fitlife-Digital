@@ -13,7 +13,8 @@ jobs:
 
     steps:
 
-    - uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
 
     - name: Login to ACR
       uses: docker/login-action@v3
@@ -22,24 +23,104 @@ jobs:
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
 
-    - name: Verify
+    - name: Verify Docker
       run: docker info
-      
-    - name: Generate version
-      run: |
-        echo "VERSION=0.1.${{ github.run_number }}" >> $GITHUB_ENV
 
+
+    # Frontend
+    - name: Build Frontend
+      run: |
+        docker build \
+        -t fitlifedigital.azurecr.io/frontend:latest \
+        ./FitLife.Frontend
+
+    - name: Push Frontend
+      run: docker push fitlifedigital.azurecr.io/frontend:latest
+
+
+    # Gateway
+    - name: Build Gateway
+      run: |
+        docker build \
+        -t fitlifedigital.azurecr.io/gateway:latest \
+        ./Gateway
+
+    - name: Push Gateway
+      run: docker push fitlifedigital.azurecr.io/gateway:latest
+
+
+    # AuthService
     - name: Build AuthService
       run: |
         docker build \
-        -t fitlifedigital.azurecr.io/authservice:${{ env.VERSION }} \
+        -t fitlifedigital.azurecr.io/authservice:latest \
         ./AuthService/AuthServiceAPI
 
     - name: Push AuthService
-      run: |
-        docker push \
-        fitlifedigital.azurecr.io/authservice:${{ env.VERSION }}
+      run: docker push fitlifedigital.azurecr.io/authservice:latest
 
-    - name: Show version
+
+    # UserService
+    - name: Build UserService
       run: |
-        echo "Built version: ${{ env.VERSION }}"
+        docker build \
+        -t fitlifedigital.azurecr.io/userservice:latest \
+        ./UserService/UserService
+
+    - name: Push UserService
+      run: docker push fitlifedigital.azurecr.io/userservice:latest
+
+
+    # ClassService
+    - name: Build ClassService
+      run: |
+        docker build \
+        -t fitlifedigital.azurecr.io/classservice:latest \
+        ./ClassServiceAPI
+
+    - name: Push ClassService
+      run: docker push fitlifedigital.azurecr.io/classservice:latest
+
+
+    # MessageService
+    - name: Build MessageService
+      run: |
+        docker build \
+        -t fitlifedigital.azurecr.io/messageservice:latest \
+        ./MessageServiceAPI
+
+    - name: Push MessageService
+      run: docker push fitlifedigital.azurecr.io/messageservice:latest
+
+
+    # PTService
+    - name: Build PTService
+      run: |
+        docker build \
+        -t fitlifedigital.azurecr.io/ptservice:latest \
+        ./PTService/PTServiceAPI
+
+    - name: Push PTService
+      run: docker push fitlifedigital.azurecr.io/ptservice:latest
+
+
+    # FacilityService
+    - name: Build FacilityService
+      run: |
+        docker build \
+        -t fitlifedigital.azurecr.io/facilityservice:latest \
+        ./FacilityService
+
+    - name: Push FacilityService
+      run: docker push fitlifedigital.azurecr.io/facilityservice:latest
+
+
+    # RapportService
+    - name: Build RapportService
+      run: |
+        docker build \
+        -t fitlifedigital.azurecr.io/rapportservice:latest \
+        ./StatisticService/StatisticServiceAPI
+
+    - name: Push RapportService
+      run: docker push fitlifedigital.azurecr.io/rapportservice:latest
