@@ -24,3 +24,14 @@ jobs:
 
     - name: Verify
       run: docker info
+      
+    - name: Build AuthService
+      run: |
+        docker build \
+        -t fitlifedigital.azurecr.io/authservice:${{ github.sha }} \
+        ./AuthService/AuthServiceAPI
+
+    - name: Push AuthService
+      run: |
+        docker push \
+        fitlifedigital.azurecr.io/authservice:${{ github.sha }}
