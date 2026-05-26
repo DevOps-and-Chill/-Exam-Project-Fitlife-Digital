@@ -30,5 +30,20 @@
 
             return "";
         }
+        public string? GetId()
+        {
+            if (Member is not null)
+            {
+                return Member.Id;
+            }
+
+            if (Employee is not null)
+            {
+                return Employee.Id;
+            }
+
+            return null;
+        }
+
     }
 }
