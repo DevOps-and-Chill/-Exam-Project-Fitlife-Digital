@@ -43,11 +43,12 @@ jobs:
       run: |
         docker build \
         -t fitlifedigital.azurecr.io/gateway:latest \
-        ./Gateway
+        ./nginxForAzure
 
     - name: Push Gateway
-      run: docker push fitlifedigital.azurecr.io/gateway:latest
-
+      run: |
+        docker push \
+        fitlifedigital.azurecr.io/gateway:latest
 
     # AuthService
     - name: Build AuthService
