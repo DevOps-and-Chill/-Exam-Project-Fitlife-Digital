@@ -25,13 +25,21 @@ jobs:
     - name: Verify
       run: docker info
       
+    - name: Generate version
+      run: |
+        echo "VERSION=0.1.${{ github.run_number }}" >> $GITHUB_ENV
+
     - name: Build AuthService
       run: |
         docker build \
-        -t fitlifedigital.azurecr.io/authservice:${{ github.sha }} \
+        -t fitlifedigital.azurecr.io/authservice:${{ env.VERSION }} \
         ./AuthService/AuthServiceAPI
 
     - name: Push AuthService
       run: |
         docker push \
-        fitlifedigital.azurecr.io/authservice:${{ github.sha }}
+        fitlifedigital.azurecr.io/authservice:${{ env.VERSION }}
+
+    - name: Show version
+      run: |
+        echo "Built version: ${{ env.VERSION }}"
