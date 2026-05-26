@@ -8,7 +8,7 @@ param location string = resourceGroup().location
 param imageLocationPrefix string = 'fitlifedigitaljfl.azurecr.io'
 
 @description('Image tag for custom FitLife images')
-param imageTag string = 'latest'
+param imageTag string
 
 @description('ACR username')
 param acrUsername string
@@ -25,12 +25,11 @@ param acrPassword string
 ])
 param restartPolicy string = 'Always'
 
+@secure()
+param vaultToken string
+
 param frontendPort int = 8080
 param gatewayPort int = 4000
-
-param cosmosAccountName string = 'fitlifedigitaljflcosmos'
-param cosmosDatabaseName string = 'fitlife-digital-db'
-param enableCosmosFreeTier bool = true
 
 var authServicePort = 8081
 var classServicePort = 8082
@@ -44,54 +43,7 @@ var rabbitMqPort = 5672
 var rabbitMqManagementPort = 15672
 var lokiPort = 3100
 var grafanaPort = 3000
-
-resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
-  name: cosmosAccountName
-  location: location
-  kind: 'GlobalDocumentDB'
-  properties: {
-    databaseAccountOfferType: 'Standard'
-    enableFreeTier: enableCosmosFreeTier
-    locations: [
-      {
-        locationName: location
-        failoverPriority: 0
-        isZoneRedundant: false
-      }
-    ]
-    consistencyPolicy: {
-      defaultConsistencyLevel: 'Session'
-    }
-  }
-}
-
-resource cosmosDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2024-11-15' = {
-  parent: cosmosAccount
-  name: cosmosDatabaseName
-  properties: {
-    resource: {
-      id: cosmosDatabaseName
-    }
-  }
-}
-
-resource placeholderContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2024-11-15' = {
-  parent: cosmosDatabase
-  name: 'placeholder-container'
-  properties: {
-    resource: {
-      id: 'placeholder-container'
-      partitionKey: {
-        paths: [
-          '/id'
-        ]
-        kind: 'Hash'
-      }
-    }
-  }
-}
-
-var cosmosConnectionString = 'AccountEndpoint=https://${cosmosAccount.name}.documents.azure.com:443/;AccountKey=${listKeys(cosmosAccount.id, cosmosAccount.apiVersion).primaryMasterKey};'
+var vaultPort = 8200
 
 resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01' = {
   name: containerGroupName
@@ -137,7 +89,7 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
       {
         name: 'gateway'
         properties: {
-          image: '${imageLocationPrefix}/gateway:azure'
+          image: '${imageLocationPrefix}/gateway:${imageTag}'
           ports: [
             {
               port: gatewayPort
@@ -169,24 +121,8 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
               value: 'http://+:${authServicePort}'
             }
             {
-              name: 'RabbitMQ__Host'
-              value: 'localhost'
-            }
-            {
-              name: 'RabbitMQ__Port'
-              value: '${rabbitMqPort}'
-            }
-            {
               name: 'Loki__Url'
               value: 'http://localhost:${lokiPort}'
-            }
-            {
-              name: 'CosmosDb__ConnectionString'
-              secureValue: cosmosConnectionString
-            }
-            {
-              name: 'CosmosDb__DatabaseName'
-              value: cosmosDatabaseName
             }
           ]
           resources: {
@@ -225,14 +161,6 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
               name: 'Loki__Url'
               value: 'http://localhost:${lokiPort}'
             }
-            {
-              name: 'CosmosDb__ConnectionString'
-              secureValue: cosmosConnectionString
-            }
-            {
-              name: 'CosmosDb__DatabaseName'
-              value: cosmosDatabaseName
-            }
           ]
           resources: {
             requests: {
@@ -259,24 +187,8 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
               value: 'http://+:${facilityServicePort}'
             }
             {
-              name: 'RabbitMQ__Host'
-              value: 'localhost'
-            }
-            {
-              name: 'RabbitMQ__Port'
-              value: '${rabbitMqPort}'
-            }
-            {
               name: 'Loki__Url'
               value: 'http://localhost:${lokiPort}'
-            }
-            {
-              name: 'CosmosDb__ConnectionString'
-              secureValue: cosmosConnectionString
-            }
-            {
-              name: 'CosmosDb__DatabaseName'
-              value: cosmosDatabaseName
             }
           ]
           resources: {
@@ -315,14 +227,6 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
               name: 'Loki__Url'
               value: 'http://localhost:${lokiPort}'
             }
-            {
-              name: 'CosmosDb__ConnectionString'
-              secureValue: cosmosConnectionString
-            }
-            {
-              name: 'CosmosDb__DatabaseName'
-              value: cosmosDatabaseName
-            }
           ]
           resources: {
             requests: {
@@ -349,24 +253,8 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
               value: 'http://+:${ptServicePort}'
             }
             {
-              name: 'RabbitMQ__Host'
-              value: 'localhost'
-            }
-            {
-              name: 'RabbitMQ__Port'
-              value: '${rabbitMqPort}'
-            }
-            {
               name: 'Loki__Url'
               value: 'http://localhost:${lokiPort}'
-            }
-            {
-              name: 'CosmosDb__ConnectionString'
-              secureValue: cosmosConnectionString
-            }
-            {
-              name: 'CosmosDb__DatabaseName'
-              value: cosmosDatabaseName
             }
           ]
           resources: {
@@ -394,24 +282,8 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
               value: 'http://+:${rapportServicePort}'
             }
             {
-              name: 'RabbitMQ__Host'
-              value: 'localhost'
-            }
-            {
-              name: 'RabbitMQ__Port'
-              value: '${rabbitMqPort}'
-            }
-            {
               name: 'Loki__Url'
               value: 'http://localhost:${lokiPort}'
-            }
-            {
-              name: 'CosmosDb__ConnectionString'
-              secureValue: cosmosConnectionString
-            }
-            {
-              name: 'CosmosDb__DatabaseName'
-              value: cosmosDatabaseName
             }
           ]
           resources: {
@@ -439,24 +311,8 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
               value: 'http://+:${userServicePort}'
             }
             {
-              name: 'RabbitMQ__Host'
-              value: 'localhost'
-            }
-            {
-              name: 'RabbitMQ__Port'
-              value: '${rabbitMqPort}'
-            }
-            {
               name: 'Loki__Url'
               value: 'http://localhost:${lokiPort}'
-            }
-            {
-              name: 'CosmosDb__ConnectionString'
-              secureValue: cosmosConnectionString
-            }
-            {
-              name: 'CosmosDb__DatabaseName'
-              value: cosmosDatabaseName
             }
           ]
           resources: {
@@ -538,6 +394,38 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
           }
         }
       }
+      {
+        name: 'vault'
+        properties: {
+          image: 'hashicorp/vault:latest'
+          command: [
+            'server'
+            '-dev'
+          ]
+          ports: [
+            {
+              port: vaultPort
+              protocol: 'TCP'
+            }
+          ]
+          environmentVariables: [
+            {
+              name: 'VAULT_DEV_ROOT_TOKEN_ID'
+              value: vaultToken
+            }
+            {
+              name: 'VAULT_DEV_LISTEN_ADDRESS'
+              value: '0.0.0.0:8200'
+            }
+          ]
+          resources: {
+            requests: {
+              cpu: json('0.25')
+              memoryInGB: json('0.5')
+            }
+          }
+        }
+      }
     ]
 
     ipAddress: {
@@ -556,7 +444,6 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
   }
 
   dependsOn: [
-    placeholderContainer
   ]
 }
 
@@ -564,5 +451,4 @@ output containerGroupName string = containerGroup.name
 output containerIPv4Address string = containerGroup.properties.ipAddress.ip
 output frontendUrl string = 'http://${containerGroup.properties.ipAddress.ip}:${frontendPort}'
 output gatewayUrl string = 'http://${containerGroup.properties.ipAddress.ip}:${gatewayPort}'
-output cosmosAccount string = cosmosAccount.name
-output cosmosDatabase string = cosmosDatabase.name
+
