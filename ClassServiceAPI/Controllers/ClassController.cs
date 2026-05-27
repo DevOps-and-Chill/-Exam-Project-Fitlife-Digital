@@ -123,17 +123,17 @@ public class ClassController : ControllerBase
         }
     }
     
-    [HttpGet("member/{id}")]
+    [HttpGet("members/{id}")]
     public async Task<IActionResult> GetClassesByMemberAsync(string id)
     {
-        _logger.LogDebug("Fetching class with id: {id}", id);
+        _logger.LogDebug("Fetching member with id: {id}'s classes", id);
         try
         {
-            var fitnessClass = await _repo.GetClassesByEmployeeAsync(id);
+            var fitnessClass = await _repo.GetClassesByMemberAsync(id);
             if (fitnessClass is null)
             {
-                _logger.LogWarning("Class with id {id} was not found", id);
-                return NotFound($"Class with id '{id}' was not found");
+                _logger.LogWarning("Classes not found. GetClassesByMemberAsync is null");
+                return NotFound();
             }
             return Ok(fitnessClass);
         }
@@ -144,23 +144,23 @@ public class ClassController : ControllerBase
         }
     }
     
-    [HttpGet("member/{id}")]
+    [HttpGet("employees/{id}")]
     public async Task<IActionResult> GetClassesByEmployeeAsync(string id)
     {
-        _logger.LogDebug("Fetching class with id: {id}", id);
+        _logger.LogDebug("Fetching member with id: {id}'s classes", id);
         try
         {
             var fitnessClass = await _repo.GetClassesByEmployeeAsync(id);
-            if (fitnessClass is null)
+            if (fitnessClass == null)
             {
-                _logger.LogWarning("Class with id {id} was not found", id);
-                return NotFound($"Class with id '{id}' was not found");
+                _logger.LogWarning("Classes not found. GetGlaccesByEmployeeAsync is null", id);
+                return NotFound();
             }
             return Ok(fitnessClass);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error fetching class with id: {id}", id);
+            _logger.LogError(ex, "Classes not found");
             return BadRequest(ex.Message);
         }
     }

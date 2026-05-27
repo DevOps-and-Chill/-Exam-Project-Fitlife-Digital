@@ -38,11 +38,26 @@ public class ClassService
         return await _httpClient.GetFromJsonAsync<List<Class>>("") ?? new();
     }
     
-
-    public async Task<List<Class>> GetAllClassesByExerciseGymAsync(string exerciseGymId)
+    public async Task<List<Class>> GetClassesByExerciseGymAsync(string exerciseGymId)
     {
         return await _httpClient.GetFromJsonAsync<List<Class>>($"exercisegyms/{exerciseGymId}") ?? new();
     }
+    
+    public async Task<Class> GetClassByIdAsync(string id)
+    {
+        return await _httpClient.GetFromJsonAsync<Class>($"{id}") ?? new();
+    }
+    
+    public async Task<List<Class>> GetClassesByMemberAsync(string id)
+    {
+        return await _httpClient.GetFromJsonAsync<List<Class>>($"members/{id}") ?? new();
+    }
+    
+    public async Task<List<Class>> GetClassesByEmployeeAsync(string id)
+    {
+        return await _httpClient.GetFromJsonAsync<List<Class>>($"employees/{id}") ?? new();
+    }
+    
     
     // PATCH
     
