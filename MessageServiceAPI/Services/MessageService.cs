@@ -21,9 +21,9 @@ public class MessageService : IMessageService
         await _context.SaveChangesAsync();
     }
     
-    public async Task SendClassCancellationMessageAsync(ClassMessage message)
+    public async Task SendClassCancellationMessageAsync(Message message)
     {
-        _context.ClassMessages.Add(message);
+        _context.SystemMessages.Add(message);
         await _context.SaveChangesAsync();
     }
     
@@ -31,34 +31,38 @@ public class MessageService : IMessageService
     {
         var directMessages = await _context.DirectMessages
             .Where(m => m.ReceiverId == receiverId)
-            .Select(m => new MessageDto
+            .Select(m => new DirectMessageDto
             {
                 Id = m.Id,
                 SenderId = m.SenderId,
                 ReceiverId = m.ReceiverId,
+                Subject = m.Subject,
                 Content = m.Content,
                 CreatedAt = m.CreatedAt,
-                Type = "direct"
+                IsRead = m.IsRead,
+                Type = "Direct"
             })
             .ToListAsync();
 
-        var classMessages = await _context.ClassMessages
-            .Where(m => m.ReceiverId == receiverId)
-            .Select(m => new MessageDto
+            var systemMessages = await _context.SystemMessages
+                .Where(m => m.ReceiverIds.Contains(receiverId))
+            .Select(m => new SystemMessageDto
             {
                 Id = m.Id,
-                SenderId = m.ClassId,
-                ReceiverId = m.ReceiverId,
+                ReceiverIds = m.ReceiverIds,
+                Subject = m.Subject,
                 Content = m.Content,
                 CreatedAt = m.CreatedAt,
-                Type = "class"
+                IsRead = m.IsRead,
+                Type = "System"
             })
             .ToListAsync();
 
-        return directMessages
-            .Concat(classMessages)
-            .OrderByDescending(m => m.CreatedAt)
-            .ToList();
+            var result = new List<MessageDto>();
+            result.AddRange(directMessages);
+            result.AddRange(systemMessages);
+
+            return result.OrderByDescending(m => m.CreatedAt).ToList();
     }
 
     public async Task MarkAsReadAsync(string messageId)
@@ -71,7 +75,7 @@ public class MessageService : IMessageService
             return;
         }
 
-        var classMessage = await _context.ClassMessages.FindAsync(messageId);
+        var classMessage = await _context.SystemMessages.FindAsync(messageId);
         if (classMessage is not null)
         {
             classMessage.IsRead = true;
