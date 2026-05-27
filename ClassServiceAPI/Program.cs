@@ -8,6 +8,9 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 logger.Debug("ClassServiceAPI starter op");
@@ -63,6 +66,30 @@ try
         return RabbitMqPublisher.CreateAsync(config).GetAwaiter().GetResult();
     });
 
+    builder.Services
+        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters =
+                new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+
+                    ValidateAudience = true,
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+
+                    ValidateLifetime = true,
+
+                    ClockSkew = TimeSpan.Zero
+                };
+        });
+
+    builder.Services.AddAuthorization();
+
     var app = builder.Build();
 
     using (var scope = app.Services.CreateScope())
@@ -77,6 +104,7 @@ try
     }
 
     app.UseHttpsRedirection();
+    app.UseAuthentication();
     app.UseAuthorization();
     app.MapControllers();
     app.Run();
