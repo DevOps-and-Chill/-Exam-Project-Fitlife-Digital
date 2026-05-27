@@ -22,7 +22,7 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Retrieves all members.
         /// </summary>
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("GetAllMembers")]
         public async Task<ActionResult> GetAllMembers()
         {
@@ -121,7 +121,7 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Retrieves a member by id.
         /// </summary>
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("GetMemberById/{userId}")]
         public async Task<ActionResult> GetMemberById(string userId)
         {
