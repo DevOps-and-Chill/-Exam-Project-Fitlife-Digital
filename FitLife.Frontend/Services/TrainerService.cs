@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using FitLife.Frontend.Models;
+using FitLife.Frontend.Models.DTOs;
 
 namespace FitLife.Frontend.Services;
 
@@ -26,42 +27,34 @@ public class TrainerService
     // Henter alle ansatte fra UserService og filtrerer kun dem der er personlige trænere
     // Kalder endpoint:
     // GET /employee/GetAllEmployees
-    public async Task<List<Trainer>> GetTrainersAsync()
+    public async Task<List<Employee>> GetTrainersAsync()
     {
         try
         {
             var employees =
                 await _httpClient.GetFromJsonAsync<List<Employee>>(
                     "employee/GetAllEmployees");
-
+          
             return employees?
                 .Where(employee => employee.IsPT && employee.ActiveUser)
-                .Select(employee => new Trainer
+                .Select(employee => new Employee
                 {
+                    
                     // Id kommer fra UserService
                     // Bruges senere som PersonalTrainerId ved booking i PTService
                     Id = employee.Id,
 
                     // Samler fornavn og efternavn til visning i UI
-                    Name = $"{employee.GivenName} {employee.FamilyName}",
+                    fullName = $"{employee.GivenName} {employee.FamilyName}",
 
                     // Midlertidig visningstekst
                     // TODO:
                     // Senere kan dette komme fra UserService, hvis Employee får profiltekst/speciale
                     Description = "Personlig træner hos FitLife.",
-
-                    // Midlertidigt speciale
-                    // TODO:
-                    // Senere kan dette komme fra UserService eller PTService
-                    Specialty = "Personlig træning",
-
-                    // Midlertidig availability
-                    // TODO:
-                    // Senere kan dette beregnes ud fra bookingkalender/sessioner
-                    IsAvailable = true
+                    
                 })
                 .ToList()
-                ?? new List<Trainer>();
+                ?? new List<Employee>();
         }
         catch (Exception ex)
         {
@@ -75,24 +68,16 @@ public class TrainerService
     // Bruges når en træner ikke er ledig.
     // TODO:
     // Skal senere gemmes i backend/database.
-    public string JoinWaitlist(Trainer trainer)
+    public string JoinWaitlist(Employee employee)
     {
-        return $"Du er nu tilmeldt ventelisten hos {trainer.Name}.";
+        return $"Du er nu tilmeldt ventelisten hos {employee.fullName}.";
     }
 
     // Midlertidig profilfunktion
     // TODO:
     // Senere kan denne metode hente detaljeret trænerprofil fra backend.
-    public string ShowProfile(Trainer trainer)
+    public string ShowProfile(Employee employee)
     {
-        return $"Profil for {trainer.Name} vises ikke som separat side endnu.";
-    }
-
-    // Midlertidig beskedfunktion
-    // TODO:
-    // Senere skal denne kobles til MessageService/backend.
-    public string SendMessage(Trainer trainer)
-    {
-        return $"Din besked til {trainer.Name} er sendt.";
+        return $"Profil for {employee.fullName} vises ikke som separat side endnu.";
     }
 }

@@ -5,6 +5,7 @@
 @inject PTService PTService
 @inject CenterService CenterService
 @inject TrainerService TrainerService
+@inject EmployeeService EmployeeService
 
 <div class="container-fluid px-0">
 
@@ -67,18 +68,14 @@
                             </div>
 
                             <h4 class="fw-bold">
-                                @trainer.Name
+                                @trainer.fullName
                             </h4>
 
                             <p class="text-muted">
                                 @trainer.Description
                             </p>
-
-                            <p class="mb-1">
-                                <strong>Speciale:</strong>
-                                @trainer.Specialty
-                            </p>
-
+                            
+                            
                             <p class="mb-3">
 
                                 <strong>Ledig:</strong>
@@ -136,7 +133,7 @@
                 <div class="card-body p-4">
 
                     <h4 class="fw-bold">
-                        Book session med @SelectedTrainerForBooking.Name
+                        Book session med @SelectedTrainerForBooking.fullName
                     </h4>
 
                     <p class="text-muted">
@@ -236,7 +233,7 @@
         <div class="card-body p-4">
 
             <h4 class="fw-bold">
-                Send besked til @SelectedTrainerForMessage.Name
+                Send besked til @SelectedTrainerForMessage.fullName
             </h4>
 
             <p class="text-muted">
@@ -308,10 +305,10 @@
 @code {
 
     // Holder styr på hvilken træner brugeren vil booke hos
-    private Trainer? SelectedTrainerForBooking;
+    private Employee? SelectedTrainerForBooking;
 
     // Holder styr på hvilken træner brugeren skriver til
-    private Trainer? SelectedTrainerForMessage;
+    private Employee? SelectedTrainerForMessage;
 
     // Midlertidige bookingfelter
     private DateTime? SelectedDate;
@@ -335,7 +332,7 @@
     // Trænere hentes fra UserService
     // TODO:
     // Senere kan data udvides med speciale, profiltekst og bookingkalender
-    private List<Trainer> Trainers = new();
+    private List<Employee> Trainers = new();
 
     // Henter centre og trænere når siden indlæses
     protected override async Task OnInitializedAsync()
@@ -343,11 +340,10 @@
         try
         {
             Centers = await CenterService.GetCentersAsync();
-
-            // Vælger første center som standard hvis der findes centre
+            
             SelectedCenterId = Centers.FirstOrDefault()?.Id ?? "";
 
-            Trainers = await TrainerService.GetTrainersAsync();
+            Trainers = await EmployeeService.GetAllEmployeesAsync();
         }
         catch (Exception ex)
         {
@@ -356,7 +352,7 @@
     }
 
     // Åbner bookingpanel
-    private void SelectTrainerForBooking(Trainer trainer)
+    private void SelectTrainerForBooking(Employee trainer)
     {
         SelectedTrainerForBooking = trainer;
 
@@ -367,7 +363,7 @@
     }
 
     // Åbner beskedformular
-    private void SelectTrainerForMessage(Trainer trainer)
+    private void SelectTrainerForMessage(Employee trainer)
     {
         SelectedTrainerForMessage = trainer;
 
@@ -383,15 +379,15 @@
     // Midlertidig ventelistefunktion
     // TODO:
     // Skal senere kobles til backend
-    private void JoinWaitlist(Trainer trainer)
+    private void JoinWaitlist(Employee trainer)
     {
-        StatusMessage = $"Du er nu tilmeldt ventelisten hos {trainer.Name}.";
+        StatusMessage = $"Du er nu tilmeldt ventelisten hos {trainer.fullName}.";
     }
 
     // Midlertidig prototypefunktion
-    private void ShowProfile(Trainer trainer)
+    private void ShowProfile(Employee trainer)
     {
-        StatusMessage = $"Profil for {trainer.Name} vises ikke som separat side endnu.";
+        StatusMessage = $"Profil for {trainer.fullName} vises ikke som separat side endnu.";
     }
 
     // Opretter booking
@@ -459,7 +455,7 @@
         }
 
         StatusMessage =
-            $"Du har booket en session med {SelectedTrainerForBooking.Name} den {SelectedDate:dd/MM} kl. {SelectedTime}.";
+            $"Du har booket en session med {SelectedTrainerForBooking.fullName} den {SelectedDate:dd/MM} kl. {SelectedTime}.";
 
         // Lukker bookingpanel og nulstiller data
         SelectedTrainerForBooking = null;
@@ -492,7 +488,7 @@
         NewMessage.SenderName = "NAVN NAVNESEN";
 
         NewMessage.ReceiverName =
-            SelectedTrainerForMessage.Name;
+            SelectedTrainerForMessage.fullName;
 
         NewMessage.SentDate = DateTime.Now;
 

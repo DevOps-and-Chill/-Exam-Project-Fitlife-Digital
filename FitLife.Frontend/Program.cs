@@ -39,7 +39,6 @@ builder.Services.AddHttpClient("MessageService", client =>
 		builder.Configuration["Gateway:BaseUrl"]! + "message/");
 });
 
-
 builder.Services.AddHttpClient("ClassService", client =>
 {
 	client.BaseAddress = new Uri(
@@ -61,9 +60,8 @@ builder.Services.AddHttpClient("StatisticService", client =>
 		builder.Configuration["StatisticService:BaseUrl"]!);
 });
 
-builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<MemberService>();
-builder.Services.AddScoped<TrainerService>();
+builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddScoped<DigitalContentService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<CenterService>();
