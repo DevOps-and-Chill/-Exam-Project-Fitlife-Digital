@@ -1,9 +1,17 @@
 @page "/inbox"
 @using FitLife.Frontend.Models.DTOs
-@inject FitLife.Frontend.Services.MessageService MessageService
+@using FitLife.Frontend.Services
+@inject CurrentUserService CurrentUserService
+@inject MessageService MessageService
 
 <h3>Inbox</h3>
 
+@if (messages.Count == 0)
+{
+    <p>Ingen beskeder.</p>
+}
+else
+{
 
 
     <ul style="list-style: none; padding: 0;">
@@ -22,22 +30,28 @@
             </li>
         }
     </ul>
+}
 
 @code {
-    private List<MessageDto?> messages;
-
-    // TODO
-    // Hardcodet — skal erstattes med rigtigt id
-    private string receiverId = new Guid("00000000-0000-0000-0000-000000000001").ToString()
-    ;
+    private List<MessageDto> messages;
+    
+    
     protected override async Task OnInitializedAsync()
     {
-        messages = await MessageService.GetAllMessagesAsync(receiverId);
+        var userId = CurrentUserService.CurrentUser?.GetId();
+
+        if (userId is not null)
+        {
+            messages = await MessageService.GetMessagesByReceiverAsync(userId);
+        }
     }
 
-    private async Task MarkAsRead(string messageId)
+    private async Task MarkAsRead(string id)
     {
-        await MessageService.MarkAsReadAsync(messageId);
-        messages = await MessageService.GetAllMessagesAsync(receiverId);
+        await MessageService.MarkAsReadAsync(id);
+        var message = messages.FirstOrDefault(m => m?.Id == id);
+        if (message != null) message.IsRead = true;
     }
+    
+
 }

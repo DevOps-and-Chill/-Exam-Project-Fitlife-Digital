@@ -60,14 +60,14 @@ public class ClassCancelledConsumer : BackgroundService
         using var scope = _scopeFactory.CreateScope();
         var messageService = scope.ServiceProvider.GetRequiredService<IMessageService>();
         
-        foreach (var receiverId in message.ReceiverIds)
+        foreach (var receiverIds in message.ReceiverIds)
         {
-            var classMessage = new ClassMessage
+            var classMessage = new Message
             {
-                ReceiverId = receiverId,
+                ReceiverIds = message.ReceiverIds,
                 ClassId    = message.ClassId,
-                Subject      = "Klasse aflyst",
-                Content    = $"Din klasse '{message.Subject}' d. {message.TimeStart:dd/MM/yyyy} er aflyst.",
+                Subject      = "Hold aflyst",
+                Content    = $"Dit hold er aflyst.",
                 TimeStart  = message.TimeStart,
                 TimeEnd    = message.TimeEnd
             };

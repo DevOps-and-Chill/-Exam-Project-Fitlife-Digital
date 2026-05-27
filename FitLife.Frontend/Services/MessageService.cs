@@ -13,44 +13,29 @@ public class MessageService
         _httpClient = httpClientFactory.CreateClient("MessageService");
     }
     
-    public async Task<List<MessageDto>> GetAllMessagesAsync(string receiverId)
+    public async Task<List<MessageDto>> GetMessagesByReceiverAsync(string receiverId)
     {
         try
         {
-            //var messages = await _httpClient.GetFromJsonAsync<List<MessageDto>>(
-              //  $"message/get-all/{receiverId}");
-            
-            var testMessage = new List<MessageDto>
-                {
-                    new MessageDto
-                        { 
-                            Id = "5", 
-                            ReceiverId = "1", 
-                            SenderId = "2", 
-                            Subject = "TestSubject", 
-                            Content = "TestContent",
-                            CreatedAt = DateTime.Now,
-                            
-                    }
-                };
-            return testMessage;
-            // return messages ?? new List<MessageDto>();
+            var messages = await _httpClient.GetFromJsonAsync<List<MessageDto>>(
+                $"receivers/{receiverId}");
+            return messages ?? new List<MessageDto>();
         }
         catch (Exception ex)
         {
-            throw new Exception($"Kunne ikke hente messages. Fejl: {ex.Message}", ex);
+            throw new Exception($"Could not fetch message. Error: {ex.Message}", ex);
         }
     }
-    public async Task SendMessageAsync(DirectMessageDto dto)
+    public async Task SendDirectMessageAsync(DirectMessageDto dto)
     {
         try
         {
-            var response = await _httpClient.PostAsJsonAsync("message/send", dto);
+            var response = await _httpClient.PostAsJsonAsync("", dto);
             response.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
         {
-            throw new Exception($"Kunne ikke sende besked. Fejl: {ex.Message}", ex);
+            throw new Exception($"Could not send a direct message. Error: {ex.Message}", ex);
         }
     }
 
@@ -58,24 +43,24 @@ public class MessageService
     {
         try
         {
-            var response = await _httpClient.PutAsync($"message/mark-as-read/{messageId}", null);
+            var response = await _httpClient.PutAsync($"{messageId}/markasread", null);
             response.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
         {
-            throw new Exception($"Kunne ikke markere som læst. Fejl: {ex.Message}", ex);
+            throw new Exception($"Could not mark message as read. Error: {ex.Message}", ex);
         }
     }
     public async Task DeleteMessageAsync(string messageId)
     {
         try
         {
-            var response = await _httpClient.DeleteAsync($"message/delete/{messageId}");
+            var response = await _httpClient.DeleteAsync($"{messageId}");
             response.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
         {
-            throw new Exception($"Kunne ikke markere som læst. Fejl: {ex.Message}", ex);
+            throw new Exception($"Could not delete message. Error: {ex.Message}", ex);
         }
     }
     

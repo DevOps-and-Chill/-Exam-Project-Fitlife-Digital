@@ -1,6 +1,6 @@
 ﻿namespace MessageServiceAPI.Models;
 
-public class ClassCancelledMessage
+public class ClassCancelledMessage : Message
 {
     public string ClassId { get; set; } = Guid.NewGuid().ToString();
     public List<string> ReceiverIds { get; set; } = new();
