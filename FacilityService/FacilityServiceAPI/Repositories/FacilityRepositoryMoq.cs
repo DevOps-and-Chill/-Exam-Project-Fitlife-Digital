@@ -4,7 +4,7 @@ using FacilityServiceAPI.TestData;
 
 namespace FacilityServiceAPI.Repositories
 {
-	public class FacilityRepositoryMoq : IFacilityRepository
+	public class FacilityRepositoryMoq : IFacilityRepository, IExerciseGymRepository, ISwimmingPoolRepository
 	{
 		public Task AddTestData()
 		{

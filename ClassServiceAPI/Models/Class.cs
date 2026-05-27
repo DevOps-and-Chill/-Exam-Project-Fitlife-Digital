@@ -2,7 +2,7 @@
 
 public class Class
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public string Id { get; set; } = Guid.NewGuid().ToString();
     public string PartitionKey { get; set; } = "classes";
     
     public string Title { get; set; } = "";
@@ -16,13 +16,13 @@ public class Class
     public bool ActiveClass { get; set; }
     
     // FK
-    public Guid CoachId { get; set; }
-    public Guid ExerciseGymId { get; set; }
-    public Guid RoomId { get; set; }
+    public string CoachId { get; set; } = Guid.NewGuid().ToString();
+    public string ExerciseGymId { get; set; } = Guid.NewGuid().ToString();
+    public string RoomId { get; set; } = Guid.NewGuid().ToString();
     
     // Lists
-    public List<Member> Registered { get; set; } = new List<Member>();
-    public List<Member> Attended { get; set; } = new List<Member>();
+    public List<Member> Members { get; set; } = new List<Member>();
+    public List<Member> AttendedMembers { get; set; } = new List<Member>();
     public List<Member> WaitingList { get; set; } = new List<Member>();
 
 

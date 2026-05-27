@@ -89,7 +89,12 @@ try
 
 
     builder.Services.AddScoped<IMessageService, MessageService>();
-    builder.Services.AddHostedService<ClassCancelledConsumer>();
+    
+    // Så ClassCancelledConsumer kun starter uden for development. Forhindrer run errors.
+    if (!builder.Environment.IsDevelopment())
+    {
+        builder.Services.AddHostedService<ClassCancelledConsumer>();
+    }
     
 
     var app = builder.Build();

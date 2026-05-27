@@ -39,7 +39,7 @@ namespace DigitalContentServiceAPI.Controllers
         // GET
         [Authorize]
         [HttpGet("get/{id}")]
-        public async Task<IActionResult> GetWorkoutProgramAsync(Guid id)
+        public async Task<IActionResult> GetWorkoutProgramAsync(string id)
         {
             try
             {
@@ -53,10 +53,24 @@ namespace DigitalContentServiceAPI.Controllers
             }
         }
 
+        [HttpGet("getall")]
+        public async Task<IActionResult> getWorkoutProgramsAsync()
+        {
+            try
+            {
+                return Ok( await _programRepo.GetWorkoutProgramsAsync());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "failed to get all workoutprograms");
+                return BadRequest(ex.Message);
+            }
+        }
+
         // PUT
         [Authorize]
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateWorkoutProgramAsync(Guid id, WorkoutProgram workoutProgram)
+        public async Task<IActionResult> UpdateWorkoutProgramAsync(string id, WorkoutProgram workoutProgram)
         {
             try
             {
@@ -74,7 +88,7 @@ namespace DigitalContentServiceAPI.Controllers
         // DELETE 
         [Authorize]
         [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteWorkoutProgramAsync(Guid id)
+        public async Task<IActionResult> DeleteWorkoutProgramAsync(string id)
         {
             try
             {

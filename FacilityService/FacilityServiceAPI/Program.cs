@@ -41,25 +41,31 @@ namespace FacilityServiceAPI
 			// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 			builder.Services.AddOpenApi();
 
-			builder.Services.AddTransient<IFacilityRepository, FacilityRepository>();
+			builder.Services.AddTransient<IFacilityRepository, FacilityRepositoryMoq>();
+            builder.Services.AddTransient<IExerciseGymRepository, FacilityRepositoryMoq>();
+			builder.Services.AddTransient<ISwimmingPoolRepository, FacilityRepositoryMoq>();
 
-                //Enables dependency injection of Factory pattern for DBContext. This way the application is more threadsafe, because each 
+            //Enables dependency injection of Factory pattern for DBContext. This way the application is more threadsafe, because each 
             builder.Services.AddDbContextFactory<FacilityContext>(options =>
             {
                 options.UseCosmos(
                         builder.Configuration["CosmosDb:AccountEndpoint"]!,
                         builder.Configuration["CosmosDb:AccountKey"]!,
                         builder.Configuration["CosmosDb:DatabaseName"]!,
-                        //cosmosOptions =>
-                        //{
-                        //    cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
-
-                        //    cosmosOptions.HttpClientFactory(() =>
+                        //Enables dependency injection of Factory pattern for DBContext. This way the application is more threadsafe, because each context is managed through the factory
+                        //    builder.Services.AddDbContextFactory<FacilityContext>(options =>
                         //    {
-                        //        var handler = new HttpClientHandler();
+                        //        options.UseCosmos(
+                        //            builder.Configuration["CosmosDb:AccountEndpoint"]!,
+                        //            builder.Configuration["CosmosDb:AccountKey"]!,
+                        //            builder.Configuration["CosmosDb:DatabaseName"]!,
+                        //            //cosmosOptions =>
+                        //            //{
+                        //            //    cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
 
-                        //        handler.ServerCertificateCustomValidationCallback =
-                        //            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                        //            //    cosmosOptions.HttpClientFactory(() =>
+                        //            //    {
+                        //            //        var handler = new HttpClientHandler();
 
                         //        return new HttpClient(handler);
                         //    });
@@ -68,51 +74,51 @@ namespace FacilityServiceAPI
                         {
                             cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
                         });
-            });
-             builder.Services
-                 //AO: Tells the app that we use JWT as authentication
-                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                 //AO: Config of the token validation
-                 .AddJwtBearer(options =>
-                 {
-                     options.TokenValidationParameters =
+                    });
+
+            builder.Services
+                //AO: Tells the app that we use JWT as authentication
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                //AO: Config of the token validation
+                .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters =
                          //AO: Config of what makes a token valid
-                         new TokenValidationParameters
-                         {
-                             //AO: Check these
-                             ValidateIssuer = true,
-                             ValidateAudience = true,
-                             ValidateLifetime = true,
-                             ValidateIssuerSigningKey = true,
-                             //AO: Compare issuer and audience 
-                             ValidIssuer =
-                                 builder.Configuration["Jwt:Issuer"],
-                             ValidAudience =
-                                 builder.Configuration["Jwt:Audience"],
-                             //AO: Calculate key to ensure correct signature
-                             IssuerSigningKey =
-                                 new SymmetricSecurityKey(
-                                     Encoding.UTF8.GetBytes(
-                                         builder.Configuration["Jwt:Key"]!)),
-                             //AO: Accept no difference in validationperiod
-                             ClockSkew = TimeSpan.Zero
-                         };
-                 });
+                        new TokenValidationParameters
+                        {
+                            //AO: Check these
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true,
+                            //AO: Compare issuer and audience 
+                            ValidIssuer =
+                                builder.Configuration["Jwt:Issuer"],
+                            ValidAudience =
+                                builder.Configuration["Jwt:Audience"],
+                            //AO: Calculate key to ensure correct signature
+                                IssuerSigningKey =
+                                    new SymmetricSecurityKey(
+                                        Encoding.UTF8.GetBytes(
+                                        builder.Configuration["Jwt:Key"]!)),
+                                //AO: Accept no difference in validationperiod
+                            ClockSkew = TimeSpan.Zero
+                        };
+                    });
 
-
-                var app = builder.Build();
+				var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())
 			{
 				app.MapOpenApi();
 			}
-			using (var scope = app.Services.CreateScope())
-			{
-				var db = scope.ServiceProvider.GetRequiredService<FacilityContext>();
+			// using (var scope = app.Services.CreateScope())
+			// {
+			// 	var db = scope.ServiceProvider.GetRequiredService<FacilityContext>();
 
-				await db.Database.EnsureCreatedAsync();
-			}
+			// 	await db.Database.EnsureCreatedAsync();
+			// }
 
                 app.UseHttpsRedirection();
                 app.UseAuthentication();
@@ -122,13 +128,11 @@ namespace FacilityServiceAPI
             }
             catch (Exception ex)
             {
-                // Logger fejl hvis applikationen crasher ved opstart
-                logger.Error(ex, "FacilityService stoppede på grund af en fejl!");
+                logger.Error(ex, "FacilityService stopped because of an unexpected error durring startup");
                 throw;
             }
             finally
             {
-                // Sørg for at alle logs bliver skrevet færdigt før applikationen lukker
                 NLog.LogManager.Shutdown();
             }
         }

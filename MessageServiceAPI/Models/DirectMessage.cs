@@ -2,10 +2,10 @@
 
 public class DirectMessage
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public string Id { get; set; } = Guid.NewGuid().ToString();
     public string PartitionKey { get; set; } = "inbox";
-    public Guid SenderId { get; set; }
-    public Guid ReceiverId { get; set; }
+    public string SenderId { get; set; } = Guid.NewGuid().ToString();
+    public string ReceiverId { get; set; } = Guid.NewGuid().ToString();
     public string Subject { get; set; } = "";
     public string Content { get; set; } = "";
     public bool IsRead { get; set; } = false;

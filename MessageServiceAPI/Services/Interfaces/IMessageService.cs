@@ -1,12 +1,13 @@
 ﻿
 using MessageServiceAPI.Models;
+using MessageServiceAPI.Models.DTOs;
 
 namespace MessageServiceAPI.Services.Interfaces;
     public interface IMessageService
     { 
         Task SendDirectMessageAsync(DirectMessage message);
-        Task SendClassCancellationMessageAsync(ClassMessage message);
-        Task<List<MessageDto>> GetAllMessagesAsync(Guid receiverId);
-        Task MarkAsReadAsync(Guid messageId);
-        Task DeleteMessageAsync(Guid messageId);
+        Task SendClassCancellationMessageAsync(Message message);
+        Task<List<MessageDto>> GetAllMessagesAsync(string receiverId);
+        Task MarkAsReadAsync(string messageId);
+        Task DeleteMessageAsync(string messageId);
     }

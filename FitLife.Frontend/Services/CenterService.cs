@@ -20,15 +20,15 @@ public class CenterService
     // Henter alle centre fra FacilityService
     // Kalder endpoint:
     // GET /Facility/getall
-    public async Task<List<Center>> GetCentersAsync()
+    public async Task<List<ExerciseGym>> GetCentersAsync()
     {
         try
         {
             var centers =
-                await _httpClient.GetFromJsonAsync<List<Center>>(
-                    "Facility/getall");
+                await _httpClient.GetFromJsonAsync<List<ExerciseGym>>(
+                    "exercisegym/getall");
 
-            return centers ?? new List<Center>();
+            return centers ?? new List<ExerciseGym>();
         }
         catch (Exception ex)
         {
@@ -37,4 +37,26 @@ public class CenterService
                 ex);
         }
     }
+    /// <summary>
+    /// Method for fetching all the swimming pools 
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public async Task<List<SwimmingPool>> GetSwimmingPoolsAsync()
+    {
+		try
+		{
+			var swimmingPools =
+				await _httpClient.GetFromJsonAsync<List<SwimmingPool>>(
+					"swimmingpool/getall");
+
+			return swimmingPools ?? new List<SwimmingPool>();
+		}
+		catch (Exception ex)
+		{
+			throw new Exception(
+				$"Kunne ikke hente swimming pools fra FacilityService. Fejl: {ex.Message}",
+				ex);
+		}
+	}
 }

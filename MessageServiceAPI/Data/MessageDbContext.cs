@@ -11,7 +11,7 @@ public class MessageDbContext : DbContext
     {
     }
     public DbSet<DirectMessage> DirectMessages => Set<DirectMessage>();
-    public DbSet<ClassMessage> ClassMessages => Set<ClassMessage>();
+    public DbSet<Message> SystemMessages => Set<Message>();
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -22,11 +22,11 @@ public class MessageDbContext : DbContext
         modelBuilder.Entity<DirectMessage>()
             .HasKey(u => u.Id);
 
-        modelBuilder.Entity<ClassMessage>()
-            .ToContainer("ClassMessages");
-        modelBuilder.Entity<ClassMessage>()
+        modelBuilder.Entity<Message>()
+            .ToContainer("SystemMessages");
+        modelBuilder.Entity<Message>()
             .HasPartitionKey(u => u.PartitionKey);
-        modelBuilder.Entity<ClassMessage>()
+        modelBuilder.Entity<Message>()
             .HasKey(u => u.Id);
     }
 }
