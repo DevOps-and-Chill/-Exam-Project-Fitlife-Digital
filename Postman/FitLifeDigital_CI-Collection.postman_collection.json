@@ -1,0 +1,184 @@
+{
+  "info": {
+    "_postman_id": "c347a129-0321-4b24-9980-08894badb7de",
+    "name": "FitLifeDigital_CI-Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "43165297"
+  },
+  "item": [
+    {
+      "name": "Denied request",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//Denied request for our test-userobject. \r",
+              "pm.test(\"Status code is 401\", function () {\r",
+              "    pm.response.to.have.status(401);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/user/user/getuserbyid/2a8913a3-149c-4860-be1c-a40f158b4804",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "user",
+            "user",
+            "getuserbyid",
+            "2a8913a3-149c-4860-be1c-a40f158b4804"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login request",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//Login with test-credentials. Returns and saves token as a collection variable\r",
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "    });\r",
+              "\r",
+              "//Saves jsons-response as a local variable\r",
+              "const response = pm.response.json();\r",
+              "\r",
+              "//Verify that the login response doesnt contain undefined token value.\r",
+              "pm.test(\"JWT token exists\", function () {\r",
+              "     pm.expect(response.token).to.not.be.undefined; \r",
+              "     });\r",
+              "\r",
+              "//Sets the JWT token as a collection variable for future requests\r",
+              "pm.collectionVariables.set(\"jwt\", response.token);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"test.testesen@fitlife.local\",\r\n    \"password\": \"Test1234!\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/auth/Login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "auth",
+            "Login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Authorized request",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//Uses bearertoken (jwt from login) and Returns 200 and the test-userobject\r",
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{jwt}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/user/user/getuserbyid/2a8913a3-149c-4860-be1c-a40f158b4804",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "user",
+            "user",
+            "getuserbyid",
+            "2a8913a3-149c-4860-be1c-a40f158b4804"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "jwt",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}

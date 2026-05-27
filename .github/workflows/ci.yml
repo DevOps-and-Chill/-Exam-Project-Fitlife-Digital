@@ -56,7 +56,7 @@ jobs:
         --logger trx \
         --results-directory TestResults
 
-    #Creat MD of testsresults
+    #Create MD of testsresults
     - name: Publish Test Results
       uses: dorny/test-reporter@v1
       if: success() || failure()
@@ -178,9 +178,10 @@ jobs:
 
     # Start microservices 
     - name: Start relevant microservices
-      run: docker compose -f docker-compose-services.yml up -d gateway
-      run: docker compose -f docker-compose-services.yml up -d authservice
-      run: docker compose -f docker-compose-services.yml up -d userservice
+      run: |
+        docker compose -f docker-compose-services.yml up -d gateway
+        docker compose -f docker-compose-services.yml up -d authservice
+        docker compose -f docker-compose-services.yml up -d userservice
 
     - name: Wait for services
       run: sleep 20
@@ -199,8 +200,8 @@ jobs:
     - name: Run Newman Tests
       run: |
         newman run \
-        ./Postman/FitLife.postman_collection.json \
-        -e ./Postman/TestEnvironment.postman_environment.json
+        ./Postman/FitLifeDigital_CI-Collection.postman_collection.json \
+        -e ./Postman/FitLifeDigital_CI-ENV.postman_environment.json
 
 
     # ACR
@@ -212,20 +213,20 @@ jobs:
         password: ${{ secrets.ACR_PASSWORD }}
     # ACR Push
     - name: Push Frontend
-          run: docker push fitlifedigital.azurecr.io/frontend:latest
+      run: docker push fitlifedigital.azurecr.io/frontend:latest
     - name: Push Gateway
-          run: docker push fitlifedigital.azurecr.io/gateway:latest
+      run: docker push fitlifedigital.azurecr.io/gateway:latest
     - name: Push AuthService
-          run: docker push fitlifedigital.azurecr.io/authservice:latest
+      run: docker push fitlifedigital.azurecr.io/authservice:latest
     - name: Push UserService
-          run: docker push fitlifedigital.azurecr.io/userservice:latest
+      run: docker push fitlifedigital.azurecr.io/userservice:latest
     - name: Push ClassService
-          run: docker push fitlifedigital.azurecr.io/classservice:latest
+      run: docker push fitlifedigital.azurecr.io/classservice:latest
     - name: Push MessageService
-          run: docker push fitlifedigital.azurecr.io/messageservice:latest
+      run: docker push fitlifedigital.azurecr.io/messageservice:latest
     - name: Push PTService
-          run: docker push fitlifedigital.azurecr.io/ptservice:latest
+      run: docker push fitlifedigital.azurecr.io/ptservice:latest
     - name: Push FacilityService
-          run: docker push fitlifedigital.azurecr.io/facilityservice:latest
+      run: docker push fitlifedigital.azurecr.io/facilityservice:latest
     - name: Push StatisticService
-          run: docker push fitlifedigital.azurecr.io/statisticservice:latest
+      run: docker push fitlifedigital.azurecr.io/statisticservice:latest
