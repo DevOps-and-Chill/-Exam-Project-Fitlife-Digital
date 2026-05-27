@@ -71,6 +71,7 @@ builder.Services.AddScoped<RegistrationStateService>();
 builder.Services.AddScoped<PTService>();
 builder.Services.AddScoped<CurrentUserService>();
 builder.Services.AddScoped<MessageService>();
+builder.Services.AddScoped<ClassService>();
 builder.Services.AddScoped<StatisticService>();
 
 builder.Services.AddSingleton<TokenService>();

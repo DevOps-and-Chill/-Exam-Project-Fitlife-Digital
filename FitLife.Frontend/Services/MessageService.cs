@@ -7,7 +7,7 @@ namespace FitLife.Frontend.Services;
 public class MessageService
 {
     private readonly HttpClient _httpClient;
-
+    
     public MessageService(IHttpClientFactory httpClientFactory)
     {
         _httpClient = httpClientFactory.CreateClient("MessageService");
@@ -17,10 +17,24 @@ public class MessageService
     {
         try
         {
-            var messages = await _httpClient.GetFromJsonAsync<List<MessageDto>>(
-                $"message/get-all/{receiverId}");
-
-            return messages ?? new List<MessageDto>();
+            //var messages = await _httpClient.GetFromJsonAsync<List<MessageDto>>(
+              //  $"message/get-all/{receiverId}");
+            
+            var testMessage = new List<MessageDto>
+                {
+                    new MessageDto
+                        { 
+                            Id = "5", 
+                            ReceiverId = "1", 
+                            SenderId = "2", 
+                            Subject = "TestSubject", 
+                            Content = "TestContent",
+                            CreatedAt = DateTime.Now,
+                            
+                    }
+                };
+            return testMessage;
+            // return messages ?? new List<MessageDto>();
         }
         catch (Exception ex)
         {
