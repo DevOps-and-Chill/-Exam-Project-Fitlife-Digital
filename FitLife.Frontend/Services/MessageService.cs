@@ -18,7 +18,7 @@ public class MessageService
         try
         {
             var messages = await _httpClient.GetFromJsonAsync<List<MessageDto>>(
-                $"/message/get-all/{receiverId}");
+                $"message/get-all/{receiverId}");
 
             return messages ?? new List<MessageDto>();
         }
@@ -31,7 +31,7 @@ public class MessageService
     {
         try
         {
-            var response = await _httpClient.PostAsJsonAsync("/message/send", dto);
+            var response = await _httpClient.PostAsJsonAsync("message/send", dto);
             response.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
@@ -44,7 +44,7 @@ public class MessageService
     {
         try
         {
-            var response = await _httpClient.PutAsync($"/message/mark-as-read/{messageId}", null);
+            var response = await _httpClient.PutAsync($"message/mark-as-read/{messageId}", null);
             response.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
@@ -56,7 +56,7 @@ public class MessageService
     {
         try
         {
-            var response = await _httpClient.DeleteAsync($"/message/delete/{messageId}");
+            var response = await _httpClient.DeleteAsync($"message/delete/{messageId}");
             response.EnsureSuccessStatusCode();
         }
         catch (Exception ex)

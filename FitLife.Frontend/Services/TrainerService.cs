@@ -17,6 +17,12 @@ public class TrainerService
         _httpClient = httpClientFactory.CreateClient("UserService");
     }
 
+    public async Task<Employee> GetEmployeeById(string id)
+    {
+        var employee = await _httpClient.GetFromJsonAsync<Employee>($"employee/GetEmployeeById/{id}");
+        return employee;
+    }
+
     // Henter alle ansatte fra UserService og filtrerer kun dem der er personlige trænere
     // Kalder endpoint:
     // GET /employee/GetAllEmployees
