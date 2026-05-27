@@ -16,7 +16,7 @@ RUN dotnet restore "FitLife.Frontend.csproj"
 # -c Release = release build
 # -o = output mappe
 RUN dotnet publish \
-    "FitLife.Frontend.csproj" \
+    "FitLife.Frontend.csproj" \ 
     -c Release \
     -o /app/publish
 

@@ -1,45 +1,130 @@
 @page "/inbox"
+@rendermode InteractiveServer
 @using FitLife.Frontend.Models.DTOs
 @inject FitLife.Frontend.Services.MessageService MessageService
+@inject FitLife.Frontend.Services.CurrentUserService CurrentUserService
 
-<h3>Inbox</h3>
+<div class="container-fluid px-0">
 
+    <MemberNavbar />
 
-@if (messages.Any())
-{
-    <ul style="list-style: none; padding: 0;">
-        @foreach (var message in messages)
+    <section class="container py-5">
+
+       
+        <div class="mb-5">
+            <span class="badge bg-success mb-3 px-3 py-2">
+                BESKEDER
+            </span>
+
+            <h1 class="fw-bold mb-3">
+                Indbakke
+            </h1>
+
+            <p class="lead text-muted">
+                Se dine beskeder og notifikationer herunder.
+            </p>
+        </div>
+        
+        @if (messages is null)
         {
-            <li style="border: 1px solid #ddd; padding: 12px; margin-bottom: 8px; border-radius: 6px; background: @(message.IsRead ? "#fff" : "#f0f7ff")">
-                <div style="display: flex; justify-content: space-between;">
-                    <strong>@message.Subject</strong>
-                    <small>@message.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
-                </div>
-                <p style="margin: 4px 0;">@message.Content</p>
-                @if (!message.IsRead)
-                {
-                    <button @onclick="() => MarkAsRead(message.Id)">Marker som læst</button>
-                }
-            </li>
+            <p class="text-muted">Indlæser beskeder...</p>
         }
-    </ul>
-}
+        else if (!string.IsNullOrWhiteSpace(ErrorMessage))
+        {
+            <div class="alert alert-warning">
+                @ErrorMessage
+            </div>
+        }
+        else if (!messages.Any())
+        {
+            <p class="text-muted">Du har ingen beskeder.</p>
+        }
+        else
+        {
+            <div class="d-flex flex-column gap-3">
+
+                @foreach (var message in messages)
+                {
+                    <div class="card shadow-sm border-0"
+                         style="border-left: 4px solid @(message.IsRead ? "#dee2e6" : "#198754") !important;">
+                        <div class="card-body p-4">
+
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="fs-5">
+                                        @(message.Type == "Direct" ? "✉️" : "🔔")
+                                    </span>
+                                    <h5 class="mb-0 fw-bold">
+                                        @message.Subject
+                                    </h5>
+                                    @if (!message.IsRead)
+                                    {
+                                        <span class="badge bg-success">Ny</span>
+                                    }
+                                </div>
+
+                                <small class="text-muted">
+                                    @message.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                                </small>
+
+                            </div>
+
+                            <p class="card-text text-muted mb-3">
+                                @message.Content
+                            </p>
+
+                            @if (!message.IsRead)
+                            {
+                                <button class="btn btn-outline-success btn-sm"
+                                        @onclick="() => MarkAsRead(message.Id)">
+                                    Marker som læst
+                                </button>
+                            }
+
+                        </div>
+                    </div>
+                }
+
+            </div>
+        }
+
+    </section>
+
+    <AppFooter />
+
+</div>
 
 @code {
-    private List<MessageDto>? messages;
-
-    // TODO
-    // Hardcodet — skal erstattes med rigtigt id
-    private Guid receiverId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+    private List<MessageDto>? messages = null;
+    private string? ErrorMessage;
 
     protected override async Task OnInitializedAsync()
     {
-        messages = await MessageService.GetAllMessagesAsync(receiverId);
+        try
+        {
+            var userId = CurrentUserService.CurrentUser?.GetId();
+
+            if (userId is not null)
+            {
+                messages = await MessageService.GetMessagesByReceiverAsync(userId);
+            }
+            else
+            {
+                messages = new();
+            }
+        }
+        catch
+        {
+            ErrorMessage = "Beskeder kunne ikke hentes lige nu.";
+            messages = new();
+        }
     }
 
-    private async Task MarkAsRead(Guid messageId)
+    private async Task MarkAsRead(string id)
     {
-        await MessageService.MarkAsReadAsync(messageId);
-        messages = await MessageService.GetAllMessagesAsync(receiverId);
+        await MessageService.MarkAsReadAsync(id);
+        var msg = messages?.FirstOrDefault(m => m.Id == id);
+        if (msg is not null) msg.IsRead = true;
     }
 }

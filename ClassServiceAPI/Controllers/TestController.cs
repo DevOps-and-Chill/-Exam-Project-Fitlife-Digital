@@ -20,11 +20,14 @@ public class TestController : ControllerBase
     {
         var classMessage = new ClassCancelledMessage
         {
-            ClassId   = Guid.NewGuid(),
+            ClassId   = Guid.NewGuid().ToString(),
             Title     = "Test Yoga Class",
             TimeStart = DateTime.Now,
             TimeEnd   = DateTime.Now.AddHours(1),
-            MemberIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() }
+            MemberIds = new List<string> {
+                Guid.NewGuid().ToString(),
+                Guid.NewGuid().ToString()
+            }
         };
 
         await _publisher.PublishAsync(classMessage, "class.cancelled");

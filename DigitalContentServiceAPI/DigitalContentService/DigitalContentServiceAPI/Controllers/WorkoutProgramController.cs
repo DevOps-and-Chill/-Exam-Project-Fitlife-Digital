@@ -1,5 +1,6 @@
 ﻿using DigitalContentServiceAPI.Models;
 using DigitalContentServiceAPI.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalContentServiceAPI.Controllers
@@ -16,9 +17,9 @@ namespace DigitalContentServiceAPI.Controllers
             _logger = logger;
             _programRepo = programRepo;
         }
-        
+
         // POST
-        
+        [Authorize]
         [HttpPost("insert")]
         public async Task<IActionResult> InsertWorkoutProgramAsync(WorkoutProgram workoutProgram)
         {
@@ -34,11 +35,11 @@ namespace DigitalContentServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         // GET
-        
+        [Authorize]
         [HttpGet("get/{id}")]
-        public async Task<IActionResult> GetWorkoutProgramAsync(Guid id)
+        public async Task<IActionResult> GetWorkoutProgramAsync(string id)
         {
             try
             {
@@ -51,11 +52,25 @@ namespace DigitalContentServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
+        [HttpGet("getall")]
+        public async Task<IActionResult> getWorkoutProgramsAsync()
+        {
+            try
+            {
+                return Ok( await _programRepo.GetWorkoutProgramsAsync());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "failed to get all workoutprograms");
+                return BadRequest(ex.Message);
+            }
+        }
+
         // PUT
-        
+        [Authorize]
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateWorkoutProgramAsync(Guid id, WorkoutProgram workoutProgram)
+        public async Task<IActionResult> UpdateWorkoutProgramAsync(string id, WorkoutProgram workoutProgram)
         {
             try
             {
@@ -69,11 +84,11 @@ namespace DigitalContentServiceAPI.Controllers
                 return NotFound(ex.Message);
             }
         }
-        
+
         // DELETE 
-        
+        [Authorize]
         [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteWorkoutProgramAsync(Guid id)
+        public async Task<IActionResult> DeleteWorkoutProgramAsync(string id)
         {
             try
             {
@@ -87,9 +102,5 @@ namespace DigitalContentServiceAPI.Controllers
                 return NotFound(ex.Message);
             }
         }
-
-        
-        
-        
     }
 }

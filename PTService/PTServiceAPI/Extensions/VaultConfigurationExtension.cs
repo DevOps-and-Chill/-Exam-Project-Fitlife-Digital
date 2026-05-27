@@ -1,6 +1,7 @@
 ﻿using VaultSharp;
 using VaultSharp.V1.AuthMethods.Token;
 
+
 namespace PTServiceAPI.Extensions;
 
 public static class VaultConfigurationExtensions
