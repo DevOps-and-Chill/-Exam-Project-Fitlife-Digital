@@ -2,11 +2,11 @@
 
 namespace FitLife.Frontend.Services;
 
-public class EmployeeService
+public class EmployeeServiceHjalte
 {
     private readonly HttpClient _httpClient;
 
-    public EmployeeService(IHttpClientFactory httpClientFactory)
+    public EmployeeServiceHjalte(IHttpClientFactory httpClientFactory)
     {
     
         _httpClient = httpClientFactory.CreateClient("UserService");

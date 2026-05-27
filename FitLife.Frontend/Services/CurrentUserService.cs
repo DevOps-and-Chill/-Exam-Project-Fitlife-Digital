@@ -7,16 +7,16 @@ public class CurrentUserService
 {
     private readonly TokenService _tokenService;
     private readonly MemberService _memberService;
-    private readonly EmployeeService _employeeService;
+    private readonly EmployeeServiceHjalte _employeeServiceHjalte;
 
     private readonly IMemoryCache _cache;
 
-    public CurrentUserService(IMemoryCache cache, TokenService tokenService, MemberService memberService, EmployeeService employeeService)
+    public CurrentUserService(IMemoryCache cache, TokenService tokenService, MemberService memberService, EmployeeServiceHjalte employeeServiceHjalte)
     {
         _cache = cache;
         _tokenService = tokenService;
         _memberService = memberService;
-        _employeeService = employeeService;
+        _employeeServiceHjalte = employeeServiceHjalte;
     }
     public User? CurrentUser { get; private set; }
 
@@ -51,7 +51,7 @@ public class CurrentUserService
         }
         else if (role.Equals("employee", StringComparison.OrdinalIgnoreCase))
         {
-            var employee = await _employeeService.GetEmployeeByIdAsync(userId);
+            var employee = await _employeeServiceHjalte.GetEmployeeByIdAsync(userId);
 
             if (employee is not null)
             {

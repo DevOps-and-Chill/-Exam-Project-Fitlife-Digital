@@ -61,7 +61,7 @@ builder.Services.AddHttpClient("StatisticService", client =>
 });
 
 builder.Services.AddScoped<MemberService>();
-builder.Services.AddScoped<EmployeeService>();
+builder.Services.AddScoped<EmployeeServiceHjalte>();
 builder.Services.AddScoped<DigitalContentService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<CenterService>();

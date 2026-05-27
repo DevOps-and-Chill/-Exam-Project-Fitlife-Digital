@@ -5,7 +5,7 @@
 @inject PTService PTService
 @inject CenterService CenterService
 @inject TrainerService TrainerService
-@inject EmployeeService EmployeeService
+@inject EmployeeServiceHjalte EmployeeServiceHjalte
 
 <div class="container-fluid px-0">
 
@@ -343,7 +343,7 @@
             
             SelectedCenterId = Centers.FirstOrDefault()?.Id ?? "";
 
-            Trainers = await EmployeeService.GetAllEmployeesAsync();
+            Trainers = await EmployeeServiceHjalte.GetAllEmployeesAsync();
         }
         catch (Exception ex)
         {
