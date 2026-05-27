@@ -1,6 +1,9 @@
 @page "/member/digital-training"
 @rendermode InteractiveServer
 @using FitLife.Frontend.Models
+@using FitLife.Frontend.Models.DigitalContent
+@using FitLife.Frontend.Services
+@inject DigitalContentService ContentService
 
 <div class="container-fluid px-0">
 
@@ -56,7 +59,7 @@
         </div>
 
         <!-- Intro-visning -->
-        @if (CurrentView == "intro")
+        @if (currentView == "intro")
         {
             <div class="row g-4">
 
@@ -107,7 +110,7 @@
         }
 
         <!-- Video-visning -->
-        @if (CurrentView == "videos")
+        @if (currentView == "videos")
         {
             <div class="card shadow-sm">
                 <div class="card-body p-4">
@@ -123,7 +126,7 @@
 
                             <input class="form-control"
                                    placeholder="Søg efter video..."
-                                   @bind="SearchText"
+                                   @bind="searchText"
                                    @bind:event="oninput" />
 
                             <!-- Prototype-knap -->
@@ -160,16 +163,11 @@
                                     <div class="card-body">
 
                                         <h5>
-                                            @video.Title
+                                            @video.Name
                                         </h5>
 
                                         <p class="text-muted">
                                             @video.Description
-                                        </p>
-
-                                        <p>
-                                            <strong>Kategori:</strong>
-                                            @video.Category
                                         </p>
 
                                         <!-- Vælger video -->
@@ -187,17 +185,17 @@
                     </div>
 
                     <!-- Midlertidig prototype-preview -->
-                    @if (SelectedVideo is not null)
+                    @if (selectedVideo is not null)
                     {
                         <div class="alert alert-info mt-4">
 
                             <strong>
-                                @SelectedVideo.Title
+                                @selectedVideo.Name
                             </strong>
 
                             <br />
 
-                            @SelectedVideo.Description
+                            @selectedVideo.Description
 
                         </div>
                     }
@@ -207,7 +205,7 @@
         }
 
         <!-- Program-visning -->
-        @if (CurrentView == "programs")
+        @if (currentView == "programs")
         {
             <div class="card shadow-sm">
                 <div class="card-body p-4">
@@ -223,7 +221,7 @@
 
                             <input class="form-control"
                                    placeholder="Søg efter træningsprogram..."
-                                   @bind="SearchText"
+                                   @bind="searchText"
                                    @bind:event="oninput" />
 
                             <!-- Prototype-knap -->
@@ -258,16 +256,11 @@
                                     <div class="card-body">
 
                                         <h5>
-                                            @program.Title
+                                            @program.Name
                                         </h5>
 
                                         <p class="text-muted">
                                             @program.Description
-                                        </p>
-
-                                        <p>
-                                            <strong>Niveau:</strong>
-                                            @program.Level
                                         </p>
 
                                         <!-- Vælger program -->
@@ -285,17 +278,17 @@
                     </div>
 
                     <!-- Midlertidig prototype-preview -->
-                    @if (SelectedProgram is not null)
+                    @if (selectedProgram is not null)
                     {
                         <div class="alert alert-info mt-4">
 
                             <strong>
-                                @SelectedProgram.Title
+                                @selectedProgram.Name
                             </strong>
 
                             <br />
 
-                            @SelectedProgram.Description
+                            @selectedProgram.Description
 
                         </div>
                     }
@@ -314,137 +307,137 @@
 
     // Bestemmer hvilken visning brugeren ser:
     // intro, videoer eller programmer
-    private string CurrentView = "intro";
+    private string currentView = "intro";
 
     // Bruges til dynamisk søgning
-    private string SearchText = "";
+    private string searchText = "";
 
     // Det valgte video/program brugeren har åbnet
-    private TrainingVideo? SelectedVideo;
-    private TrainingProgram? SelectedProgram;
+    private WorkoutVideo? selectedVideo;
+    private WorkoutProgram? selectedProgram;
 
     // Midlertidig mock data til prototype
     // TODO:
     // Skal senere hentes fra backend/API
-    private List<TrainingVideo> Videos = new()
+
+    private List<WorkoutProgram>? programs = new();
+    private List<WorkoutVideo>? videos = new();
+
+    protected override async Task OnInitializedAsync()
     {
-        new TrainingVideo
+        programs = await ContentService.GetWorkoutProgramsAsync();
+        videos = await ContentService.GetWorkoutVideosAsync();
+    }
+    
+    private List<WorkoutVideo> testVideos = new()
+    {
+        new WorkoutVideo
         {
-            Title = "Squat teknik",
+            Name = "Squat teknik",
             Description = "Kort video om korrekt squat-teknik og typiske fejl.",
-            Category = "Styrke"
         },
 
-        new TrainingVideo
+        new WorkoutVideo
         {
-            Title = "Core træning",
+            Name = "Core træning",
             Description = "Øvelser til mave, ryg og stabilitet.",
-            Category = "Core"
         },
 
-        new TrainingVideo
+        new WorkoutVideo
         {
-            Title = "Opvarmning",
-            Description = "En simpel opvarmningsrutine før træning.",
-            Category = "Opvarmning"
+            Name = "Opvarmning",
+            Description = "En simpel opvarmningsrutine før træning.", 
         }
     };
 
     // Midlertidig mock data
     // TODO:
     // Skal senere komme fra DigitalTrainingService/API
-    private List<TrainingProgram> Programs = new()
+    private List<WorkoutProgram> TestPrograms = new()
     {
-        new TrainingProgram
+        new WorkoutProgram
         {
-            Title = "Begynderprogram",
+            Name = "Begynderprogram",
             Description = "Et simpelt program til nye medlemmer.",
-            Level = "Begynder"
         },
 
-        new TrainingProgram
+        new WorkoutProgram
         {
-            Title = "Styrketræning 3 dage",
+            Name = "Styrketræning 3 dage",
             Description = "Program med fokus på styrke og progression.",
-            Level = "Øvet"
         },
 
-        new TrainingProgram
+        new WorkoutProgram
         {
-            Title = "Vægttab og kondition",
+            Name = "Vægttab og kondition",
             Description = "Program med fokus på cardio og basis styrke.",
-            Level = "Begynder"
         }
     };
 
     // Filtrerer videoer ud fra søgetekst
-    private IEnumerable<TrainingVideo> FilteredVideos =>
+    private IEnumerable<WorkoutVideo> FilteredVideos =>
 
-        Videos.Where(v =>
+        videos.Where(v =>
 
-            string.IsNullOrWhiteSpace(SearchText) ||
+            string.IsNullOrWhiteSpace(searchText) ||
 
-            v.Title.Contains(SearchText,
+            v.Name.Contains(searchText,
                 StringComparison.OrdinalIgnoreCase) ||
 
-            v.Description.Contains(SearchText,
-                StringComparison.OrdinalIgnoreCase) ||
-
-            v.Category.Contains(SearchText,
-                StringComparison.OrdinalIgnoreCase));
+            v.Description.Contains(searchText,
+                StringComparison.OrdinalIgnoreCase)
+            );
 
     // Filtrerer programmer ud fra søgetekst
-    private IEnumerable<TrainingProgram> FilteredPrograms =>
+    private IEnumerable<WorkoutProgram> FilteredPrograms =>
 
-        Programs.Where(p =>
+        programs.Where(p =>
 
-            string.IsNullOrWhiteSpace(SearchText) ||
+            string.IsNullOrWhiteSpace(searchText) ||
 
-            p.Title.Contains(SearchText,
+            p.Name.Contains(searchText,
                 StringComparison.OrdinalIgnoreCase) ||
 
-            p.Description.Contains(SearchText,
-                StringComparison.OrdinalIgnoreCase) ||
-
-            p.Level.Contains(SearchText,
-                StringComparison.OrdinalIgnoreCase));
+            p.Description.Contains(searchText,
+                StringComparison.OrdinalIgnoreCase)
+            );
 
     // Skifter UI til video-visning
     private void ShowVideos()
     {
-        CurrentView = "videos";
+        currentView = "videos";
 
         // Nulstiller tidligere søgning/valg
-        SearchText = "";
+        searchText = "";
 
-        SelectedVideo = null;
-        SelectedProgram = null;
+        selectedVideo = null;
+        selectedProgram = null;
     }
 
     // Skifter UI til program-visning
     private void ShowPrograms()
     {
-        CurrentView = "programs";
+        currentView = "programs";
 
-        SearchText = "";
+        searchText = "";
 
-        SelectedVideo = null;
-        SelectedProgram = null;
+        selectedVideo = null;
+        selectedProgram = null;
     }
 
     // Vælger video
     // TODO:
     // Senere kan dette åbne rigtig video-player/modal
-    private void SelectVideo(TrainingVideo video)
+    private void SelectVideo(WorkoutVideo video)
     {
-        SelectedVideo = video;
+        selectedVideo = video;
     }
 
     // Vælger træningsprogram
     // TODO:
     // Senere kan dette åbne detaljeret program-side
-    private void SelectProgram(TrainingProgram program)
+    private void SelectProgram(WorkoutProgram program)
     {
-        SelectedProgram = program;
+        selectedProgram = program;
     }
 }

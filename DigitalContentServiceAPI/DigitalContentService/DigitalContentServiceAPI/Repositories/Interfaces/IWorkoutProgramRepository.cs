@@ -11,16 +11,16 @@ namespace DigitalContentServiceAPI.Repositories.Interfaces
 		
 		// GET
 		
-		Task<WorkoutProgram?> GetWorkoutProgramAsync(Guid id);
+		Task<WorkoutProgram?> GetWorkoutProgramAsync(string id);
 
 		Task<List<WorkoutProgram>> GetWorkoutProgramsAsync();
 		
 		// PUT
 
-		Task<bool> UpdateWorkoutProgramAsync(Guid id, WorkoutProgram workoutProgramToChange);
+		Task<bool> UpdateWorkoutProgramAsync(string id, WorkoutProgram workoutProgramToChange);
 		
 		// DELETE
 		
-		Task<bool> DeleteWorkoutProgramAsync(Guid id);
+		Task<bool> DeleteWorkoutProgramAsync(string id);
 	}
 }

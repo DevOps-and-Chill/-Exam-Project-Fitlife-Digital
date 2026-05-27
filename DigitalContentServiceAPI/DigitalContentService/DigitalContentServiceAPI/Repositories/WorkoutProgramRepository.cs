@@ -29,7 +29,7 @@ namespace DigitalContentServiceAPI.Repositories
 
 		// GET
 	
-		public async Task<WorkoutProgram?> GetWorkoutProgramAsync(Guid id)
+		public async Task<WorkoutProgram?> GetWorkoutProgramAsync(string id)
 		{
 			_logger.LogInformation($"Started GetWorkoutProgram for WorkoutProgram {id}");
 			return await _context.Set<WorkoutProgram>()
@@ -44,7 +44,7 @@ namespace DigitalContentServiceAPI.Repositories
 		}
 		
 		//PUT
-		public async Task<bool> UpdateWorkoutProgramAsync(Guid id, WorkoutProgram workoutProgramToChange)
+		public async Task<bool> UpdateWorkoutProgramAsync(string id, WorkoutProgram workoutProgramToChange)
 		{
 			var program = await _context.Set<WorkoutProgram>().FirstOrDefaultAsync( c => c.Id == id);
 		   
@@ -65,7 +65,7 @@ namespace DigitalContentServiceAPI.Repositories
 		}
 
 		//DELETE
-		public async Task<bool> DeleteWorkoutProgramAsync(Guid id)
+		public async Task<bool> DeleteWorkoutProgramAsync(string id)
 		{
 			var program = _context.DigitalContent.FirstOrDefault( c => c.Id == id);
 		

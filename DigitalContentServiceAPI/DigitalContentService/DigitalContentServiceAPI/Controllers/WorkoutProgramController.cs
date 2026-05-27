@@ -38,7 +38,7 @@ namespace DigitalContentServiceAPI.Controllers
         // GET
         
         [HttpGet("get/{id}")]
-        public async Task<IActionResult> GetWorkoutProgramAsync(Guid id)
+        public async Task<IActionResult> GetWorkoutProgramAsync(string id)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace DigitalContentServiceAPI.Controllers
         // PUT
         
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateWorkoutProgramAsync(Guid id, WorkoutProgram workoutProgram)
+        public async Task<IActionResult> UpdateWorkoutProgramAsync(string id, WorkoutProgram workoutProgram)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace DigitalContentServiceAPI.Controllers
         // DELETE 
         
         [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteWorkoutProgramAsync(Guid id)
+        public async Task<IActionResult> DeleteWorkoutProgramAsync(string id)
         {
             try
             {

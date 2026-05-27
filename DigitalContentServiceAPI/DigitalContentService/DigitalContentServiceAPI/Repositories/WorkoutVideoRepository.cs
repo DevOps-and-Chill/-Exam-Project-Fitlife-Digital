@@ -22,7 +22,7 @@ public class WorkoutVideoRepository : IWorkoutVideoRepository
         _context.Set<WorkoutVideo>().Add(workoutVideoToInsert);
         await _context.SaveChangesAsync();
     }
-    public async Task<WorkoutVideo?> GetWorkoutVideoAsync(Guid id)
+    public async Task<WorkoutVideo?> GetWorkoutVideoAsync(string id)
     {
         var workoutVideo = await _context.Set<WorkoutVideo?>()
             .FirstOrDefaultAsync(c => c.Id == id);
@@ -38,7 +38,7 @@ public class WorkoutVideoRepository : IWorkoutVideoRepository
         return await _context.Set<WorkoutVideo>().ToListAsync();
     }
 
-    public async Task<bool> DeleteWorkoutVideoAsync(Guid id)
+    public async Task<bool> DeleteWorkoutVideoAsync(string id)
     {
         var workoutVideo = _context.Set<WorkoutVideo>().
             FirstOrDefault(w => w.Id == id);

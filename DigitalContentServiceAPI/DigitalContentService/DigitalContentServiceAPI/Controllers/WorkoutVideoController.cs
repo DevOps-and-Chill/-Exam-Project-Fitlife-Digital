@@ -38,7 +38,7 @@ namespace DigitalContentServiceAPI.Controllers
         // GET
 
         [HttpGet("get/{id}")]
-        public async Task<IActionResult> GetWorkoutVideoAsync(Guid id)
+        public async Task<IActionResult> GetWorkoutVideoAsync(string id)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace DigitalContentServiceAPI.Controllers
         // DELETE
 
         [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteWorkoutVideoAsync(Guid id)
+        public async Task<IActionResult> DeleteWorkoutVideoAsync(string id)
         {
             try
             {
