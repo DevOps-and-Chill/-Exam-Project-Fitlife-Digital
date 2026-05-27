@@ -11,7 +11,8 @@ services:
       - "8080:8080"
 
     environment:
-      ASPNETCORE_URLS: http://+:8080
+      ASPNETCORE_URLS: http://+:8080 
+      GatewayBaseUrl: http://gateway:4000/
 
     networks:
       - backend
