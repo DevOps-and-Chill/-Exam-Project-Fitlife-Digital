@@ -1,5 +1,6 @@
 ﻿using MessageServiceAPI.Models;
 using MessageServiceAPI.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MessageServiceAPI.Controllers;
@@ -16,9 +17,9 @@ public class MessageController : ControllerBase
         _messageService = messageService;
         _logger = logger;
     }
-    
+
     // POST
-    
+    [Authorize]
     [HttpPost("send")]
     public async Task<IActionResult> SendMessage(MessageDto dto)
     {
@@ -43,9 +44,9 @@ public class MessageController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-    
-    // GET
 
+    // GET
+    [Authorize]
     [HttpGet("get-all/{receiverId}")]
     public async Task<IActionResult> GetAllMessages(Guid receiverId)
     { 
@@ -61,9 +62,9 @@ public class MessageController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-    
-    // PUT
 
+    // PUT
+    [Authorize]
     [HttpPut("mark-as-read/{messageId}")]
     public async Task<IActionResult> MarkAsRead(Guid messageId)
     {
@@ -80,9 +81,9 @@ public class MessageController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-    
+
     // DELETE
-    
+    [Authorize]
     [HttpDelete("delete/{messageId}")]
     public async Task<IActionResult> DeleteMessage(Guid messageId)
     {
