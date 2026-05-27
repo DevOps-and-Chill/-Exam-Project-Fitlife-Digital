@@ -58,13 +58,13 @@ builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient("StatisticService", client =>
 {
     client.BaseAddress = new Uri(
-        builder.Configuration["StatisticService:BaseUrl"]!);
+        builder.Configuration["Gateway:BaseUrl"]! + "statistics/");
 });
 
 builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<ClassService>();
 builder.Services.AddScoped<MemberService>();
-builder.Services.AddScoped<TrainerService>();
+builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddScoped<DigitalTrainingService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<CenterService>();

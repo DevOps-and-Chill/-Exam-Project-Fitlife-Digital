@@ -24,6 +24,7 @@ public class ClassService
 
     public async Task<List<Class>> GetAllClassesAsync()
     {
+        Console.WriteLine($"AUTH: {_httpClient.DefaultRequestHeaders.Authorization}");
         return await _httpClient.GetFromJsonAsync<List<Class>>("api/class/");
     }
 
