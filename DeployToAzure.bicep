@@ -483,12 +483,6 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
         properties: {
           image: 'hashicorp/vault:1.20'
 
-          command: [
-            'vault'
-            'server'
-            '-dev'
-          ]
-
           environmentVariables: [
             {
               name: 'VAULT_DEV_ROOT_TOKEN_ID'
@@ -521,6 +515,9 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
     ]
     ipAddress: {
       type: 'Public'
+
+      dnsNameLabel: 'fitlife-gateway'
+
       ports: [
         {
           port: frontendPort
