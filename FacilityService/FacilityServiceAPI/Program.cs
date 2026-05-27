@@ -1,13 +1,16 @@
-using NLog;
-using NLog.Web;
 using Azure.Identity;
 using FacilityServiceAPI.Contexts;
+using FacilityServiceAPI.Extensions;
 using FacilityServiceAPI.Repositories;
+using FacilityServiceAPI.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using NLog;
+using NLog.Web;
 using System.Configuration;
-using FacilityServiceAPI.Repositories.Interfaces;
-using FacilityServiceAPI.Extensions;
+using System.Text;
 
 namespace FacilityServiceAPI
 {
@@ -41,9 +44,9 @@ namespace FacilityServiceAPI
 			builder.Services.AddTransient<IFacilityRepository, FacilityRepository>();
 
                 //Enables dependency injection of Factory pattern for DBContext. This way the application is more threadsafe, because each 
-                builder.Services.AddDbContextFactory<FacilityContext>(options =>
-                {
-                    options.UseCosmos(
+            builder.Services.AddDbContextFactory<FacilityContext>(options =>
+            {
+                options.UseCosmos(
                         builder.Configuration["CosmosDb:AccountEndpoint"]!,
                         builder.Configuration["CosmosDb:AccountKey"]!,
                         builder.Configuration["CosmosDb:DatabaseName"]!,
@@ -66,6 +69,36 @@ namespace FacilityServiceAPI
                             cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
                         });
             });
+             builder.Services
+                 //AO: Tells the app that we use JWT as authentication
+                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                 //AO: Config of the token validation
+                 .AddJwtBearer(options =>
+                 {
+                     options.TokenValidationParameters =
+                         //AO: Config of what makes a token valid
+                         new TokenValidationParameters
+                         {
+                             //AO: Check these
+                             ValidateIssuer = true,
+                             ValidateAudience = true,
+                             ValidateLifetime = true,
+                             ValidateIssuerSigningKey = true,
+                             //AO: Compare issuer and audience 
+                             ValidIssuer =
+                                 builder.Configuration["Jwt:Issuer"],
+                             ValidAudience =
+                                 builder.Configuration["Jwt:Audience"],
+                             //AO: Calculate key to ensure correct signature
+                             IssuerSigningKey =
+                                 new SymmetricSecurityKey(
+                                     Encoding.UTF8.GetBytes(
+                                         builder.Configuration["Jwt:Key"]!)),
+                             //AO: Accept no difference in validationperiod
+                             ClockSkew = TimeSpan.Zero
+                         };
+                 });
+
 
                 var app = builder.Build();
 
@@ -82,6 +115,7 @@ namespace FacilityServiceAPI
 			}
 
                 app.UseHttpsRedirection();
+                app.UseAuthentication();
                 app.UseAuthorization();
                 app.MapControllers();
                 app.Run();

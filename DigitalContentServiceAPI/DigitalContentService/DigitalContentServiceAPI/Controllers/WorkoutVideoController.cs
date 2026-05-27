@@ -1,5 +1,6 @@
 ﻿using DigitalContentServiceAPI.Models;
 using DigitalContentServiceAPI.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalContentServiceAPI.Controllers
@@ -18,7 +19,7 @@ namespace DigitalContentServiceAPI.Controllers
         }
 
         // POST
-
+        [Authorize]
         [HttpPost("insert")]
         public async Task<IActionResult> InsertWorkoutVideoAsync(WorkoutVideo workoutVideo)
         {
@@ -36,7 +37,7 @@ namespace DigitalContentServiceAPI.Controllers
         }
 
         // GET
-
+        [Authorize]
         [HttpGet("get/{id}")]
         public async Task<IActionResult> GetWorkoutVideoAsync(Guid id)
         {
@@ -58,7 +59,7 @@ namespace DigitalContentServiceAPI.Controllers
         }
 
         // DELETE
-
+        [Authorize]
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteWorkoutVideoAsync(Guid id)
         {
