@@ -4,7 +4,7 @@ using ClassServiceAPI.Repositories.Interfaces;
 
 namespace ClassServiceAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("class")]
 [ApiController]
 public class ClassController : ControllerBase
 {
@@ -37,7 +37,7 @@ public class ClassController : ControllerBase
     }
 
     [HttpPost("{classId}/members")]
-    public async Task<IActionResult> RegisterMemberToClassAsync(Guid classId, [FromBody] Member member)
+    public async Task<IActionResult> RegisterMemberToClassAsync(string classId, [FromBody] Member member)
     {
         _logger.LogDebug("Registering member {memberId} to class {classId}", member.Id, classId);
         try
@@ -54,7 +54,7 @@ public class ClassController : ControllerBase
     }
 
     [HttpPost("{classId}/waitinglist")]
-    public async Task<IActionResult> RegisterMemberToWaitingListAsync(Guid classId, [FromBody] Member member)
+    public async Task<IActionResult> RegisterMemberToWaitingListAsync(string classId, [FromBody] Member member)
     {
         _logger.LogDebug("Registering member {memberId} to waiting list for class {classId}", member.Id, classId);
         try
@@ -86,14 +86,14 @@ public class ClassController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-
-    [HttpGet("gym/{exercisegymid}")]
-    public async Task<IActionResult> GetAllClassesByExerciseGymAsync(Guid exerciseGymId)
+    
+    [HttpGet("exercisegyms/{exerciseGymId}")]
+    public async Task<IActionResult> GetClassesByExerciseGymAsync(string exerciseGymId)
     {
         _logger.LogDebug("Fetching classes for gym {exerciseGymId}", exerciseGymId);
         try
         {
-            return Ok(await _repo.GetAllClassesByExerciseGymAsync(exerciseGymId));
+            return Ok(await _repo.GetClassesByExerciseGymAsync(exerciseGymId));
         }
         catch (Exception ex)
         {
@@ -103,7 +103,7 @@ public class ClassController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetClassByIdAsync(Guid id)
+    public async Task<IActionResult> GetClassByIdAsync(string id)
     {
         _logger.LogDebug("Fetching class with id: {id}", id);
         try
@@ -122,9 +122,51 @@ public class ClassController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    
+    [HttpGet("member/{id}")]
+    public async Task<IActionResult> GetClassesByMemberAsync(string id)
+    {
+        _logger.LogDebug("Fetching class with id: {id}", id);
+        try
+        {
+            var fitnessClass = await _repo.GetClassesByEmployeeAsync(id);
+            if (fitnessClass is null)
+            {
+                _logger.LogWarning("Class with id {id} was not found", id);
+                return NotFound($"Class with id '{id}' was not found");
+            }
+            return Ok(fitnessClass);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching class with id: {id}", id);
+            return BadRequest(ex.Message);
+        }
+    }
+    
+    [HttpGet("member/{id}")]
+    public async Task<IActionResult> GetClassesByEmployeeAsync(string id)
+    {
+        _logger.LogDebug("Fetching class with id: {id}", id);
+        try
+        {
+            var fitnessClass = await _repo.GetClassesByEmployeeAsync(id);
+            if (fitnessClass is null)
+            {
+                _logger.LogWarning("Class with id {id} was not found", id);
+                return NotFound($"Class with id '{id}' was not found");
+            }
+            return Ok(fitnessClass);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching class with id: {id}", id);
+            return BadRequest(ex.Message);
+        }
+    }
 
     [HttpGet("{id}/waitinglist")]
-    public async Task<IActionResult> GetWaitingListByClassAsync(Guid id)
+    public async Task<IActionResult> GetWaitingListByClassAsync(string id)
     {
         _logger.LogDebug("Fetching waiting list for class {id}", id);
         try
@@ -139,12 +181,12 @@ public class ClassController : ControllerBase
     }
 
     [HttpGet("{id}/members")]
-    public async Task<IActionResult> GetRegisteredByClassAsync(Guid id)
+    public async Task<IActionResult> GetMembersByClassAsync(string id)
     {
         _logger.LogDebug("Fetching registered members for class {id}", id);
         try
         {
-            return Ok(await _repo.GetRegisteredByClassAsync(id));
+            return Ok(await _repo.GetMembersByClassAsync(id));
         }
         catch (InvalidOperationException ex)
         {
@@ -154,7 +196,7 @@ public class ClassController : ControllerBase
     }
 
     [HttpGet("{id}/attendees-count")]
-    public async Task<IActionResult> GetNumberOfAttendeesByClassAsync(Guid id)
+    public async Task<IActionResult> GetNumberOfAttendeesByClassAsync(string id)
     {
         _logger.LogDebug("Fetching attendee count for class {id}", id);
         try
@@ -169,7 +211,7 @@ public class ClassController : ControllerBase
     }
 
     [HttpGet("{id}/absence")]
-    public async Task<IActionResult> CalculateAbsenceByClassAsync(Guid id)
+    public async Task<IActionResult> CalculateAbsenceByClassAsync(string id)
     {
         _logger.LogDebug("Calculating absence for class {id}", id);
         try
@@ -183,10 +225,10 @@ public class ClassController : ControllerBase
         }
     }
 
-    // PUT
+    // PATCH
 
-    [HttpPut("{id}/cancel")]
-    public async Task<IActionResult> CancelClassByIdAsync(Guid id)
+    [HttpPatch("{id}/cancel")]
+    public async Task<IActionResult> CancelClassByIdAsync(string id)
     {
         _logger.LogDebug("Cancelling class with id: {id}", id);
         try
@@ -205,7 +247,7 @@ public class ClassController : ControllerBase
     // DELETE
 
     [HttpDelete("{classId}/members/{memberId}")]
-    public async Task<IActionResult> UnRegisterMemberFromClassAsync(Guid classId, Guid memberId)
+    public async Task<IActionResult> UnRegisterMemberFromClassAsync(string classId, string memberId)
     {
         _logger.LogDebug("Unregistering member {memberId} from class {classId}", memberId, classId);
         try
@@ -222,7 +264,7 @@ public class ClassController : ControllerBase
     }
 
     [HttpDelete("{classId}/waitinglist/{memberId}")]
-    public async Task<IActionResult> UnRegisterMemberFromWaitingListAsync(Guid classId, Guid memberId)
+    public async Task<IActionResult> UnRegisterMemberFromWaitingListAsync(string classId, string memberId)
     {
         _logger.LogDebug("Unregistering member {memberId} from waiting list for class {classId}", memberId, classId);
         try
@@ -239,7 +281,7 @@ public class ClassController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteClassByIdAsync(Guid id)
+    public async Task<IActionResult> DeleteClassAsync(string id)
     {
         _logger.LogDebug("Deleting class with id: {id}", id);
         try
