@@ -54,21 +54,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 6,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "DigitalContentServiceTest",
-              "DocumentMoniker": "C:\\GitHub\\DevOps-and-Chill\\-Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceTest\\DigitalContentServiceTest.csproj",
-              "RelativeDocumentMoniker": "DigitalContentServiceTest\\DigitalContentServiceTest.csproj",
-              "ToolTip": "C:\\GitHub\\DevOps-and-Chill\\-Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceTest\\DigitalContentServiceTest.csproj",
-              "RelativeToolTip": "DigitalContentServiceTest\\DigitalContentServiceTest.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-05-21T12:03:04.207Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
@@ -84,6 +71,22 @@
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DigitalContentServiceTest.csproj",
+              "DocumentMoniker": "C:\\GitHub\\DevOps-and-Chill\\-Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceTest\\DigitalContentServiceTest.csproj",
+              "RelativeDocumentMoniker": "DigitalContentServiceTest\\DigitalContentServiceTest.csproj",
+              "ToolTip": "C:\\GitHub\\DevOps-and-Chill\\-Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceTest\\DigitalContentServiceTest.csproj",
+              "RelativeToolTip": "DigitalContentServiceTest\\DigitalContentServiceTest.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-05-21T12:03:04.207Z"
             },
             {
               "$type": "Document",
@@ -108,8 +111,7 @@
               "RelativeToolTip": "DigitalContentServiceAPI\\Repositories\\Interfaces\\IWorkoutProgramRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-21T12:01:57.644Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-21T12:01:57.644Z"
             },
             {
               "$type": "Document",
@@ -121,8 +123,7 @@
               "RelativeToolTip": "DigitalContentServiceAPI\\Repositories\\WorkoutProgramRepositoryMoq.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-21T12:01:55.316Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-21T12:01:55.316Z"
             },
             {
               "$type": "Document",
@@ -134,8 +135,7 @@
               "RelativeToolTip": "DigitalContentServiceAPI\\Repositories\\WorkoutProgramRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-21T12:01:54.01Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-21T12:01:54.01Z"
             },
             {
               "$type": "Document",
@@ -147,8 +147,7 @@
               "RelativeToolTip": "DigitalContentServiceAPI\\Testdata\\TestData.cs",
               "ViewState": "AgIAADYAAAAAAAAAAAAAAE0AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-21T12:01:36.953Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-21T12:01:36.953Z"
             },
             {
               "$type": "Document",
@@ -160,8 +159,7 @@
               "RelativeToolTip": "DigitalContentServiceAPI\\Models\\Workout.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-21T12:01:14.643Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-21T12:01:14.643Z"
             },
             {
               "$type": "Document",
@@ -173,8 +171,7 @@
               "RelativeToolTip": "DigitalContentServiceAPI\\Models\\ExerciseAction.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-21T12:01:13.122Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-21T12:01:13.122Z"
             },
             {
               "$type": "Document",
@@ -186,8 +183,7 @@
               "RelativeToolTip": "DigitalContentServiceAPI\\Models\\DigitalContent.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-21T12:01:05.44Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-21T12:01:05.44Z"
             },
             {
               "$type": "Document",
@@ -199,8 +195,7 @@
               "RelativeToolTip": "DigitalContentServiceAPI\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-21T12:00:32.255Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-21T12:00:32.255Z"
             },
             {
               "$type": "Document",
@@ -212,8 +207,7 @@
               "RelativeToolTip": "DigitalContentServiceAPI\\Controllers\\DigitalContentController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-21T11:59:57.076Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-21T11:59:57.076Z"
             }
           ]
         },
