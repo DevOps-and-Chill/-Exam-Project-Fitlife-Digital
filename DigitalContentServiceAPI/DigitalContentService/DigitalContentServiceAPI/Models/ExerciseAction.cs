@@ -4,7 +4,7 @@ namespace DigitalContentServiceAPI.Models;
 
 public class ExerciseAction
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public string Id { get; set; } = Guid.NewGuid().ToString();
     public string Description { get; set; }
     public ExerciseEquipment EquipmentRequired { get; set; }
     public List<WorkoutVideo> RelatedVideos { get; set; }  = new List<WorkoutVideo>();

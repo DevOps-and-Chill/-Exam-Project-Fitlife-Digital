@@ -163,7 +163,7 @@
                                 @foreach (var center in Centers)
                                 {
                                     <option value="@center.Id">
-                                        @center.Name - @center.City
+                                        @center.Name - @center.Address
                                     </option>
                                 }
 
@@ -320,7 +320,7 @@
     // Liste over centre hentet fra FacilityService
     // TODO:
     // Senere kan valgt center evt. komme fra brugerens profil eller valgte center i navigationen
-    private List<Center> Centers = new();
+    private List<ExerciseGym> Centers = new();
 
     private string SelectedCenterId = "";
 

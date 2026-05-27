@@ -38,63 +38,64 @@ namespace FacilityServiceAPI
 			// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 			builder.Services.AddOpenApi();
 
-			builder.Services.AddTransient<IFacilityRepository, FacilityRepository>();
+			builder.Services.AddTransient<IFacilityRepository, FacilityRepositoryMoq>();
+            builder.Services.AddTransient<IExerciseGymRepository, FacilityRepositoryMoq>();
+				builder.Services.AddTransient<ISwimmingPoolRepository, FacilityRepositoryMoq>();
 
-                //Enables dependency injection of Factory pattern for DBContext. This way the application is more threadsafe, because each 
-                builder.Services.AddDbContextFactory<FacilityContext>(options =>
-                {
-                    options.UseCosmos(
-                        builder.Configuration["CosmosDb:AccountEndpoint"]!,
-                        builder.Configuration["CosmosDb:AccountKey"]!,
-                        builder.Configuration["CosmosDb:DatabaseName"]!,
-                        //cosmosOptions =>
-                        //{
-                        //    cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
 
-                        //    cosmosOptions.HttpClientFactory(() =>
-                        //    {
-                        //        var handler = new HttpClientHandler();
+				//Enables dependency injection of Factory pattern for DBContext. This way the application is more threadsafe, because each context is managed through the factory
+				//    builder.Services.AddDbContextFactory<FacilityContext>(options =>
+				//    {
+				//        options.UseCosmos(
+				//            builder.Configuration["CosmosDb:AccountEndpoint"]!,
+				//            builder.Configuration["CosmosDb:AccountKey"]!,
+				//            builder.Configuration["CosmosDb:DatabaseName"]!,
+				//            //cosmosOptions =>
+				//            //{
+				//            //    cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
 
-                        //        handler.ServerCertificateCustomValidationCallback =
-                        //            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+				//            //    cosmosOptions.HttpClientFactory(() =>
+				//            //    {
+				//            //        var handler = new HttpClientHandler();
 
-                        //        return new HttpClient(handler);
-                        //    });
-                        //});
-                        cosmosOptions =>
-                        {
-                            cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
-                        });
-            });
+				//            //        handler.ServerCertificateCustomValidationCallback =
+				//            //            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
-                var app = builder.Build();
+				//            //        return new HttpClient(handler);
+				//            //    });
+				//            //});
+				//            cosmosOptions =>
+				//            {
+				//                cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+				//            });
+				//});
+
+				var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())
 			{
 				app.MapOpenApi();
 			}
-			using (var scope = app.Services.CreateScope())
-			{
-				var db = scope.ServiceProvider.GetRequiredService<FacilityContext>();
+			// using (var scope = app.Services.CreateScope())
+			// {
+			// 	var db = scope.ServiceProvider.GetRequiredService<FacilityContext>();
 
-				await db.Database.EnsureCreatedAsync();
-			}
+			// 	await db.Database.EnsureCreatedAsync();
+			// }
 
                 app.UseHttpsRedirection();
-                app.UseAuthorization();
+                //app.UseAuthorization();
                 app.MapControllers();
                 app.Run();
             }
             catch (Exception ex)
             {
-                // Logger fejl hvis applikationen crasher ved opstart
-                logger.Error(ex, "FacilityService stoppede på grund af en fejl!");
+                logger.Error(ex, "FacilityService stopped because of an unexpected error durring startup");
                 throw;
             }
             finally
             {
-                // Sørg for at alle logs bliver skrevet færdigt før applikationen lukker
                 NLog.LogManager.Shutdown();
             }
         }
