@@ -14,7 +14,6 @@ services:
       - backend
 
 
-
   classservice:
     build:
       context: ./ClassServiceAPI
@@ -103,7 +102,18 @@ services:
     networks:
       - backend
 
+  digitalcontentservice:
+    build:
+      context: ./DigitalContentServiceAPI/DigitalContentService/DigitalContentServiceAPI
 
+    expose:
+      - "8080"
+
+    environment:
+      VAULT_TOKEN: ${VAULT_TOKEN}
+
+    networks:
+      - backend
 
   gateway:
     image: nginx:alpine
