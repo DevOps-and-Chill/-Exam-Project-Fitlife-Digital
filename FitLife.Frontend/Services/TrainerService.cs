@@ -10,11 +10,14 @@ public class TrainerService
 
     // HttpClient bruges til at kommunikere med UserService API
     private readonly HttpClient _httpClient;
+    private readonly TokenService _tokenService;
 
-    public TrainerService(IHttpClientFactory httpClientFactory)
+    public TrainerService(IHttpClientFactory httpClientFactory, TokenService tokenService)
     {
         // Opretter HttpClient med base URL fra Program.cs/appsettings.json
-        _httpClient = httpClientFactory.CreateClient("UserService");
+        _httpClient = httpClientFactory.CreateClient("TrainerService");
+        _tokenService = tokenService;
+        _tokenService.AttachToken(_httpClient);
     }
 
     public async Task<Employee> GetEmployeeById(string id)

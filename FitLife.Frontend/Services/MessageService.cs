@@ -7,10 +7,14 @@ namespace FitLife.Frontend.Services;
 public class MessageService
 {
     private readonly HttpClient _httpClient;
+    private readonly TokenService _tokenService;
 
-    public MessageService(IHttpClientFactory httpClientFactory)
+
+    public MessageService(IHttpClientFactory httpClientFactory, TokenService tokenService)
     {
         _httpClient = httpClientFactory.CreateClient("MessageService");
+        _tokenService = tokenService;
+        _tokenService.AttachToken(_httpClient);
     }
     
     public async Task<List<MessageDto>> GetAllMessagesAsync(Guid receiverId)

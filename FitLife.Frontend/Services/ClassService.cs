@@ -6,21 +6,25 @@ namespace FitLife.Frontend.Services;
 public class ClassService
 {
     private readonly HttpClient _httpClient;
+    private readonly TokenService _tokenService;
 
-    public ClassService(IHttpClientFactory httpClientFactory)
+
+    public ClassService(IHttpClientFactory httpClientFactory, TokenService tokenService)
     {
         _httpClient = httpClientFactory.CreateClient("ClassService");
+        _tokenService = tokenService;
+        _tokenService.AttachToken(_httpClient);
     }
     
     public async Task CreateClassAsync(Class newClass)
     {
-        var response = await _httpClient.PostAsJsonAsync("class", newClass);
+        var response = await _httpClient.PostAsJsonAsync("api/class", newClass);
         response.EnsureSuccessStatusCode();
     }
 
     public async Task<List<Class>> GetAllClassesAsync()
     {
-        return await _httpClient.GetFromJsonAsync<List<Class>>("class/gym/{exercisegymid}") ?? new();
+        return await _httpClient.GetFromJsonAsync<List<Class>>("api/class/");
     }
 
     public async Task RegisterMemberAsync(string classId, Member member)

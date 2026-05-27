@@ -62,6 +62,7 @@ builder.Services.AddHttpClient("StatisticService", client =>
 });
 
 builder.Services.AddScoped<SessionService>();
+builder.Services.AddScoped<ClassService>();
 builder.Services.AddScoped<MemberService>();
 builder.Services.AddScoped<TrainerService>();
 builder.Services.AddScoped<DigitalTrainingService>();
@@ -72,8 +73,7 @@ builder.Services.AddScoped<PTService>();
 builder.Services.AddScoped<CurrentUserService>();
 builder.Services.AddScoped<MessageService>();
 builder.Services.AddScoped<StatisticService>();
-
-builder.Services.AddSingleton<TokenService>();
+builder.Services.AddScoped<TokenService>();
 
 var app = builder.Build();
 

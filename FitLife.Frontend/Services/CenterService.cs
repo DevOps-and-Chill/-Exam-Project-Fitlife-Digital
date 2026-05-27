@@ -7,11 +7,14 @@ public class CenterService
 {
     // HttpClient bruges til at kommunikere med FacilityService API
     private readonly HttpClient _httpClient;
+    private readonly TokenService _tokenService;
 
-    public CenterService(IHttpClientFactory httpClientFactory)
+    public CenterService(IHttpClientFactory httpClientFactory, TokenService tokenService)
     {
         // Opretter HttpClient med base URL fra Program.cs/appsettings.json
         _httpClient = httpClientFactory.CreateClient("FacilityService");
+        _tokenService = tokenService;
+        _tokenService.AttachToken(_httpClient);
     }
 
     // Henter alle centre fra FacilityService
