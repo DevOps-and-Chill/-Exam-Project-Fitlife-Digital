@@ -2,7 +2,7 @@
 @rendermode InteractiveServer
 @using FitLife.Frontend.Models
 @using FitLife.Frontend.Services
-@inject SessionService SessionService
+@inject ClassService ClassService
 @inject CurrentUserService CurrentUserService
 
 <div class="container-fluid px-0">
@@ -61,7 +61,7 @@
                 @ErrorMessage
             </div>
         }
-        else if (!Sessions.Any())
+        else if (!Classes.Any())
         {
             <p class="text-muted">
                 Der er ingen hold at vise lige nu.
@@ -71,7 +71,7 @@
         {
             <div class="row g-4">
 
-                @foreach (var session in Sessions)
+                @foreach (var @class in Classes)
                 {
                     <div class="col-md-4">
                         <div class="card h-100 shadow-sm border-0">
@@ -82,42 +82,42 @@
                                 </div>
 
                                 <h5 class="card-title fw-bold">
-                                    @session.Title
+                                    @@class.Title
                                 </h5>
 
                                 <p class="card-text text-muted">
-                                    @session.Description
+                                    @@class.Description
                                 </p>
 
                                 <p class="mb-1">
                                     <strong>Tidspunkt:</strong>
-                                    @session.StartTime.ToString("dd/MM") kl. @session.StartTime.ToString("HH:mm")
+                                    @@class.StartTime.ToString("dd/MM") kl. @@class.StartTime.ToString("HH:mm")
                                 </p>
 
                                 <p class="mb-1">
                                     <strong>Instruktør:</strong>
-                                    @session.InstructorName
+                                    @@class.InstructorName
                                 </p>
 
                                 <p class="mb-3">
                                     <strong>Ledige pladser:</strong>
-                                    @session.AvailableSpots
+                                    @@class.AvailableSpots
                                 </p>
 
                                 <!-- Viser forskellig handling alt efter brugerens status og ledige pladser -->
-                                @if (session.IsUserSignedUp)
+                               @*  @if (@class.IsUserSignedUp)
                                 {
                                     <!-- Brugeren er allerede tilmeldt og kan derfor afmelde sig -->
                                     <button class="btn btn-danger w-100"
-                                            @onclick="() => Unregister(session)">
+                                            @onclick="() => Unregister(@class)">
                                         Afmeld
                                     </button>
                                 }
-                                else if (session.AvailableSpots > 0)
+                                else if (@class.AvailableSpots > 0)
                                 {
                                     <!-- Der er ledige pladser, så brugeren kan tilmelde sig -->
                                     <button class="btn btn-success w-100"
-                                            @onclick="() => Register(session)">
+                                            @onclick="() => Register(@class)">
                                         Tilmeld
                                     </button>
                                 }
@@ -125,10 +125,10 @@
                                 {
                                     <!-- Holdet er fyldt, så brugeren kan komme på venteliste -->
                                     <button class="btn btn-warning w-100"
-                                            @onclick="() => JoinWaitlist(session)">
+                                            @onclick="() => JoinWaitlist(@class)">
                                         Tilmeld venteliste
                                     </button>
-                                }
+                                } *@
 
                             </div>
                         </div>
@@ -157,7 +157,7 @@
     private string Message = "";
 
     // Liste over hold der vises på siden
-    private List<TrainingSession> Sessions = new();
+    private List<Class> Classes = new();
 
     // Bruges til at vise loading-tekst mens hold hentes fra backend
     private bool IsLoading = true;
@@ -169,9 +169,9 @@
     {
         try
         {
-            // Henter hold-sessioner fra SessionService.
-            // SessionService kalder ClassServiceAPI via endpointet GET /api/class.
-            Sessions = await SessionService.GetSessionsAsync();
+            // Henter hold fra ClassService.
+            Classes = await ClassService.GetAllClassesAsync();
+            
         }
         catch
         {
@@ -183,27 +183,27 @@
         }
     }
 
-    private void Register(TrainingSession session)
-    {
-        // Kalder service-laget i stedet for at have tilmeldingslogik direkte i UI'et.
-        // TODO:
-        // Senere bør dette blive et API-kald, fx POST /api/class/{id}/members
-        Message = SessionService.Register(session);
-    }
+    // private void Register(TrainingSession session)
+    // {
+    //     // Kalder service-laget i stedet for at have tilmeldingslogik direkte i UI'et.
+    //     // TODO:
+    //     // Senere bør dette blive et API-kald, fx POST /api/class/{id}/members
+    //     Message = SessionService.Register(session);
+    // }
 
-    private void Unregister(TrainingSession session)
-    {
-        // Afmelding håndteres også gennem service-laget.
-        // TODO:
-        // Senere bør dette blive et API-kald, fx DELETE /api/class/{classId}/members/{memberId}
-        Message = SessionService.Unregister(session);
-    }
+    // private void Unregister(TrainingSession session)
+    // {
+    //     // Afmelding håndteres også gennem service-laget.
+    //     // TODO:
+    //     // Senere bør dette blive et API-kald, fx DELETE /api/class/{classId}/members/{memberId}
+    //     Message = SessionService.Unregister(session);
+    // }
 
-    private void JoinWaitlist(TrainingSession session)
-    {
-        // Venteliste håndteres midlertidigt i SessionService.
-        // TODO:
-        // Senere kan dette kobles til backend, fx POST /api/class/{id}/waitinglist
-        Message = SessionService.JoinWaitlist(session);
-    }
+    // private void JoinWaitlist(TrainingSession session)
+    // {
+    //     // Venteliste håndteres midlertidigt i SessionService.
+    //     // TODO:
+    //     // Senere kan dette kobles til backend, fx POST /api/class/{id}/waitinglist
+    //     Message = SessionService.JoinWaitlist(session);
+    // }
 }

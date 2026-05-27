@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PTServiceAPI.Models; 
 using PTServiceAPI.Repositories;
@@ -26,6 +27,7 @@ namespace PTServiceAPI.Controllers
         }
 
         //JBS: Fetches all sessions from the repository
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -43,6 +45,7 @@ namespace PTServiceAPI.Controllers
         }
 
         //JBS: Fetches a single session by id - returns 404 if not found
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -66,6 +69,7 @@ namespace PTServiceAPI.Controllers
 
         //JBS: Creates a new personal training booking
         //JBS: Returns 201 Created with a link to the new resource
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Book(Session session)
         {
@@ -84,6 +88,7 @@ namespace PTServiceAPI.Controllers
         }
 
         //JBS: Accepts a personal training session and marks it as completed
+        [Authorize]
         [HttpPut("{id}/accept")]
         public async Task<IActionResult> Accept(Guid id)
         {
@@ -109,6 +114,7 @@ namespace PTServiceAPI.Controllers
         }
 
         //JBS: Cancels a personal training session and removes it from the repository
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Cancel(Guid id)
         {
@@ -127,6 +133,7 @@ namespace PTServiceAPI.Controllers
         }
 
         //JBS: Rejects a personal training session and marks it as cancelled
+        [Authorize]
         [HttpPut("{id}/reject")]
         public async Task<IActionResult> Reject(Guid id)
         {

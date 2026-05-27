@@ -9,12 +9,15 @@ public class MemberService
     // HttpClient bruges til at kommunikere med backend APIs.
     // Her bruges den til at kalde UserService.
     private readonly HttpClient _httpClient;
+    private readonly TokenService _tokenService;
 
-    public MemberService(IHttpClientFactory httpClientFactory)
+    public MemberService(IHttpClientFactory httpClientFactory, TokenService tokenService)
     {
         // Opretter HttpClient med base URL fra Program.cs/appsettings.json.
         // Base URL peger på UserService.
         _httpClient = httpClientFactory.CreateClient("UserService");
+        _tokenService = tokenService;
+        _tokenService.AttachToken(_httpClient);
     }
 
     // Henter medlemmer direkte fra UserService.

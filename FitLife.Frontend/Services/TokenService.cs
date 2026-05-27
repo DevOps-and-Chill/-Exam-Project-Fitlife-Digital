@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
+using System.Net.Http.Headers;
 
 public class TokenService
 {
@@ -65,10 +66,27 @@ public class TokenService
         return user?.RoleName;
     }
 
+    public void AttachToken(HttpClient client)
+    {
+        var token = GetToken();
+
+        client.DefaultRequestHeaders.Authorization = null;
+
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue(
+                    "Bearer",
+                    token);
+        }
+    }
+
     public class UserDto
     {
         public string Id { get; set; }
 
         public string RoleName { get; set; }
     }
+
+
 }

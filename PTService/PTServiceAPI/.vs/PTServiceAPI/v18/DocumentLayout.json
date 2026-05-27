@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\PTService\\PTServiceAPI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|PTServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\ptservice\\ptserviceapi\\extensions\\vaultconfigurationextension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|PTServiceAPI.csproj|solutionrelative:extensions\\vaultconfigurationextension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|PTServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\ptservice\\ptserviceapi\\controllers\\ptcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|PTServiceAPI.csproj|solutionrelative:controllers\\ptcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|PTServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\ptservice\\ptserviceapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|PTServiceAPI.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|PTServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\ptservice\\ptserviceapi\\extensions\\vaultconfigurationextension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|PTServiceAPI.csproj|solutionrelative:extensions\\vaultconfigurationextension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E760C766-C283-4A92-8E60-1E51EFF368D3}|PTServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\ptservice\\ptserviceapi\\data\\ptdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -31,19 +35,32 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "PTController.cs",
+              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\PTService\\PTServiceAPI\\Controllers\\PTController.cs",
+              "RelativeDocumentMoniker": "Controllers\\PTController.cs",
+              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\PTService\\PTServiceAPI\\Controllers\\PTController.cs",
+              "RelativeToolTip": "Controllers\\PTController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-27T16:42:37.405Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "VaultConfigurationExtension.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\PTService\\PTServiceAPI\\Extensions\\VaultConfigurationExtension.cs",
               "RelativeDocumentMoniker": "Extensions\\VaultConfigurationExtension.cs",
               "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\PTService\\PTServiceAPI\\Extensions\\VaultConfigurationExtension.cs",
               "RelativeToolTip": "Extensions\\VaultConfigurationExtension.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-25T19:35:17.074Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "PTDbContext.cs",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\PTService\\PTServiceAPI\\Data\\PTDbContext.cs",
               "RelativeDocumentMoniker": "Data\\PTDbContext.cs",
@@ -51,7 +68,8 @@
               "RelativeToolTip": "Data\\PTDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-24T20:54:32.243Z"
+              "WhenOpened": "2026-05-24T20:54:32.243Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -61,14 +79,14 @@
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\PTService\\PTServiceAPI\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAADwvx0AAAA4AAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHgAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-21T15:09:48.369Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\PTService\\PTServiceAPI\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
@@ -76,7 +94,8 @@
               "RelativeToolTip": "appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-05-21T10:57:11.431Z"
+              "WhenOpened": "2026-05-21T10:57:11.431Z",
+              "EditorCaption": ""
             }
           ]
         },

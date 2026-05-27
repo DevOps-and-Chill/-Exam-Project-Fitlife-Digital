@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\GIT\\Exam-Project-Fitlife-Digital\\ClassServiceAPI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FDBEF300-8509-BB33-593B-A0B8145B3542}|ClassServiceAPI.csproj|c:\\git\\exam-project-fitlife-digital\\classserviceapi\\extensions\\vaultconfigurationextension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FDBEF300-8509-BB33-593B-A0B8145B3542}|ClassServiceAPI.csproj|solutionrelative:extensions\\vaultconfigurationextension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FDBEF300-8509-BB33-593B-A0B8145B3542}|ClassServiceAPI.csproj|c:\\git\\exam-project-fitlife-digital\\classserviceapi\\controllers\\classcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FDBEF300-8509-BB33-593B-A0B8145B3542}|ClassServiceAPI.csproj|solutionrelative:controllers\\classcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,21 +14,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 3,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "VaultConfigurationExtension.cs",
-              "DocumentMoniker": "C:\\GIT\\Exam-Project-Fitlife-Digital\\ClassServiceAPI\\Extensions\\VaultConfigurationExtension.cs",
-              "RelativeDocumentMoniker": "Extensions\\VaultConfigurationExtension.cs",
-              "ToolTip": "C:\\GIT\\Exam-Project-Fitlife-Digital\\ClassServiceAPI\\Extensions\\VaultConfigurationExtension.cs",
-              "RelativeToolTip": "Extensions\\VaultConfigurationExtension.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-27T09:03:07.832Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:129:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
@@ -40,6 +27,19 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ClassController.cs",
+              "DocumentMoniker": "C:\\GIT\\Exam-Project-Fitlife-Digital\\ClassServiceAPI\\Controllers\\ClassController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ClassController.cs",
+              "ToolTip": "C:\\GIT\\Exam-Project-Fitlife-Digital\\ClassServiceAPI\\Controllers\\ClassController.cs",
+              "RelativeToolTip": "Controllers\\ClassController.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAA1wGgAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-27T10:54:10.44Z",
+              "EditorCaption": ""
             }
           ]
         },

@@ -1,11 +1,11 @@
 ﻿namespace MessageServiceAPI.Models;
 
-public class ClassMessage
+public class Message
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public string Id { get; set; } = Guid.NewGuid().ToString();
     public string PartitionKey { get; set; } = "inbox";
-    public Guid ReceiverId { get; set; }
-    public Guid ClassId { get; set; }
+    public List<string> ReceiverIds { get; set; } = new();
+    public string? ClassId { get; set; } = Guid.NewGuid().ToString();
     public string Subject { get; set; } = "";
     public string Content { get; set; } = "";
     public DateTime TimeStart { get; set; }

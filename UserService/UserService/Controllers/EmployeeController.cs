@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using UserServiceAPI.Models;
@@ -26,6 +27,7 @@ namespace UserServiceAPI.Controllers
         /// exception on error.</remarks>
         /// <returns>An ActionResult that returns OK with the employee collection on success, or BadRequest with the exception on
         /// failure.</returns>
+        [AllowAnonymous]
         [HttpGet("GetAllEmployees")]
         public async Task<ActionResult> GetAllEmployees()
         {
@@ -44,6 +46,7 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// End an employee's employment by user identifier.
         /// </summary>
+        [Authorize]
         [HttpPut("EndEmploymentForEmployee/{userId}")]
         public async Task<ActionResult> EndEmployment(string userId)
         {
@@ -62,24 +65,35 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Sets the specified employee as a manager.
         /// </summary>
+        [Authorize]
         [HttpPut("SetEmployeeAsManager/{userId}")]
         public async Task<ActionResult> SetEmployeeAsManager(string userId)
         {
             _logger.LogDebug("Setting employee {userId} as manager", userId);
             try
             {
-                return Ok(await _employeeRepository.SetEmployeeAsManager(userId));
+                var result = await _employeeRepository.SetEmployeeAsManager(userId);
+                
+                return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogWarning("Could not promote employee {userId}: {message}", userId, ex.Message);
+
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error promoting employee {userId}: {message}", userId, ex.Message);
-                return BadRequest(ex);
+                _logger.LogError(ex, "Unexpected error promoting employee {userId}", userId);
+
+                return StatusCode(500, "An unexpected error occurred");
             }
         }
 
         /// <summary>
         /// Upserts the specified employee and returns the created or updated employee.
         /// </summary>
+        [Authorize]
         [HttpPost("UpsertEmployee")]
         public async Task<ActionResult> UpsertEmployee([FromBody] Employee employee)
         {
@@ -100,6 +114,7 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Deletes the employee identified by the provided userId.
         /// </summary>
+        [Authorize]
         [HttpDelete("DeleteEmployee/{userId}")]
         public async Task<ActionResult> DeleteEmployee(string userId)
         {
@@ -128,6 +143,7 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Sets an employee account as inactive.
         /// </summary>
+        [Authorize]
         [HttpPut("SetAccountAsInactive/{userId}")]
         public async Task<ActionResult> SetEmployeeAccountAsInactive(string userId)
         {
@@ -146,6 +162,7 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Retrieves an employee by id.
         /// </summary>
+        [Authorize]
         [HttpGet("GetEmployeeById/{userId}")]
         public async Task<ActionResult> GetEmployeeById(string userId)
         {
@@ -173,6 +190,7 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Retrieves all employees affiliated with a specific gym.
         /// </summary>
+        [Authorize]
         [HttpGet("GetEmployeeByAffiliation/{affiliationId}")]
         public async Task<ActionResult> GetEmployeeByAffiliation(Guid affiliationId)
         {
