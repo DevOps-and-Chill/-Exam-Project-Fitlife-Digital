@@ -1,13 +1,15 @@
 using Azure.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using NLog;
 using NLog.Web;
+using System.Text;
 using UserServiceAPI.Data;
 using UserServiceAPI.Extensions;
 using UserServiceAPI.Repositories;
 using UserServiceAPI.Repositories.Interfaces;
-
 
 namespace UserServiceAPI
 {
@@ -60,6 +62,36 @@ namespace UserServiceAPI
                        cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
                    });
                 });
+                builder.Services
+                     //AO: Tells the app that we use JWT as authentication
+                     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                     //AO: Config of the token validation
+                     .AddJwtBearer(options =>
+                     {
+                         options.TokenValidationParameters =
+                         //AO: Config of what makes a token valid
+                             new TokenValidationParameters
+                             {
+                                 //AO: Check these
+                                 ValidateIssuer = true,
+                                 ValidateAudience = true,
+                                 ValidateLifetime = true,
+                                 ValidateIssuerSigningKey = true,
+                                 //AO: Compare issuer and audience 
+                                 ValidIssuer =
+                                     builder.Configuration["Jwt:Issuer"],
+                                 ValidAudience =
+                                     builder.Configuration["Jwt:Audience"],
+                                 //AO: Calculate key to ensure correct signature
+                                 IssuerSigningKey =
+                                     new SymmetricSecurityKey(
+                                         Encoding.UTF8.GetBytes(
+                                             builder.Configuration["Jwt:Key"]!)),
+                                 //AO: Accept no difference in validationperiod
+                                 ClockSkew = TimeSpan.Zero
+                             };
+                     });
+
 
                 builder.Services.AddControllers()
 					.AddJsonOptions(options =>
@@ -90,9 +122,8 @@ namespace UserServiceAPI
 				}
 
 				app.UseHttpsRedirection();
-
-				app.UseAuthorization();
-
+                app.UseAuthentication();
+                app.UseAuthorization();
 				app.MapControllers();
 
 				app.Run();

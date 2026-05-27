@@ -1,5 +1,6 @@
 using FacilityServiceAPI.Models;
 using FacilityServiceAPI.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FacilityServiceAPI.Controllers
@@ -17,11 +18,12 @@ namespace FacilityServiceAPI.Controllers
             _swimmingPoolRepository = facilityRepository;
         }
 
-		/// <summary>
-		/// Gets all facilities of type  Swimming pool
-		/// </summary>
-		/// <returns></returns>
-		[HttpGet("getall")]
+        /// <summary>
+        /// Gets all facilities of type  Swimming pool
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("getall")]
 		public async Task<IActionResult> GetSwimmingPools()
 		{
 			_logger.LogDebug("Starting getswimmingpools");
@@ -37,12 +39,13 @@ namespace FacilityServiceAPI.Controllers
 			}
 		}
 
-		/// <summary>
-		/// controller for getting a single Swimming pool facility based on given id 
-		/// </summary>
-		/// <param name="swimmingPoolId"></param>
-		/// <returns></returns>
-		[HttpGet("getbyid")]
+        /// <summary>
+        /// controller for getting a single Swimming pool facility based on given id 
+        /// </summary>
+        /// <param name="swimmingPoolId"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("getbyid")]
 		public async Task<IActionResult> GetSwimmingPool([FromBody] string swimmingPoolId)
 		{
 			_logger.LogDebug("Starting getswimmingpoolbyid for Swimming Pool {swimmingPoolId}", swimmingPoolId);
@@ -63,6 +66,7 @@ namespace FacilityServiceAPI.Controllers
         /// </summary>
         /// <param name="swimmingPool"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("insert")]
         public async Task<IActionResult> Insertswimmingpool([FromBody] SwimmingPool swimmingPool)
         {
@@ -86,6 +90,7 @@ namespace FacilityServiceAPI.Controllers
         /// </summary>
         /// <param name="swimmingpool"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPut("update")]
         public async Task<IActionResult> Updateswimmingpool([FromBody] SwimmingPool swimmingPool)
         {

@@ -1,3 +1,4 @@
+using System.Net.Http;
 using FitLife.Frontend.Models;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -7,11 +8,11 @@ public class CurrentUserService
 {
     private readonly TokenService _tokenService;
     private readonly MemberService _memberService;
-    private readonly TrainerService _trainerService;
+    private readonly EmployeeService _trainerService;
 
     private readonly IMemoryCache _cache;
 
-    public CurrentUserService(IMemoryCache cache, TokenService tokenService, MemberService memberService, TrainerService trainerService)
+    public CurrentUserService(IMemoryCache cache, TokenService tokenService, MemberService memberService, EmployeeService trainerService)
     {
         _cache = cache;
         _tokenService = tokenService;

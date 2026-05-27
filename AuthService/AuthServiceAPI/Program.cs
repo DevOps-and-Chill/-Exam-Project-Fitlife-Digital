@@ -94,8 +94,11 @@ try
                     IssuerSigningKey =
                         new SymmetricSecurityKey(
                             Encoding.UTF8.GetBytes(
-                                builder.Configuration["Jwt:Key"]))
-                };
+                                builder.Configuration["Jwt:Key"]!)),
+                    
+                    //AO: Accept no difference in validationperiod
+                    ClockSkew = TimeSpan.Zero
+                };           
         });
 
     var app = builder.Build();

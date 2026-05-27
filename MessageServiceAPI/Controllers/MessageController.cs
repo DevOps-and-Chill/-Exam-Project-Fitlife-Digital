@@ -1,6 +1,7 @@
 ﻿using MessageServiceAPI.Models;
 using MessageServiceAPI.Models.DTOs;
 using MessageServiceAPI.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MessageServiceAPI.Controllers;
@@ -17,9 +18,9 @@ public class MessageController : ControllerBase
         _messageService = messageService;
         _logger = logger;
     }
-    
+
     // POST
-    
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> SendDirectMessage(DirectMessageDto dto)
     {
@@ -44,9 +45,8 @@ public class MessageController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-    
-    // GET
 
+    [Authorize]
     [HttpGet("receivers/{receiverId}")]
     public async Task<IActionResult> GetMessagesByReceiver(string receiverId)
     { 
@@ -62,9 +62,8 @@ public class MessageController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-    
-    // PUT
 
+    [Authorize]
     [HttpPut("{messageId}/markasread")]
     public async Task<IActionResult> MarkAsRead(string messageId)
     {
@@ -81,9 +80,9 @@ public class MessageController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-    
+
     // DELETE
-    
+    [Authorize]
     [HttpDelete("{messageId}")]
     public async Task<IActionResult> DeleteMessage(string messageId)
     {
