@@ -22,7 +22,6 @@ jobs:
 
 
     # .NET
-
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
@@ -36,7 +35,6 @@ jobs:
 
 
     # Tests
-
     - name: Run UserService tests
       run: |
         dotnet test \
@@ -58,6 +56,7 @@ jobs:
         --logger trx \
         --results-directory TestResults
 
+    #Creat MD of testsresults
     - name: Publish Test Results
       uses: dorny/test-reporter@v1
       if: success() || failure()
@@ -66,123 +65,167 @@ jobs:
         path: '**/*.trx'
         reporter: dotnet-trx
 
-
-    # ACR
-
-    - name: Login to ACR
-      uses: docker/login-action@v3
-      with:
-        registry: fitlifedigital.azurecr.io
-        username: ${{ secrets.ACR_USERNAME }}
-        password: ${{ secrets.ACR_PASSWORD }}
-
     - name: Verify Docker
       run: docker info
 
-
     # Frontend
-
     - name: Build Frontend
       run: |
         docker build \
         -t fitlifedigital.azurecr.io/frontend:latest \
         ./FitLife.Frontend
 
-    - name: Push Frontend
-      run: docker push fitlifedigital.azurecr.io/frontend:latest
-
-
+    
     # Gateway
-
     - name: Build Gateway
       run: |
         docker build \
         -t fitlifedigital.azurecr.io/gateway:latest \
         ./nginxForAzure
 
-    - name: Push Gateway
-      run: docker push fitlifedigital.azurecr.io/gateway:latest
-
-
+    
     # AuthService
-
     - name: Build AuthService
       run: |
         docker build \
         -t fitlifedigital.azurecr.io/authservice:latest \
         ./AuthService/AuthServiceAPI
 
-    - name: Push AuthService
-      run: docker push fitlifedigital.azurecr.io/authservice:latest
-
-
+    
     # UserService
-
     - name: Build UserService
       run: |
         docker build \
         -t fitlifedigital.azurecr.io/userservice:latest \
         ./UserService/UserService
 
-    - name: Push UserService
-      run: docker push fitlifedigital.azurecr.io/userservice:latest
-
 
     # ClassService
-
     - name: Build ClassService
       run: |
         docker build \
         -t fitlifedigital.azurecr.io/classservice:latest \
         ./ClassServiceAPI
 
-    - name: Push ClassService
-      run: docker push fitlifedigital.azurecr.io/classservice:latest
-
 
     # MessageService
-
     - name: Build MessageService
       run: |
         docker build \
         -t fitlifedigital.azurecr.io/messageservice:latest \
         ./MessageServiceAPI
 
-    - name: Push MessageService
-      run: docker push fitlifedigital.azurecr.io/messageservice:latest
-
 
     # PTService
-
     - name: Build PTService
       run: |
         docker build \
         -t fitlifedigital.azurecr.io/ptservice:latest \
         ./PTService/PTServiceAPI
 
-    - name: Push PTService
-      run: docker push fitlifedigital.azurecr.io/ptservice:latest
-
 
     # FacilityService
-
     - name: Build FacilityService
       run: |
         docker build \
         -t fitlifedigital.azurecr.io/facilityservice:latest \
         ./FacilityService/FacilityServiceAPI
 
-    - name: Push FacilityService
-      run: docker push fitlifedigital.azurecr.io/facilityservice:latest
-
 
     # StatisticService
-
     - name: Build StatisticService
       run: |
         docker build \
-        -t fitlifedigital.azurecr.io/rapportservice:latest \
+        -t fitlifedigital.azurecr.io/statisticservice:latest \
         ./StatisticService/StatisticServiceAPI
 
-    - name: Push RapportService
-      run: docker push fitlifedigital.azurecr.io/rapportservice:latest
+    # Starts common services
+    - name: Start common services
+      run: docker compose -f docker-compose-common.yml up -d
+    
+    # Waits for vault to be ready for secrets
+    - name: Wait for vault
+      run: sleep 15
+    
+    # Install HashiCorp Vault CLI - prep for secrets
+    - name: Install Vault CLI
+      run: |
+        wget -O- https://apt.releases.hashicorp.com/gpg | \
+        gpg --dearmor | \
+        sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+
+        echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+        https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+        sudo tee /etc/apt/sources.list.d/hashicorp.list
+
+        sudo apt update
+        sudo apt install -y vault
+
+    # Run commands to add secres to vault 
+    - name: Configuring vault and adding secrets
+      run: |
+        export VAULT_ADDR='http://127.0.0.1:8200'
+
+        vault login ${{ secrets.VAULT_TOKEN }}
+        
+        vault kv put secret/auth \
+        CosmosDb__AccountEndpoint="${{ secrets.CosmosDb__AccountEndpoint }}" \
+        CosmosDb__AccountKey="${{ secrets.CosmosDb__AccountKey }}" \
+        Jwt__Audience="${{ secrets.Jwt__Audience }}" \
+        Jwt__DurationInMinutes="${{ secrets.Jwt__DurationInMinutes }}" \
+        Jwt__Issuer="${{ secrets.Jwt__Issuer }}" \
+        Jwt__Key="${{ secrets.Jwt__Key }}"
+
+    # Start microservices 
+    - name: Start relevant microservices
+      run: docker compose -f docker-compose-services.yml up -d gateway
+      run: docker compose -f docker-compose-services.yml up -d authservice
+      run: docker compose -f docker-compose-services.yml up -d userservice
+
+    - name: Wait for services
+      run: sleep 20
+
+
+    # Configure Newman
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install Newman
+      run: npm install -g newman
+
+    # Run Newman tests
+    - name: Run Newman Tests
+      run: |
+        newman run \
+        ./Postman/FitLife.postman_collection.json \
+        -e ./Postman/TestEnvironment.postman_environment.json
+
+
+    # ACR
+    - name: Login to ACR
+      uses: docker/login-action@v3
+      with:
+        registry: fitlifedigital.azurecr.io
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+    # ACR Push
+    - name: Push Frontend
+          run: docker push fitlifedigital.azurecr.io/frontend:latest
+    - name: Push Gateway
+          run: docker push fitlifedigital.azurecr.io/gateway:latest
+    - name: Push AuthService
+          run: docker push fitlifedigital.azurecr.io/authservice:latest
+    - name: Push UserService
+          run: docker push fitlifedigital.azurecr.io/userservice:latest
+    - name: Push ClassService
+          run: docker push fitlifedigital.azurecr.io/classservice:latest
+    - name: Push MessageService
+          run: docker push fitlifedigital.azurecr.io/messageservice:latest
+    - name: Push PTService
+          run: docker push fitlifedigital.azurecr.io/ptservice:latest
+    - name: Push FacilityService
+          run: docker push fitlifedigital.azurecr.io/facilityservice:latest
+    - name: Push StatisticService
+          run: docker push fitlifedigital.azurecr.io/statisticservice:latest
