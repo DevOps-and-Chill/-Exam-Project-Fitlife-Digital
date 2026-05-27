@@ -2,10 +2,10 @@
 
 public class ClassMessage
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public string Id { get; set; } = Guid.NewGuid().ToString();
     public string PartitionKey { get; set; } = "inbox";
-    public Guid ReceiverId { get; set; }
-    public Guid ClassId { get; set; }
+    public string ReceiverId { get; set; } = Guid.NewGuid().ToString();
+    public string ClassId { get; set; } = Guid.NewGuid().ToString();
     public string Subject { get; set; } = "";
     public string Content { get; set; } = "";
     public DateTime TimeStart { get; set; }

@@ -1,5 +1,6 @@
 ﻿using MessageServiceAPI.Data;
 using MessageServiceAPI.Models;
+using MessageServiceAPI.Models.DTOs;
 using MessageServiceAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,7 +27,7 @@ public class MessageService : IMessageService
         await _context.SaveChangesAsync();
     }
     
-    public async Task<List<MessageDto>> GetAllMessagesAsync(Guid receiverId)
+    public async Task<List<MessageDto>> GetAllMessagesAsync(string receiverId)
     {
         var directMessages = await _context.DirectMessages
             .Where(m => m.ReceiverId == receiverId)
@@ -60,7 +61,7 @@ public class MessageService : IMessageService
             .ToList();
     }
 
-    public async Task MarkAsReadAsync(Guid messageId)
+    public async Task MarkAsReadAsync(string messageId)
     {
         var directMessage = await _context.DirectMessages.FindAsync(messageId);
         if (directMessage is not null)
@@ -78,7 +79,7 @@ public class MessageService : IMessageService
         }
     }
 
-    public async Task DeleteMessageAsync(Guid messageId)
+    public async Task DeleteMessageAsync(string messageId)
     {
         var  directMessage = await _context.DirectMessages.FindAsync(messageId);
         if (directMessage is not null)

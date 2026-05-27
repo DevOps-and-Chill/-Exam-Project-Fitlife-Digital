@@ -1,10 +1,10 @@
-﻿namespace MessageServiceAPI.Models;
+﻿namespace MessageServiceAPI.Models.DTOs;
 
 public class MessageDto
 {
-    public Guid Id { get; set; }
-    public Guid SenderId { get; set; }
-    public Guid ReceiverId { get; set; }
+    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string SenderId { get; set; } = Guid.NewGuid().ToString();
+    public string ReceiverId { get; set; } = Guid.NewGuid().ToString();
     public string Subject { get; set; } = "";
     public string Content { get; set; } = "";
     public DateTime CreatedAt { get; set; }

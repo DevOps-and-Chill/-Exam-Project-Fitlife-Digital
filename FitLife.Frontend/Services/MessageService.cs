@@ -7,20 +7,34 @@ namespace FitLife.Frontend.Services;
 public class MessageService
 {
     private readonly HttpClient _httpClient;
-
+    
     public MessageService(IHttpClientFactory httpClientFactory)
     {
         _httpClient = httpClientFactory.CreateClient("MessageService");
     }
     
-    public async Task<List<MessageDto>> GetAllMessagesAsync(Guid receiverId)
+    public async Task<List<MessageDto>> GetAllMessagesAsync(string receiverId)
     {
         try
         {
-            var messages = await _httpClient.GetFromJsonAsync<List<MessageDto>>(
-                $"message/get-all/{receiverId}");
-
-            return messages ?? new List<MessageDto>();
+            //var messages = await _httpClient.GetFromJsonAsync<List<MessageDto>>(
+              //  $"message/get-all/{receiverId}");
+            
+            var testMessage = new List<MessageDto>
+                {
+                    new MessageDto
+                        { 
+                            Id = "5", 
+                            ReceiverId = "1", 
+                            SenderId = "2", 
+                            Subject = "TestSubject", 
+                            Content = "TestContent",
+                            CreatedAt = DateTime.Now,
+                            
+                    }
+                };
+            return testMessage;
+            // return messages ?? new List<MessageDto>();
         }
         catch (Exception ex)
         {
@@ -40,7 +54,7 @@ public class MessageService
         }
     }
 
-    public async Task MarkAsReadAsync(Guid messageId)
+    public async Task MarkAsReadAsync(string messageId)
     {
         try
         {
@@ -52,7 +66,7 @@ public class MessageService
             throw new Exception($"Kunne ikke markere som læst. Fejl: {ex.Message}", ex);
         }
     }
-    public async Task DeleteMessageAsync(Guid messageId)
+    public async Task DeleteMessageAsync(string messageId)
     {
         try
         {
