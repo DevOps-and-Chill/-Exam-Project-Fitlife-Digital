@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ClassServiceAPI.Models;
+﻿using ClassServiceAPI.Models;
 using ClassServiceAPI.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ClassServiceAPI.Controllers;
 
@@ -18,7 +20,7 @@ public class ClassController : ControllerBase
     }
 
     // POST
-
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateClassAsync([FromBody] Class classModel)
     {
@@ -36,6 +38,7 @@ public class ClassController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPost("{classId}/members")]
     public async Task<IActionResult> RegisterMemberToClassAsync(string classId, [FromBody] Member member)
     {
@@ -53,6 +56,7 @@ public class ClassController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPost("{classId}/waitinglist")]
     public async Task<IActionResult> RegisterMemberToWaitingListAsync(string classId, [FromBody] Member member)
     {
@@ -71,10 +75,12 @@ public class ClassController : ControllerBase
     }
 
     // GET
-
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetAllClassesAsync()
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Fetching all classes");
         try
         {
@@ -87,9 +93,12 @@ public class ClassController : ControllerBase
         }
     }
     
+    [Authorize]
     [HttpGet("exercisegyms/{exerciseGymId}")]
     public async Task<IActionResult> GetClassesByExerciseGymAsync(string exerciseGymId)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Fetching classes for gym {exerciseGymId}", exerciseGymId);
         try
         {
@@ -101,10 +110,12 @@ public class ClassController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetClassByIdAsync(string id)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Fetching class with id: {id}", id);
         try
         {
@@ -165,9 +176,12 @@ public class ClassController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpGet("{id}/waitinglist")]
     public async Task<IActionResult> GetWaitingListByClassAsync(string id)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Fetching waiting list for class {id}", id);
         try
         {
@@ -180,9 +194,12 @@ public class ClassController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpGet("{id}/members")]
     public async Task<IActionResult> GetMembersByClassAsync(string id)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Fetching registered members for class {id}", id);
         try
         {
@@ -195,9 +212,12 @@ public class ClassController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpGet("{id}/attendees-count")]
     public async Task<IActionResult> GetNumberOfAttendeesByClassAsync(string id)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Fetching attendee count for class {id}", id);
         try
         {
@@ -210,9 +230,12 @@ public class ClassController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpGet("{id}/absence")]
     public async Task<IActionResult> CalculateAbsenceByClassAsync(string id)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Calculating absence for class {id}", id);
         try
         {
@@ -225,11 +248,15 @@ public class ClassController : ControllerBase
         }
     }
 
+    
+    
     // PATCH
-
+    [Authorize]
     [HttpPatch("{id}/cancel")]
     public async Task<IActionResult> CancelClassByIdAsync(string id)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Cancelling class with id: {id}", id);
         try
         {
@@ -245,10 +272,12 @@ public class ClassController : ControllerBase
     }
 
     // DELETE
-
+    [Authorize]
     [HttpDelete("{classId}/members/{memberId}")]
     public async Task<IActionResult> UnRegisterMemberFromClassAsync(string classId, string memberId)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Unregistering member {memberId} from class {classId}", memberId, classId);
         try
         {
@@ -262,10 +291,12 @@ public class ClassController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-
+    [Authorize]
     [HttpDelete("{classId}/waitinglist/{memberId}")]
     public async Task<IActionResult> UnRegisterMemberFromWaitingListAsync(string classId, string memberId)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Unregistering member {memberId} from waiting list for class {classId}", memberId, classId);
         try
         {
@@ -279,10 +310,12 @@ public class ClassController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteClassAsync(string id)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Deleting class with id: {id}", id);
         try
         {

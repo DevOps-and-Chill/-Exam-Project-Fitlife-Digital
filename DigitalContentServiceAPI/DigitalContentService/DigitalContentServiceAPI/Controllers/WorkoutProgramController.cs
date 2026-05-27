@@ -1,5 +1,6 @@
 ﻿using DigitalContentServiceAPI.Models;
 using DigitalContentServiceAPI.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalContentServiceAPI.Controllers
@@ -16,9 +17,9 @@ namespace DigitalContentServiceAPI.Controllers
             _logger = logger;
             _programRepo = programRepo;
         }
-        
+
         // POST
-        
+        [Authorize]
         [HttpPost("insert")]
         public async Task<IActionResult> InsertWorkoutProgramAsync(WorkoutProgram workoutProgram)
         {
@@ -34,9 +35,9 @@ namespace DigitalContentServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         // GET
-        
+        [Authorize]
         [HttpGet("get/{id}")]
         public async Task<IActionResult> GetWorkoutProgramAsync(string id)
         {
@@ -67,7 +68,7 @@ namespace DigitalContentServiceAPI.Controllers
         }
 
         // PUT
-        
+        [Authorize]
         [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateWorkoutProgramAsync(string id, WorkoutProgram workoutProgram)
         {
@@ -83,9 +84,9 @@ namespace DigitalContentServiceAPI.Controllers
                 return NotFound(ex.Message);
             }
         }
-        
+
         // DELETE 
-        
+        [Authorize]
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteWorkoutProgramAsync(string id)
         {
@@ -101,9 +102,5 @@ namespace DigitalContentServiceAPI.Controllers
                 return NotFound(ex.Message);
             }
         }
-
-        
-        
-        
     }
 }

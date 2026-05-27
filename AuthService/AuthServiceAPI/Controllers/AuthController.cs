@@ -39,6 +39,7 @@ namespace AuthServiceAPI.Controllers
         /// Returns 200 (OK) when credentials are created successfully.
         /// Returns 400 (BadRequest) if the registration request is invalid.
         /// </returns>
+        [AllowAnonymous]
         [HttpPost("RegisterCredentials")]
         public async Task<ActionResult> RegisterCredentials([FromBody] RegisterCredentialsRequestDTO registerDTO)
         {
@@ -70,6 +71,7 @@ namespace AuthServiceAPI.Controllers
         /// Returns 401 (Unauthorized) if the credentials are invalid.
         /// Returns 400 (BadRequest) if the login request is invalid.
         /// </returns>
+        [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<ActionResult> Login([FromBody] LoginRequestDTO loginRequestDTO)
         {

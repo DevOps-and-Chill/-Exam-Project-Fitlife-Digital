@@ -39,6 +39,7 @@ builder.Services.AddHttpClient("MessageService", client =>
 		builder.Configuration["Gateway:BaseUrl"]! + "message/");
 });
 
+
 builder.Services.AddHttpClient("ClassService", client =>
 {
 	client.BaseAddress = new Uri(
@@ -56,23 +57,23 @@ builder.Services.AddMemoryCache();
 
 builder.Services.AddHttpClient("StatisticService", client =>
 {
-	client.BaseAddress = new Uri(
-		builder.Configuration["StatisticService:BaseUrl"]!);
+    client.BaseAddress = new Uri(
+        builder.Configuration["Gateway:BaseUrl"]! + "statistics/");
 });
 
+builder.Services.AddScoped<ClassService>();
 builder.Services.AddScoped<MemberService>();
+builder.Services.AddScoped<EmployeeService>();
+builder.Services.AddScoped<DigitalTrainingService>();
 builder.Services.AddScoped<EmployeeServiceHjalte>();
-builder.Services.AddScoped<DigitalContentService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<CenterService>();
 builder.Services.AddScoped<RegistrationStateService>();
 builder.Services.AddScoped<PTService>();
 builder.Services.AddScoped<CurrentUserService>();
 builder.Services.AddScoped<MessageService>();
-builder.Services.AddScoped<ClassService>();
 builder.Services.AddScoped<StatisticService>();
-
-builder.Services.AddSingleton<TokenService>();
+builder.Services.AddScoped<TokenService>();
 
 var app = builder.Build();
 

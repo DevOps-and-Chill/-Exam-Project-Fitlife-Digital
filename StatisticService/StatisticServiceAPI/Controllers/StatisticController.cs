@@ -1,4 +1,5 @@
 using System.Runtime.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StatisticServiceAPI.Models;
 using StatisticServiceAPI.Repositories;
@@ -21,6 +22,7 @@ namespace StatisticServiceAPI.Controllers
         }
 
         //JBS: Fetches all statistics from the repository
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -38,6 +40,7 @@ namespace StatisticServiceAPI.Controllers
         }
 
         //JBS: Fetches a single statistic by id - returns 404 if not found
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -60,6 +63,7 @@ namespace StatisticServiceAPI.Controllers
         }
 
         //JBS: Creates a new statistic
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(Statistik statistik)
         {
@@ -78,6 +82,7 @@ namespace StatisticServiceAPI.Controllers
         }
 
         //JBS: Deletes a statistic by id
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -96,6 +101,7 @@ namespace StatisticServiceAPI.Controllers
         }
 
         //JBS: Stores a new data point in a statistic
+        [Authorize]
         [HttpPost("{id}/storage")]
         public async Task<IActionResult> StoreLagring(Guid id, Lagring lagring)
         {
@@ -121,6 +127,7 @@ namespace StatisticServiceAPI.Controllers
         }
 
         //JBS: Generates a share link for a statistic
+        [Authorize]
         [HttpPost("{id}/share")]
         public async Task<IActionResult> CreateDeling(Guid id, Deling deling)
         {
@@ -147,6 +154,7 @@ namespace StatisticServiceAPI.Controllers
         }
 
         //JBS: Revokes a shared statistic
+        [Authorize]
         [HttpDelete("{id}/share/{userId}")]
         public async Task<IActionResult> RevokeDeling(Guid id, Guid userId)
         {
@@ -178,6 +186,7 @@ namespace StatisticServiceAPI.Controllers
         }
 
         //JBS: Runs an analysis on a statistic
+        [Authorize]
         [HttpPost("{id}/analysis")]
         public async Task<IActionResult> RunAnalyse(Guid id, Analyse analyse)
         {
@@ -203,6 +212,7 @@ namespace StatisticServiceAPI.Controllers
         }
 
         //JBS: Fetches a list of registered members for a session
+        [Authorize]
         [HttpGet("{id}/registered")]
         public async Task<IActionResult> GetTilmeldte(Guid id)
         {
@@ -225,6 +235,7 @@ namespace StatisticServiceAPI.Controllers
         }
 
         //JBS: Fetches a list of members who attended a session
+        [Authorize]
         [HttpGet("{id}/attendance")]
         public async Task<IActionResult> GetFremmoede(Guid id)
         {
@@ -247,6 +258,7 @@ namespace StatisticServiceAPI.Controllers
         }
 
         //JBS: Fetches the waiting list for a session
+        [Authorize]
         [HttpGet("{id}/waitinglist")]
         public async Task<IActionResult> GetVenteliste(Guid id)
         {

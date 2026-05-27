@@ -1,5 +1,6 @@
 using FacilityServiceAPI.Models;
 using FacilityServiceAPI.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FacilityServiceAPI.Controllers
@@ -17,12 +18,13 @@ namespace FacilityServiceAPI.Controllers
             _facilityRepository = facilityRepository;
         }
 
-		/// <summary>
-		/// controller for getting a single facility
-		/// </summary>
-		/// <param name="facilityId"></param>
-		/// <returns></returns>
-		[HttpGet("getbyid")]
+        /// <summary>
+        /// controller for getting a single facility
+        /// </summary>
+        /// <param name="facilityId"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("getbyid")]
         public async Task<IActionResult> GetFacility([FromBody] string facilityId)
         {
             _logger.LogDebug("Starting getfacilitybyid for facility {facilityId}", facilityId);
@@ -40,6 +42,7 @@ namespace FacilityServiceAPI.Controllers
         /// Gets all facilities of both types (Exercise Gym and Swimming pool)
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("getall")]
         public async Task<IActionResult> GetFacilities()
         {
@@ -61,6 +64,7 @@ namespace FacilityServiceAPI.Controllers
         /// </summary>
         /// <param name="facilityId"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteFacility([FromBody] string facilityId)
         {

@@ -2,20 +2,20 @@ using System.Net.Http.Json;
 using FitLife.Frontend.Models;
 using FitLife.Frontend.Models.DTOs;
 
+
 namespace FitLife.Frontend.Services;
 
-public class TrainerService
+public class EmployeeService
 {
-    // Denne service håndterer personlige trænere og PT-funktionalitet.
-    // Service-laget fungerer som bindeled mellem frontend og data.
-
-    // HttpClient bruges til at kommunikere med UserService API
     private readonly HttpClient _httpClient;
+    private readonly TokenService _tokenService;
 
-    public TrainerService(IHttpClientFactory httpClientFactory)
+    //AO: Employees are registered and handled in userservice
+    public EmployeeService(IHttpClientFactory httpClientFactory, TokenService tokenService)
     {
-        // Opretter HttpClient med base URL fra Program.cs/appsettings.json
         _httpClient = httpClientFactory.CreateClient("UserService");
+        _tokenService = tokenService;
+        _tokenService.AttachToken(_httpClient);
     }
 
     public async Task<Employee> GetEmployeeById(string id)
