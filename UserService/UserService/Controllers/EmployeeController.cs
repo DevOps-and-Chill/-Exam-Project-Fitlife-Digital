@@ -68,12 +68,21 @@ namespace UserServiceAPI.Controllers
             _logger.LogDebug("Setting employee {userId} as manager", userId);
             try
             {
-                return Ok(await _employeeRepository.SetEmployeeAsManager(userId));
+                var result = await _employeeRepository.SetEmployeeAsManager(userId);
+                
+                return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogWarning("Could not promote employee {userId}: {message}", userId, ex.Message);
+
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error promoting employee {userId}: {message}", userId, ex.Message);
-                return BadRequest(ex);
+                _logger.LogError(ex, "Unexpected error promoting employee {userId}", userId);
+
+                return StatusCode(500, "An unexpected error occurred");
             }
         }
 
