@@ -1,4 +1,4 @@
-﻿namespace MessageServiceAPI.Models;
+﻿namespace MessageServiceAPI.Models.DTOs;
 
 public class MessageDto
 {

@@ -1,5 +1,6 @@
 ﻿
 using MessageServiceAPI.Models;
+using MessageServiceAPI.Models.DTOs;
 
 namespace MessageServiceAPI.Services.Interfaces;
     public interface IMessageService

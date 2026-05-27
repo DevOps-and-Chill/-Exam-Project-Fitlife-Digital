@@ -1,5 +1,6 @@
 ﻿using MessageServiceAPI.Data;
 using MessageServiceAPI.Models;
+using MessageServiceAPI.Models.DTOs;
 using MessageServiceAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
