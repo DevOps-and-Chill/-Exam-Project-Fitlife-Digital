@@ -13,7 +13,7 @@ public class MessageService
         _httpClient = httpClientFactory.CreateClient("MessageService");
     }
     
-    public async Task<List<MessageDto>> GetAllMessagesAsync(Guid receiverId)
+    public async Task<List<MessageDto>> GetAllMessagesAsync(string receiverId)
     {
         try
         {
@@ -40,7 +40,7 @@ public class MessageService
         }
     }
 
-    public async Task MarkAsReadAsync(Guid messageId)
+    public async Task MarkAsReadAsync(string messageId)
     {
         try
         {
@@ -52,7 +52,7 @@ public class MessageService
             throw new Exception($"Kunne ikke markere som læst. Fejl: {ex.Message}", ex);
         }
     }
-    public async Task DeleteMessageAsync(Guid messageId)
+    public async Task DeleteMessageAsync(string messageId)
     {
         try
         {

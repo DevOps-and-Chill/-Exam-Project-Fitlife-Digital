@@ -6,7 +6,7 @@ namespace MessageServiceAPI.Services.Interfaces;
     { 
         Task SendDirectMessageAsync(DirectMessage message);
         Task SendClassCancellationMessageAsync(ClassMessage message);
-        Task<List<MessageDto>> GetAllMessagesAsync(Guid receiverId);
-        Task MarkAsReadAsync(Guid messageId);
-        Task DeleteMessageAsync(Guid messageId);
+        Task<List<MessageDto>> GetAllMessagesAsync(string receiverId);
+        Task MarkAsReadAsync(string messageId);
+        Task DeleteMessageAsync(string messageId);
     }
