@@ -178,10 +178,11 @@ jobs:
 
     # Start microservices 
     - name: Start relevant microservices
+      env:
+        VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+        Vault__Address: ${{ secrets.Vault__Address }}
       run: |
-        docker compose -f docker-compose-services.yml up -d gateway
-        docker compose -f docker-compose-services.yml up -d authservice
-        docker compose -f docker-compose-services.yml up -d userservice
+        docker compose -f docker-compose-services.yml up -d 
 
     - name: Wait for services
       run: sleep 20
