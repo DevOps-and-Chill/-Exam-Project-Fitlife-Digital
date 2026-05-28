@@ -46,7 +46,7 @@
 
                                 <p>
                                     <strong>Instruktør:</strong>
-                                    @(CoachName)
+                                    @(classModel.CoachId is not null && CoachName.TryGetValue(classModel.CoachId, out var name) ? name : "Ukendt")
                                 </p>
 
                                 <p>
