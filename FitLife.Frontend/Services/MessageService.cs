@@ -9,7 +9,6 @@ public class MessageService
     private readonly HttpClient _httpClient;
     private readonly TokenService _tokenService;
 
-
     public MessageService(IHttpClientFactory httpClientFactory, TokenService tokenService)
     {
         _httpClient = httpClientFactory.CreateClient("MessageService");
@@ -21,6 +20,7 @@ public class MessageService
     {
         try
         {
+            _tokenService.AttachToken(_httpClient);
             var messages = await _httpClient.GetFromJsonAsync<List<MessageDto>>(
                 $"receivers/{receiverId}");
             return messages ?? new List<MessageDto>();
@@ -34,6 +34,7 @@ public class MessageService
     {
         try
         {
+            _tokenService.AttachToken(_httpClient);
             var response = await _httpClient.PostAsJsonAsync("", dto);
             response.EnsureSuccessStatusCode();
         }
@@ -47,6 +48,7 @@ public class MessageService
     {
         try
         {
+            _tokenService.AttachToken(_httpClient);
             var response = await _httpClient.PutAsync($"{messageId}/markasread", null);
             response.EnsureSuccessStatusCode();
         }
@@ -59,6 +61,7 @@ public class MessageService
     {
         try
         {
+            _tokenService.AttachToken(_httpClient);
             var response = await _httpClient.DeleteAsync($"{messageId}");
             response.EnsureSuccessStatusCode();
         }

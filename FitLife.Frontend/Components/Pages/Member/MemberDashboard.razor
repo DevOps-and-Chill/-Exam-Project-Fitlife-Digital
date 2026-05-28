@@ -59,9 +59,12 @@
                                 <p class="mb-0">
                                     Pladser: @cls.Registered.Count / @cls.MemberLimit
                                 </p>
+                                <button class="btn btn-outline-danger btn-sm mt-2"
+                                        @onclick="() => UnregisterFromClass(cls.Id)">
+                                    Afmeld
+                                </button>
                             </div>
                         }
-
                         <a href="/find-hold" class="btn btn-success mt-2">Find flere hold</a>
 
                     </div>
@@ -147,8 +150,7 @@
 
     private string Message = "";
     private List<Class> MyClasses = new();
-
-    // TODO: Skal hentes fra PTService
+    
     private List<PersonalTrainingSession> PersonalTrainingSessions = new();
 
     protected override async Task OnInitializedAsync()
@@ -162,6 +164,22 @@
         }
         //AO: Slet
         Console.WriteLine("Memberdashboard loaded");
+    }
+    
+    private async Task UnregisterFromClass(string classId)
+    {
+        var memberId = CurrentUserService.CurrentUser?.Member?.Id;
+        if (memberId is null) return;
+
+        try
+        {
+            await ClassService.UnregisterMemberFromClassAsync(classId, memberId);
+            MyClasses.RemoveAll(c => c.Id == classId);
+        }
+        catch
+        {
+            Message = "Afmelding mislykkedes. Prøv igen.";
+        }
     }
 
     private void ShowNotImplemented()
