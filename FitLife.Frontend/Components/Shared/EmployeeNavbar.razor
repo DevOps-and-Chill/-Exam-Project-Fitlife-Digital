@@ -1,5 +1,6 @@
 @using FitLife.Frontend.Services
 @inject CurrentUserService CurrentUserService
+@inject NavigationManager navman
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-5 py-3">
 
@@ -38,7 +39,17 @@
         <span class="fw-bold ms-3">
             @CurrentUserService.DisplayCurrentUserName
         </span>
+        <button class="btn btn-outline-danger" @onclick=Logout>
+            Log ud
+        </button>
 
     </div>
 
 </nav>
+@code {
+    public async Task Logout()
+    {
+        await CurrentUserService.Logout();
+        navman.NavigateTo("/");
+    }
+}
