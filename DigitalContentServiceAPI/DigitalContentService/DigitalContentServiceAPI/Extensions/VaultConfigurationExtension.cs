@@ -16,9 +16,9 @@ public static class VaultConfigurationExtensions
                 token);
 
         var client =
-            new VaultClient(
+             new VaultClient(
                 new VaultClientSettings(
-                    "http://vault:8200",
+                    builder.Configuration["Vault:Address"],
                     auth));
 
         var secret =

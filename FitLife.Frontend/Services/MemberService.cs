@@ -27,17 +27,14 @@ public class MemberService
     {
         try
         {
-            var members =
-                await _httpClient.GetFromJsonAsync<List<Member>>(
-                    "member/GetAllMembers");
+            _tokenService.AttachToken(_httpClient);
+            var members = await _httpClient.GetFromJsonAsync<List<Member>>("member/GetAllMembers");
 
             return members ?? new List<Member>();
         }
         catch (Exception ex)
         {
-            throw new Exception(
-                $"Kunne ikke hente medlemmer fra UserService. Fejl: {ex.Message}",
-                ex);
+            throw new Exception($"Kunne ikke hente medlemmer fra UserService. Fejl: {ex.Message}", ex);
         }
     }
     
@@ -45,6 +42,7 @@ public class MemberService
     {
         try
         {
+            _tokenService.AttachToken(_httpClient);
             return await _httpClient.GetFromJsonAsync<Member>($"member/GetMemberById/{id}");
         }
         catch (Exception ex)
@@ -62,6 +60,7 @@ public class MemberService
     {
         try
         {
+            _tokenService.AttachToken(_httpClient);
             return await _httpClient.GetFromJsonAsync<Member>($"member/GetMemberById/{userId}");
         }
         catch
@@ -77,30 +76,23 @@ public class MemberService
     {
         try
         {
-            var response =
-                await _httpClient.PostAsJsonAsync(
-                    "member/UpsertMember",
-                    member);
+            _tokenService.AttachToken(_httpClient);
+            var response = await _httpClient.PostAsJsonAsync("member/UpsertMember", member);
 
             if (!response.IsSuccessStatusCode)
             {
-                var errorMessage =
-                    await response.Content.ReadAsStringAsync();
+                var errorMessage = await response.Content.ReadAsStringAsync();
 
-                throw new Exception(
-                    $"UserService returnerede fejl: {(int)response.StatusCode} {response.ReasonPhrase}. {errorMessage}");
+                throw new Exception($"UserService returnerede fejl: {(int)response.StatusCode} {response.ReasonPhrase}. {errorMessage}");
             }
 
-            var createdMember =
-                await response.Content.ReadFromJsonAsync<Member>();
+            var createdMember = await response.Content.ReadFromJsonAsync<Member>();
 
             return createdMember ?? member;
         }
         catch (Exception ex)
         {
-            throw new Exception(
-                $"Kunne ikke oprette medlem via UserService. Fejl: {ex.Message}",
-                ex);
+            throw new Exception($"Kunne ikke oprette medlem via UserService. Fejl: {ex.Message}", ex);
         }
     }
 

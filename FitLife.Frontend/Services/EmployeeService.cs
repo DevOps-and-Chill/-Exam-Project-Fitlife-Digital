@@ -20,6 +20,7 @@ public class EmployeeService
 
     public async Task<Employee> GetEmployeeById(string id)
     {
+        _tokenService.AttachToken(_httpClient);
         var employee = await _httpClient.GetFromJsonAsync<Employee>($"employee/GetEmployeeById/{id}");
         return employee;
     }
@@ -31,10 +32,9 @@ public class EmployeeService
     {
         try
         {
-            var employees =
-                await _httpClient.GetFromJsonAsync<List<Employee>>(
-                    "employee/GetAllEmployees");
-          
+            _tokenService.AttachToken(_httpClient);
+            var employees = await _httpClient.GetFromJsonAsync<List<Employee>>("employee/GetAllEmployees");
+
             return employees?
                 .Where(employee => employee.IsPT && employee.ActiveUser)
                 .Select(employee => new Employee
@@ -58,8 +58,7 @@ public class EmployeeService
         }
         catch (Exception ex)
         {
-            throw new Exception(
-                $"Kunne ikke hente trænere fra UserService. Fejl: {ex.Message}",
+            throw new Exception($"Kunne ikke hente trænere fra UserService. Fejl: {ex.Message}",
                 ex);
         }
     }
