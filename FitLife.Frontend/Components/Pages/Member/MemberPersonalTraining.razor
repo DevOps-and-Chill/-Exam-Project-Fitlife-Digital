@@ -9,6 +9,7 @@
 @inject MessageService MessageService
 @inject CurrentUserService CurrentUserService
 
+
 <div class="container-fluid px-0">
 
     <MemberNavbar />
@@ -97,6 +98,59 @@
                                             Send besked til træner
                                         </button>
                                     }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    
+        <!-- Mine PT-sessioner -->
+        <div class="mb-5 mt-5">
+            <h3 class="fw-bold mb-4">Mine sessioner</h3>
+
+            @if (IsLoading)
+            {
+                <div class="alert alert-info">Henter sessioner...</div>
+            }
+            else if (Sessions.Count == 0)
+            {
+                <div class="alert alert-secondary">Du har ingen PT-sessioner endnu.</div>
+            }
+            else
+            {
+                <div class="row g-4">
+                    @foreach (var session in Sessions)
+                    {
+                        <div class="col-md-6">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-body p-4">
+
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                            <h5 class="fw-bold mb-0">PT Session</h5>
+                                        <span class="badge @GetStatusBadgeClass(session.Status)">
+                                            @GetStatusText(session.Status)
+                                        </span>
+                                    </div>
+
+                                    <p class="mb-1"><strong>Start:</strong> @session.StartDate.ToString("dd/MM/yyyy HH:mm")</p>
+                                    <p class="mb-1"><strong>Slut:</strong> @session.EndDate.ToString("dd/MM/yyyy HH:mm")</p>
+                                    <p class="mb-3"><strong>Oprettet:</strong> @session.CreatedDate.ToString("dd/MM/yyyy")</p>
+
+                                    @if (session.Status == 0)
+                                    {
+                                        <button class="btn btn-outline-danger btn-sm"
+                                                @onclick="() => CancelSession(session)">
+                                            Annuller session
+                                        </button>
+                                    
+                                        <button class="btn btn-outline-dark btn-sm mt-2"
+                                                @onclick="() => SelectTrainerForMessageFromSession(session)">
+                                            Send besked til træner
+                                        </button>
+                                    }
+
                                 </div>
                             </div>
                         </div>
