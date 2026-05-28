@@ -2,14 +2,17 @@
 
 namespace FitLife.Frontend.Services;
 
-public class EmployeeServiceHjalte
+public class EmployeeService
 {
     private readonly HttpClient _httpClient;
+    private readonly TokenService _tokenService;
 
-    public EmployeeServiceHjalte(IHttpClientFactory httpClientFactory)
+    //AO: Employees are registered and handled in userservice
+    public EmployeeService(IHttpClientFactory httpClientFactory, TokenService tokenService)
     {
-    
         _httpClient = httpClientFactory.CreateClient("UserService");
+        _tokenService = tokenService;
+        _tokenService.AttachToken(_httpClient);
     }
 
     // GET
@@ -18,6 +21,7 @@ public class EmployeeServiceHjalte
     {
         try
         {
+            _tokenService.AttachToken(_httpClient);
             var employees = await _httpClient.GetFromJsonAsync<List<Employee>>("employee/GetAllEmployees");
             return employees ?? new List<Employee>();
         }
@@ -31,6 +35,7 @@ public class EmployeeServiceHjalte
     {
         try
         {
+            _tokenService.AttachToken(_httpClient);
             return await _httpClient.GetFromJsonAsync<Employee>($"employee/GetEmployeeById/{userId}");
         }
         catch (Exception ex)
@@ -43,6 +48,7 @@ public class EmployeeServiceHjalte
     {
         try
         {
+            _tokenService.AttachToken(_httpClient);
             var employees = await _httpClient.GetFromJsonAsync<List<Employee>>($"employee/GetEmployeeByAffiliation/{affiliationId}");
             return employees ?? new List<Employee>();
         }
@@ -58,6 +64,7 @@ public class EmployeeServiceHjalte
     {
         try
         {
+            _tokenService.AttachToken(_httpClient);
             var response = await _httpClient.PostAsJsonAsync("employee/UpsertEmployee", employee);
 
             if (!response.IsSuccessStatusCode)
@@ -81,6 +88,7 @@ public class EmployeeServiceHjalte
     {
         try
         {
+            _tokenService.AttachToken(_httpClient);
             var response = await _httpClient.PutAsync($"employee/EndEmploymentForEmployee/{userId}", null);
 
             if (!response.IsSuccessStatusCode)
@@ -99,6 +107,7 @@ public class EmployeeServiceHjalte
     {
         try
         {
+            _tokenService.AttachToken(_httpClient);
             var response = await _httpClient.PutAsync($"employee/SetEmployeeAsManager/{userId}", null);
 
             if (!response.IsSuccessStatusCode)
@@ -117,6 +126,7 @@ public class EmployeeServiceHjalte
     {
         try
         {
+            _tokenService.AttachToken(_httpClient);
             var response = await _httpClient.PutAsync($"employee/SetAccountAsInactive/{userId}", null);
 
             if (!response.IsSuccessStatusCode)
@@ -137,6 +147,7 @@ public class EmployeeServiceHjalte
     {
         try
         {
+            _tokenService.AttachToken(_httpClient);
             var response = await _httpClient.DeleteAsync($"employee/DeleteEmployee/{userId}");
 
             if (!response.IsSuccessStatusCode)

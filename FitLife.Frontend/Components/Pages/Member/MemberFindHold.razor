@@ -4,6 +4,7 @@
 @using FitLife.Frontend.Services
 @inject ClassService ClassService
 @inject CurrentUserService CurrentUserService
+@inject EmployeeService EmployeeService 
 
 <div class="container-fluid px-0">
 
@@ -45,13 +46,13 @@
 
                                 <p>
                                     <strong>Instruktør:</strong>
-                                    @Coach.GivenName
+                                    @(CoachName)
                                 </p>
 
                                 <p>
                                     <strong>Pladser:</strong>
                                     @{
-                                        var availableSpots = classModel.MemberLimit - classModel.Registered.Count;
+                                        @(classModel.MemberLimit - classModel.Registered.Count)
                                     }
                                 </p>
 
@@ -95,19 +96,20 @@
     </section>
 
 </div>
-
 @code {
     private string Message = "";
     private List<Class> Classes = new();
     private bool IsLoading = true;
     private string? ErrorMessage;
     
-    public Employee Coach { get; set; }
+    // var: public Employee Coach — enkelt coach til alle klasser
+    private Dictionary<string, string> CoachName = new();
     
     protected override async Task OnInitializedAsync()
     {
         try
         {
+            await CurrentUserService.SetCurrentUser();  // var: manglede
             var memberId = CurrentUserService.CurrentUser?.GetId();
 
             if (memberId is null)
@@ -121,6 +123,18 @@
             foreach (var c in Classes)
             {
                 c.IsUserSignedUp = c.Registered.Any(r => r.Id == memberId);
+            }
+            
+            var coachIds = Classes
+                .Select(c => c.CoachId)
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .Distinct();
+                
+            foreach (var coachId in coachIds)
+            {
+                var employee = await EmployeeService.GetEmployeeByIdAsync(coachId);
+                if (employee is not null)
+                    CoachName[coachId] = $"{employee.GivenName} {employee.FamilyName}";
             }
         }
         catch
@@ -136,27 +150,42 @@
     private async Task Register(string classId)
     {
         var member = CurrentUserService.CurrentUser?.Member;
-
         if (member is null) return;
 
         await ClassService.RegisterMemberToClassAsync(classId, member);
+        
+        // Opdater lokal state så knappen skifter uden reload
+        var cls = Classes.FirstOrDefault(c => c.Id == classId);
+        if (cls is not null)
+        {
+            cls.IsUserSignedUp = true;
+            cls.Registered.Add(member);  // var: manglede lokal opdatering
+        }
+        Message = "Du er tilmeldt holdet.";
     }
 
     private async Task Unregister(string classId)
     {
         var memberId = CurrentUserService.CurrentUser?.GetId();
-
         if (memberId is null) return;
 
         await ClassService.UnregisterMemberFromClassAsync(classId, memberId);
+        
+        var cls = Classes.FirstOrDefault(c => c.Id == classId);
+        if (cls is not null)
+        {
+            cls.IsUserSignedUp = false;
+            cls.Registered.RemoveAll(r => r.Id == memberId);  // var: manglede lokal opdatering
+        }
+        Message = "Du er afmeldt holdet.";
     }
 
     private async Task JoinWaitingList(string classId)
     {
         var member = CurrentUserService.CurrentUser?.Member;
-
         if (member is null) return;
 
         await ClassService.RegisterMemberToWaitinglistAsync(classId, member);
+        Message = "Du er tilføjet ventelisten.";  // var: ingen feedback til brugeren
     }
 }

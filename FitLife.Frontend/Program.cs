@@ -65,7 +65,6 @@ builder.Services.AddScoped<ClassService>();
 builder.Services.AddScoped<MemberService>();
 builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddScoped<DigitalTrainingService>();
-builder.Services.AddScoped<EmployeeServiceHjalte>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<CenterService>();
 builder.Services.AddScoped<RegistrationStateService>();

@@ -46,13 +46,13 @@
                         <div class="d-grid gap-2">
 
                             <!-- Navigerer til side hvor medarbejderen kan se/redigere hold -->
-                            <a href="/manage-sessions"
+                            <a href="/manage-classes"
                                class="btn btn-success">
                                 Administrer hold
                             </a>
 
                             <!-- Navigerer til oprettelse af nye hold -->
-                            <a href="/create-session"
+                            <a href="/create-class"
                                class="btn btn-outline-success">
                                 + Opret hold
                             </a>
@@ -120,7 +120,7 @@
                             <!-- Midlertidig prototype-knap.
                                  TODO: Skal senere navigere til PT-sessioner via egen side/service -->
                             <button class="btn btn-success"
-                                    @onclick="ShowPTSessions">
+                                    @onclick="ShowPTClasses">
                                 Se mine sessioner
                             </button>
 
@@ -157,7 +157,7 @@
 
                             <!-- Midlertidig prototype-knap -->
                             <button class="btn btn-success"
-                                    @onclick="ShowCenters">
+                                    @onclick="ShowGyms">
                                 Administrer center
                             </button>
 
@@ -196,7 +196,7 @@
 
     // Midlertidig prototype-funktion.
     // TODO: Skal senere kobles til side/service for PT-sessioner.
-    private void ShowPTSessions()
+    private void ShowPTClasses()
     {
         Message = "Visning af personlige træningssessioner er ikke implementeret endnu.";
     }
@@ -210,7 +210,7 @@
 
     // Midlertidig prototype-funktion.
     // TODO: Skal senere kobles til centeradministration via API/service.
-    private void ShowCenters()
+    private void ShowGyms()
     {
         Message = "Centeradministration er ikke implementeret endnu.";
     }
