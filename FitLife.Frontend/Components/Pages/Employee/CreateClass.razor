@@ -5,7 +5,7 @@
 @inject ClassService ClassService
 @inject NavigationManager Navigation
 @inject CurrentUserService CurrentUserService
-@inject EmployeeServiceHjalte EmployeeServiceHjalte
+@inject EmployeeService EmployeeService
 
 <div class="container-fluid px-0">
 
@@ -131,7 +131,7 @@
    
         var affiliationId = currentEmployee.Affiliation;
         
-        var allEmployees = await EmployeeServiceHjalte.GetEmployeesByAffiliationAsync(affiliationId);
+        var allEmployees = await EmployeeService.GetEmployeesByAffiliationAsync(affiliationId);
         Coaches = allEmployees.Where(e => e.IsPT).ToList();
         
         if (currentEmployee is not null)

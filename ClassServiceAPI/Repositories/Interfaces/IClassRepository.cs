@@ -24,7 +24,8 @@ public interface IClassRepository
 
     // PUT
     
-    Task<Class> CancelClassByIdAsync(string id);
+    Task<Class> CancelClassAsync(string id);
+    Task<Class> UpdateClassAsync(string id, Class updatedClass);
     Task<Class> UnRegisterMemberFromClassAsync(string classId, string memberId);
     Task<Class> UnRegisterMemberFromWaitingListAsync(string classId, string memberId);
 

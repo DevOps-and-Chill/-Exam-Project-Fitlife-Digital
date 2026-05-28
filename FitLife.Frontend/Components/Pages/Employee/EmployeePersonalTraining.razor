@@ -4,7 +4,7 @@
 @using FitLife.Frontend.Services
 @inject PTService PTService
 @inject CenterService CenterService
-@inject EmployeeService TrainerService
+@inject EmployeeService EmployeeService
 
 <div class="container-fluid px-0">
 
@@ -405,7 +405,7 @@
             Centers = await CenterService.GetCentersAsync();
             // Vælger første center som standard hvis der findes centre
             SelectedCenterId = Centers.FirstOrDefault()?.Id ?? "";
-            Employees = await TrainerService.GetTrainersAsync();
+            Employees = await EmployeeService.GetEmployeesByAffiliationAsync(SelectedCenterId);
 
             // Retrieving PT sessions
             await LoadSessions();
@@ -415,8 +415,7 @@
             StatusMessage = $"Kunne ikke hente data: {ex.Message}";
         }
     }
-
-    // Retrieves all sessions from PTService
+    
     private async Task LoadSessions()
     {
         try

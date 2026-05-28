@@ -211,9 +211,10 @@
             SelectedClass.TimeEnd   = SelectedClassDate.Value.Date + SelectedClassEndTime.Value.ToTimeSpan();
         }
 
-        // TODO: Kald ClassService.UpdateClassAsync
+        await ClassService.UpdateClassAsync(SelectedClass); 
         Message = $"Ændringer for '{SelectedClass.Title}' er gemt.";
     }
+    
 
     private async Task CancelClass(Class cls)
     {

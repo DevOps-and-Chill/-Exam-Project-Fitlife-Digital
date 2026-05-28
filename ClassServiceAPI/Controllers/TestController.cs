@@ -4,7 +4,7 @@ using ClassServiceAPI.Messaging;
 
 namespace ClassServiceAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("")]
 [ApiController]
 public class TestController : ControllerBase
 {

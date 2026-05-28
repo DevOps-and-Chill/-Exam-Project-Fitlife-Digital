@@ -137,7 +137,7 @@ public class ClassRepository : IClassRepository
 
     // PUT
 
-    public async Task<Class> CancelClassByIdAsync(string id)
+    public async Task<Class> CancelClassAsync(string id)
     {
         var fitnessClass = await GetClassByIdAsync(id)
                            ?? throw new InvalidOperationException($"Class '{id}' not found");
@@ -159,6 +159,26 @@ public class ClassRepository : IClassRepository
 
         await _publisher.PublishAsync(message, "class.cancelled");
         _logger.LogInformation("Published cancellation for class {ClassId} to RabbitMQ", id);
+
+        return fitnessClass;
+    }
+    
+    public async Task<Class> UpdateClassAsync(string id, Class updatedClass)
+    {
+        var fitnessClass = await GetClassByIdAsync(id)
+                           ?? throw new InvalidOperationException($"Class '{id}' not found");
+
+        fitnessClass.Title = updatedClass.Title;
+        fitnessClass.CoachId = updatedClass.CoachId;
+        fitnessClass.TimeStart = updatedClass.TimeStart;
+        fitnessClass.TimeEnd = updatedClass.TimeEnd;
+        fitnessClass.MemberLimit = updatedClass.MemberLimit;
+        fitnessClass.RoomId = updatedClass.RoomId;
+        fitnessClass.ActiveClass = updatedClass.ActiveClass;
+
+        await _context.SaveChangesAsync();
+
+        _logger.LogInformation("Updated class {ClassId}", id);
 
         return fitnessClass;
     }
