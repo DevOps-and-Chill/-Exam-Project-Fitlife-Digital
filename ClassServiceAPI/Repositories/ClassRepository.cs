@@ -66,7 +66,9 @@ public class ClassRepository : IClassRepository
 
     public async Task<List<Class>> GetAllClassesAsync()
     {
-        return await _context.Classes.ToListAsync();
+        return await _context.Classes
+            .Where(c => c.ActiveClass)
+            .ToListAsync();
     }
 
     public async Task<List<Class>> GetClassesByExerciseGymAsync(string exerciseGymId)
@@ -152,7 +154,7 @@ public class ClassRepository : IClassRepository
             Title     = fitnessClass.Title,
             TimeStart = fitnessClass.TimeStart,
             TimeEnd   = fitnessClass.TimeEnd,
-            MemberIds = fitnessClass.Members
+            ReceiverIds = fitnessClass.Members
                 .Select(m => m.Id)
                 .ToList()
         };
@@ -173,7 +175,6 @@ public class ClassRepository : IClassRepository
         fitnessClass.TimeStart = updatedClass.TimeStart;
         fitnessClass.TimeEnd = updatedClass.TimeEnd;
         fitnessClass.MemberLimit = updatedClass.MemberLimit;
-        fitnessClass.RoomId = updatedClass.RoomId;
         fitnessClass.ActiveClass = updatedClass.ActiveClass;
 
         await _context.SaveChangesAsync();
