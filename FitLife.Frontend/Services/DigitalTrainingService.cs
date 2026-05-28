@@ -1,5 +1,6 @@
 using System.Net.Http;
 using FitLife.Frontend.Models;
+using FitLife.Frontend.Models.DigitalContent;
 
 namespace FitLife.Frontend.Services;
 
@@ -24,54 +25,48 @@ public class DigitalTrainingService
     // Midlertidig mock data til træningsvideoer
     // TODO:
     // Skal senere komme fra database/backend microservice.
-    private readonly List<TrainingVideo> _videos = new()
+    private readonly List<WorkoutVideo> _videos = new()
     {
-        new TrainingVideo
+        new WorkoutVideo
         {
-            Title = "Squat teknik",
+            Name = "Squat teknik",
             Description = "Kort video om korrekt squat-teknik og typiske fejl.",
-            Category = "Styrke"
         },
 
-        new TrainingVideo
+        new WorkoutVideo
         {
-            Title = "Core træning",
+            Name = "Core træning",
             Description = "Øvelser til mave, ryg og stabilitet.",
-            Category = "Core"
         },
 
-        new TrainingVideo
+        new WorkoutVideo
         {
-            Title = "Opvarmning",
+            Name = "Opvarmning",
             Description = "En simpel opvarmningsrutine før træning.",
-            Category = "Opvarmning"
         }
     };
 
     // Midlertidig mock data til træningsprogrammer
     // TODO:
     // Skal senere komme fra database/backend microservice.
-    private readonly List<TrainingProgram> _programs = new()
+    private readonly List<WorkoutProgram> _programs = new()
     {
-        new TrainingProgram
+        new WorkoutProgram
         {
-            Title = "Begynderprogram",
+            Name = "Begynderprogram",
             Description = "Et simpelt program til nye medlemmer.",
-            Level = "Begynder"
         },
 
-        new TrainingProgram
+        new WorkoutProgram
         {
-            Title = "Styrketræning 3 dage",
+            Name = "Styrketræning 3 dage",
             Description = "Program med fokus på styrke og progression.",
-            Level = "Øvet"
         },
 
-        new TrainingProgram
+        new WorkoutProgram
         {
-            Title = "Vægttab og kondition",
+            Name = "Vægttab og kondition",
             Description = "Program med fokus på cardio og basis styrke.",
-            Level = "Begynder"
         }
     };
 
@@ -79,7 +74,7 @@ public class DigitalTrainingService
     // Bruges af frontend til at vise digitalt videoindhold.
     // TODO:
     // Senere kan denne metode kalde et API-endpoint.
-    public List<TrainingVideo> GetVideos()
+    public List<WorkoutVideo> GetVideos()
     {
         return _videos;
     }
@@ -88,7 +83,7 @@ public class DigitalTrainingService
     // Bruges af frontend til at vise træningsprogrammer.
     // TODO:
     // Senere kan denne metode kalde et API-endpoint.
-    public List<TrainingProgram> GetPrograms()
+    public List<WorkoutProgram> GetPrograms()
     {
         return _programs;
     }

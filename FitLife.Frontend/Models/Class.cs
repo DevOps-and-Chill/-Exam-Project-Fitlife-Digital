@@ -16,10 +16,12 @@ public class Class
     public int MemberLimit { get; set; }
     public bool ActiveClass { get; set; }
     
+    public bool IsUserSignedUp { get; set; }
+    
     // FK
-    public string CoachId { get; set; }
-    public Guid ExerciseGymId { get; set; }
-    public Guid RoomId { get; set; }
+    public string CoachId { get; set; } = Guid.NewGuid().ToString();
+    public string ExerciseGymId { get; set; } = Guid.NewGuid().ToString();
+    public string RoomId { get; set; } = Guid.NewGuid().ToString();
     
     // Lists
     public List<Member> Registered { get; set; } = new List<Member>();

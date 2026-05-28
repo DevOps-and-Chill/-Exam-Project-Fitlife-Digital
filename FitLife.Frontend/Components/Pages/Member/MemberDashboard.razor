@@ -3,15 +3,14 @@
 @using FitLife.Frontend.Models
 @using FitLife.Frontend.Services
 @inject CurrentUserService CurrentUserService
+@inject ClassService ClassService
 
 <div class="container-fluid px-0">
 
-    <!-- Shared navbar for medlemssider -->
     <MemberNavbar />
 
     <section class="container py-5">
 
-        <!-- Velkomstsektion -->
         <div class="row align-items-center mb-5">
 
             <div class="col-md-7">
@@ -30,111 +29,64 @@
 
             </div>
 
-            <!-- Placeholder til centerbillede -->
-            <!-- TODO:
-                 Senere kan billedet hentes dynamisk fra backend eller CMS -->
             <div class="col-md-5">
-
                 <div class="bg-light border rounded-4 d-flex align-items-center justify-content-center shadow-sm"
                      style="height: 240px;">
-
-                    <span class="text-muted">
-                        Billede fra det udvalgte center
-                    </span>
-
+                    <span class="text-muted">Billede fra det udvalgte center</span>
                 </div>
-
             </div>
+
         </div>
 
-        <!-- Oversigt over hold og personlig træning -->
         <div class="row g-4">
-
-            <!-- Mine hold -->
+            
             <div class="col-md-6">
-
                 <div class="card shadow-sm h-100 border-0">
-
                     <div class="card-body p-4">
 
-                        <div class="fs-2 mb-3">
-                            📅
-                        </div>
+                        <div class="fs-2 mb-3">📅</div>
 
-                        <h4 class="fw-bold mb-3">
-                            Mine tilmeldte hold
-                        </h4>
+                        <h4 class="fw-bold mb-3">Mine tilmeldte hold</h4>
 
-                        <!-- Loop gennem brugerens tilmeldte hold -->
-                        <!-- TODO:
-                             Når backend er klar, skal holdene hentes fra API/database -->
-                        @foreach (var hold in MyClasses)
+                        @foreach (var cls in MyClasses)
                         {
                             <div class="border rounded p-3 mb-3">
-
-                                <h6 class="mb-1 fw-bold">
-                                    @hold.Title
-                                </h6>
-
+                                <h6 class="mb-1 fw-bold">@cls.Title</h6>
                                 <p class="mb-1 text-muted">
-                                    @hold.StartTime.ToString("dd/MM") kl. @hold.StartTime.ToString("HH:mm")
+                                    @cls.TimeStart.ToString("dd/MM") kl. @cls.TimeStart.ToString("HH:mm") - @cls.TimeEnd.ToString("HH:mm")
                                 </p>
-
                                 <p class="mb-0">
-                                    Instruktør: @hold.InstructorName
+                                    Pladser: @cls.Registered.Count / @cls.MemberLimit
                                 </p>
-
                             </div>
                         }
 
-                        <a href="/find-hold" class="btn btn-success mt-2">
-                            Find flere hold
-                        </a>
+                        <a href="/find-hold" class="btn btn-success mt-2">Find flere hold</a>
 
                     </div>
                 </div>
             </div>
-
-            <!-- Personlig træning -->
+            
             <div class="col-md-6">
-
                 <div class="card shadow-sm h-100 border-0">
-
                     <div class="card-body p-4">
 
-                        <div class="fs-2 mb-3">
-                            💪
-                        </div>
+                        <div class="fs-2 mb-3">💪</div>
 
-                        <h4 class="fw-bold mb-3">
-                            Mine personlige træninger
-                        </h4>
+                        <h4 class="fw-bold mb-3">Mine personlige træninger</h4>
 
-                        <!-- Loop gennem brugerens PT-sessioner -->
-                        <!-- TODO:
-                             Senere kan disse sessioner hentes fra PersonalTraining microservice -->
                         @foreach (var session in PersonalTrainingSessions)
                         {
                             <div class="border rounded p-3 mb-3">
-
-                                <h6 class="mb-1 fw-bold">
-                                    @session.PersonalTrainerId
-                                </h6>
-
+                                <h6 class="mb-1 fw-bold">@session.PersonalTrainerId</h6>
                                 <p class="mb-1 text-muted">
                                     @session.StartDate.ToString("dd/MM") kl. @session.StartDate.ToString("HH:mm")
                                 </p>
-
-                                <p class="mb-0">
-                                    Status: @session.Status
-                                </p>
-
+                                <p class="mb-0">Status: @session.Status</p>
                             </div>
                         }
 
-                        <a href="/personal-training" class="btn btn-outline-success mt-2">
-                            Se personlig træning
-                        </a>
+                        <a href="/personal-training" class="btn btn-outline-success mt-2">Se personlig træning</a>
 
                     </div>
                 </div>
@@ -142,105 +94,46 @@
 
         </div>
 
-        <!-- Ekstra medlemsfunktioner -->
         <div class="row g-4 mt-1">
 
-            <!-- Profil -->
             <div class="col-md-4">
-
                 <div class="card shadow-sm h-100 border-0">
-
                     <div class="card-body p-4">
-
-                        <div class="fs-3 mb-3">
-                            👤
-                        </div>
-
-                        <h5 class="fw-bold">
-                            Min profil
-                        </h5>
-
-                        <p class="text-muted">
-                            Se og administrer dine medlemsoplysninger.
-                        </p>
-
-                        <!-- Midlertidig prototype-knap -->
-                        <!-- TODO:
-                             Skal senere navigere til rigtig profilside -->
-                        <button class="btn btn-outline-dark" @onclick="ShowNotImplemented">
-                            Åbn profil
-                        </button>
-
+                        <div class="fs-3 mb-3">👤</div>
+                        <h5 class="fw-bold">Min profil</h5>
+                        <p class="text-muted">Se og administrer dine medlemsoplysninger.</p>
+                        <button class="btn btn-outline-dark" @onclick="ShowNotImplemented">Åbn profil</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Medlemskab -->
             <div class="col-md-4">
-
                 <div class="card shadow-sm h-100 border-0">
-
                     <div class="card-body p-4">
-
-                        <div class="fs-3 mb-3">
-                            💳
-                        </div>
-
-                        <h5 class="fw-bold">
-                            Administrer medlemskab
-                        </h5>
-
-                        <p class="text-muted">
-                            Se medlemskabstype, betaling og tilvalg.
-                        </p>
-
-                        <!-- TODO:
-                             Kan senere kobles til betalingsservice og medlemsservice -->
-                        <button class="btn btn-outline-dark" @onclick="ShowNotImplemented">
-                            Administrer
-                        </button>
-
+                        <div class="fs-3 mb-3">💳</div>
+                        <h5 class="fw-bold">Administrer medlemskab</h5>
+                        <p class="text-muted">Se medlemskabstype, betaling og tilvalg.</p>
+                        <button class="btn btn-outline-dark" @onclick="ShowNotImplemented">Administrer</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Træningsdata -->
             <div class="col-md-4">
-
                 <div class="card shadow-sm h-100 border-0">
-
                     <div class="card-body p-4">
-
-                        <div class="fs-3 mb-3">
-                            📊
-                        </div>
-
-                        <h5 class="fw-bold">
-                            Mine data
-                        </h5>
-
-                        <p class="text-muted">
-                            Se træningsdata og tilkoblede wearables.
-                        </p>
-
-                        <!-- TODO:
-                             Senere kan denne kobles til wearables/data-service -->
-                        <button class="btn btn-outline-dark" @onclick="ShowNotImplemented">
-                            Se data
-                        </button>
-
+                        <div class="fs-3 mb-3">📊</div>
+                        <h5 class="fw-bold">Mine data</h5>
+                        <p class="text-muted">Se træningsdata og tilkoblede wearables.</p>
+                        <button class="btn btn-outline-dark" @onclick="ShowNotImplemented">Se data</button>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <!-- Feedback til brugeren -->
         @if (!string.IsNullOrWhiteSpace(Message))
         {
-            <div class="alert alert-info mt-4">
-                @Message
-            </div>
+            <div class="alert alert-info mt-4">@Message</div>
         }
 
     </section>
@@ -251,54 +144,26 @@
 
 @code {
 
-    // Feedback-besked til brugeren
     private string Message = "";
+    private List<Class> MyClasses = new();
 
-    // Midlertidig mock data til brugerens hold
-    // TODO:
-    // Skal senere hentes fra backend/API ud fra den aktuelle bruger
-    private List<TrainingSession> MyClasses = new()
+    // TODO: Skal hentes fra PTService
+    private List<PersonalTrainingSession> PersonalTrainingSessions = new();
+
+    protected override async Task OnInitializedAsync()
     {
-        new TrainingSession
-        {
-            Title = "Yoga",
-            InstructorName = "Frederikke",
-            StartTime = DateTime.Today.AddDays(1).AddHours(17),
-            Capacity = 12,
-            RegisteredCount = 5,
-            IsUserSignedUp = true
-        },
+        await CurrentUserService.SetCurrentUser();
 
-        new TrainingSession
+        var memberId = CurrentUserService.CurrentUser?.Member?.Id;
+
+        if (!string.IsNullOrWhiteSpace(memberId))
         {
-            Title = "Spinning",
-            InstructorName = "Mikkel",
-            StartTime = DateTime.Today.AddDays(3).AddHours(18),
-            Capacity = 10,
-            RegisteredCount = 7,
-            IsUserSignedUp = true
+            MyClasses = await ClassService.GetClassesByMemberAsync(memberId);
         }
-    };
+    }
 
-    // Midlertidig mock data til personlige træninger
-    // TODO:
-    // Skal senere komme fra PersonalTraining microservice/API
-    private List<PersonalTrainingSession> PersonalTrainingSessions = new()
-    {
-        new PersonalTrainingSession
-        {
-            PersonalTrainerId = Guid.Parse("44444444-4444-4444-4444-444444444444"),
-
-            StartDate = DateTime.Today.AddDays(2).AddHours(15),
-
-            // 0 = Booket/Pending midlertidigt
-            Status = 0
-        }
-    };
-    
     private void ShowNotImplemented()
     {
-        // Midlertidig metode til prototype-funktioner
         Message = "Denne funktion er ikke implementeret endnu.";
     }
 }
