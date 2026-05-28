@@ -224,7 +224,7 @@
             // Midlertidig affiliation.
             // TODO: Skal senere erstattes af rigtig center/facility id.
             member.Affiliation =
-                Guid.Parse("11111111-1111-1111-1111-111111111111");
+                Guid.Parse("11111111-1111-1111-1111-111111111111").ToString();
 
             var createdMember =
                 await MemberService.CreateMemberAsync(member);

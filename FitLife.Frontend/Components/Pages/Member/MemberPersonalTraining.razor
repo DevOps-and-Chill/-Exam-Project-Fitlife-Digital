@@ -1,10 +1,14 @@
 @page "/member/personal-training"
 @rendermode InteractiveServer
+@using System.Runtime.InteropServices.JavaScript
 @using FitLife.Frontend.Models
+@using FitLife.Frontend.Models.DTOs
 @using FitLife.Frontend.Services
 @inject PTService PTService
 @inject CenterService CenterService
 @inject EmployeeService EmployeeService
+@inject MessageService MessageService
+@inject CurrentUserService CurrentUserService
 
 <div class="container-fluid px-0">
 
@@ -125,14 +129,14 @@
         </div>
 
         <!-- Bookingpanel -->
-        @if (SelectedTrainerForBooking is not null)
+        @if (SelectedEmployeeForBooking is not null)
         {
             <div class="card shadow-sm border-0 mt-5">
 
                 <div class="card-body p-4">
 
                     <h4 class="fw-bold">
-                        Book session med @SelectedTrainerForBooking.fullName
+                        Book session med @SelectedEmployeeForBooking.fullName
                     </h4>
 
                     <p class="text-muted">
@@ -225,14 +229,14 @@
         }
 
         <!-- Beskedpanel -->
-@if (SelectedTrainerForMessage is not null)
+@if (SelectedEmployeeForMessage is not null)
 {
     <div class="card shadow-sm border-0 mt-5">
 
         <div class="card-body p-4">
 
             <h4 class="fw-bold">
-                Send besked til @SelectedTrainerForMessage.fullName
+                Send besked til @SelectedEmployeeForMessage.fullName
             </h4>
 
             <p class="text-muted">
@@ -304,10 +308,10 @@
 @code {
 
     // Holder styr på hvilken træner brugeren vil booke hos
-    private Employee? SelectedTrainerForBooking;
+    private Employee? SelectedEmployeeForBooking;
 
     // Holder styr på hvilken træner brugeren skriver til
-    private Employee? SelectedTrainerForMessage;
+    private Employee? SelectedEmployeeForMessage;
 
     // Midlertidige bookingfelter
     private DateTime? SelectedDate;
@@ -353,10 +357,10 @@
     // Åbner bookingpanel
     private void SelectTrainerForBooking(Employee trainer)
     {
-        SelectedTrainerForBooking = trainer;
+        SelectedEmployeeForBooking = trainer;
 
         // Lukker eventuel beskedformular
-        SelectedTrainerForMessage = null;
+        SelectedEmployeeForMessage = null;
 
         StatusMessage = "";
     }
@@ -364,10 +368,10 @@
     // Åbner beskedformular
     private void SelectTrainerForMessage(Employee trainer)
     {
-        SelectedTrainerForMessage = trainer;
+        SelectedEmployeeForMessage = trainer;
 
         // Lukker eventuel booking
-        SelectedTrainerForBooking = null;
+        SelectedEmployeeForBooking = null;
 
         StatusMessage = "";
 
@@ -393,7 +397,7 @@
     // Sender booking til PTService/API
     private async Task BookSession()
     {
-        if (SelectedTrainerForBooking is null ||
+        if (SelectedEmployeeForBooking is null ||
             SelectedDate is null ||
             string.IsNullOrWhiteSpace(SelectedTime) ||
             string.IsNullOrWhiteSpace(SelectedCenterId))
@@ -408,7 +412,7 @@
             return;
         }
 
-        if (!Guid.TryParse(SelectedTrainerForBooking.Id, out var trainerId))
+        if (!Guid.TryParse(SelectedEmployeeForBooking.Id, out var trainerId))
         {
             StatusMessage = "Den valgte træner har ikke et gyldigt Guid-id.";
             return;
@@ -454,10 +458,10 @@
         }
 
         StatusMessage =
-            $"Du har booket en session med {SelectedTrainerForBooking.fullName} den {SelectedDate:dd/MM} kl. {SelectedTime}.";
+            $"Du har booket en session med {SelectedEmployeeForBooking.fullName} den {SelectedDate:dd/MM} kl. {SelectedTime}.";
 
         // Lukker bookingpanel og nulstiller data
-        SelectedTrainerForBooking = null;
+        SelectedEmployeeForBooking = null;
         SelectedDate = null;
         SelectedTime = "";
     }
@@ -465,17 +469,15 @@
     // Lukker bookingformular
     private void CancelBooking()
     {
-        SelectedTrainerForBooking = null;
+        SelectedEmployeeForBooking = null;
         SelectedDate = null;
         SelectedTime = "";
     }
 
     // Sender besked
-    // TODO:
-    // Skal senere gemmes via MessageService/API/database
-    private void SendMessage()
+    private async Task SendMessage()
     {
-        if (SelectedTrainerForMessage is null ||
+        if (SelectedEmployeeForMessage is null ||
             string.IsNullOrWhiteSpace(NewMessage.Subject) ||
             string.IsNullOrWhiteSpace(NewMessage.Content))
         {
@@ -483,29 +485,33 @@
             return;
         }
 
-        // Tilføjer metadata til beskeden
-        NewMessage.SenderName = "NAVN NAVNESEN";
+        try
+        {
+            var senderId = CurrentUserService.CurrentUser?.GetId();
 
-        NewMessage.ReceiverName =
-            SelectedTrainerForMessage.fullName;
+            var dto = new DirectMessageDto
+            {
+                SenderId = senderId,
+                ReceiverId = SelectedEmployeeForMessage.Id,
+                Subject = NewMessage.Subject,
+                Content = NewMessage.Content,
+                Timestamp = DateTime.UtcNow
+            };
 
-        NewMessage.SentDate = DateTime.Now;
+            await MessageService.SendDirectMessageAsync(dto);
 
-        NewMessage.IsRead = false;
-
-        StatusMessage =
-            $"Din besked til {NewMessage.ReceiverName} er sendt.";
-
-        // Nulstiller formular
-        SelectedTrainerForMessage = null;
-
-        NewMessage = new Message();
+            StatusMessage = $"Din besked til {SelectedEmployeeForMessage.fullName} er sendt.";
+            SelectedEmployeeForMessage = null;
+            NewMessage = new Message();
+        }
+        catch
+        {
+            StatusMessage = "Beskeden kunne ikke sendes. Prøv igen.";
+        }
     }
-
-    // Lukker beskedformular
     private void CancelMessage()
     {
-        SelectedTrainerForMessage = null;
+        SelectedEmployeeForMessage = null;
 
         NewMessage = new Message();
     }

@@ -109,27 +109,28 @@
     {
         try
         {
-            await CurrentUserService.SetCurrentUser();  // var: manglede
+            await CurrentUserService.SetCurrentUser();
             var memberId = CurrentUserService.CurrentUser?.GetId();
+            var exerciseGymId = CurrentUserService.CurrentUser?.Member?.Affiliation;
 
-            if (memberId is null)
+            if (memberId is null || exerciseGymId is null)
             {
                 ErrorMessage = "Ingen bruger fundet.";
                 return;
             }
 
-            Classes = await ClassService.GetClassesByMemberAsync(memberId);
-            
+            Classes = await ClassService.GetClassesByExerciseGymAsync(exerciseGymId);
+
             foreach (var c in Classes)
             {
                 c.IsUserSignedUp = c.Registered.Any(r => r.Id == memberId);
             }
-            
+
             var coachIds = Classes
                 .Select(c => c.CoachId)
                 .Where(id => !string.IsNullOrWhiteSpace(id))
                 .Distinct();
-                
+
             foreach (var coachId in coachIds)
             {
                 var employee = await EmployeeService.GetEmployeeByIdAsync(coachId);

@@ -11,38 +11,57 @@
     <section class="container py-5">
 
         <div class="mb-5">
-            <h1 class="fw-bold mb-3">
-                Find hold
-            </h1>
-
+            <h1 class="fw-bold mb-3">Find hold</h1>
             <p class="lead text-muted">
                 Se hvilke hold FitLife tilbyder på tværs af kæden, inden du melder dig ind.
             </p>
         </div>
 
-        <div class="row g-4">
+        @if (IsLoading)
+        {
+            <p>Indlæser hold...</p>
+        }
+        else if (!Classes.Any())
+        {
+            <p class="text-muted">Ingen hold fundet.</p>
+        }
+        else
+        {
+            <div class="row g-4">
+                @foreach (var classModel in Classes)
+                {
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-body p-4">
 
-            @foreach (var classModel in Classes)
-            {
-                <div class="col-md-4">
-                    <div class="card h-100 shadow-sm border-0">
-                        <div class="card-body p-4">
+                                <h4 class="fw-bold">@classModel.Title</h4>
 
-                            <h4 class="fw-bold">
-                                @classModel.Title
-                            </h4>
+                                <p class="mb-1">
+                                    <strong>Dato:</strong>
+                                    @classModel.TimeStart.ToString("dd/MM/yyyy")
+                                </p>
 
-                            <p class="mb-0">
-                                <strong>Center:</strong>
-                                FitLife center
-                            </p>
+                                <p class="mb-1">
+                                    <strong>Tid:</strong>
+                                    @classModel.TimeStart.ToString("HH:mm") – @classModel.TimeEnd.ToString("HH:mm")
+                                </p>
 
+                                <p class="mb-1">
+                                    <strong>Pladser:</strong>
+                                    @(classModel.MemberLimit - classModel.Registered.Count) ledige
+                                </p>
+
+                                <p class="mb-0">
+                                    <strong>Center:</strong>
+                                    FitLife center
+                                </p>
+
+                            </div>
                         </div>
                     </div>
-                </div>
-            }
-
-        </div>
+                }
+            </div>
+        }
 
     </section>
 
@@ -52,10 +71,21 @@
 
 @code {
     private List<Class> Classes = new();
+    private bool IsLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
-        string exerciseGymId = "";
-        Classes = await ClassService.GetClassesByExerciseGymAsync(exerciseGymId);
+        try
+        {
+            Classes = await ClassService.GetAllClassesAsync() ?? new();
+        }
+        catch
+        {
+            Classes = new();
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 }

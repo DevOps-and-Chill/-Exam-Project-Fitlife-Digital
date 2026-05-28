@@ -22,7 +22,7 @@ public class Member
 
     // TODO:
     // Skal senere kobles til rigtige centre/facilities.
-    public Guid Affiliation { get; set; } = Guid.Empty;
+    public string Affiliation { get; set; } = Guid.NewGuid().ToString();
 
     public bool ActiveUser { get; set; } = true;
 

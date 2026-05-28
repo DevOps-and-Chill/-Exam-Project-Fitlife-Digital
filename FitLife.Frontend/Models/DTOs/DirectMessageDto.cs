@@ -7,4 +7,5 @@ public class DirectMessageDto
     public string ReceiverId { get; set; } = Guid.NewGuid().ToString();
     public string Subject { get; set; } = "";
     public string Content { get; set; } = "";
+    public DateTime Timestamp { get; set; }
 }
