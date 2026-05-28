@@ -18,7 +18,8 @@ public class CurrentUserService
         _employeeService = trainerService;
     }
     public User? CurrentUser { get; private set; }
-    public String CurrentUserRole { get; private set; }
+    public string CurrentUserRole { get; private set; }
+    public string CurrentUserMembership { get; private set; }
     public Boolean isAuthorized { get; private set; } = false; 
 
     /// <summary>
@@ -48,6 +49,7 @@ public class CurrentUserService
         {
             var member = await _memberService.GetMemberAsync(userId);
             CurrentUserRole = "member";
+            CurrentUserMembership = member.MembershipType;
 
             if (member is not null)
             {
@@ -61,7 +63,6 @@ public class CurrentUserService
         {
             var employee = await _employeeService.GetEmployeeByIdAsync(userId);
             CurrentUserRole = "employee";
-
             if (employee is not null)
             {
                 CurrentUser.SetUserAsEmployee(employee);
@@ -95,10 +96,9 @@ public class CurrentUserService
 
     public string DisplayCurrentUserName()
     {
-        string displayName = string.Empty;
+        string displayName = "";
         if (CurrentUser != null)
         {
-            
             if (CurrentUser.Member != null)
             {
                 return displayName = $"{CurrentUser.Member.GivenName}" + $"{CurrentUser.Member.FamilyName}";
@@ -107,4 +107,6 @@ public class CurrentUserService
         }
         return displayName = "Fejl: Intet navn fundet";
     }
+
+    public bool IsPremium => CurrentUserRole?.Equals("premium", StringComparison.OrdinalIgnoreCase) == true;
 }
