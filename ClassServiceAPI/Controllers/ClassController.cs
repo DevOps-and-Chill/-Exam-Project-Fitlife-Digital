@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace ClassServiceAPI.Controllers;
 
-[Route("class")]
+[Route("class/")]
 [ApiController]
 public class ClassController : ControllerBase
 {
