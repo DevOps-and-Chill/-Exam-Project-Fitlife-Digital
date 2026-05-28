@@ -115,18 +115,19 @@
         var result = await AuthService.LoginAsync(Email, Password);
 
         Message = result.Message;
-        Console.WriteLine($"Token: {result.Token}");
         if (!result.Success)
         {
             return;
         }
         await CurrentUserService.SetCurrentUser();
 
-        if (CurrentUserService.CurrentUser?.GetUserType() == "member")
+        if (CurrentUserService.CurrentUser?.GetUserType() == "member" && CurrentUserService.isLoaded)
         {
+            //AO: Slet
+            Console.WriteLine($"navigerer til memberdashboard: {CurrentUserService.CurrentUserRole} + {CurrentUserService.isAuthorized}");
             Navigation.NavigateTo("/member-dashboard");
         }
-        else if (CurrentUserService.CurrentUser?.GetUserType() == "employee")
+        else if (CurrentUserService.CurrentUser?.GetUserType() == "employee" && CurrentUserService.isLoaded)
         {
             Navigation.NavigateTo("/employee-dashboard");
         }

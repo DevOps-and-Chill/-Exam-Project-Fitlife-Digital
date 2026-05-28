@@ -66,13 +66,15 @@ public class ClassRepository : IClassRepository
 
     public async Task<List<Class>> GetAllClassesAsync()
     {
-        return await _context.Classes.ToListAsync();
+        return await _context.Classes
+            .Where(c => c.ActiveClass)
+            .ToListAsync();
     }
 
     public async Task<List<Class>> GetClassesByExerciseGymAsync(string exerciseGymId)
     {
         return await _context.Classes
-            .Where(c => c.ExerciseGymId == exerciseGymId)
+            .Where(c => c.ExerciseGymId == exerciseGymId &&  c.ActiveClass)
             .ToListAsync();
     }
 
@@ -85,7 +87,7 @@ public class ClassRepository : IClassRepository
     public async Task<List<Class?>> GetClassesByMemberAsync(string id)
     {
         return await _context.Classes
-            .Where(c => c.Members.Any(m => m.Id == id))
+            .Where(c => c.Members.Any(m => m.Id == id && c.ActiveClass))
             .ToListAsync();
     }
     
@@ -95,8 +97,6 @@ public class ClassRepository : IClassRepository
             .Where(c => c.CoachId == id)
             .ToListAsync();
     }
-
-    
 
     public async Task<List<Member>> GetWaitingListByClassAsync(string classId)
     {
@@ -149,10 +149,10 @@ public class ClassRepository : IClassRepository
         var message = new ClassCancelledMessage
         {
             ClassId   = fitnessClass.Id,
-            Title     = fitnessClass.Title,
+            Subject     = fitnessClass.Title,
             TimeStart = fitnessClass.TimeStart,
             TimeEnd   = fitnessClass.TimeEnd,
-            MemberIds = fitnessClass.Members
+            ReceiverIds = fitnessClass.Members
                 .Select(m => m.Id)
                 .ToList()
         };
@@ -173,7 +173,6 @@ public class ClassRepository : IClassRepository
         fitnessClass.TimeStart = updatedClass.TimeStart;
         fitnessClass.TimeEnd = updatedClass.TimeEnd;
         fitnessClass.MemberLimit = updatedClass.MemberLimit;
-        fitnessClass.RoomId = updatedClass.RoomId;
         fitnessClass.ActiveClass = updatedClass.ActiveClass;
 
         await _context.SaveChangesAsync();

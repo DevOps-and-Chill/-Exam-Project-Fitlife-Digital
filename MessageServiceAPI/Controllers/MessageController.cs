@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MessageServiceAPI.Controllers;
 
-[Route("message")]
+[Route("")]
 [ApiController]
 public class MessageController : ControllerBase
 {
@@ -32,6 +32,7 @@ public class MessageController : ControllerBase
             Content = dto.Content,
             Subject = dto.Subject
         };
+        
         _logger.LogDebug("Sending message from {senderId} to {receiverId}", message.SenderId, message.ReceiverId);
         try
         {

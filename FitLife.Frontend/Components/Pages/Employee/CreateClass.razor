@@ -2,6 +2,8 @@
 @rendermode InteractiveServer
 @using FitLife.Frontend.Models
 @using FitLife.Frontend.Services
+@using FitLife.Frontend.Components
+@layout EmployeeLayout
 @inject ClassService ClassService
 @inject NavigationManager Navigation
 @inject CurrentUserService CurrentUserService
@@ -68,14 +70,7 @@
                                type="number"
                                @bind="NewClass.MemberLimit" />
                     </div>
-
-                    <div class="col-md-4">
-                        <label class="form-label">Lokale ID</label>
-                        <input class="form-control"
-                               @bind="RoomIdInput"
-                               placeholder="Fx 00000000-0000-0000-0000-000000000001" />
-                    </div>
-
+                    
                 </div>
 
                 @if (!string.IsNullOrWhiteSpace(Message))
@@ -119,7 +114,6 @@
     private DateTime? SelectedDate;
     private TimeOnly? SelectedStartTime;
     private TimeOnly? SelectedEndTime;
-    private string RoomIdInput = "";
     private string Message = "";
     private string MessageCssClass = "alert-info";
 
@@ -148,7 +142,6 @@
             SelectedStartTime is null ||
             SelectedEndTime is null ||
             NewClass.MemberLimit <= 0 ||
-            !Guid.TryParse(RoomIdInput, out _) ||
             NewClass.ExerciseGymId == Guid.Empty.ToString())
         {
             Message = "Udfyld alle felter korrekt.";
@@ -170,7 +163,6 @@
     {
         NewClass.TimeStart = SelectedDate!.Value.Date + SelectedStartTime!.Value.ToTimeSpan();
         NewClass.TimeEnd   = SelectedDate!.Value.Date + SelectedEndTime!.Value.ToTimeSpan();
-        NewClass.RoomId    = Guid.Parse(RoomIdInput).ToString();
     }
 
     private void ResetForm()
@@ -184,7 +176,6 @@
         SelectedDate = null;
         SelectedStartTime = null;
         SelectedEndTime = null;
-        RoomIdInput = "";
     }
 
     private async Task Save()

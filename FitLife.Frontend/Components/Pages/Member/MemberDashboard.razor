@@ -1,5 +1,6 @@
 @page "/member-dashboard"
 @rendermode InteractiveServer
+@layout MemberLayout
 @using FitLife.Frontend.Models
 @using FitLife.Frontend.Services
 @inject CurrentUserService CurrentUserService
@@ -58,9 +59,12 @@
                                 <p class="mb-0">
                                     Pladser: @cls.Registered.Count / @cls.MemberLimit
                                 </p>
+                                <button class="btn btn-outline-danger btn-sm mt-2"
+                                        @onclick="() => UnregisterFromClass(cls.Id)">
+                                    Afmeld
+                                </button>
                             </div>
                         }
-
                         <a href="/find-hold" class="btn btn-success mt-2">Find flere hold</a>
 
                     </div>
@@ -102,7 +106,7 @@
                         <div class="fs-3 mb-3">👤</div>
                         <h5 class="fw-bold">Min profil</h5>
                         <p class="text-muted">Se og administrer dine medlemsoplysninger.</p>
-                        <button class="btn btn-outline-dark" @onclick="ShowNotImplemented">Åbn profil</button>
+                        <MemberProfileModal />
                     </div>
                 </div>
             </div>
@@ -113,7 +117,7 @@
                         <div class="fs-3 mb-3">💳</div>
                         <h5 class="fw-bold">Administrer medlemskab</h5>
                         <p class="text-muted">Se medlemskabstype, betaling og tilvalg.</p>
-                        <button class="btn btn-outline-dark" @onclick="ShowNotImplemented">Administrer</button>
+                        <PaymentMethodModal />
                     </div>
                 </div>
             </div>
@@ -146,13 +150,11 @@
 
     private string Message = "";
     private List<Class> MyClasses = new();
-
-    // TODO: Skal hentes fra PTService
+    
     private List<PersonalTrainingSession> PersonalTrainingSessions = new();
 
     protected override async Task OnInitializedAsync()
     {
-        await CurrentUserService.SetCurrentUser();
 
         var memberId = CurrentUserService.CurrentUser?.Member?.Id;
 
@@ -160,10 +162,30 @@
         {
             MyClasses = await ClassService.GetClassesByMemberAsync(memberId);
         }
+        //AO: Slet
+        Console.WriteLine("Memberdashboard loaded");
+    }
+    
+    private async Task UnregisterFromClass(string classId)
+    {
+        var memberId = CurrentUserService.CurrentUser?.Member?.Id;
+        if (memberId is null) return;
+
+        try
+        {
+            await ClassService.UnregisterMemberFromClassAsync(classId, memberId);
+            MyClasses.RemoveAll(c => c.Id == classId);
+        }
+        catch
+        {
+            Message = "Afmelding mislykkedes. Prøv igen.";
+        }
     }
 
     private void ShowNotImplemented()
     {
         Message = "Denne funktion er ikke implementeret endnu.";
     }
+
+
 }

@@ -59,21 +59,17 @@ public class ClassCancelledConsumer : BackgroundService
     {
         using var scope = _scopeFactory.CreateScope();
         var messageService = scope.ServiceProvider.GetRequiredService<IMessageService>();
-        
-        foreach (var receiverIds in message.ReceiverIds)
-        {
-            var classMessage = new Message
-            {
-                ReceiverIds = message.ReceiverIds,
-                ClassId    = message.ClassId,
-                Subject      = "Hold aflyst",
-                Content    = $"Dit hold er aflyst.",
-                TimeStart  = message.TimeStart,
-                TimeEnd    = message.TimeEnd
-            };
 
-            await messageService.SendClassCancellationMessageAsync(classMessage);
-        }
+        var msg = new Message
+        {
+            ReceiverIds = message.ReceiverIds,  // liste direkte
+            Subject = "Hold aflyst",
+            Content = $"Holdet '{message.Subject}' er aflyst",
+            CreatedAt = DateTime.UtcNow,
+            Type = "System"
+        };
+
+        await messageService.SendClassCancellationMessageAsync(msg);
     }
     public override void Dispose()
     {

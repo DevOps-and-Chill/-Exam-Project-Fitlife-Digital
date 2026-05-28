@@ -1,4 +1,5 @@
 @page "/employee-dashboard"
+@layout EmployeeLayout
 @rendermode InteractiveServer
 
 <div class="container-fluid px-0">
@@ -117,19 +118,13 @@
 
                         <div class="d-grid gap-2">
 
-                            <!-- Midlertidig prototype-knap.
-                                 TODO: Skal senere navigere til PT-sessioner via egen side/service -->
-                            <button class="btn btn-success"
-                                    @onclick="ShowPTClasses">
+                            <a href="/manage-personal-training?tab=mine" class="btn btn-success">
                                 Se mine sessioner
-                            </button>
+                            </a>
 
-                            <!-- Midlertidig prototype-knap.
-                                 TODO: Skal senere vise bookingønsker fra medlemmer -->
-                            <button class="btn btn-outline-success"
-                                    @onclick="ShowPTRequests">
+                            <a href="/manage-personal-training?tab=pending" class="btn btn-outline-success">
                                 Ønsker om sessioner
-                            </button>
+                            </a>
                         </div>
 
                     </div>
@@ -166,6 +161,33 @@
             </div>
 
         </div>
+    
+        <!-- Statistik -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body p-4">
+
+                    <div class="fs-2 mb-3">
+                        📊
+                    </div>
+
+                    <h3 class="fw-bold">
+                        Statistik
+                    </h3>
+
+                    <p class="text-muted">
+                        Se fremmøde, tilmeldte og venteliste for alle hold og sessioner.
+                    </p>
+
+                    <div class="d-grid gap-2">
+                        <a href="/employee/statistics" class="btn btn-success">
+                            Se statistik
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
 
         <!-- Midlertidig feedback-besked til prototype -->
         @if (!string.IsNullOrWhiteSpace(Message))
@@ -188,16 +210,23 @@
     private string Message = "";
 
     // Midlertidig prototype-funktion.
-    // TODO: Skal senere kobles til side/service for PT-sessioner.
-    private void ShowPTClasses()
+    // TODO: Skal senere hente ønsker om PT-sessioner fra backend/microservice.
+    //private void ShowPTRequests()
+    //{
+    //    Message = "Visning af ønsker om sessioner er ikke implementeret endnu.";
+    //}
+
+    // Midlertidig prototype-funktion.
+    // TODO: Skal senere kobles til centeradministration via API/service.
+    private void ShowGyms()
     {
-        Message = "Visning af personlige træningssessioner er ikke implementeret endnu.";
+        Message = "Centeradministration er ikke implementeret endnu.";
     }
 
     // Midlertidig prototype-funktion.
-    // TODO: Skal senere hente ønsker om PT-sessioner fra backend/microservice.
-    private void ShowPTRequests()
+    // TODO: Skal senere bruges til oprettelse af driftsafvigelser for centre.
+    private void ShowCenterDeviation()
     {
-        Message = "Visning af ønsker om sessioner er ikke implementeret endnu.";
+        Message = "Oprettelse af centerafvigelse er ikke implementeret endnu.";
     }
 }

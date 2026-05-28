@@ -19,7 +19,6 @@ public class Class
     // FK
     public string CoachId { get; set; } = Guid.NewGuid().ToString();
     public string ExerciseGymId { get; set; } = Guid.NewGuid().ToString();
-    public string RoomId { get; set; } = Guid.NewGuid().ToString();
     
     // Lists
     public List<Member> Registered { get; set; } = new List<Member>();

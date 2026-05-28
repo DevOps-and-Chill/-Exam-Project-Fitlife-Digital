@@ -1,5 +1,6 @@
 @page "/member/personal-training"
 @rendermode InteractiveServer
+@layout MemberLayout
 @using System.Runtime.InteropServices.JavaScript
 @using FitLife.Frontend.Models
 @using FitLife.Frontend.Models.DTOs
@@ -71,7 +72,7 @@
                             </div>
 
                             <h4 class="fw-bold">
-                                @trainer.fullName
+                                @trainer.GivenName
                             </h4>
 
                             <p class="text-muted">
@@ -136,7 +137,7 @@
                 <div class="card-body p-4">
 
                     <h4 class="fw-bold">
-                        Book session med @SelectedEmployeeForBooking.fullName
+                        Book session med @SelectedEmployeeForBooking.GivenName
                     </h4>
 
                     <p class="text-muted">
@@ -236,7 +237,7 @@
         <div class="card-body p-4">
 
             <h4 class="fw-bold">
-                Send besked til @SelectedEmployeeForMessage.fullName
+                Send besked til @SelectedEmployeeForMessage.GivenName
             </h4>
 
             <p class="text-muted">
@@ -327,7 +328,7 @@
     // Message-model bruges til beskedsystemet
     // TODO:
     // Skal senere sendes til backend via MessageService/API
-    private Message NewMessage = new();
+    private DirectMessageDto NewMessage = new();
 
     // Feedback til bruger
     private string StatusMessage = "";
@@ -345,8 +346,14 @@
             Centers = await CenterService.GetCentersAsync();
             
             SelectedCenterId = Centers.FirstOrDefault()?.Id ?? "";
+            
+            await CurrentUserService.SetCurrentUser();
 
-            Trainers = await EmployeeService.GetAllEmployeesAsync();
+            var member = CurrentUserService.CurrentUser?.Member;
+            
+            var affiliationId = member.Affiliation;
+            
+            Trainers = await EmployeeService.GetEmployeesByAffiliationAsync(affiliationId);
         }
         catch (Exception ex)
         {
@@ -376,7 +383,7 @@
         StatusMessage = "";
 
         // Nulstiller besked
-        NewMessage = new Message();
+        NewMessage = new DirectMessageDto();
     }
 
     // Midlertidig ventelistefunktion
@@ -384,13 +391,13 @@
     // Skal senere kobles til backend
     private void JoinWaitlist(Employee trainer)
     {
-        StatusMessage = $"Du er nu tilmeldt ventelisten hos {trainer.fullName}.";
+        StatusMessage = $"Du er nu tilmeldt ventelisten hos {trainer.GivenName}.";
     }
 
     // Midlertidig prototypefunktion
     private void ShowProfile(Employee trainer)
     {
-        StatusMessage = $"Profil for {trainer.fullName} vises ikke som separat side endnu.";
+        StatusMessage = $"Profil for {trainer.GivenName} vises ikke som separat side endnu.";
     }
 
     // Opretter booking
@@ -458,7 +465,7 @@
         }
 
         StatusMessage =
-            $"Du har booket en session med {SelectedEmployeeForBooking.fullName} den {SelectedDate:dd/MM} kl. {SelectedTime}.";
+            $"Du har booket en session med {SelectedEmployeeForBooking.GivenName} den {SelectedDate:dd/MM} kl. {SelectedTime}.";
 
         // Lukker bookingpanel og nulstiller data
         SelectedEmployeeForBooking = null;
@@ -495,14 +502,13 @@
                 ReceiverId = SelectedEmployeeForMessage.Id,
                 Subject = NewMessage.Subject,
                 Content = NewMessage.Content,
-                Timestamp = DateTime.UtcNow
             };
 
             await MessageService.SendDirectMessageAsync(dto);
 
-            StatusMessage = $"Din besked til {SelectedEmployeeForMessage.fullName} er sendt.";
+            StatusMessage = $"Din besked til {SelectedEmployeeForMessage.GivenName} er sendt.";
             SelectedEmployeeForMessage = null;
-            NewMessage = new Message();
+            NewMessage = new DirectMessageDto();
         }
         catch
         {
@@ -513,6 +519,6 @@
     {
         SelectedEmployeeForMessage = null;
 
-        NewMessage = new Message();
+        NewMessage = new DirectMessageDto();
     }
 }

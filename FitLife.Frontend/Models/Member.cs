@@ -32,7 +32,6 @@ public class Member
     // Fx "Standard" eller "Premium".
     public string MembershipType { get; set; }
 
-
     public string MembershipOptional { get; set; }
 
     public DateTime StartDate { get; set; }
