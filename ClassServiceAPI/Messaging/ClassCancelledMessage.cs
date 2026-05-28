@@ -6,5 +6,5 @@ public class ClassCancelledMessage
     public string Title { get; set; } = "";
     public DateTime TimeStart { get; set; }
     public DateTime TimeEnd { get; set; }
-    public List<string> MemberIds { get; set; } = new();
+    public List<string> ReceiverIds { get; set; } = new();
 }
