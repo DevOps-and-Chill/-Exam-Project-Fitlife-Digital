@@ -102,8 +102,7 @@ services:
 
 networks:
   backend:
-    external: true
-
+    name: backend
 
 
 volumes:
