@@ -1,0 +1,24 @@
+﻿@inherits LayoutComponentBase
+@using Frontend.Services
+@inject CurrentUserService CurrentUser
+@inject NavigationManager Nav
+
+@if (CurrentUser.isAuthorized && CurrentUser.CurrentUserRole?.Equals("employee", StringComparison.OrdinalIgnoreCase) == true)
+{
+    @Body
+}
+else
+{
+    <p>"Error - try reloading page"</p>
+}
+
+@code {
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender && (!CurrentUser.isAuthorized || CurrentUser.CurrentUserRole?.Equals("employee", StringComparison.OrdinalIgnoreCase) != true))
+        {
+            Nav.NavigateTo("/");
+        }
+    }
+}

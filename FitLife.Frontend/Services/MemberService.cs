@@ -96,11 +96,12 @@ public class MemberService
         }
     }
 
-    // Midlertidig lokal funktion.
-    // TODO: Senere bør denne sende PUT/PATCH request til UserService.
-    public string SaveMember(Member member)
+    public async Task<Member> SaveMember(Member member)
     {
-        return $"Ændringer for {member.GivenName} {member.FamilyName} er gemt.";
+        _tokenService.AttachToken(_httpClient);
+        var response = await _httpClient.PostAsJsonAsync("member/UpsertMember", member);
+        response.EnsureSuccessStatusCode();
+        return member;
     }
 
     // Midlertidig prototypefunktion.

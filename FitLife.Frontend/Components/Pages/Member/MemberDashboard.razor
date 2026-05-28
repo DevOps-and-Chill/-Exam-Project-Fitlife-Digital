@@ -1,5 +1,6 @@
 @page "/member-dashboard"
 @rendermode InteractiveServer
+@layout MemberLayout
 @using FitLife.Frontend.Models
 @using FitLife.Frontend.Services
 @inject CurrentUserService CurrentUserService
@@ -105,7 +106,7 @@
                         <div class="fs-3 mb-3">👤</div>
                         <h5 class="fw-bold">Min profil</h5>
                         <p class="text-muted">Se og administrer dine medlemsoplysninger.</p>
-                        <button class="btn btn-outline-dark" @onclick="ShowNotImplemented">Åbn profil</button>
+                        <MemberProfileModal />
                     </div>
                 </div>
             </div>
@@ -154,7 +155,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await CurrentUserService.SetCurrentUser();
 
         var memberId = CurrentUserService.CurrentUser?.Member?.Id;
 
@@ -162,6 +162,8 @@
         {
             MyClasses = await ClassService.GetClassesByMemberAsync(memberId);
         }
+        //AO: Slet
+        Console.WriteLine("Memberdashboard loaded");
     }
     
     private async Task UnregisterFromClass(string classId)
@@ -184,4 +186,6 @@
     {
         Message = "Denne funktion er ikke implementeret endnu.";
     }
+
+
 }
