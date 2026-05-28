@@ -49,6 +49,12 @@ var gatewayBaseURL = builder.Environment.IsDevelopment() ? builder.Configuration
 			gatewayBaseURL + "class/");
 	});
 
+builder.Services.AddHttpClient("ClassService", client =>
+	{
+		client.BaseAddress = new Uri(
+			gatewayBaseURL + "class/");
+	});
+
 	//AO: Not yet added to nginx.conf
 	builder.Services.AddHttpClient("DigitalContentService", client =>
 	{
@@ -67,7 +73,7 @@ var gatewayBaseURL = builder.Environment.IsDevelopment() ? builder.Configuration
 builder.Services.AddScoped<ClassService>();
 builder.Services.AddScoped<MemberService>();
 builder.Services.AddScoped<EmployeeService>();
-builder.Services.AddScoped<DigitalTrainingService>();
+builder.Services.AddScoped<DigitalContentService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<CenterService>();
 builder.Services.AddScoped<RegistrationStateService>();
