@@ -155,17 +155,10 @@
 
                         <div class="d-grid gap-2">
 
-                            <!-- Midlertidig prototype-knap -->
-                            <button class="btn btn-success"
-                                    @onclick="ShowGyms">
-                                Administrer center
-                            </button>
 
-                            <!-- Midlertidig prototype-knap -->
-                            <button class="btn btn-outline-success"
-                                    @onclick="ShowCenterDeviation">
-                                Opret afvigelse for center
-                            </button>
+                            <a class="btn btn-success" href="/administrer-centre">
+                                Administrer centre
+                            </a>
                         </div>
 
                     </div>
@@ -184,9 +177,9 @@
 
     </section>
 
-    <AppFooter />
 
 </div>
+<AppFooter />
 
 @code {
 
@@ -206,19 +199,5 @@
     private void ShowPTRequests()
     {
         Message = "Visning af ønsker om sessioner er ikke implementeret endnu.";
-    }
-
-    // Midlertidig prototype-funktion.
-    // TODO: Skal senere kobles til centeradministration via API/service.
-    private void ShowGyms()
-    {
-        Message = "Centeradministration er ikke implementeret endnu.";
-    }
-
-    // Midlertidig prototype-funktion.
-    // TODO: Skal senere bruges til oprettelse af driftsafvigelser for centre.
-    private void ShowCenterDeviation()
-    {
-        Message = "Oprettelse af centerafvigelse er ikke implementeret endnu.";
     }
 }

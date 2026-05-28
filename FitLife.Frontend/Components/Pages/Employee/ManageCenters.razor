@@ -1,0 +1,366 @@
+﻿@page "/administrer-centre"
+@using FitLife.Frontend.Models
+@using FitLife.Frontend.Services
+@inject CenterService CenterService
+@inject EmployeeService EmployeeService
+
+<EmployeeNavbar />
+<div class="container mt-5">
+    <h1 class="fw-bold mb-2">Administrer centre</h1>
+
+    <p class="text-muted mb-5">
+        Se FitLife-centre, vælg et center og opdater centerets oplysninger.
+    </p>
+
+    @if (!string.IsNullOrWhiteSpace(errorMessage))
+    {
+        <div class="alert alert-danger">
+            @errorMessage
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(successMessage))
+    {
+        <div class="alert alert-success">
+            @successMessage
+        </div>
+    }
+
+    @if (isLoading)
+    {
+        <p>Henter centre...</p>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-lg-8">
+                <h3 class="mb-4">Træningscentre</h3>
+
+                @if (!exerciseGyms.Any())
+                {
+                    <p>Der blev ikke fundet nogen træningscentre.</p>
+                }
+                else
+                {
+                    <div class="row g-4 mb-5">
+                        @foreach (var gym in exerciseGyms)
+                        {
+                            <div class="col-md-6">
+                                <div class="card shadow-sm h-100">
+                                    <div class="card-body">
+                                        <h4 class="fw-bold">@gym.Name</h4>
+
+                                        <p class="mb-1">@gym.Address</p>
+                                        <p class="mb-1">@gym.Telephone</p>
+                                        <p class="mb-3">@gym.Email</p>
+
+                                        <p class="text-muted mb-3">
+                                            Lokaler til hold: @gym.RoomsForClasses
+                                        </p>
+
+                                        <button class="btn btn-success w-100"
+                                                @onclick="() => SelectExerciseGym(gym)">
+                                            Rediger center
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <h3 class="mb-4">Svømmehaller</h3>
+
+                @if (!swimmingPools.Any())
+                {
+                    <p>Der blev ikke fundet nogen svømmehaller.</p>
+                }
+                else
+                {
+                    <div class="row g-4">
+                        @foreach (var pool in swimmingPools)
+                        {
+                            <div class="col-md-6">
+                                <div class="card shadow-sm h-100">
+                                    <div class="card-body">
+                                        <h4 class="fw-bold">@pool.Name</h4>
+
+                                        <p class="mb-1">@pool.Address</p>
+                                        <p class="mb-1">@pool.Telephone</p>
+                                        <p class="mb-3">@pool.Email</p>
+
+                                        <p class="text-muted mb-3">
+                                            Svømmebaner: @pool.Swimlanes
+                                        </p>
+
+                                        <button class="btn btn-success w-100"
+                                                @onclick="() => SelectSwimmingPool(pool)">
+                                            Rediger center
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="col-lg-4 mt-5 mt-lg-0">
+                @if (selectedExerciseGym is not null)
+                {
+                    <div class="card shadow-sm sticky-top" style="top: 20px;">
+                        <div class="card-header bg-light">
+                            <h4 class="mb-0">Rediger træningscenter</h4>
+                        </div>
+
+                        <div class="card-body">
+                            <EditForm Model="@selectedExerciseGym" OnValidSubmit="@UpdateExerciseGymAsync">
+                                <div class="mb-3">
+                                    <label class="form-label">Navn</label>
+                                    <InputText class="form-control"
+                                               @bind-Value="selectedExerciseGym!.Name" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Adresse</label>
+                                    <InputText class="form-control"
+                                               @bind-Value="selectedExerciseGym!.Address" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Telefon</label>
+                                    <InputText class="form-control"
+                                               @bind-Value="selectedExerciseGym!.Telephone" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <InputText class="form-control"
+                                               @bind-Value="selectedExerciseGym!.Email" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Lokaler til hold</label>
+                                    <InputNumber class="form-control"
+                                                 @bind-Value="selectedExerciseGym!.RoomsForClasses" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Manager Id</label>
+                                    <InputText class="form-control"
+                                               @bind-Value="managerIdText" />
+                                </div>
+
+                                
+
+                                <button type="submit" class="btn btn-success w-100 mt-4">
+                                    Gem ændringer
+                                </button>
+
+                                <button type="button"
+                                        class="btn btn-outline-secondary w-100 mt-2"
+                                        @onclick="ClearSelection">
+                                    Annuller
+                                </button>
+                            </EditForm>
+                        </div>
+                    </div>
+                }
+                else if (selectedSwimmingPool is not null)
+                {
+                    <div class="card shadow-sm sticky-top" style="top: 20px;">
+                        <div class="card-header bg-light">
+                            <h4 class="mb-0">Rediger svømmehal</h4>
+                        </div>
+
+                        <div class="card-body">
+                            <EditForm Model="@selectedSwimmingPool" OnValidSubmit="@UpdateSwimmingPoolAsync">
+                                <div class="mb-3">
+                                    <label class="form-label">Navn</label>
+                                    <InputText class="form-control"
+                                               @bind-Value="selectedSwimmingPool!.Name" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Adresse</label>
+                                    <InputText class="form-control"
+                                               @bind-Value="selectedSwimmingPool!.Address" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Telefon</label>
+                                    <InputText class="form-control"
+                                               @bind-Value="selectedSwimmingPool!.Telephone" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <InputText class="form-control"
+                                               @bind-Value="selectedSwimmingPool!.Email" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Svømmebaner</label>
+                                    <InputNumber class="form-control"
+                                                 @bind-Value="selectedSwimmingPool!.Swimlanes" />
+                                </div>
+
+                                <button type="submit" class="btn btn-success w-100 mt-4">
+                                    Gem ændringer
+                                </button>
+
+                                <button type="button"
+                                        class="btn btn-outline-secondary w-100 mt-2"
+                                        @onclick="ClearSelection">
+                                    Annuller
+                                </button>
+                            </EditForm>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="card shadow-sm bg-light">
+                        <div class="card-body">
+                            <h4>Vælg et center</h4>
+                            <p class="text-muted mb-0">
+                                Klik på "Rediger center" for at ændre centerets oplysninger.
+                            </p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<AppFooter />
+@code {
+    private List<ExerciseGym> exerciseGyms = new();
+    private List<SwimmingPool> swimmingPools = new();
+
+    private ExerciseGym? selectedExerciseGym;
+    private SwimmingPool? selectedSwimmingPool;
+
+    private string managerIdText = string.Empty;
+
+    private bool isLoading = true;
+    private string? errorMessage;
+    private string? successMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCentersAsync();
+    }
+
+    private async Task LoadCentersAsync()
+    {
+        try
+        {
+            isLoading = true;
+            errorMessage = null;
+            successMessage = null;
+
+            exerciseGyms = await CenterService.GetCentersAsync();
+            swimmingPools = await CenterService.GetSwimmingPoolsAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task SelectExerciseGym(ExerciseGym exerciseGym)
+    {
+        errorMessage = null;
+        successMessage = null;
+
+        selectedSwimmingPool = null;
+        selectedExerciseGym = exerciseGym;
+
+        managerIdText = exerciseGym.ManagerId.ToString();
+
+    }
+
+    private void SelectSwimmingPool(SwimmingPool swimmingPool)
+    {
+        errorMessage = null;
+        successMessage = null;
+
+        selectedExerciseGym = null;
+        selectedSwimmingPool = swimmingPool;
+
+    }
+
+    private async Task UpdateExerciseGymAsync()
+    {
+        if (selectedExerciseGym is null)
+        {
+            return;
+        }
+
+        if (!Guid.TryParse(managerIdText, out var managerId))
+        {
+            errorMessage = "Manager Id skal være en gyldig Guid.";
+            successMessage = null;
+            return;
+        }
+
+        try
+        {
+            errorMessage = null;
+            successMessage = null;
+
+            selectedExerciseGym.ManagerId = managerId;
+
+            await CenterService.UpdateExerciseGymAsync(selectedExerciseGym);
+
+            successMessage = "Træningscenteret blev opdateret.";
+        }
+        catch (Exception ex)
+        {
+            successMessage = null;
+            errorMessage = ex.Message;
+        }
+    }
+
+    private async Task UpdateSwimmingPoolAsync()
+    {
+        if (selectedSwimmingPool is null)
+        {
+            return;
+        }
+
+        try
+        {
+            errorMessage = null;
+            successMessage = null;
+
+            await CenterService.UpdateSwimmingPoolAsync(selectedSwimmingPool);
+
+            successMessage = "Svømmehallen blev opdateret.";
+        }
+        catch (Exception ex)
+        {
+            successMessage = null;
+            errorMessage = ex.Message;
+        }
+    }
+
+    private void ClearSelection()
+    {
+        selectedExerciseGym = null;
+        selectedSwimmingPool = null;
+
+        managerIdText = string.Empty;
+
+        errorMessage = null;
+        successMessage = null;
+    }
+
+    
+}
