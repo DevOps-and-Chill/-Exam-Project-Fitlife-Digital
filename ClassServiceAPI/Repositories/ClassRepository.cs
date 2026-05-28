@@ -74,7 +74,7 @@ public class ClassRepository : IClassRepository
     public async Task<List<Class>> GetClassesByExerciseGymAsync(string exerciseGymId)
     {
         return await _context.Classes
-            .Where(c => c.ExerciseGymId == exerciseGymId)
+            .Where(c => c.ExerciseGymId == exerciseGymId &&  c.ActiveClass)
             .ToListAsync();
     }
 
@@ -87,7 +87,7 @@ public class ClassRepository : IClassRepository
     public async Task<List<Class?>> GetClassesByMemberAsync(string id)
     {
         return await _context.Classes
-            .Where(c => c.Members.Any(m => m.Id == id))
+            .Where(c => c.Members.Any(m => m.Id == id && c.ActiveClass))
             .ToListAsync();
     }
     
@@ -97,8 +97,6 @@ public class ClassRepository : IClassRepository
             .Where(c => c.CoachId == id)
             .ToListAsync();
     }
-
-    
 
     public async Task<List<Member>> GetWaitingListByClassAsync(string classId)
     {
@@ -151,7 +149,7 @@ public class ClassRepository : IClassRepository
         var message = new ClassCancelledMessage
         {
             ClassId   = fitnessClass.Id,
-            Title     = fitnessClass.Title,
+            Subject     = fitnessClass.Title,
             TimeStart = fitnessClass.TimeStart,
             TimeEnd   = fitnessClass.TimeEnd,
             ReceiverIds = fitnessClass.Members
