@@ -123,6 +123,8 @@
 
         if (CurrentUserService.CurrentUser?.GetUserType() == "member" && CurrentUserService.isLoaded)
         {
+            //AO: Slet
+            Console.WriteLine($"navigerer til memberdashboard: {CurrentUserService.CurrentUserRole} + {CurrentUserService.isAuthorized}");
             Navigation.NavigateTo("/member-dashboard");
         }
         else if (CurrentUserService.CurrentUser?.GetUserType() == "employee" && CurrentUserService.isLoaded)

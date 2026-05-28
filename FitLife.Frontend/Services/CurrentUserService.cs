@@ -78,7 +78,7 @@ public class CurrentUserService
     /// <summary>
     /// AO: Clears the token and user from cache. 
     /// </summary>
-    public void Logout()
+    public async Task Logout()
     {
         _tokenService.Clear();
         ClearCurrentUser();
@@ -99,16 +99,16 @@ public class CurrentUserService
 
     public string DisplayCurrentUserName()
     {
-        string displayName = "";
-        if (CurrentUser != null)
+        if (CurrentUser?.Member is not null)
         {
-            if (CurrentUser.Member != null)
-            {
-                return displayName = $"{CurrentUser.Member.GivenName}" + $"{CurrentUser.Member.FamilyName}";
-            }
-            return displayName = $"{CurrentUser.Employee.GivenName}" + $"{CurrentUser.Employee.FamilyName}";
+            return $"{CurrentUser.Member.GivenName} " + $"{CurrentUser.Member.FamilyName}";
         }
-        return displayName = "Fejl: Intet navn fundet";
+
+        if (CurrentUser?.Employee is not null)
+        {
+            return $"{CurrentUser.Employee.GivenName} " + $"{CurrentUser.Employee.FamilyName}";
+        }
+        return "Fejl: Intet navn fundet";
     }
 
 

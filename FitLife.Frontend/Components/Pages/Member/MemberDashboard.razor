@@ -153,7 +153,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await CurrentUserService.SetCurrentUser();
 
         var memberId = CurrentUserService.CurrentUser?.Member?.Id;
 
@@ -161,6 +160,8 @@
         {
             MyClasses = await ClassService.GetClassesByMemberAsync(memberId);
         }
+        //AO: Slet
+        Console.WriteLine("Memberdashboard loaded");
     }
 
     private void ShowNotImplemented()
