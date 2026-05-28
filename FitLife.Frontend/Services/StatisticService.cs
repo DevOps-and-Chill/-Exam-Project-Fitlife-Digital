@@ -18,6 +18,7 @@ namespace FitLife.Frontend.Services
         // Fetches all statistics
         public async Task<List<Statistic>> GetAllAsync()
         {
+            _tokenService.AttachToken(_httpClient);
             return await _httpClient.GetFromJsonAsync<List<Statistic>>("Statistic")
                    ?? new List<Statistic>();
         }
@@ -25,12 +26,14 @@ namespace FitLife.Frontend.Services
         // Fetches a single statistic by id
         public async Task<Statistic?> GetByIdAsync(Guid id)
         {
+            _tokenService.AttachToken(_httpClient);
             return await _httpClient.GetFromJsonAsync<Statistic>($"Statistic/{id}");
         }
 
         // Fetches registered members for a statistic
         public async Task<List<Guid>> GetRegisteredAsync(Guid id)
         {
+            _tokenService.AttachToken(_httpClient);
             return await _httpClient.GetFromJsonAsync<List<Guid>>($"Statistic/{id}/registered")
                    ?? new List<Guid>();
         }
@@ -38,6 +41,7 @@ namespace FitLife.Frontend.Services
         // Fetches attendance for a statistic
         public async Task<List<Guid>> GetAttendanceAsync(Guid id)
         {
+            _tokenService.AttachToken(_httpClient);
             return await _httpClient.GetFromJsonAsync<List<Guid>>($"Statistic/{id}/attendance")
                    ?? new List<Guid>();
         }
@@ -45,8 +49,18 @@ namespace FitLife.Frontend.Services
         // Fetches waiting list for a statistic
         public async Task<List<Guid>> GetWaitingListAsync(Guid id)
         {
+            _tokenService.AttachToken(_httpClient);
             return await _httpClient.GetFromJsonAsync<List<Guid>>($"Statistic/{id}/waitinglist")
                    ?? new List<Guid>();
+        }
+
+        // Creates a new statistic
+        public async Task<Statistic?> CreateAsync(Statistic statistic)
+        {
+            _tokenService.AttachToken(_httpClient);
+            var response = await _httpClient.PostAsJsonAsync("Statistic", statistic);
+            if (!response.IsSuccessStatusCode) return null;
+            return await response.Content.ReadFromJsonAsync<Statistic>();
         }
     }
 }
