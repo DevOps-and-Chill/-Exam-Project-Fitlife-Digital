@@ -20,7 +20,8 @@ public class CurrentUserService
     public User? CurrentUser { get; private set; }
     public string CurrentUserRole { get; private set; }
     public string CurrentUserMembership { get; private set; }
-    public Boolean isAuthorized { get; private set; } = false; 
+    public Boolean isAuthorized { get; private set; } = false;
+    public Boolean isLoaded { get; private set; } = false;
 
     /// <summary>
     ///AO: Uses the cached token to check userid, get role for the user and based on role sets the CurrentUser in memorycache. 
@@ -35,6 +36,7 @@ public class CurrentUserService
 
         if (string.IsNullOrWhiteSpace(userId))
         {
+            isLoaded = true;
             return;
         }
 
@@ -42,32 +44,33 @@ public class CurrentUserService
 
         if (string.IsNullOrWhiteSpace(role))
         {
+            isLoaded = true;
             return;
         }
 
         if (role.Equals("member", StringComparison.OrdinalIgnoreCase))
         {
             var member = await _memberService.GetMemberAsync(userId);
-            CurrentUserRole = "member";
-            CurrentUserMembership = member.MembershipType;
-
             if (member is not null)
             {
                 CurrentUser.SetUserAsMember(member);
-
+                CurrentUserRole = "member";
+                CurrentUserMembership = member.MembershipType;
                 _cache.Set("currentUser", member, TimeSpan.FromMinutes(60));
+                isLoaded = true;
             }
         }
 
         else if (role.Equals("employee", StringComparison.OrdinalIgnoreCase))
         {
             var employee = await _employeeService.GetEmployeeByIdAsync(userId);
-            CurrentUserRole = "employee";
+            
             if (employee is not null)
             {
                 CurrentUser.SetUserAsEmployee(employee);
-
+                CurrentUserRole = "employee";
                 _cache.Set("currentUser", employee, TimeSpan.FromMinutes(60));
+                isLoaded = true;
             }
         }
     }
@@ -107,6 +110,7 @@ public class CurrentUserService
         }
         return displayName = "Fejl: Intet navn fundet";
     }
+
 
     public bool IsPremium => CurrentUserRole?.Equals("premium", StringComparison.OrdinalIgnoreCase) == true;
 }

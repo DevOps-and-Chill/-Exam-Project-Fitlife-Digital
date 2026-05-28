@@ -30,13 +30,6 @@ public class TokenService
             expires - DateTime.UtcNow;
 
         _cache.Set("jwt", token, lifetime);
-
-        //AO: Used during dev
-        //var cachedToken =
-        //    _cache.Get<string>("jwt");
-
-        //Console.WriteLine(
-        //    $"Cache virker: {cachedToken != null} + tokenstring: {cachedToken}");
     }
 
     public string? GetToken()
