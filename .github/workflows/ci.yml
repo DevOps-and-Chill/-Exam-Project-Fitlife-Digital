@@ -168,7 +168,7 @@ jobs:
 
         vault login ${{ secrets.VAULT_TOKEN }}
         
-        vault kv put secret/auth \
+        vault kv put secret/fitlife \
         CosmosDb__AccountEndpoint="${{ secrets.CosmosDb__AccountEndpoint }}" \
         CosmosDb__AccountKey="${{ secrets.CosmosDb__AccountKey }}" \
         Jwt__Audience="${{ secrets.Jwt__Audience }}" \
@@ -182,7 +182,8 @@ jobs:
         VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
         Vault__Address: ${{ secrets.Vault__Address }}
       run: |
-        docker compose -f docker-compose-services.yml up -d 
+        docker compose -f docker-compose-services.yml up -d
+        docker compose -f docker-compose-frontend.yml up -d
 
     - name: Wait for services
       run: sleep 20
