@@ -50,7 +50,6 @@ public class AuthService
             {
                 return new LoginResult(false, null, null, "Login lykkedes ikke. Token mangler.");
             }
-            Console.WriteLine("LoginAsync lineno 50:"+ loginResponse.Token);
             _tokenService.SetToken(loginResponse.Token);
 
             string ?role = await _tokenService.GetRoleBasedOnToken();

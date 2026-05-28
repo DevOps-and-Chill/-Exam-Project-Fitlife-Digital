@@ -9,57 +9,60 @@ builder.Services.AddRazorComponents()
 
 //AO: Updated to follow nginx. Gateway route configed in appsettings, "nickname" is the name for the corresponding microservice.
 //+ "[gateway-name]/" added to avoid changing calls in services
-builder.Services.AddHttpClient("UserService", client =>
-{
-	client.BaseAddress = new Uri(
-		builder.Configuration["Gateway:BaseUrl"]! + "user/");
-});
-
-builder.Services.AddHttpClient("FacilityService", client =>
-{
-	client.BaseAddress = new Uri(
-		 builder.Configuration["Gateway:BaseUrl"]! + "facility/");
-});
-
-builder.Services.AddHttpClient("PTService", client =>
-{
-	client.BaseAddress = new Uri(
-		builder.Configuration["Gateway:BaseUrl"]! + "pt/");
-});
-
-builder.Services.AddHttpClient("AuthService", client =>
-{
-	client.BaseAddress = new Uri(
-		  builder.Configuration["Gateway:BaseUrl"]! + "auth/");
-});
-
-builder.Services.AddHttpClient("MessageService", client =>
-{
-	client.BaseAddress = new Uri(
-		builder.Configuration["Gateway:BaseUrl"]! + "message/");
-});
+var gatewayBaseURL = builder.Environment.IsDevelopment() ? builder.Configuration["Gateway:BaseUrl"] : builder.Configuration["GatewayBaseUrl"];
 
 
-builder.Services.AddHttpClient("ClassService", client =>
-{
-	client.BaseAddress = new Uri(
-		builder.Configuration["Gateway:BaseUrl"]! + "class/");
-});
+	builder.Services.AddHttpClient("UserService", client =>
+	{
+		client.BaseAddress = new Uri(
+			gatewayBaseURL + "user/");
+	});
 
-//AO: Not yet added to nginx.conf
-builder.Services.AddHttpClient("DigitalContentService", client =>
-{
-	client.BaseAddress = new Uri(
-		builder.Configuration["Gateway:BaseUrl"]! + "content/");
-});
+	builder.Services.AddHttpClient("FacilityService", client =>
+	{
+		client.BaseAddress = new Uri(
+			 gatewayBaseURL + "facility/");
+	});
 
-builder.Services.AddMemoryCache();
+	builder.Services.AddHttpClient("PTService", client =>
+	{
+		client.BaseAddress = new Uri(
+			gatewayBaseURL + "pt/");
+	});
 
-builder.Services.AddHttpClient("StatisticService", client =>
-{
-    client.BaseAddress = new Uri(
-        builder.Configuration["Gateway:BaseUrl"]! + "statistics/");
-});
+	builder.Services.AddHttpClient("AuthService", client =>
+	{
+		client.BaseAddress = new Uri(
+			  gatewayBaseURL + "auth/");
+	});
+
+	builder.Services.AddHttpClient("MessageService", client =>
+	{
+		client.BaseAddress = new Uri(
+			gatewayBaseURL + "message/");
+	});
+
+
+	builder.Services.AddHttpClient("ClassService", client =>
+	{
+		client.BaseAddress = new Uri(
+			gatewayBaseURL + "class/");
+	});
+
+	//AO: Not yet added to nginx.conf
+	builder.Services.AddHttpClient("DigitalContentService", client =>
+	{
+		client.BaseAddress = new Uri(
+			gatewayBaseURL + "content/");
+	});
+
+	builder.Services.AddMemoryCache();
+
+	builder.Services.AddHttpClient("StatisticService", client =>
+	{
+		client.BaseAddress = new Uri(
+			gatewayBaseURL + "statistic/");
+	});
 
 builder.Services.AddScoped<ClassService>();
 builder.Services.AddScoped<MemberService>();
