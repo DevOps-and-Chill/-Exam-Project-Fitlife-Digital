@@ -186,6 +186,17 @@ jobs:
     - name: Wait for services
       run: sleep 20
 
+    - name: Show running containers
+      run: docker ps -a
+
+    - name: Gateway logs
+      run: docker logs $(docker ps -aqf "name=gateway")
+
+    - name: Auth logs
+      run: docker logs $(docker ps -aqf "name=authservice")
+
+    - name: User logs
+      run: docker logs $(docker ps -aqf "name=userservice")
 
     # Configure Newman
     - name: Setup Node.js
