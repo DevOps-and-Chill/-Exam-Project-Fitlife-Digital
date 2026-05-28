@@ -327,7 +327,7 @@
     // Message-model bruges til beskedsystemet
     // TODO:
     // Skal senere sendes til backend via MessageService/API
-    private Message NewMessage = new();
+    private DirectMessageDto NewMessage = new();
 
     // Feedback til bruger
     private string StatusMessage = "";
@@ -376,7 +376,7 @@
         StatusMessage = "";
 
         // Nulstiller besked
-        NewMessage = new Message();
+        NewMessage = new DirectMessageDto();
     }
 
     // Midlertidig ventelistefunktion
@@ -495,14 +495,13 @@
                 ReceiverId = SelectedEmployeeForMessage.Id,
                 Subject = NewMessage.Subject,
                 Content = NewMessage.Content,
-                Timestamp = DateTime.UtcNow
             };
 
             await MessageService.SendDirectMessageAsync(dto);
 
             StatusMessage = $"Din besked til {SelectedEmployeeForMessage.fullName} er sendt.";
             SelectedEmployeeForMessage = null;
-            NewMessage = new Message();
+            NewMessage = new DirectMessageDto();
         }
         catch
         {
@@ -513,6 +512,6 @@
     {
         SelectedEmployeeForMessage = null;
 
-        NewMessage = new Message();
+        NewMessage = new DirectMessageDto();
     }
 }

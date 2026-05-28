@@ -86,8 +86,7 @@ try
                  ClockSkew = TimeSpan.Zero
              };
      });
-
-
+    
     builder.Services.AddScoped<IMessageService, MessageService>();
     
     // Så ClassCancelledConsumer kun starter uden for development. Forhindrer run errors.
@@ -96,11 +95,22 @@ try
         builder.Services.AddHostedService<ClassCancelledConsumer>();
     }
     
+    
 
     var app = builder.Build();
+    
     app.UseAuthentication();
     app.UseAuthorization();
     app.MapControllers();
+    
+    using (var scope = app.Services.CreateScope())
+    {
+
+        var context = scope.ServiceProvider.GetRequiredService<MessageDbContext>();
+
+        await context.Database.EnsureCreatedAsync();
+    }
+    
     app.Run();
 }
 catch (Exception ex)
