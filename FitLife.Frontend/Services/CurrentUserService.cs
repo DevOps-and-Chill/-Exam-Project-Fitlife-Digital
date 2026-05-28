@@ -1,4 +1,3 @@
-using System.Net.Http;
 using FitLife.Frontend.Models;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -8,16 +7,18 @@ public class CurrentUserService
 {
     private readonly TokenService _tokenService;
     private readonly MemberService _memberService;
+    private readonly EmployeeServiceHjalte _employeeServiceHjalte;
     private readonly EmployeeService _trainerService;
 
     private readonly IMemoryCache _cache;
 
-    public CurrentUserService(IMemoryCache cache, TokenService tokenService, MemberService memberService, EmployeeService trainerService)
+    public CurrentUserService(IMemoryCache cache, TokenService tokenService, MemberService memberService, EmployeeService trainerService, EmployeeServiceHjalte employeeServiceHjalte)
     {
         _cache = cache;
         _tokenService = tokenService;
         _memberService = memberService;
         _trainerService = trainerService;
+        _employeeServiceHjalte = employeeServiceHjalte;
     }
     public User? CurrentUser { get; private set; }
 
@@ -53,7 +54,9 @@ public class CurrentUserService
         else if (role.Equals("employee", StringComparison.OrdinalIgnoreCase))
         {
             var employee = await _trainerService.GetEmployeeById(userId);
-
+           
+            // HJALTE SERVICE
+            //var employee = await _employeeServiceHjalte.GetEmployeeByIdAsync(userId);
             if (employee is not null)
             {
                 CurrentUser.SetUserAsEmployee(employee);

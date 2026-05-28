@@ -7,10 +7,15 @@ public class Employee
     public string GivenName { get; set; } = "";
 
     public string FamilyName { get; set; } = "";
+    
+    public string? fullName { get; set; } = "";
+    public string? Description { get; set; } = "";
+    
+    public bool IsAvailable {get; set;}
 
     public string Email { get; set; } = "";
 
-    public Guid Affiliation { get; set; }
+    public string Affiliation { get; set; } = Guid.NewGuid().ToString();
 
     public bool ActiveUser { get; set; }
 

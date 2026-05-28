@@ -2,7 +2,7 @@
 @rendermode InteractiveServer
 @using FitLife.Frontend.Models
 @using FitLife.Frontend.Services
-@inject SessionService SessionService
+@inject ClassService ClassService
 
 <div class="container-fluid px-0">
 
@@ -22,19 +22,15 @@
 
         <div class="row g-4">
 
-            @foreach (var session in Sessions)
+            @foreach (var classModel in Classes)
             {
                 <div class="col-md-4">
                     <div class="card h-100 shadow-sm border-0">
                         <div class="card-body p-4">
 
                             <h4 class="fw-bold">
-                                @session.Title
+                                @classModel.Title
                             </h4>
-
-                            <p class="text-muted mb-3">
-                                @session.Description
-                            </p>
 
                             <p class="mb-0">
                                 <strong>Center:</strong>
@@ -55,10 +51,11 @@
 </div>
 
 @code {
-    private List<TrainingSession> Sessions = new();
+    private List<Class> Classes = new();
 
     protected override async Task OnInitializedAsync()
     {
-        Sessions = await SessionService.GetSessionsAsync();
+        string exerciseGymId = "";
+        Classes = await ClassService.GetClassesByExerciseGymAsync(exerciseGymId);
     }
 }

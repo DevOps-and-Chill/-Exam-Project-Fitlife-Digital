@@ -64,18 +64,17 @@ var gatewayBaseURL = builder.Environment.IsDevelopment() ? builder.Configuration
 			gatewayBaseURL + "statistic/");
 	});
 
-builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<ClassService>();
 builder.Services.AddScoped<MemberService>();
 builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddScoped<DigitalTrainingService>();
+builder.Services.AddScoped<EmployeeServiceHjalte>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<CenterService>();
 builder.Services.AddScoped<RegistrationStateService>();
 builder.Services.AddScoped<PTService>();
 builder.Services.AddScoped<CurrentUserService>();
 builder.Services.AddScoped<MessageService>();
-builder.Services.AddScoped<ClassService>();
 builder.Services.AddScoped<StatisticService>();
 builder.Services.AddScoped<TokenService>();
 

@@ -27,7 +27,7 @@ namespace UserServiceAPI.Controllers
         /// exception on error.</remarks>
         /// <returns>An ActionResult that returns OK with the employee collection on success, or BadRequest with the exception on
         /// failure.</returns>
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("GetAllEmployees")]
         public async Task<ActionResult> GetAllEmployees()
         {

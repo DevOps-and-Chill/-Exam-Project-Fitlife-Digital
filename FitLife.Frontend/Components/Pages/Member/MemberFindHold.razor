@@ -7,128 +7,75 @@
 
 <div class="container-fluid px-0">
 
-    <!-- Shared navbar for medlemssider -->
     <MemberNavbar />
 
     <section class="container py-5">
 
-        <!-- Side-header -->
-        <div class="mb-5">
-            <span class="badge bg-success mb-3 px-3 py-2">
-                HOLDTRÆNING
-            </span>
+        <h1 class="fw-bold mb-3">Find hold</h1>
 
-            <h1 class="fw-bold mb-3">
-                Find hold
-            </h1>
-
-            <p class="lead text-muted">
-                Se aktuelle hold, ledige pladser og tilmeld dig direkte online.
-            </p>
-        </div>
-
-        <!-- Filterområde -->
-        <!-- TODO:
-             Filtrér og Vis alle hold kan senere kobles til rigtig filtrering på dato,
-             center, holdtype eller instruktør -->
-        <div class="card shadow-sm border-0 mb-4">
-            <div class="card-body p-4">
-
-                <div class="d-flex flex-wrap gap-2">
-                    <button class="btn btn-outline-secondary">
-                        Filtrér
-                    </button>
-
-                    <button class="btn btn-outline-primary">
-                        Vis alle hold
-                    </button>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- Liste/grid over hold -->
-        <!-- Sessions kommer fra SessionService.
-             Data hentes nu fra ClassServiceAPI via backend-integration.
-             Loading/error-handling sikrer, at siden ikke crasher hvis backend ikke svarer. -->
         @if (IsLoading)
         {
-            <p class="text-muted">Indlæser hold...</p>
+            <p>Indlæser hold...</p>
         }
         else if (!string.IsNullOrWhiteSpace(ErrorMessage))
         {
-            <div class="alert alert-warning">
-                @ErrorMessage
-            </div>
+            <div class="alert alert-warning">@ErrorMessage</div>
         }
         else if (!Classes.Any())
         {
-            <p class="text-muted">
-                Der er ingen hold at vise lige nu.
-            </p>
+            <p>Ingen hold fundet.</p>
         }
         else
         {
             <div class="row g-4">
 
-                @foreach (var @class in Classes)
+                @foreach (var classModel in Classes)
                 {
                     <div class="col-md-4">
                         <div class="card h-100 shadow-sm border-0">
                             <div class="card-body p-4">
 
-                                <div class="fs-2 mb-3">
-                                    📅
-                                </div>
+                                <h5>@classModel.Title</h5>
+                                <p class="text-muted">@classModel.Title</p>
 
-                                <h5 class="card-title fw-bold">
-                                    @@class.Title
-                                </h5>
-
-                                <p class="card-text text-muted">
-                                    @@class.Description
+                                <p>
+                                    <strong>Tid:</strong>
+                                    @classModel.TimeStart.ToString("dd/MM HH:mm")
                                 </p>
 
-                                <p class="mb-1">
-                                    <strong>Tidspunkt:</strong>
-                                    @@class.StartTime.ToString("dd/MM") kl. @@class.StartTime.ToString("HH:mm")
-                                </p>
-
-                                <p class="mb-1">
+                                <p>
                                     <strong>Instruktør:</strong>
-                                    @@class.InstructorName
+                                    @Coach.GivenName
                                 </p>
 
-                                <p class="mb-3">
-                                    <strong>Ledige pladser:</strong>
-                                    @@class.AvailableSpots
+                                <p>
+                                    <strong>Pladser:</strong>
+                                    @{
+                                        var availableSpots = classModel.MemberLimit - classModel.Registered.Count;
+                                    }
                                 </p>
 
-                                <!-- Viser forskellig handling alt efter brugerens status og ledige pladser -->
-                               @*  @if (@class.IsUserSignedUp)
+                                @if (classModel.IsUserSignedUp)
                                 {
-                                    <!-- Brugeren er allerede tilmeldt og kan derfor afmelde sig -->
                                     <button class="btn btn-danger w-100"
-                                            @onclick="() => Unregister(@class)">
+                                            @onclick="() => Unregister(classModel.Id)">
                                         Afmeld
                                     </button>
                                 }
-                                else if (@class.AvailableSpots > 0)
+                                else if (classModel.Registered.Count < classModel.MemberLimit)
                                 {
-                                    <!-- Der er ledige pladser, så brugeren kan tilmelde sig -->
                                     <button class="btn btn-success w-100"
-                                            @onclick="() => Register(@class)">
+                                            @onclick="() => Register(classModel.Id)">
                                         Tilmeld
                                     </button>
                                 }
                                 else
                                 {
-                                    <!-- Holdet er fyldt, så brugeren kan komme på venteliste -->
                                     <button class="btn btn-warning w-100"
-                                            @onclick="() => JoinWaitlist(@class)">
-                                        Tilmeld venteliste
+                                            @onclick="() => JoinWaitingList(classModel.Id)">
+                                        Venteliste
                                     </button>
-                                } *@
+                                }
 
                             </div>
                         </div>
@@ -138,7 +85,6 @@
             </div>
         }
 
-        <!-- Midlertidig feedback-besked fra SessionService -->
         @if (!string.IsNullOrWhiteSpace(Message))
         {
             <div class="alert alert-success mt-4">
@@ -148,30 +94,34 @@
 
     </section>
 
-    <AppFooter />
-
 </div>
 
 @code {
-    // Feedback til brugeren efter tilmelding, afmelding eller venteliste
     private string Message = "";
-
-    // Liste over hold der vises på siden
     private List<Class> Classes = new();
-
-    // Bruges til at vise loading-tekst mens hold hentes fra backend
     private bool IsLoading = true;
-
-    // Bruges til at vise en pæn fejlbesked hvis ClassServiceAPI ikke svarer
     private string? ErrorMessage;
-
+    
+    public Employee Coach { get; set; }
+    
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            // Henter hold fra ClassService.
-            Classes = await ClassService.GetAllClassesAsync();
+            var memberId = CurrentUserService.CurrentUser?.GetId();
+
+            if (memberId is null)
+            {
+                ErrorMessage = "Ingen bruger fundet.";
+                return;
+            }
+
+            Classes = await ClassService.GetClassesByMemberAsync(memberId);
             
+            foreach (var c in Classes)
+            {
+                c.IsUserSignedUp = c.Registered.Any(r => r.Id == memberId);
+            }
         }
         catch
         {
@@ -183,27 +133,30 @@
         }
     }
 
-    // private void Register(TrainingSession session)
-    // {
-    //     // Kalder service-laget i stedet for at have tilmeldingslogik direkte i UI'et.
-    //     // TODO:
-    //     // Senere bør dette blive et API-kald, fx POST /api/class/{id}/members
-    //     Message = SessionService.Register(session);
-    // }
+    private async Task Register(string classId)
+    {
+        var member = CurrentUserService.CurrentUser?.Member;
 
-    // private void Unregister(TrainingSession session)
-    // {
-    //     // Afmelding håndteres også gennem service-laget.
-    //     // TODO:
-    //     // Senere bør dette blive et API-kald, fx DELETE /api/class/{classId}/members/{memberId}
-    //     Message = SessionService.Unregister(session);
-    // }
+        if (member is null) return;
 
-    // private void JoinWaitlist(TrainingSession session)
-    // {
-    //     // Venteliste håndteres midlertidigt i SessionService.
-    //     // TODO:
-    //     // Senere kan dette kobles til backend, fx POST /api/class/{id}/waitinglist
-    //     Message = SessionService.JoinWaitlist(session);
-    // }
+        await ClassService.RegisterMemberToClassAsync(classId, member);
+    }
+
+    private async Task Unregister(string classId)
+    {
+        var memberId = CurrentUserService.CurrentUser?.GetId();
+
+        if (memberId is null) return;
+
+        await ClassService.UnregisterMemberFromClassAsync(classId, memberId);
+    }
+
+    private async Task JoinWaitingList(string classId)
+    {
+        var member = CurrentUserService.CurrentUser?.Member;
+
+        if (member is null) return;
+
+        await ClassService.RegisterMemberToWaitinglistAsync(classId, member);
+    }
 }

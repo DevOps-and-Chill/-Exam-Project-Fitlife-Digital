@@ -34,7 +34,7 @@ namespace UserServiceAPI.Controllers
         /// <returns>
         /// Returns a list of all users.
         /// </returns>
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("GetAllUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -59,7 +59,7 @@ namespace UserServiceAPI.Controllers
         /// <returns>
         /// Returns the user object if found.
         /// </returns>
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("GetUserById/{userId}")]
         public async Task<IActionResult> GetUserById(string userId)
         {
@@ -86,7 +86,7 @@ namespace UserServiceAPI.Controllers
         /// Returns the user id if a matching user is found.
         /// Returns NotFound if no user exists with the provided email.
         /// </returns>
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("GetUserIdByEmail/{email}")]
         public async Task<IActionResult> GetUserIdByEmail(string email)
         {
@@ -116,7 +116,7 @@ namespace UserServiceAPI.Controllers
         /// <returns>
         /// Returns Ok if the test data was loaded successfully.
         /// </returns>
-        [Authorize]
+        [Authorize(Roles = "admin")]
         [HttpGet("addtestdata")]
         public async Task<ActionResult> AddData()
         {

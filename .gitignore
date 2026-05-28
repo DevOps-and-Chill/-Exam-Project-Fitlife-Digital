@@ -90,4 +90,9 @@ nunit-*.xml
 /AuthService/.vs/ProjectEvaluation
 /DigitalContentServiceAPI/DigitalContentService/.vs/ProjectEvaluation
 /MessageServiceAPI/.github
-/UserService/.github
+/UserService/.vs
+/UserService/.vs/ProjectEvaluation
+/UserService/.vs/ProjectEvaluation
+/UserService/.vs/ProjectEvaluation
+/UserService/.vs/UserServiceAPI/DesignTimeBuild
+/UserService/.vs/UserServiceAPI/v18
