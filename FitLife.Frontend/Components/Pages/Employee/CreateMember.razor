@@ -272,7 +272,7 @@
 
         // FacilityService leverer nu rigtige center-id'er
         // Derfor kan affiliation sættes direkte fra valgt center
-        NewMember.Affiliation = Guid.Parse(SelectedCenterId);
+        NewMember.Affiliation = Guid.Parse(SelectedCenterId).ToString();
 
         // Sikrer at bruger og medlemskab oprettes som aktive
         NewMember.ActiveUser = true;

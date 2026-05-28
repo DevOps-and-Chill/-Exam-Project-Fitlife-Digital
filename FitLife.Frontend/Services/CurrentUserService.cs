@@ -69,4 +69,9 @@ public class CurrentUserService
         _tokenService.Clear();
         CurrentUser = null;
     }
+    
+    public string DisplayName =>
+        CurrentUser?.Member?.GivenName
+        ?? CurrentUser?.Employee?.GivenName
+        ?? "Navn";
 }

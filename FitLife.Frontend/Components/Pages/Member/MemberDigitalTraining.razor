@@ -7,294 +7,160 @@
 
 <div class="container-fluid px-0">
 
-    <!-- Shared navbar for medlemmer -->
     <MemberNavbar />
 
     <section class="container py-5">
 
-        <!-- Intro/hero section -->
         <div class="row align-items-center mb-5">
-
             <div class="col-md-7">
-
-                <h1 class="fw-bold">
-                    Digital træning
-                </h1>
-
+                <h1 class="fw-bold">Digital træning</h1>
                 <p class="lead">
                     Få adgang til træningsvideoer og træningsprogrammer, som du kan bruge når det passer dig.
                 </p>
-
-                <!-- Skifter mellem videoer og programmer -->
                 <div class="d-flex gap-3 mt-4">
-
-                    <button class="btn btn-success"
-                            @onclick="ShowVideos">
-                        Se videoer
-                    </button>
-
-                    <button class="btn btn-outline-success"
-                            @onclick="ShowPrograms">
-                        Se træningsprogrammer
-                    </button>
-
+                    <button class="btn btn-success" @onclick="ShowVideos">Se videoer</button>
+                    <button class="btn btn-outline-success" @onclick="ShowPrograms">Se træningsprogrammer</button>
                 </div>
             </div>
-
-            <!-- Placeholder til billede/video -->
-            <!-- TODO:
-                 Senere kan denne erstattes med rigtig media fra backend/CDN -->
             <div class="col-md-5">
-
                 <div class="bg-light border rounded-3 d-flex align-items-center justify-content-center"
                      style="height: 220px;">
-
-                    <span class="text-muted">
-                        Videofortælling om digital træning
-                    </span>
-
+                    <span class="text-muted">Videofortælling om digital træning</span>
                 </div>
-
             </div>
         </div>
 
-        <!-- Intro-visning -->
-        @if (currentView == "intro")
+        @if (IsLoading)
         {
-            <div class="row g-4">
-
-                <!-- Intro card til videoer -->
-                <div class="col-md-6">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-body p-4">
-
-                            <h4>
-                                Kort intro til træningsvideoer
-                            </h4>
-
-                            <p>
-                                Se korte træningsvideoer med øvelser, teknik og inspiration til din træning.
-                            </p>
-
-                            <button class="btn btn-outline-success"
-                                    @onclick="ShowVideos">
-                                Se videoer
-                            </button>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Intro card til programmer -->
-                <div class="col-md-6">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-body p-4">
-
-                            <h4>
-                                Kort intro til træningsprogrammer
-                            </h4>
-
-                            <p>
-                                Find træningsprogrammer, der passer til dit niveau og dine mål.
-                            </p>
-
-                            <button class="btn btn-outline-success"
-                                    @onclick="ShowPrograms">
-                                Se træningsprogrammer
-                            </button>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <p>Indlæser indhold...</p>
         }
-
-        <!-- Video-visning -->
-        @if (currentView == "videos")
+        else if (!string.IsNullOrWhiteSpace(ErrorMessage))
         {
-            <div class="card shadow-sm">
-                <div class="card-body p-4">
+            <div class="alert alert-warning">@ErrorMessage</div>
+        }
+        else
+        {
+            @if (currentView == "intro")
+            {
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body p-4">
+                                <h4>Kort intro til træningsvideoer</h4>
+                                <p>Se korte træningsvideoer med øvelser, teknik og inspiration til din træning.</p>
+                                <button class="btn btn-outline-success" @onclick="ShowVideos">Se videoer</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body p-4">
+                                <h4>Kort intro til træningsprogrammer</h4>
+                                <p>Find træningsprogrammer, der passer til dit niveau og dine mål.</p>
+                                <button class="btn btn-outline-success" @onclick="ShowPrograms">Se træningsprogrammer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
 
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-
-                        <h3>
-                            Træningsvideoer
-                        </h3>
-
-                        <!-- Dynamisk søgning -->
-                        <div class="d-flex gap-2">
-
-                            <input class="form-control"
+            @if (currentView == "videos")
+            {
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3>Træningsvideoer</h3>
+                            <input class="form-control w-25"
                                    placeholder="Søg efter video..."
                                    @bind="searchText"
                                    @bind:event="oninput" />
-
-                            <!-- Prototype-knap -->
-                            <!-- TODO:
-                                 Kan senere udvides med rigtig filtrering -->
-                            <button class="btn btn-outline-secondary">
-                                Filtrér
-                            </button>
-
                         </div>
-                    </div>
 
-                    <!-- Loop gennem filtrerede videoer -->
-                    <div class="row g-4">
-
-                        @foreach (var video in FilteredVideos)
+                        @if (!FilteredVideos.Any())
                         {
-                            <div class="col-md-4">
-
-                                <div class="card h-100">
-
-                                    <!-- Placeholder til thumbnail/video -->
-                                    <!-- TODO:
-                                         Senere kan video-preview hentes fra backend -->
-                                    <div class="bg-light border-bottom d-flex align-items-center justify-content-center"
-                                         style="height: 160px;">
-
-                                        <span class="text-muted">
-                                            Video med træning
-                                        </span>
-
+                            <p class="text-muted">Ingen videoer fundet.</p>
+                        }
+                        else
+                        {
+                            <div class="row g-4">
+                                @foreach (var video in FilteredVideos)
+                                {
+                                    <div class="col-md-4">
+                                        <div class="card h-100">
+                                            <div class="bg-light border-bottom d-flex align-items-center justify-content-center"
+                                                 style="height: 160px;">
+                                                <span class="text-muted">Video med træning</span>
+                                            </div>
+                                            <div class="card-body">
+                                                <h5>@video.Name</h5>
+                                                <p class="text-muted">@video.Description</p>
+                                                <button class="btn btn-success" @onclick="() => SelectVideo(video)">Se video</button>
+                                            </div>
+                                        </div>
                                     </div>
+                                }
+                            </div>
+                        }
 
-                                    <div class="card-body">
-
-                                        <h5>
-                                            @video.Name
-                                        </h5>
-
-                                        <p class="text-muted">
-                                            @video.Description
-                                        </p>
-
-                                        <!-- Vælger video -->
-                                        <!-- TODO:
-                                             Senere kan dette åbne rigtig video-player -->
-                                        <button class="btn btn-success"
-                                                @onclick="() => SelectVideo(video)">
-                                            Se video
-                                        </button>
-
-                                    </div>
-                                </div>
+                        @if (selectedVideo is not null)
+                        {
+                            <div class="alert alert-info mt-4">
+                                <strong>@selectedVideo.Name</strong><br />
+                                @selectedVideo.Description
                             </div>
                         }
                     </div>
-
-                    <!-- Midlertidig prototype-preview -->
-                    @if (selectedVideo is not null)
-                    {
-                        <div class="alert alert-info mt-4">
-
-                            <strong>
-                                @selectedVideo.Name
-                            </strong>
-
-                            <br />
-
-                            @selectedVideo.Description
-
-                        </div>
-                    }
-
                 </div>
-            </div>
-        }
+            }
 
-        <!-- Program-visning -->
-        @if (currentView == "programs")
-        {
-            <div class="card shadow-sm">
-                <div class="card-body p-4">
-
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-
-                        <h3>
-                            Træningsprogrammer
-                        </h3>
-
-                        <!-- Dynamisk søgning -->
-                        <div class="d-flex gap-2">
-
-                            <input class="form-control"
+            @if (currentView == "programs")
+            {
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3>Træningsprogrammer</h3>
+                            <input class="form-control w-25"
                                    placeholder="Søg efter træningsprogram..."
                                    @bind="searchText"
                                    @bind:event="oninput" />
-
-                            <!-- Prototype-knap -->
-                            <button class="btn btn-outline-secondary">
-                                Filtrér
-                            </button>
-
                         </div>
-                    </div>
 
-                    <!-- Loop gennem filtrerede programmer -->
-                    <div class="row g-4">
-
-                        @foreach (var program in FilteredPrograms)
+                        @if (!FilteredPrograms.Any())
                         {
-                            <div class="col-md-4">
-
-                                <div class="card h-100">
-
-                                    <!-- Placeholder til billeder/program preview -->
-                                    <!-- TODO:
-                                         Senere kan billeder hentes fra backend -->
-                                    <div class="bg-light border-bottom d-flex align-items-center justify-content-center"
-                                         style="height: 160px;">
-
-                                        <span class="text-muted">
-                                            Billeder af øvelser
-                                        </span>
-
+                            <p class="text-muted">Ingen programmer fundet.</p>
+                        }
+                        else
+                        {
+                            <div class="row g-4">
+                                @foreach (var program in FilteredPrograms)
+                                {
+                                    <div class="col-md-4">
+                                        <div class="card h-100">
+                                            <div class="bg-light border-bottom d-flex align-items-center justify-content-center"
+                                                 style="height: 160px;">
+                                                <span class="text-muted">Billeder af øvelser</span>
+                                            </div>
+                                            <div class="card-body">
+                                                <h5>@program.Name</h5>
+                                                <p class="text-muted">@program.Description</p>
+                                                <button class="btn btn-success" @onclick="() => SelectProgram(program)">Se program</button>
+                                            </div>
+                                        </div>
                                     </div>
+                                }
+                            </div>
+                        }
 
-                                    <div class="card-body">
-
-                                        <h5>
-                                            @program.Name
-                                        </h5>
-
-                                        <p class="text-muted">
-                                            @program.Description
-                                        </p>
-
-                                        <!-- Vælger program -->
-                                        <!-- TODO:
-                                             Senere kan dette åbne fuldt træningsprogram -->
-                                        <button class="btn btn-success"
-                                                @onclick="() => SelectProgram(program)">
-                                            Se program
-                                        </button>
-
-                                    </div>
-                                </div>
+                        @if (selectedProgram is not null)
+                        {
+                            <div class="alert alert-info mt-4">
+                                <strong>@selectedProgram.Name</strong><br />
+                                @selectedProgram.Description
                             </div>
                         }
                     </div>
-
-                    <!-- Midlertidig prototype-preview -->
-                    @if (selectedProgram is not null)
-                    {
-                        <div class="alert alert-info mt-4">
-
-                            <strong>
-                                @selectedProgram.Name
-                            </strong>
-
-                            <br />
-
-                            @selectedProgram.Description
-
-                        </div>
-                    }
-
                 </div>
-            </div>
+            }
         }
 
     </section>
@@ -304,140 +170,62 @@
 </div>
 
 @code {
-
-    // Bestemmer hvilken visning brugeren ser:
-    // intro, videoer eller programmer
     private string currentView = "intro";
-
-    // Bruges til dynamisk søgning
     private string searchText = "";
+    private bool IsLoading = true;
+    private string? ErrorMessage;
 
-    // Det valgte video/program brugeren har åbnet
     private WorkoutVideo? selectedVideo;
     private WorkoutProgram? selectedProgram;
 
-    // Midlertidig mock data til prototype
-    // TODO:
-    // Skal senere hentes fra backend/API
-
-    private List<WorkoutProgram>? programs = new();
-    private List<WorkoutVideo>? videos = new();
+    private List<WorkoutProgram> programs = new();
+    private List<WorkoutVideo> videos = new();
 
     protected override async Task OnInitializedAsync()
     {
-        programs = await ContentService.GetWorkoutProgramsAsync();
-        videos = await ContentService.GetWorkoutVideosAsync();
+        try
+        {
+            programs = await ContentService.GetWorkoutProgramsAsync();
+            videos = await ContentService.GetWorkoutVideosAsync();
+        }
+        catch
+        {
+            ErrorMessage = "Indhold kunne ikke hentes lige nu.";
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
-    
-    private List<WorkoutVideo> testVideos = new()
-    {
-        new WorkoutVideo
-        {
-            Name = "Squat teknik",
-            Description = "Kort video om korrekt squat-teknik og typiske fejl.",
-        },
 
-        new WorkoutVideo
-        {
-            Name = "Core træning",
-            Description = "Øvelser til mave, ryg og stabilitet.",
-        },
-
-        new WorkoutVideo
-        {
-            Name = "Opvarmning",
-            Description = "En simpel opvarmningsrutine før træning.", 
-        }
-    };
-
-    // Midlertidig mock data
-    // TODO:
-    // Skal senere komme fra DigitalTrainingService/API
-    private List<WorkoutProgram> TestPrograms = new()
-    {
-        new WorkoutProgram
-        {
-            Name = "Begynderprogram",
-            Description = "Et simpelt program til nye medlemmer.",
-        },
-
-        new WorkoutProgram
-        {
-            Name = "Styrketræning 3 dage",
-            Description = "Program med fokus på styrke og progression.",
-        },
-
-        new WorkoutProgram
-        {
-            Name = "Vægttab og kondition",
-            Description = "Program med fokus på cardio og basis styrke.",
-        }
-    };
-
-    // Filtrerer videoer ud fra søgetekst
     private IEnumerable<WorkoutVideo> FilteredVideos =>
-
         videos.Where(v =>
-
             string.IsNullOrWhiteSpace(searchText) ||
+            v.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+            v.Description.Contains(searchText, StringComparison.OrdinalIgnoreCase));
 
-            v.Name.Contains(searchText,
-                StringComparison.OrdinalIgnoreCase) ||
-
-            v.Description.Contains(searchText,
-                StringComparison.OrdinalIgnoreCase)
-            );
-
-    // Filtrerer programmer ud fra søgetekst
     private IEnumerable<WorkoutProgram> FilteredPrograms =>
-
         programs.Where(p =>
-
             string.IsNullOrWhiteSpace(searchText) ||
+            p.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+            p.Description.Contains(searchText, StringComparison.OrdinalIgnoreCase));
 
-            p.Name.Contains(searchText,
-                StringComparison.OrdinalIgnoreCase) ||
-
-            p.Description.Contains(searchText,
-                StringComparison.OrdinalIgnoreCase)
-            );
-
-    // Skifter UI til video-visning
     private void ShowVideos()
     {
         currentView = "videos";
-
-        // Nulstiller tidligere søgning/valg
         searchText = "";
-
         selectedVideo = null;
         selectedProgram = null;
     }
 
-    // Skifter UI til program-visning
     private void ShowPrograms()
     {
         currentView = "programs";
-
         searchText = "";
-
         selectedVideo = null;
         selectedProgram = null;
     }
 
-    // Vælger video
-    // TODO:
-    // Senere kan dette åbne rigtig video-player/modal
-    private void SelectVideo(WorkoutVideo video)
-    {
-        selectedVideo = video;
-    }
-
-    // Vælger træningsprogram
-    // TODO:
-    // Senere kan dette åbne detaljeret program-side
-    private void SelectProgram(WorkoutProgram program)
-    {
-        selectedProgram = program;
-    }
+    private void SelectVideo(WorkoutVideo video) => selectedVideo = video;
+    private void SelectProgram(WorkoutProgram program) => selectedProgram = program;
 }
