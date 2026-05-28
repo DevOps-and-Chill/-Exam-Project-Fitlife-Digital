@@ -21,7 +21,7 @@ public class TestController : ControllerBase
         var classMessage = new ClassCancelledMessage
         {
             ClassId   = Guid.NewGuid().ToString(),
-            Title     = "Test Yoga Class",
+            Subject     = "Test Yoga Class",
             TimeStart = DateTime.Now,
             TimeEnd   = DateTime.Now.AddHours(1),
             ReceiverIds = new List<string> {

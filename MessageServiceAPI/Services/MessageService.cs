@@ -43,24 +43,26 @@ public class MessageService : IMessageService
                 Type = "Direct"
             })
             .ToListAsync();
+            
+        var systemMessages = await _context.SystemMessages
+            .ToListAsync();
 
-            var systemMessages = await _context.SystemMessages
-                .Where(m => m.ReceiverIds.Contains(receiverId))
-            .Select(m => new SystemMessageDto
+        var filtered = systemMessages
+            .Where(m => m.ReceiverIds.Contains(receiverId))
+            .Select(m => new MessageDto
             {
                 Id = m.Id,
-                ReceiverIds = m.ReceiverIds,
                 Subject = m.Subject,
                 Content = m.Content,
                 CreatedAt = m.CreatedAt,
                 IsRead = m.IsRead,
                 Type = "System"
             })
-            .ToListAsync();
+            .ToList();
 
             var result = new List<MessageDto>();
             result.AddRange(directMessages);
-            result.AddRange(systemMessages);
+            result.AddRange(filtered);
 
             return result.OrderByDescending(m => m.CreatedAt).ToList();
     }
