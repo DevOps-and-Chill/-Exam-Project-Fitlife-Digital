@@ -66,7 +66,9 @@ public class ClassRepository : IClassRepository
 
     public async Task<List<Class>> GetAllClassesAsync()
     {
-        return await _context.Classes.ToListAsync();
+        return await _context.Classes
+            .Where(c => c.ActiveClass)
+            .ToListAsync();
     }
 
     public async Task<List<Class>> GetClassesByExerciseGymAsync(string exerciseGymId)
