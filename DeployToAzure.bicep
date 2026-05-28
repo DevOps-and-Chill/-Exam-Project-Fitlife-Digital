@@ -496,6 +496,10 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
               name: 'VAULT_DISABLE_MLOCK'
               value: 'true'
             }
+            {
+              name: 'GatewayBaseUrl' 
+              value: http://localhost:4000/
+            }
           ]
 
           ports: [
