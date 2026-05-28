@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
 using System.Net.Http.Headers;
+using FitLife.Frontend.Services;
 
 public class TokenService
 {
@@ -64,11 +65,6 @@ public class TokenService
         AttachToken(_httpClient);
         var userId = await GetUserIdFromCachedToken();
         var user = await _httpClient.GetFromJsonAsync<UserDto>($"user/GetUserById/{userId}");
-        var response = await _httpClient.GetAsync($"user/GetUserById/{userId}");
-
-        var json = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(json);
-        Console.WriteLine($"Role: {user?.RoleName}");
         return user?.RoleName;
     }
 
