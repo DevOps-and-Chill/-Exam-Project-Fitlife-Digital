@@ -3,356 +3,132 @@
 @using FitLife.Frontend.Models
 @using FitLife.Frontend.Services
 @inject PTService PTService
-@inject CenterService CenterService
-@inject EmployeeService EmployeeService
+@inject TokenService TokenService
 
 <div class="container-fluid px-0">
 
-    <!-- Shared navbar for medarbejdersider -->
     <EmployeeNavbar />
 
     <section class="container py-5">
 
-        <!-- Hero/introsektion -->
         <div class="row align-items-center mb-5">
-
             <div class="col-md-7">
-
                 <span class="badge bg-success mb-3 px-3 py-2">
                     PERSONLIG TRÆNING
                 </span>
-
                 <h1 class="fw-bold mb-3">
                     Personlig træning
                 </h1>
-
                 <p class="lead text-muted">
-                    Find en personlig træner, book en session eller send en besked direkte fra platformen.
+                    Se og administrer PT-sessioner fra medlemmer.
                 </p>
-
-            </div>
-
-            <!-- Placeholder til billede -->
-            <!-- TODO:
-                 Senere kan billedet hentes dynamisk fra backend eller CMS -->
-            <div class="col-md-5">
-
-                <div class="bg-light border rounded-4 d-flex align-items-center justify-content-center shadow-sm"
-                     style="height: 240px;">
-
-                    <span class="text-muted">
-                        Billede fra det udvalgte center
-                    </span>
-
-                </div>
-
             </div>
         </div>
 
-        <!-- Liste over trænere -->
-        <div class="row g-4">
-
-            <!-- Loop gennem alle trænere -->
-            <!-- Trænere hentes fra UserService via TrainerService -->
-            @foreach (var trainer in Employees)
-            {
-                <div class="col-md-4">
-
-                    <div class="card shadow-sm h-100 border-0">
-
-                        <div class="card-body p-4">
-
-                            <div class="fs-2 mb-3">
-                                💪
-                            </div>
-
-                            <h4 class="fw-bold">
-                                @trainer.fullName
-                            </h4>
-
-                            <p class="text-muted">
-                                @trainer.Description
-                            </p>
-                            
-
-                            <p class="mb-3">
-                                <strong>Ledig:</strong>
-                                @(trainer.IsAvailable ? "Ja" : "Nej")
-                            </p>
-
-                            <div class="d-grid gap-2">
-
-                                <!-- Hvis træneren er ledig kan medarbejderen booke -->
-                                @if (trainer.IsAvailable)
-                                {
-                                    <button class="btn btn-success"
-                                            @onclick="() => SelectTrainerForBooking(trainer)">
-                                        Book session
-                                    </button>
-                                }
-                                else
-                                {
-                                    <!-- Hvis træneren ikke er ledig -->
-                                    <button class="btn btn-warning"
-                                            @onclick="() => JoinWaitlist(trainer)">
-                                        Tilmeld venteliste
-                                    </button>
-                                }
-
-                                <!-- Åbner beskedformular -->
-                                <button class="btn btn-outline-dark"
-                                        @onclick="() => SelectTrainerForMessage(trainer)">
-                                    Send besked
-                                </button>
-
-                                <!-- Midlertidig prototype-knap -->
-                                <!-- TODO:
-                                     Kan senere navigere til separat profilside -->
-                                <button class="btn btn-outline-secondary"
-                                        @onclick="() => ShowProfile(trainer)">
-                                    Se profil
-                                </button>
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            }
-
+        <!-- Tab navigation -->
+        <div class="mb-4">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <button class="nav-link @(ActiveTab == "mine" ? "active" : "")"
+                            @onclick='() => SetTab("mine")'>
+                        Mine sessioner
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link @(ActiveTab == "pending" ? "active" : "")"
+                            @onclick='() => SetTab("pending")'>
+                        Afventende anmodninger
+                        @if (PendingSessions.Count > 0)
+                        {
+                            <span class="badge bg-danger ms-2">@PendingSessions.Count</span>
+                        }
+                    </button>
+                </li>
+            </ul>
         </div>
-
-        <!-- TILFØJET: Oversigt over indkomne PT-anmodninger med accept/afvis -->
-        <h3 class="fw-bold mb-4">Indkomne anmodninger</h3>
 
         @if (IsLoading)
         {
-            <div class="alert alert-info">Henter anmodninger...</div>
+            <div class="alert alert-info">Henter sessioner...</div>
         }
-        else if (Sessions.Count == 0)
+        else if (ActiveTab == "mine")
         {
-            <div class="alert alert-secondary">Ingen PT-anmodninger at vise.</div>
-        }
-        else
-        {
-            <div class="row g-4 mb-5">
-                @foreach (var session in Sessions)
-                {
-                    <div class="col-md-6">
-                        <div class="card shadow-sm border-0 h-100">
-                            <div class="card-body p-4">
-
-                                <div class="d-flex justify-content-between align-items-start mb-3">
-                                    <h5 class="fw-bold mb-0">Session</h5>
-                                    <span class="badge @GetStatusBadgeClass(session.Status)">
-                                        @session.Status
-                                    </span>
-                                </div>
-
-                                <p class="mb-1">
-                                    <strong>Medlem ID:</strong> @session.MemberId
-                                </p>
-                                <p class="mb-1">
-                                    <strong>Træner ID:</strong> @session.PersonalTrainerId
-                                </p>
-                                <p class="mb-1">
-                                    <strong>Start:</strong> @session.StartDate.ToString("dd/MM/yyyy HH:mm")
-                                </p>
-                                <p class="mb-3">
-                                    <strong>Slut:</strong> @session.EndDate.ToString("dd/MM/yyyy HH:mm")
-                                </p>
-
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-success"
-                                            @onclick="() => AcceptSession(session)">
-                                        Accepter
-                                    </button>
-                                    <button class="btn btn-danger"
-                                            @onclick="() => RejectSession(session)">
-                                        Afvis
-                                    </button>
-                                    <button class="btn btn-outline-secondary"
+            @if (MineSessions.Count == 0)
+            {
+                <div class="alert alert-secondary">Du har ingen sessioner endnu.</div>
+            }
+            else
+            {
+                <div class="row g-4 mb-5">
+                    @foreach (var session in MineSessions)
+                    {
+                        <div class="col-md-6">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-body p-4">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <h5 class="fw-bold mb-0">PT Session</h5>
+                                        <span class="badge @GetStatusBadgeClass(session.Status)">
+                                            @GetStatusText(session.Status)
+                                        </span>
+                                    </div>
+                                    <p class="mb-1"><strong>Medlem ID:</strong> @session.MemberId</p>
+                                    <p class="mb-1"><strong>Start:</strong> @session.StartDate.ToString("dd/MM/yyyy HH:mm")</p>
+                                    <p class="mb-3"><strong>Slut:</strong> @session.EndDate.ToString("dd/MM/yyyy HH:mm")</p>
+                                    <button class="btn btn-outline-secondary btn-sm"
                                             @onclick="() => CancelSession(session)">
                                         Annuller
                                     </button>
                                 </div>
-
                             </div>
                         </div>
-                    </div>
-                }
-            </div>
-        }
-
-        <!-- Bookingpanel -->
-        @if (SelectedTrainerForBooking is not null)
-        {
-            <div class="card shadow-sm border-0 mt-5">
-
-                <div class="card-body p-4">
-
-                    <h4 class="fw-bold">
-                        Book session med @SelectedTrainerForBooking.fullName
-                    </h4>
-
-                    <p class="text-muted">
-                        Vælg center, dato og tidspunkt for din personlige træning.
-                    </p>
-
-                    <div class="row g-3 mt-2">
-
-                        <!-- Valg af center -->
-                        <!-- Centre hentes fra FacilityService via CenterService -->
-                        <div class="col-md-12">
-
-                            <label class="form-label">
-                                Vælg center
-                            </label>
-
-                            <select class="form-select"
-                                    @bind="SelectedCenterId">
-
-                                <option value="">
-                                    Vælg center
-                                </option>
-
-                                @foreach (var center in Centers)
-                                {
-                                    <option value="@center.Id">
-                                        @center.Name - @center.Address
-                                    </option>
-                                }
-
-                            </select>
-
-                        </div>
-
-                        <!-- Valg af dato -->
-                        <div class="col-md-6">
-
-                            <label class="form-label">
-                                Valgt dato
-                            </label>
-
-                            <input class="form-control"
-                                   type="date"
-                                   @bind="SelectedDate" />
-                        </div>
-
-                        <!-- Valg af tidspunkt -->
-                        <div class="col-md-6">
-
-                            <label class="form-label">
-                                Vælg tid
-                            </label>
-
-                            <select class="form-select"
-                                    @bind="SelectedTime">
-
-                                <option value="">
-                                    Vælg tid
-                                </option>
-
-                                <option>09:00</option>
-                                <option>12:00</option>
-                                <option>15:00</option>
-                                <option>17:00</option>
-
-                            </select>
-
-                        </div>
-                    </div>
-
-                    <div class="d-flex gap-3 mt-4">
-
-                        <!-- Opretter booking -->
-                        <!-- Sender booking til PTService/API -->
-                        <button class="btn btn-success"
-                                @onclick="BookSession">
-                            Book
-                        </button>
-
-                        <!-- Lukker booking -->
-                        <button class="btn btn-outline-secondary"
-                                @onclick="CancelBooking">
-                            Afbryd booking
-                        </button>
-
-                    </div>
-
+                    }
                 </div>
-            </div>
+            }
         }
-
-        <!-- Beskedpanel -->
-        @if (SelectedTrainerForMessage is not null)
+        else if (ActiveTab == "pending")
         {
-            <div class="card shadow-sm border-0 mt-5">
-
-                <div class="card-body p-4">
-
-                    <h4 class="fw-bold">
-                        Send besked til @SelectedTrainerForMessage.fullName
-                    </h4>
-
-                    <p class="text-muted">
-                        Skriv en kort besked til træneren om dit behov eller spørgsmål.
-                    </p>
-
-                    <!-- Message-modellen bruges nu i stedet for separate strings -->
-                    <!-- Dette gør løsningen mere domain-driven og nemmere at koble til backend -->
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Emne
-                        </label>
-
-                        <input class="form-control"
-                               @bind="NewMessage.Subject" />
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Besked
-                        </label>
-
-                        <textarea class="form-control"
-                                  rows="5"
-                                  @bind="NewMessage.Content">
-                        </textarea>
-
-                    </div>
-
-                    <div class="d-flex gap-3">
-
-                        <!-- Sender besked -->
-                        <!-- TODO:
-                             Senere skal beskeden gemmes via MessageService/API -->
-                        <button class="btn btn-success"
-                                @onclick="SendMessage">
-                            Send
-                        </button>
-
-                        <!-- Lukker beskedformular -->
-                        <button class="btn btn-outline-secondary"
-                                @onclick="CancelMessage">
-                            Afbryd
-                        </button>
-
-                    </div>
-
+            @if (PendingSessions.Count == 0)
+            {
+                <div class="alert alert-secondary">Ingen afventende anmodninger.</div>
+            }
+            else
+            {
+                <div class="row g-4 mb-5">
+                    @foreach (var session in PendingSessions)
+                    {
+                        <div class="col-md-6">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-body p-4">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <h5 class="fw-bold mb-0">PT Session</h5>
+                                        <span class="badge @GetStatusBadgeClass(session.Status)">
+                                            @GetStatusText(session.Status)
+                                        </span>
+                                    </div>
+                                    <p class="mb-1"><strong>Medlem ID:</strong> @session.MemberId</p>
+                                    <p class="mb-1"><strong>Start:</strong> @session.StartDate.ToString("dd/MM/yyyy HH:mm")</p>
+                                    <p class="mb-3"><strong>Slut:</strong> @session.EndDate.ToString("dd/MM/yyyy HH:mm")</p>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-success btn-sm"
+                                                @onclick="() => AcceptSession(session)">
+                                            Accepter
+                                        </button>
+                                        <button class="btn btn-danger btn-sm"
+                                                @onclick="() => RejectSession(session)">
+                                            Afvis
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
-            </div>
+            }
         }
 
-        <!-- Feedback til bruger -->
         @if (!string.IsNullOrWhiteSpace(StatusMessage))
         {
-            <div class="alert alert-info mt-4">
-                @StatusMessage
-            </div>
+            <div class="alert alert-info mt-4">@StatusMessage</div>
         }
 
     </section>
@@ -362,52 +138,36 @@
 </div>
 
 @code {
+    [SupplyParameterFromQuery]
+    public string? Tab { get; set; }
 
-    // Holder styr på hvilken træner brugeren vil booke hos
-    private Employee? SelectedTrainerForBooking;
-
-    // Holder styr på hvilken træner brugeren skriver til
-    private Employee? SelectedTrainerForMessage;
-
-    // List over PT-sessions and loading state
-    private List<PersonalTrainingSession> Sessions = new();
     private bool IsLoading = true;
-
-    // Midlertidige bookingfelter
-    private DateTime? SelectedDate;
-    private string SelectedTime = "";
-
-    // Liste over centre hentet fra FacilityService
-    // TODO:
-    // Senere kan valgt center evt. komme fra brugerens profil eller valgte center i navigationen
-    private List<ExerciseGym> Centers = new();
-
-    private string SelectedCenterId = "";
-
-    // Message-model bruges til beskedsystemet
-    // TODO:
-    // Skal senere sendes til backend via MessageService/API
-    private Message NewMessage = new();
-
-    // Feedback til bruger
     private string StatusMessage = "";
+    private string ActiveTab = "mine";
+    private List<PersonalTrainingSession> MineSessions = new();
+    private List<PersonalTrainingSession> PendingSessions = new();
 
-    // Trænere hentes fra UserService
-    // TODO:
-    // Senere kan data udvides med speciale, profiltekst og bookingkalender
-    private List<Employee> Employees = new();
+    private void SetTab(string tab)
+    {
+        ActiveTab = tab;
+    }
 
-    // Henter centre og trænere når siden indlæses
+    private string GetStatusText(int status) => status switch
+    {
+        0 => "Afventer",
+        1 => "Aktiv",
+        2 => "Gennemført",
+        3 => "Annulleret",
+        _ => "Ukendt"
+    };
+
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            Centers = await CenterService.GetCentersAsync();
-            // Vælger første center som standard hvis der findes centre
-            SelectedCenterId = Centers.FirstOrDefault()?.Id ?? "";
-            Employees = await EmployeeService.GetEmployeesByAffiliationAsync(SelectedCenterId);
+            if (!string.IsNullOrWhiteSpace(Tab))
+                ActiveTab = Tab;
 
-            // Retrieving PT sessions
             await LoadSessions();
         }
         catch (Exception ex)
@@ -415,13 +175,29 @@
             StatusMessage = $"Kunne ikke hente data: {ex.Message}";
         }
     }
-    
     private async Task LoadSessions()
     {
         try
         {
             IsLoading = true;
-            Sessions = await PTService.GetSessionsAsync();
+            var token = TokenService.GetToken();
+            var allSessions = await PTService.GetSessionsAsync();
+
+            if (token is not null)
+            {
+                var userId = await TokenService.GetUserIdFromCachedToken();
+                MineSessions = allSessions
+                    .Where(s => s.PersonalTrainerId.ToString() == userId && s.Status != 0)
+                    .ToList();
+            }
+            else
+            {
+                MineSessions = allSessions;
+            }
+
+            PendingSessions = allSessions
+                .Where(s => s.Status == 0)
+                .ToList();
         }
         catch (Exception ex)
         {
@@ -433,167 +209,6 @@
         }
     }
 
-    // Åbner bookingpanel
-    private void SelectTrainerForBooking(Employee trainer)
-    {
-        SelectedTrainerForBooking = trainer;
-
-        // Lukker eventuel beskedformular
-        SelectedTrainerForMessage = null;
-
-        StatusMessage = "";
-    }
-
-    // Åbner beskedformular
-    private void SelectTrainerForMessage(Employee trainer)
-    {
-        SelectedTrainerForMessage = trainer;
-
-        // Lukker eventuel booking
-        SelectedTrainerForBooking = null;
-
-        StatusMessage = "";
-
-        // Nulstiller besked
-        NewMessage = new Message();
-    }
-
-    // Midlertidig ventelistefunktion
-    // TODO:
-    // Skal senere kobles til backend
-    private void JoinWaitlist(Employee trainer)
-    {
-        StatusMessage = $"Du er nu tilmeldt ventelisten hos {trainer.fullName}.";
-    }
-
-    // Midlertidig prototypefunktion
-    private void ShowProfile(Employee trainer)
-    {
-        StatusMessage = $"Profil for {trainer.fullName} vises ikke som separat side endnu.";
-    }
-
-    // Opretter booking
-    // Sender booking til PTService/API
-    private async Task BookSession()
-    {
-        if (SelectedTrainerForBooking is null ||
-            SelectedDate is null ||
-            string.IsNullOrWhiteSpace(SelectedTime) ||
-            string.IsNullOrWhiteSpace(SelectedCenterId))
-        {
-            StatusMessage = "Vælg både center, dato og tid.";
-            return;
-        }
-
-        if (!Guid.TryParse(SelectedCenterId, out var centerId))
-        {
-            StatusMessage = "Det valgte center har ikke et gyldigt Guid-id.";
-            return;
-        }
-
-        if (!Guid.TryParse(SelectedTrainerForBooking.Id, out var trainerId))
-        {
-            StatusMessage = "Den valgte træner har ikke et gyldigt Guid-id.";
-            return;
-        }
-
-        if (!TimeSpan.TryParse(SelectedTime, out var selectedTime))
-        {
-            StatusMessage = "Tidspunktet er ugyldigt.";
-            return;
-        }
-
-        var startDate = SelectedDate.Value.Date.Add(selectedTime);
-
-        var newSession = new PersonalTrainingSession
-        {
-            // Midlertidigt member-id
-            // TODO:
-            // Senere skal MemberId hentes fra den bruger der er logget ind
-            MemberId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-
-            // PersonalTrainerId kommer fra UserService via den valgte træner
-            PersonalTrainerId = trainerId,
-
-            // CenterId kommer fra FacilityService via det valgte center
-            CenterId = centerId,
-
-            // Midlertidigt mål
-            // TODO:
-            // Senere kan brugeren selv vælge mål, fx vægttab, styrke eller kondition
-            Goal = 0,
-
-            StartDate = startDate,
-
-            EndDate = startDate.AddHours(1)
-        };
-
-        var bookedSession = await PTService.BookSessionAsync(newSession);
-
-        if (bookedSession is null)
-        {
-            StatusMessage = "Bookingen kunne ikke oprettes. Tjek at PTService kører.";
-            return;
-        }
-
-        StatusMessage =
-            $"Du har booket en session med {SelectedTrainerForBooking.fullName} den {SelectedDate:dd/MM} kl. {SelectedTime}.";
-
-        // Lukker bookingpanel og nulstiller data
-        SelectedTrainerForBooking = null;
-        SelectedDate = null;
-        SelectedTime = "";
-    }
-
-    // Lukker bookingformular
-    private void CancelBooking()
-    {
-        SelectedTrainerForBooking = null;
-        SelectedDate = null;
-        SelectedTime = "";
-    }
-
-    // Sender besked
-    // TODO:
-    // Skal senere gemmes via MessageService/API/database
-    private void SendMessage()
-    {
-        if (SelectedTrainerForMessage is null ||
-            string.IsNullOrWhiteSpace(NewMessage.Subject) ||
-            string.IsNullOrWhiteSpace(NewMessage.Content))
-        {
-            StatusMessage = "Udfyld både emne og besked.";
-            return;
-        }
-
-        // Tilføjer metadata til beskeden
-        NewMessage.SenderName = "NAVN NAVNESEN";
-
-        NewMessage.ReceiverName =
-            SelectedTrainerForMessage.fullName;
-
-        NewMessage.SentDate = DateTime.Now;
-
-        NewMessage.IsRead = false;
-
-        StatusMessage =
-            $"Din besked til {NewMessage.ReceiverName} er sendt.";
-
-        // Nulstiller formular
-        SelectedTrainerForMessage = null;
-
-        NewMessage = new Message();
-    }
-
-    // Lukker beskedformular
-    private void CancelMessage()
-    {
-        SelectedTrainerForMessage = null;
-
-        NewMessage = new Message();
-    }
-
-    // Accepting a PT session via PTService
     private async Task AcceptSession(PersonalTrainingSession session)
     {
         var success = await PTService.AcceptSessionAsync(session.Id);
@@ -604,11 +219,10 @@
         }
         else
         {
-            StatusMessage = "Kunne ikke acceptere sessionen. Tjek at PTService kører.";
+            StatusMessage = "Kunne ikke acceptere sessionen.";
         }
     }
 
-    // Rejecting a PT session via PTService
     private async Task RejectSession(PersonalTrainingSession session)
     {
         var success = await PTService.RejectSessionAsync(session.Id);
@@ -619,11 +233,10 @@
         }
         else
         {
-            StatusMessage = "Kunne ikke afvise sessionen. Tjek at PTService kører.";
+            StatusMessage = "Kunne ikke afvise sessionen.";
         }
     }
 
-    // Canceling a PT session via PTService
     private async Task CancelSession(PersonalTrainingSession session)
     {
         var success = await PTService.CancelSessionAsync(session.Id);
@@ -634,16 +247,15 @@
         }
         else
         {
-            StatusMessage = "Kunne ikke annullere sessionen. Tjek at PTService kører.";
+            StatusMessage = "Kunne ikke annullere sessionen.";
         }
     }
 
-    // Returns Bootstrap badge class based on session state
     private string GetStatusBadgeClass(int status)
     {
-        if (status == 0) return "bg-warning text-dark"; // Pending
-        if (status == 1) return "bg-success";            // Completed
-        if (status == 2) return "bg-danger";             // Cancelled
+        if (status == 0) return "bg-warning text-dark";
+        if (status == 1) return "bg-success";
+        if (status == 2) return "bg-danger";
         return "bg-secondary";
     }
 }
