@@ -11,6 +11,14 @@
       "RelativeMoniker": "D:0:0:{7A94BF29-B535-450D-854D-AFFA97ABB3C8}|DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj|solutionrelative:digitalcontentserviceapi\\extensions\\vaultconfigurationextension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{7A94BF29-B535-450D-854D-AFFA97ABB3C8}|DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\digitalcontentserviceapi\\digitalcontentservice\\digitalcontentserviceapi\\controllers\\workoutvideocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A94BF29-B535-450D-854D-AFFA97ABB3C8}|DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj|solutionrelative:digitalcontentserviceapi\\controllers\\workoutvideocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A94BF29-B535-450D-854D-AFFA97ABB3C8}|DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\digitalcontentserviceapi\\digitalcontentservice\\digitalcontentserviceapi\\controllers\\workoutprogramcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A94BF29-B535-450D-854D-AFFA97ABB3C8}|DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj|solutionrelative:digitalcontentserviceapi\\controllers\\workoutprogramcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{7A94BF29-B535-450D-854D-AFFA97ABB3C8}|DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj|d:\\dokumenter\\git\\exam-project-fitlife-digital\\digitalcontentserviceapi\\digitalcontentservice\\digitalcontentserviceapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{7A94BF29-B535-450D-854D-AFFA97ABB3C8}|DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj|solutionrelative:digitalcontentserviceapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
@@ -26,8 +34,33 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 5,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "WorkoutVideoController.cs",
+              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceAPI\\Controllers\\WorkoutVideoController.cs",
+              "RelativeDocumentMoniker": "DigitalContentServiceAPI\\Controllers\\WorkoutVideoController.cs",
+              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceAPI\\Controllers\\WorkoutVideoController.cs",
+              "RelativeToolTip": "DigitalContentServiceAPI\\Controllers\\WorkoutVideoController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACYAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-27T16:29:18.975Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "WorkoutProgramController.cs",
+              "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceAPI\\Controllers\\WorkoutProgramController.cs",
+              "RelativeDocumentMoniker": "DigitalContentServiceAPI\\Controllers\\WorkoutProgramController.cs",
+              "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceAPI\\Controllers\\WorkoutProgramController.cs",
+              "RelativeToolTip": "DigitalContentServiceAPI\\Controllers\\WorkoutProgramController.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAFkAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-27T16:28:24.01Z"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 1,
@@ -36,13 +69,14 @@
               "RelativeDocumentMoniker": "DigitalContentServiceAPI\\Extensions\\VaultConfigurationExtension.cs",
               "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceAPI\\Extensions\\VaultConfigurationExtension.cs",
               "RelativeToolTip": "DigitalContentServiceAPI\\Extensions\\VaultConfigurationExtension.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-25T19:27:38.937Z"
+              "WhenOpened": "2026-05-25T19:27:38.937Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceAPI\\appsettings.json",
               "RelativeDocumentMoniker": "DigitalContentServiceAPI\\appsettings.json",
@@ -54,13 +88,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "DigitalContentServiceAPI.csproj",
               "DocumentMoniker": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj",
               "RelativeDocumentMoniker": "DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj",
               "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj",
               "RelativeToolTip": "DigitalContentServiceAPI\\DigitalContentServiceAPI.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAABZAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAABZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
               "WhenOpened": "2026-05-24T21:06:32.997Z"
             },
@@ -72,7 +106,7 @@
               "RelativeDocumentMoniker": "DigitalContentServiceAPI\\Program.cs",
               "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceAPI\\Program.cs",
               "RelativeToolTip": "DigitalContentServiceAPI\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAA1AAAAAAAAAA==",
+              "ViewState": "AgIAAHEAAAAAAAAAAAA1wI0AAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-24T21:05:45.292Z",
               "EditorCaption": ""

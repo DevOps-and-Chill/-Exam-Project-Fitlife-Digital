@@ -5,14 +5,14 @@ services:
       context: ./FacilityService/FacilityServiceAPI
 
     expose:
-    - "8080"
+      - "8080"
 
     environment:
-      VAULT_TOKEN: ${VAULT_TOKEN}
+      - VAULT_TOKEN=${VAULT_TOKEN}
+      - Vault__Address=${Vault__Address}
 
     networks:
       - backend
-
 
 
   classservice:
@@ -23,12 +23,12 @@ services:
       - "8080"
 
     environment:
-      RabbitMQ__Host: rabbitmq
-      VAULT_TOKEN: ${VAULT_TOKEN}
+      - RabbitMQ__Host=rabbitmq
+      - VAULT_TOKEN=${VAULT_TOKEN}
+      - Vault__Address=${Vault__Address}
 
     networks:
       - backend
-
 
 
   messageservice:
@@ -39,12 +39,12 @@ services:
       - "8080"
 
     environment:
-      RabbitMQ__Host: rabbitmq
-      VAULT_TOKEN: ${VAULT_TOKEN}
+      - RabbitMQ__Host=rabbitmq
+      - VAULT_TOKEN=${VAULT_TOKEN}
+      - Vault__Address=${Vault__Address}
 
     networks:
       - backend
-
 
 
   ptservice:
@@ -55,7 +55,8 @@ services:
       - "8080"
 
     environment:
-      VAULT_TOKEN: ${VAULT_TOKEN}
+      - VAULT_TOKEN=${VAULT_TOKEN}
+      - Vault__Address=${Vault__Address}
 
     networks:
       - backend
@@ -64,15 +65,16 @@ services:
   statisticservice:
     build:
       context: ./StatisticService/StatisticServiceAPI
+
     expose:
       - "8080"
 
     environment:
-      VAULT_TOKEN: ${VAULT_TOKEN}
+      - VAULT_TOKEN=${VAULT_TOKEN}
+      - Vault__Address=${Vault__Address}
 
     networks:
       - backend
-
 
 
   authservice:
@@ -83,11 +85,11 @@ services:
       - "8080"
 
     environment:
-      VAULT_TOKEN: ${VAULT_TOKEN}
+      - VAULT_TOKEN=${VAULT_TOKEN}
+      - Vault__Address=${Vault__Address}
 
     networks:
       - backend
-
 
 
   userservice:
@@ -98,11 +100,26 @@ services:
       - "8080"
 
     environment:
-      VAULT_TOKEN: ${VAULT_TOKEN}
+      - VAULT_TOKEN=${VAULT_TOKEN}
+      - Vault__Address=${Vault__Address}
 
     networks:
       - backend
 
+
+  digitalcontentservice:
+    build:
+      context: ./DigitalContentServiceAPI/DigitalContentService/DigitalContentServiceAPI
+
+    expose:
+      - "8080"
+
+    environment:
+      - VAULT_TOKEN=${VAULT_TOKEN}
+      - Vault__Address=${Vault__Address}
+
+    networks:
+      - backend
 
 
   gateway:
@@ -116,7 +133,6 @@ services:
 
     networks:
       - backend
-
 
 
 networks:

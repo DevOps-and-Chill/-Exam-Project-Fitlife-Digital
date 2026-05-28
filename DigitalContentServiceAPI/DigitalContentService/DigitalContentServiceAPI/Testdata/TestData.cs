@@ -16,7 +16,7 @@ namespace DigitalContentServiceAPI.Testdata
 		Description = "A light full body warmup suitable for beginners.",
 		DateCreated = DateTime.UtcNow,
 		DateModified = DateTime.UtcNow,
-		CreatedBy = Guid.NewGuid(),
+		CreatedBy = Guid.NewGuid().ToString(),
 
 		ContentUrl = "https://videos.fitlife.com/fullbody-warmup.mp4",
 		Duration = 10,
@@ -32,7 +32,7 @@ namespace DigitalContentServiceAPI.Testdata
 		Description = "An intense kettlebell workout focused on fat burning.",
 		DateCreated = DateTime.UtcNow,
 		DateModified = DateTime.UtcNow,
-		CreatedBy = Guid.NewGuid(),
+		CreatedBy = Guid.NewGuid().ToString(),
 
 		ContentUrl = "https://videos.fitlife.com/kettlebell-fatburn.mp4",
 		Duration = 22,
@@ -48,7 +48,7 @@ namespace DigitalContentServiceAPI.Testdata
 		Description = "Learn correct bench press form and execution.",
 		DateCreated = DateTime.UtcNow,
 		DateModified = DateTime.UtcNow,
-		CreatedBy = Guid.NewGuid(),
+		CreatedBy = Guid.NewGuid().ToString(),
 
 		ContentUrl = "https://videos.fitlife.com/benchpress-guide.mp4",
 		Duration = 18,
@@ -64,7 +64,7 @@ namespace DigitalContentServiceAPI.Testdata
 		Description = "Moderate cardio workout using a threadmill.",
 		DateCreated = DateTime.UtcNow,
 		DateModified = DateTime.UtcNow,
-		CreatedBy = Guid.NewGuid(),
+		CreatedBy = Guid.NewGuid().ToString(),
 
 		ContentUrl = "https://videos.fitlife.com/threadmill-cardio.mp4",
 		Duration = 30,
@@ -83,7 +83,7 @@ namespace DigitalContentServiceAPI.Testdata
 		Description = "A beginner-friendly program focused on calorie burning and endurance.",
 		DateCreated = DateTime.UtcNow,
 		DateModified = DateTime.UtcNow,
-		CreatedBy = Guid.NewGuid(),
+		CreatedBy = Guid.NewGuid().ToString(),
 
 		GeneralEducationLevel = DifficultyLevel.Light,
 		TimeRequired = 240,
@@ -135,7 +135,7 @@ namespace DigitalContentServiceAPI.Testdata
 		Description = "Intermediate strength training program targeting upper body muscles.",
 		DateCreated = DateTime.UtcNow,
 		DateModified = DateTime.UtcNow,
-		CreatedBy = Guid.NewGuid(),
+		CreatedBy = Guid.NewGuid().ToString(),
 
 		GeneralEducationLevel = DifficultyLevel.Moderate,
 		TimeRequired = 360,
@@ -187,7 +187,7 @@ namespace DigitalContentServiceAPI.Testdata
 		Description = "High intensity muscle gain program for experienced athletes.",
 		DateCreated = DateTime.UtcNow,
 		DateModified = DateTime.UtcNow,
-		CreatedBy = Guid.NewGuid(),
+		CreatedBy = Guid.NewGuid().ToString(),
 
 		GeneralEducationLevel = DifficultyLevel.Expert,
 		TimeRequired = 540,

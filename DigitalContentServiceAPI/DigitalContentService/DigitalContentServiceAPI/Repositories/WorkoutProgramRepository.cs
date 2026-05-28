@@ -22,19 +22,29 @@ namespace DigitalContentServiceAPI.Repositories
 		
 		public async Task InsertWorkoutProgramAsync(WorkoutProgram workoutProgramToInsert)
 		{
+			_logger.LogInformation($"Started Insert Workout Program for WorkoutProgram {workoutProgramToInsert.Id}");
 			_context.DigitalContent.Add(workoutProgramToInsert);
 			await _context.SaveChangesAsync();
 		}
 
 		// GET
 	
-		public async Task<WorkoutProgram?> GetWorkoutProgramAsync(Guid id)
+		public async Task<WorkoutProgram?> GetWorkoutProgramAsync(string id)
 		{
+			_logger.LogInformation($"Started GetWorkoutProgram for WorkoutProgram {id}");
 			return await _context.Set<WorkoutProgram>()
 				.FirstOrDefaultAsync(c => c.Id == id);
 		}
+
+		public async Task<List<WorkoutProgram>> GetWorkoutProgramsAsync()
+		{
+			_logger.LogInformation("Starting GetAllWorkoutPrograms");
+
+			return await _context.Set<WorkoutProgram>().ToListAsync();
+		}
 		
-		public async Task<bool> UpdateWorkoutProgramAsync(Guid id, WorkoutProgram workoutProgramToChange)
+		//PUT
+		public async Task<bool> UpdateWorkoutProgramAsync(string id, WorkoutProgram workoutProgramToChange)
 		{
 			var program = await _context.Set<WorkoutProgram>().FirstOrDefaultAsync( c => c.Id == id);
 		   
@@ -54,7 +64,8 @@ namespace DigitalContentServiceAPI.Repositories
 			return true;
 		}
 
-		public async Task<bool> DeleteWorkoutProgramAsync(Guid id)
+		//DELETE
+		public async Task<bool> DeleteWorkoutProgramAsync(string id)
 		{
 			var program = _context.DigitalContent.FirstOrDefault( c => c.Id == id);
 		

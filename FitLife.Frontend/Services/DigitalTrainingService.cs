@@ -1,9 +1,21 @@
+using System.Net.Http;
 using FitLife.Frontend.Models;
 
 namespace FitLife.Frontend.Services;
 
 public class DigitalTrainingService
 {
+    private readonly HttpClient _httpClient;
+    private readonly TokenService _tokenService;
+
+    public DigitalTrainingService(IHttpClientFactory httpClientFactory, TokenService tokenService)
+    {
+        // Opretter HttpClient med base URL fra Program.cs/appsettings.json.
+        // Base URL peger på UserService.
+        _httpClient = httpClientFactory.CreateClient("DigitalTrainingService");
+        _tokenService = tokenService;
+        _tokenService.AttachToken(_httpClient);
+    }
     // Denne service håndterer digitalt træningsindhold.
     // Service-laget fungerer som bindeled mellem frontend og data.
     // TODO:

@@ -1,5 +1,6 @@
 ﻿using DigitalContentServiceAPI.Models;
 using DigitalContentServiceAPI.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalContentServiceAPI.Controllers
@@ -18,7 +19,7 @@ namespace DigitalContentServiceAPI.Controllers
         }
 
         // POST
-
+        [Authorize]
         [HttpPost("insert")]
         public async Task<IActionResult> InsertWorkoutVideoAsync(WorkoutVideo workoutVideo)
         {
@@ -36,9 +37,9 @@ namespace DigitalContentServiceAPI.Controllers
         }
 
         // GET
-
+        [Authorize]
         [HttpGet("get/{id}")]
-        public async Task<IActionResult> GetWorkoutVideoAsync(Guid id)
+        public async Task<IActionResult> GetWorkoutVideoAsync(string id)
         {
             try
             {
@@ -57,10 +58,23 @@ namespace DigitalContentServiceAPI.Controllers
             }
         }
 
+        [HttpGet("getall")]
+        public async Task<IActionResult> GetWorkoutVideosAsync()
+        {
+            try
+            {
+                return Ok(await _videoRepo.GetWorkoutVideosAsync());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occured when trying to fetch all workout videos", ex.StackTrace);
+                return BadRequest(ex.Message);
+            }
+        }
         // DELETE
-
+        [Authorize]
         [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteWorkoutVideoAsync(Guid id)
+        public async Task<IActionResult> DeleteWorkoutVideoAsync(string id)
         {
             try
             {

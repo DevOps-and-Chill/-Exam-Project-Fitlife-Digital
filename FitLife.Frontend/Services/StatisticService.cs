@@ -6,10 +6,13 @@ namespace FitLife.Frontend.Services
     public class StatisticService
     {
         private readonly HttpClient _httpClient;
+        private readonly TokenService _tokenService;
 
-        public StatisticService(IHttpClientFactory httpClientFactory)
+        public StatisticService(IHttpClientFactory httpClientFactory, TokenService tokenService)
         {
             _httpClient = httpClientFactory.CreateClient("StatisticService");
+            _tokenService = tokenService;
+            _tokenService.AttachToken(_httpClient);
         }
 
         // Fetches all statistics

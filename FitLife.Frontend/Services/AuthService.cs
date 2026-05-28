@@ -1,8 +1,9 @@
-using FitLife.Frontend.Models;
-using Microsoft.AspNetCore.Identity.Data;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Security.Claims;
+using FitLife.Frontend.Models;
+using Microsoft.AspNetCore.Identity.Data;
 
 namespace FitLife.Frontend.Services;
 
@@ -17,6 +18,8 @@ public class AuthService
         _authClient = httpClientFactory.CreateClient("AuthService");
         _userClient = httpClientFactory.CreateClient("UserService");
         _tokenService = tokenService;
+        _tokenService.AttachToken(_userClient);
+        _tokenService.AttachToken(_authClient);
     }
 
     public async Task<LoginResult> LoginAsync(string email, string password)

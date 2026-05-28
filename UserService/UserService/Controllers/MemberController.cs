@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserServiceAPI.Models;
 using UserServiceAPI.Repositories;
@@ -21,6 +22,7 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Retrieves all members.
         /// </summary>
+        [Authorize]
         [HttpGet("GetAllMembers")]
         public async Task<ActionResult> GetAllMembers()
         {
@@ -39,6 +41,7 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Cancels the membership for a member.
         /// </summary>
+        [Authorize]
         [HttpPut("CancelMembership/{userId}")]
         public async Task<ActionResult> CancelMembership(string userId)
         {
@@ -57,6 +60,7 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Creates or updates a member.
         /// </summary>
+        [Authorize]
         [HttpPost("UpsertMember")]
         public async Task<ActionResult> UpsertMember([FromBody] Member member)
         {
@@ -78,6 +82,7 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Deletes a member.
         /// </summary>
+        [Authorize]
         [HttpDelete("DeleteMember/{userId}")]
         public async Task<ActionResult> DeleteMember(string userId)
         {
@@ -97,6 +102,7 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Sets a member account as inactive.
         /// </summary>
+        [Authorize]
         [HttpPut("SetAccountAsInactive/{userId}")]
         public async Task<ActionResult> SetMemberAccountAsInactive(string userId)
         {
@@ -115,6 +121,7 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Retrieves a member by id.
         /// </summary>
+        [Authorize]
         [HttpGet("GetMemberById/{userId}")]
         public async Task<ActionResult> GetMemberById(string userId)
         {
@@ -143,6 +150,7 @@ namespace UserServiceAPI.Controllers
         /// <summary>
         /// Retrieves all members affiliated with a specific gym.
         /// </summary>
+        [Authorize]
         [HttpGet("GetMemberByAffiliation/{affiliationId}")]
         public async Task<ActionResult> GetMemberByAffiliation(Guid affiliationId)
         {

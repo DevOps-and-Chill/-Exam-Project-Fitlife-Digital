@@ -6,10 +6,13 @@ namespace FitLife.Frontend.Services;
 public class PTService
 {
     private readonly HttpClient _httpClient;
+    private readonly TokenService _tokenService;
 
-    public PTService(IHttpClientFactory httpClientFactory)
+    public PTService(IHttpClientFactory httpClientFactory, TokenService tokenService)
     {
         _httpClient = httpClientFactory.CreateClient("PTService");
+        _tokenService = tokenService;
+        _tokenService.AttachToken(_httpClient);
     }
 
     public async Task<List<PersonalTrainingSession>> GetSessionsAsync()

@@ -1,5 +1,6 @@
 using FacilityServiceAPI.Models;
 using FacilityServiceAPI.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FacilityServiceAPI.Controllers
@@ -17,10 +18,11 @@ namespace FacilityServiceAPI.Controllers
             _exerciseGymRepository = exerciseGymRepository;
         }
 
-		/// <summary>
-		/// Gets all facilities of type 
-		/// </summary>
-		/// <returns></returns>
+        /// <summary>
+        /// Gets all facilities of type 
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
 		[HttpGet("getall")]
 		public async Task<IActionResult> GetExerciseGyms()
 		{
@@ -36,11 +38,12 @@ namespace FacilityServiceAPI.Controllers
 				return BadRequest(ex.Message);
 			}
 		}
-		/// <summary>
-		/// controller for getting a single exercise gym by id 
-		/// </summary>
-		/// <param name="exerciseGymId"></param>
-		/// <returns></returns>
+        /// <summary>
+        /// controller for getting a single exercise gym by id 
+        /// </summary>
+        /// <param name="exerciseGymId"></param>
+        /// <returns></returns>
+        [Authorize]
 		[HttpGet("getbyid")]
 		public async Task<IActionResult> GetExerciseGym([FromBody] string exerciseGymId)
 		{
@@ -63,6 +66,7 @@ namespace FacilityServiceAPI.Controllers
         /// </summary>
         /// <param name="exercisegym"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("insert")]
         public async Task<IActionResult> InsertExerciseGym([FromBody] ExerciseGym exerciseGym)
         {
@@ -86,6 +90,7 @@ namespace FacilityServiceAPI.Controllers
         /// </summary>
         /// <param name="exercisegym"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPut("update")]
         public async Task<IActionResult> UpdateExerciseGym([FromBody] ExerciseGym exerciseGym)
         {

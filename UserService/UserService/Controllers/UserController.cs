@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
@@ -33,6 +34,7 @@ namespace UserServiceAPI.Controllers
         /// <returns>
         /// Returns a list of all users.
         /// </returns>
+        [Authorize]
         [HttpGet("GetAllUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -57,6 +59,7 @@ namespace UserServiceAPI.Controllers
         /// <returns>
         /// Returns the user object if found.
         /// </returns>
+        [Authorize]
         [HttpGet("GetUserById/{userId}")]
         public async Task<IActionResult> GetUserById(string userId)
         {
@@ -83,6 +86,7 @@ namespace UserServiceAPI.Controllers
         /// Returns the user id if a matching user is found.
         /// Returns NotFound if no user exists with the provided email.
         /// </returns>
+        [Authorize]
         [HttpGet("GetUserIdByEmail/{email}")]
         public async Task<IActionResult> GetUserIdByEmail(string email)
         {
@@ -112,6 +116,7 @@ namespace UserServiceAPI.Controllers
         /// <returns>
         /// Returns Ok if the test data was loaded successfully.
         /// </returns>
+        [Authorize(Roles = "admin")]
         [HttpGet("addtestdata")]
         public async Task<ActionResult> AddData()
         {

@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ClassServiceAPI.Models;
+﻿using ClassServiceAPI.Models;
 using ClassServiceAPI.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ClassServiceAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("class")]
 [ApiController]
 public class ClassController : ControllerBase
 {
@@ -18,7 +20,7 @@ public class ClassController : ControllerBase
     }
 
     // POST
-
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateClassAsync([FromBody] Class classModel)
     {
@@ -36,8 +38,9 @@ public class ClassController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPost("{classId}/members")]
-    public async Task<IActionResult> RegisterMemberToClassAsync(Guid classId, [FromBody] Member member)
+    public async Task<IActionResult> RegisterMemberToClassAsync(string classId, [FromBody] Member member)
     {
         _logger.LogDebug("Registering member {memberId} to class {classId}", member.Id, classId);
         try
@@ -53,8 +56,9 @@ public class ClassController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPost("{classId}/waitinglist")]
-    public async Task<IActionResult> RegisterMemberToWaitingListAsync(Guid classId, [FromBody] Member member)
+    public async Task<IActionResult> RegisterMemberToWaitingListAsync(string classId, [FromBody] Member member)
     {
         _logger.LogDebug("Registering member {memberId} to waiting list for class {classId}", member.Id, classId);
         try
@@ -71,10 +75,12 @@ public class ClassController : ControllerBase
     }
 
     // GET
-
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetAllClassesAsync()
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Fetching all classes");
         try
         {
@@ -86,14 +92,17 @@ public class ClassController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-
-    [HttpGet("gym/{exercisegymid}")]
-    public async Task<IActionResult> GetAllClassesByExerciseGymAsync(Guid exerciseGymId)
+    
+    [Authorize]
+    [HttpGet("exercisegyms/{exerciseGymId}")]
+    public async Task<IActionResult> GetClassesByExerciseGymAsync(string exerciseGymId)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Fetching classes for gym {exerciseGymId}", exerciseGymId);
         try
         {
-            return Ok(await _repo.GetAllClassesByExerciseGymAsync(exerciseGymId));
+            return Ok(await _repo.GetClassesByExerciseGymAsync(exerciseGymId));
         }
         catch (Exception ex)
         {
@@ -101,10 +110,12 @@ public class ClassController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-
+    [Authorize]
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetClassByIdAsync(Guid id)
+    public async Task<IActionResult> GetClassByIdAsync(string id)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Fetching class with id: {id}", id);
         try
         {
@@ -122,10 +133,55 @@ public class ClassController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-
-    [HttpGet("{id}/waitinglist")]
-    public async Task<IActionResult> GetWaitingListByClassAsync(Guid id)
+    
+    [HttpGet("members/{id}")]
+    public async Task<IActionResult> GetClassesByMemberAsync(string id)
     {
+        _logger.LogDebug("Fetching member with id: {id}'s classes", id);
+        try
+        {
+            var fitnessClass = await _repo.GetClassesByMemberAsync(id);
+            if (fitnessClass is null)
+            {
+                _logger.LogWarning("Classes not found. GetClassesByMemberAsync is null");
+                return NotFound();
+            }
+            return Ok(fitnessClass);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching class with id: {id}", id);
+            return BadRequest(ex.Message);
+        }
+    }
+    
+    [HttpGet("employees/{id}")]
+    public async Task<IActionResult> GetClassesByEmployeeAsync(string id)
+    {
+        _logger.LogDebug("Fetching member with id: {id}'s classes", id);
+        try
+        {
+            var fitnessClass = await _repo.GetClassesByEmployeeAsync(id);
+            if (fitnessClass == null)
+            {
+                _logger.LogWarning("Classes not found. GetGlaccesByEmployeeAsync is null", id);
+                return NotFound();
+            }
+            return Ok(fitnessClass);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Classes not found");
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [Authorize]
+    [HttpGet("{id}/waitinglist")]
+    public async Task<IActionResult> GetWaitingListByClassAsync(string id)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Fetching waiting list for class {id}", id);
         try
         {
@@ -138,13 +194,16 @@ public class ClassController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpGet("{id}/members")]
-    public async Task<IActionResult> GetRegisteredByClassAsync(Guid id)
+    public async Task<IActionResult> GetMembersByClassAsync(string id)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Fetching registered members for class {id}", id);
         try
         {
-            return Ok(await _repo.GetRegisteredByClassAsync(id));
+            return Ok(await _repo.GetMembersByClassAsync(id));
         }
         catch (InvalidOperationException ex)
         {
@@ -153,9 +212,12 @@ public class ClassController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpGet("{id}/attendees-count")]
-    public async Task<IActionResult> GetNumberOfAttendeesByClassAsync(Guid id)
+    public async Task<IActionResult> GetNumberOfAttendeesByClassAsync(string id)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Fetching attendee count for class {id}", id);
         try
         {
@@ -168,9 +230,12 @@ public class ClassController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpGet("{id}/absence")]
-    public async Task<IActionResult> CalculateAbsenceByClassAsync(Guid id)
+    public async Task<IActionResult> CalculateAbsenceByClassAsync(string id)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Calculating absence for class {id}", id);
         try
         {
@@ -183,11 +248,15 @@ public class ClassController : ControllerBase
         }
     }
 
-    // PUT
-
-    [HttpPut("{id}/cancel")]
-    public async Task<IActionResult> CancelClassByIdAsync(Guid id)
+    
+    
+    // PATCH
+    [Authorize]
+    [HttpPatch("{id}/cancel")]
+    public async Task<IActionResult> CancelClassByIdAsync(string id)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Cancelling class with id: {id}", id);
         try
         {
@@ -203,10 +272,12 @@ public class ClassController : ControllerBase
     }
 
     // DELETE
-
+    [Authorize]
     [HttpDelete("{classId}/members/{memberId}")]
-    public async Task<IActionResult> UnRegisterMemberFromClassAsync(Guid classId, Guid memberId)
+    public async Task<IActionResult> UnRegisterMemberFromClassAsync(string classId, string memberId)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Unregistering member {memberId} from class {classId}", memberId, classId);
         try
         {
@@ -220,10 +291,12 @@ public class ClassController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-
+    [Authorize]
     [HttpDelete("{classId}/waitinglist/{memberId}")]
-    public async Task<IActionResult> UnRegisterMemberFromWaitingListAsync(Guid classId, Guid memberId)
+    public async Task<IActionResult> UnRegisterMemberFromWaitingListAsync(string classId, string memberId)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Unregistering member {memberId} from waiting list for class {classId}", memberId, classId);
         try
         {
@@ -237,10 +310,12 @@ public class ClassController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-
+    [Authorize]
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteClassByIdAsync(Guid id)
+    public async Task<IActionResult> DeleteClassAsync(string id)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _logger.LogInformation("Authenticated user {UserId}", User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         _logger.LogDebug("Deleting class with id: {id}", id);
         try
         {

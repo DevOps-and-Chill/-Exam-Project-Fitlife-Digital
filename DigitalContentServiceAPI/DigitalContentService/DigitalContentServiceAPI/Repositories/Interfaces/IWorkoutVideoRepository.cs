@@ -11,9 +11,11 @@ public interface IWorkoutVideoRepository
    
     // GET
     
-    Task<WorkoutVideo?> GetWorkoutVideoAsync(Guid id);
-    
-    // DELETE
-    
-    Task<bool> DeleteWorkoutVideoAsync(Guid id);
+    Task<WorkoutVideo?> GetWorkoutVideoAsync(string id);
+
+    public Task<List<WorkoutVideo>> GetWorkoutVideosAsync();
+
+	// DELETE
+
+	Task<bool> DeleteWorkoutVideoAsync(string id);
 }
