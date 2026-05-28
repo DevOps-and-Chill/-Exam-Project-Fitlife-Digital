@@ -41,9 +41,9 @@ namespace FacilityServiceAPI
 			// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 			builder.Services.AddOpenApi();
 
-			builder.Services.AddTransient<IFacilityRepository, FacilityRepositoryMoq>();
-            builder.Services.AddTransient<IExerciseGymRepository, FacilityRepositoryMoq>();
-			builder.Services.AddTransient<ISwimmingPoolRepository, FacilityRepositoryMoq>();
+			builder.Services.AddTransient<IFacilityRepository, FacilityRepository>();
+            builder.Services.AddTransient<IExerciseGymRepository, ExerciseGymRepository>();
+			builder.Services.AddTransient<ISwimmingPoolRepository, SwimmingPoolRepository>();
 
             //Enables dependency injection of Factory pattern for DBContext. This way the application is more threadsafe, because each 
             builder.Services.AddDbContextFactory<FacilityContext>(options =>

@@ -22,7 +22,7 @@ namespace FacilityServiceAPI.Controllers
         /// Gets all facilities of type  Swimming pool
         /// </summary>
         /// <returns></returns>
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("getall")]
 		public async Task<IActionResult> GetSwimmingPools()
 		{
