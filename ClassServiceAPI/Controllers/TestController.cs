@@ -24,7 +24,7 @@ public class TestController : ControllerBase
             Title     = "Test Yoga Class",
             TimeStart = DateTime.Now,
             TimeEnd   = DateTime.Now.AddHours(1),
-            MemberIds = new List<string> {
+            ReceiverIds = new List<string> {
                 Guid.NewGuid().ToString(),
                 Guid.NewGuid().ToString()
             }
