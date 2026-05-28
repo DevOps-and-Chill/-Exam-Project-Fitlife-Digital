@@ -31,7 +31,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/user/user/getuserbyid/2a8913a3-149c-4860-be1c-a40f158b4804",
+          "raw": "{{baseUrl}}/user/getuserbyid/2a8913a3-149c-4860-be1c-a40f158b4804",
           "host": [
             "{{baseUrl}}"
           ],
@@ -90,7 +90,7 @@
           }
         },
         "url": {
-          "raw": "{{baseUrl}}/auth/auth/Login",
+          "raw": "{{baseUrl}}/auth/Login",
           "host": [
             "{{baseUrl}}"
           ],
@@ -135,7 +135,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/user/user/getuserbyid/2a8913a3-149c-4860-be1c-a40f158b4804",
+          "raw": "{{baseUrl}}/user/getuserbyid/2a8913a3-149c-4860-be1c-a40f158b4804",
           "host": [
             "{{baseUrl}}"
           ],
