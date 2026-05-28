@@ -6,6 +6,7 @@
 @inject CenterService CenterService
 @inject TrainerService TrainerService
 
+
 <div class="container-fluid px-0">
 
     <!-- Shared navbar for medlemssider -->
@@ -126,6 +127,59 @@
                 </div>
             }
 
+        </div>
+    
+        <!-- Mine PT-sessioner -->
+        <div class="mb-5 mt-5">
+            <h3 class="fw-bold mb-4">Mine sessioner</h3>
+
+            @if (IsLoading)
+            {
+                <div class="alert alert-info">Henter sessioner...</div>
+            }
+            else if (Sessions.Count == 0)
+            {
+                <div class="alert alert-secondary">Du har ingen PT-sessioner endnu.</div>
+            }
+            else
+            {
+                <div class="row g-4">
+                    @foreach (var session in Sessions)
+                    {
+                        <div class="col-md-6">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-body p-4">
+
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                            <h5 class="fw-bold mb-0">PT Session</h5>
+                                        <span class="badge @GetStatusBadgeClass(session.Status)">
+                                            @GetStatusText(session.Status)
+                                        </span>
+                                    </div>
+
+                                    <p class="mb-1"><strong>Start:</strong> @session.StartDate.ToString("dd/MM/yyyy HH:mm")</p>
+                                    <p class="mb-1"><strong>Slut:</strong> @session.EndDate.ToString("dd/MM/yyyy HH:mm")</p>
+                                    <p class="mb-3"><strong>Oprettet:</strong> @session.CreatedDate.ToString("dd/MM/yyyy")</p>
+
+                                    @if (session.Status == 0)
+                                    {
+                                        <button class="btn btn-outline-danger btn-sm"
+                                                @onclick="() => CancelSession(session)">
+                                            Annuller session
+                                        </button>
+                                    
+                                        <button class="btn btn-outline-dark btn-sm mt-2"
+                                                @onclick="() => SelectTrainerForMessageFromSession(session)">
+                                            Send besked til træner
+                                        </button>
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
         </div>
 
         <!-- Bookingpanel -->
@@ -336,6 +390,45 @@
     // TODO:
     // Senere kan data udvides med speciale, profiltekst og bookingkalender
     private List<Trainer> Trainers = new();
+    
+    private List<PersonalTrainingSession> Sessions = new();
+    private bool IsLoading = true;
+
+    // Hent sessioner når siden loader - tilføj i OnInitializedAsync
+    // Sessions = await PTService.GetSessionsAsync();
+    // IsLoading = false;
+
+    private async Task CancelSession(PersonalTrainingSession session)
+    {
+        var success = await PTService.CancelSessionAsync(session.Id);
+        if (success)
+        {
+            StatusMessage = "Session annulleret.";
+            Sessions = await PTService.GetSessionsAsync();
+        }
+        else
+        {
+            StatusMessage = "Kunne ikke annullere sessionen.";
+        }
+    }
+
+    private string GetStatusBadgeClass(int status) => status switch
+    {
+        0 => "bg-warning text-dark",  // Pending
+        1 => "bg-primary",            // Active
+        2 => "bg-success",            // Completed
+        3 => "bg-danger",             // Cancelled
+        _ => "bg-secondary"
+    };
+
+    private string GetStatusText(int status) => status switch
+    {
+        0 => "Afventer",
+        1 => "Aktiv",
+        2 => "Gennemført",
+        3 => "Annulleret",
+        _ => "Ukendt"
+    };
 
     // Henter centre og trænere når siden indlæses
     protected override async Task OnInitializedAsync()
@@ -343,11 +436,12 @@
         try
         {
             Centers = await CenterService.GetCentersAsync();
-
             // Vælger første center som standard hvis der findes centre
             SelectedCenterId = Centers.FirstOrDefault()?.Id ?? "";
-
             Trainers = await TrainerService.GetTrainersAsync();
+
+            Sessions = await PTService.GetSessionsAsync();
+            IsLoading = false;
         }
         catch (Exception ex)
         {
@@ -392,6 +486,31 @@
     private void ShowProfile(Trainer trainer)
     {
         StatusMessage = $"Profil for {trainer.Name} vises ikke som separat side endnu.";
+    }
+
+    private async Task SelectTrainerForMessageFromSession(PersonalTrainingSession session)
+    {
+        try
+        {
+            var trainer = await TrainerService.GetEmployeeById(session.PersonalTrainerId.ToString());
+            if (trainer is not null)
+            {
+                SelectedTrainerForMessage = new Trainer
+                {
+                    Id = trainer.Id,
+                    Name = $"{trainer.GivenName} {trainer.FamilyName}",
+                    Description = "",
+                    Specialty = "",
+                    IsAvailable = true
+                };
+                NewMessage = new Message();
+                StatusMessage = "";
+            }
+        }
+        catch
+        {   
+            StatusMessage = "Kunne ikke finde træneren.";
+        }
     }
 
     // Opretter booking
