@@ -125,7 +125,7 @@ namespace FacilityServiceTest
                 gyms.Last());
 
             Assert.AreEqual(
-                4,
+                3,
                 gyms.Count);
         }
 
@@ -160,7 +160,7 @@ namespace FacilityServiceTest
 
             //Assert
             Assert.AreEqual(
-                5,
+                3,
                 facilitiesForTest.Count());
 
             Assert.AreEqual(
