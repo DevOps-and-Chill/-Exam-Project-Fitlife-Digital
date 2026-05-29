@@ -24,17 +24,13 @@ public class CenterService
     {
         try
         {
-            var centers =
-                await _httpClient.GetFromJsonAsync<List<ExerciseGym>>(
-                    "exercisegym/getall");
+            var centers = await _httpClient.GetFromJsonAsync<List<ExerciseGym>>("exercisegym/getall");
 
             return centers ?? new List<ExerciseGym>();
         }
         catch (Exception ex)
         {
-            throw new Exception(
-                $"Kunne ikke hente centre fra FacilityService. Fejl: {ex.Message}",
-                ex);
+            throw new Exception($"Kunne ikke hente centre fra FacilityService. Fejl: {ex.Message}", ex);
         }
     }
     /// <summary>

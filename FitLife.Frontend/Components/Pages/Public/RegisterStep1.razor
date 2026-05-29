@@ -1,7 +1,10 @@
 @page "/register-step1"
 @rendermode InteractiveServer
 @using FitLife.Frontend.Models
+@using FitLife.Frontend.Models.DTOs
 @using FitLife.Frontend.Services
+@inject MemberService memberService
+@inject NavigationManager navman
 
 <div class="container-fluid px-0">
 
@@ -15,7 +18,7 @@
 
             <!-- Prototype-knap -->
             <!-- TODO: Kan senere åbne support/chat/hjælpesektion -->
-            <button class="btn btn-outline-secondary">
+            <button class="btn btn-outline-secondary" @onclick="ShowNotImplemented">
                 Hjælp mig
             </button>
         </div>
@@ -129,34 +132,32 @@
         </div>
 
     </section>
-
+    @if (!string.IsNullOrWhiteSpace(Message))
+    {
+        <div class="alert alert-info mt-4">
+            @Message
+        </div>
+    }
     <AppFooter />
 
 </div>
 
 @code {
-    // Medlemsdata gemmes nu i RegistrationStateService,
+    // Medlemsdata gemmes nu i MemberService (se oninitiatlized),
     // så informationer bevares mellem step 1, 2 og 3.
     private Member NewMember = new();
 
-    // Password håndteres separat fra Member-modellen.
-    // TODO: Skal senere hashes/sendes til authentication service.
+    private CredentialDTO draftCredential;
     private string Password = "";
-
     private string RepeatPassword = "";
 
     private string Message = "";
 
-    [Inject]
-    private NavigationManager Navigation { get; set; } = default!;
-
-    [Inject]
-    private RegistrationStateService RegistrationState { get; set; } = default!;
-
     protected override void OnInitialized()
     {
         // Henter medlemsdata fra shared registration state.
-        NewMember = RegistrationState.Member;
+        NewMember = memberService.DraftMember;
+        draftCredential = memberService.DraftCredential;
     }
 
     private void GoToNextStep()
@@ -175,10 +176,12 @@
             Message = "Password og gentag password skal være ens.";
             return;
         }
-
-        // Gemmer medlemsdata i shared registration state.
-        RegistrationState.Member = NewMember;
-
-        Navigation.NavigateTo("/register-step2");
+        draftCredential.Email = NewMember.Email;
+        draftCredential.Password = RepeatPassword;
+        navman.NavigateTo("/register-step2");
+    }
+    private void ShowNotImplemented()
+    {
+        Message = "Denne funktion er ikke implementeret endnu.";
     }
 }
