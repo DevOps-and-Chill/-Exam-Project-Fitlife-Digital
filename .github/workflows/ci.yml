@@ -55,6 +55,13 @@ jobs:
         ./FacilityService/FacilityServiceTest \
         --logger trx \
         --results-directory TestResults
+      
+    - name: Run DigitalContentService Test
+      run: |
+        dotnet test \
+        ./DigitalContentServiceAPI/DigitalContentService/DigitalContentServiceTest
+        --logger trx \
+        --results-directory TestResults
 
     #Create MD of testsresults
     - name: Publish Test Results
@@ -138,6 +145,13 @@ jobs:
         docker build \
         -t fitlifedigital.azurecr.io/statisticservice:latest \
         ./StatisticService/StatisticServiceAPI
+    
+    # DigitalContentService
+    - name: Build DigitalContentService
+      run: |
+        docker build \
+        -t fitlifedigital.azurecr.io/digitalcontentservice:latest \
+        ./DigitalContentServiceAPI/DigitalContentService/DigitalContentServiceAPI
 
     # Starts common services
     - name: Start common services
@@ -243,3 +257,5 @@ jobs:
       run: docker push fitlifedigital.azurecr.io/facilityservice:latest
     - name: Push StatisticService
       run: docker push fitlifedigital.azurecr.io/statisticservice:latest
+    - name: Push DigitalContentService
+      run: docker push fitlifedigital.azurecr.io/digitalcontentservice:latest
