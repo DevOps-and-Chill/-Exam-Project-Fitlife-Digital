@@ -78,8 +78,16 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 8,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 2,
@@ -160,7 +168,7 @@
               "RelativeDocumentMoniker": "AuthServiceAPI\\Controllers\\AuthController.cs",
               "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\AuthService\\AuthServiceAPI\\Controllers\\AuthController.cs",
               "RelativeToolTip": "AuthServiceAPI\\Controllers\\AuthController.cs",
-              "ViewState": "AgIAAB0AAAAAAAAAAAAAACoAAAAmAAAAAAAAAA==",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAAAC4AAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-19T09:29:23.375Z",
               "EditorCaption": ""
@@ -175,8 +183,7 @@
               "RelativeToolTip": "AuthServiceAPI\\DTOs\\RegisterCredentialsRequestDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-22T14:34:42.108Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-22T14:34:42.108Z"
             },
             {
               "$type": "Document",

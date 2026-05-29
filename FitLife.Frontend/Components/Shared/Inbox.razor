@@ -6,7 +6,13 @@
 
 <div class="container-fluid px-0">
 
-    <MemberNavbar />
+    @if(currentUserRole == "member")
+    {
+        <MemberNavbar />
+    }
+    else{
+        <EmployeeLayout />
+    }
 
     <section class="container py-5">
 
@@ -98,9 +104,11 @@
 @code {
     private List<MessageDto>? messages = null;
     private string? ErrorMessage;
+    private string currentUserRole;
 
     protected override async Task OnInitializedAsync()
     {
+        currentUserRole = CurrentUserService.CurrentUserRole;
         try
         {
             var userId = CurrentUserService.CurrentUser?.GetId();
