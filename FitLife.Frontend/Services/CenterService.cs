@@ -55,4 +55,53 @@ public class CenterService
 				ex);
 		}
 	}
+	/// <summary>
+	/// Method for updating exercisegyms
+	/// </summary>
+	/// <param name="exerciseGym"></param>
+	/// <returns></returns>
+	/// <exception cref="Exception"></exception>
+	public async Task UpdateExerciseGymAsync(ExerciseGym exerciseGym)
+	{
+		try
+		{
+			_tokenService.AttachToken(_httpClient);
+			var response =
+				await _httpClient.PutAsJsonAsync(
+					"exercisegym/update",
+					exerciseGym);
+
+		}
+		catch (Exception ex)
+		{
+			throw new Exception(
+				$"Kunne ikke opdatere tr�ningscenter. Fejl: {ex.Message}",
+				ex);
+		}
+	}
+
+	/// <summary>
+	/// method for updating a swimmingpool
+	/// </summary>
+	/// <param name="swimmingPool"></param>
+	/// <returns></returns>
+	/// <exception cref="Exception"></exception>
+	public async Task UpdateSwimmingPoolAsync(SwimmingPool swimmingPool)
+	{
+		try
+		{
+			_tokenService.AttachToken(_httpClient);
+			var response =
+				await _httpClient.PutAsJsonAsync(
+					"swimmingpool/update",
+					swimmingPool);
+
+		}
+		catch (Exception ex)
+		{
+			throw new Exception(
+				$"Kunne ikke opdatere sv�mmehal. Fejl: {ex.Message}",
+				ex);
+		}
+	}
 }

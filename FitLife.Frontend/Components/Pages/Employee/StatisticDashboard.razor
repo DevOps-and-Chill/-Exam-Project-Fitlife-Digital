@@ -4,6 +4,9 @@
 @using FitLife.Frontend.Models
 @using FitLife.Frontend.Services
 @inject StatisticService StatisticService
+@inject MemberService MemberService
+@inject EmployeeService EmployeeService
+@inject PTService PTService
 
 <div class="container-fluid px-0">
 
@@ -13,14 +16,14 @@
 
         <div class="mb-5">
             <div class="col-md-7">
-                <span class="badge bg-dark mb-3 px-3 py-2">
+                <span class="badge bg-success mb-3 px-3 py-2">
                     STATISTIK
                 </span>
                 <h1 class="fw-bold mb-3">
                     Statistik dashboard
                 </h1>
                 <p class="lead text-muted">
-                    Se fremmøde, tilmeldte og venteliste for alle hold og sessioner.
+                    Overblik over medarbejdere, medlemmer og træningsaktivitet.
                 </p>
             </div>
         </div>
@@ -29,74 +32,271 @@
         {
             <div class="alert alert-info">Henter statistikker...</div>
         }
-        else if (Statistics.Count == 0)
-        {
-            <div class="alert alert-secondary">Ingen statistikker at vise.</div>
-        }
         else
         {
-            <div class="row g-4">
-                @foreach (var stat in Statistics)
-                {
-                    <div class="col-md-6">
-                        <div class="card shadow-sm border-0 h-100">
-                            <div class="card-body p-4">
+            @if (!string.IsNullOrWhiteSpace(StatusMessage))
+            {
+                <div class="alert alert-warning mb-4">@StatusMessage</div>
+            }
 
-                                <div class="d-flex justify-content-between align-items-start mb-3">
-                                    <h5 class="fw-bold mb-0">@stat.Name</h5>
-                                    <span class="badge @(stat.ActiveClass ? "bg-success" : "bg-secondary")">
-                                        @(stat.ActiveClass ? "Aktiv" : "Inaktiv")
-                                    </span>
-                                </div>
-
-                                <p class="text-muted mb-3">@stat.Description</p>
-
-                                <div class="row text-center g-2 mb-3">
-                                    <div class="col-4">
-                                        <div class="border rounded p-2">
-                                            <div class="fw-bold fs-4">@stat.Registrered.Count</div>
-                                            <small class="text-muted">Tilmeldte</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="border rounded p-2">
-                                            <div class="fw-bold fs-4">@stat.Attended.Count</div>
-                                            <small class="text-muted">Fremmødt</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="border rounded p-2">
-                                            <div class="fw-bold fs-4">@stat.WaitingList.Count</div>
-                                            <small class="text-muted">Venteliste</small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button class="btn btn-outline-dark btn-sm"
-                                        @onclick="() => ToggleDetails(stat.Id)">
-                                    @(ExpandedId == stat.Id ? "Skjul detaljer" : "Vis detaljer")
-                                </button>
-
-                                @if (ExpandedId == stat.Id)
-                                {
-                                    <div class="mt-3">
-                                        <p class="mb-1"><strong>Oprettet:</strong> @stat.DataCreated.ToString("dd/MM/yyyy")</p>
-                                        <p class="mb-1"><strong>Sidst opdateret:</strong> @stat.DateModified.ToString("dd/MM/yyyy")</p>
-                                        <p class="mb-1"><strong>Facilitet ID:</strong> @stat.FacilityId</p>
-                                        <p class="mb-0"><strong>Lokale ID:</strong> @stat.RoomId</p>
-                                    </div>
-                                }
-
-                            </div>
+            <!-- Medarbejdere -->
+            <h4 class="fw-bold mb-3 pb-2" style="border-bottom: 3px solid #198754;">Medarbejdere</h4>
+            <div class="row g-3 mb-5">
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2">@Employees.Count</div>
+                            <small class="text-muted">Total</small>
                         </div>
                     </div>
-                }
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2 text-success">@Employees.Count(e => e.ActiveUser)</div>
+                            <small class="text-muted">Aktive</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2 text-secondary">@Employees.Count(e => !e.ActiveUser)</div>
+                            <small class="text-muted">Inaktive</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2 text-primary">@Employees.Count(e => e.IsPT)</div>
+                            <small class="text-muted">PT-trænere</small>
+                        </div>
+                    </div>
+                </div>
             </div>
-        }
 
-        @if (!string.IsNullOrWhiteSpace(StatusMessage))
-        {
-            <div class="alert alert-info mt-4">@StatusMessage</div>
+            <!-- Medlemmer -->
+            <h4 class="fw-bold mb-3 pb-2" style="border-bottom: 3px solid #198754;">Medlemmer</h4>
+            <div class="row g-3 mb-3">
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2">@Members.Count</div>
+                            <small class="text-muted">Total</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2 text-success">@Members.Count(m => m.ActiveUser)</div>
+                            <small class="text-muted">Aktive brugere</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2 text-success">@Members.Count(m => m.ActiveMembership)</div>
+                            <small class="text-muted">Aktive medlemskaber</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2 text-secondary">@Members.Count(m => !m.ActiveUser)</div>
+                            <small class="text-muted">Inaktive brugere</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (MembershipTypeGroups.Count > 0)
+            {
+                <div class="row g-3 mb-5">
+                    @foreach (var group in MembershipTypeGroups)
+                    {
+                        <div class="col-6 col-md-3">
+                            <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                                <div class="card-body py-4">
+                                    <div class="fw-bold fs-2">@group.Value</div>
+                                    <small class="text-muted">@group.Key</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="mb-5"></div>
+            }
+
+            <!-- Træning -->
+            <h4 class="fw-bold mb-3 pb-2" style="border-bottom: 3px solid #198754;">Træning</h4>
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2">@Statistics.Count</div>
+                            <small class="text-muted">Hold i alt</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2 text-success">@Statistics.Count(s => s.ActiveClass)</div>
+                            <small class="text-muted">Aktive hold</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2">@Statistics.Sum(s => s.Registrered.Count)</div>
+                            <small class="text-muted">Tilmeldinger total</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2">@Statistics.Sum(s => s.Attended.Count)</div>
+                            <small class="text-muted">Fremmøde total</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2">@Statistics.Sum(s => s.WaitingList.Count)</div>
+                            <small class="text-muted">På venteliste total</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2">@OverallAttendanceRate%</div>
+                            <small class="text-muted">Fremmødeprocent</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2">@PTSessions.Count</div>
+                            <small class="text-muted">PT-sessions total</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2 text-warning">@PTSessions.Count(s => s.Status == 0)</div>
+                            <small class="text-muted">PT afventer</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2 text-success">@PTSessions.Count(s => s.Status == 1)</div>
+                            <small class="text-muted">PT aktive</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2 text-primary">@PTSessions.Count(s => s.Status == 2)</div>
+                            <small class="text-muted">PT gennemførte</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2 text-danger">@PTSessions.Count(s => s.Status == 3)</div>
+                            <small class="text-muted">PT annullerede</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm text-center h-100" style="border-top: 3px solid #198754 !important;">
+                        <div class="card-body py-4">
+                            <div class="fw-bold fs-2">@PTAcceptanceRate%</div>
+                            <small class="text-muted">PT aktivitetsprocent</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Holdoversigt per hold -->
+            @if (Statistics.Count > 0)
+            {
+                <h4 class="fw-bold mb-3 mt-4 pb-2" style="border-bottom: 3px solid #198754;">Holdoversigt</h4>
+                <div class="row g-4">
+                    @foreach (var stat in Statistics)
+                    {
+                        <div class="col-md-6">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-body p-4">
+
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <h5 class="fw-bold mb-0">@stat.Name</h5>
+                                        <span class="badge @(stat.ActiveClass ? "bg-success" : "bg-secondary")">
+                                            @(stat.ActiveClass ? "Aktiv" : "Inaktiv")
+                                        </span>
+                                    </div>
+
+                                    <p class="text-muted mb-3">@stat.Description</p>
+
+                                    <div class="row text-center g-2 mb-3">
+                                        <div class="col-4">
+                                            <div class="border rounded p-2">
+                                                <div class="fw-bold fs-4">@stat.Registrered.Count</div>
+                                                <small class="text-muted">Tilmeldte</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="border rounded p-2">
+                                                <div class="fw-bold fs-4">@stat.Attended.Count</div>
+                                                <small class="text-muted">Fremmødt</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="border rounded p-2">
+                                                <div class="fw-bold fs-4">@stat.WaitingList.Count</div>
+                                                <small class="text-muted">Venteliste</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button class="btn btn-outline-dark btn-sm"
+                                            @onclick="() => ToggleDetails(stat.Id)">
+                                        @(ExpandedId == stat.Id ? "Skjul detaljer" : "Vis detaljer")
+                                    </button>
+
+                                    @if (ExpandedId == stat.Id)
+                                    {
+                                        <div class="mt-3">
+                                            <p class="mb-1"><strong>Oprettet:</strong> @stat.DataCreated.ToString("dd/MM/yyyy")</p>
+                                            <p class="mb-1"><strong>Sidst opdateret:</strong> @stat.DateModified.ToString("dd/MM/yyyy")</p>
+                                            <p class="mb-1"><strong>Facilitet ID:</strong> @stat.FacilityId</p>
+                                            <p class="mb-0"><strong>Lokale ID:</strong> @stat.RoomId</p>
+                                        </div>
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
         }
 
     </section>
@@ -108,28 +308,76 @@
 @code {
 
     private List<Statistic> Statistics = new();
+    private List<Member> Members = new();
+    private List<Employee> Employees = new();
+    private List<PersonalTrainingSession> PTSessions = new();
+    private Dictionary<string, int> MembershipTypeGroups = new();
+
     private bool IsLoading = true;
     private string StatusMessage = "";
     private Guid? ExpandedId = null;
 
-    protected override async Task OnInitializedAsync()
+    private int OverallAttendanceRate
     {
-        try
+        get
         {
-            IsLoading = true;
-            Statistics = await StatisticService.GetAllAsync();
-        }
-        catch (Exception ex)
-        {
-            StatusMessage = $"Kunne ikke hente statistikker: {ex.Message}";
-        }
-        finally
-        {
-            IsLoading = false;
+            var totalRegistered = Statistics.Sum(s => s.Registrered.Count);
+            if (totalRegistered == 0) return 0;
+            return (int)Math.Round(Statistics.Sum(s => s.Attended.Count) * 100.0 / totalRegistered);
         }
     }
 
-    // Toggles detail view for a statistic
+    private int PTAcceptanceRate
+    {
+        get
+        {
+            if (PTSessions.Count == 0) return 0;
+            var active = PTSessions.Count(s => s.Status == 1 || s.Status == 2);
+            return (int)Math.Round(active * 100.0 / PTSessions.Count);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoading = true;
+        var errors = new List<string>();
+
+        var statsTask = LoadSafe(() => StatisticService.GetAllAsync(), errors, "statistikker");
+        var membersTask = LoadSafe(() => MemberService.GetMembersAsync(), errors, "medlemmer");
+        var employeesTask = LoadSafe(() => EmployeeService.GetAllEmployeesAsync(), errors, "medarbejdere");
+        var ptTask = LoadSafe(() => PTService.GetSessionsAsync(), errors, "PT-sessions");
+
+        await Task.WhenAll(statsTask, membersTask, employeesTask, ptTask);
+
+        Statistics = statsTask.Result ?? new();
+        Members = membersTask.Result ?? new();
+        Employees = employeesTask.Result ?? new();
+        PTSessions = ptTask.Result ?? new();
+
+        MembershipTypeGroups = Members
+            .Where(m => !string.IsNullOrWhiteSpace(m.MembershipType))
+            .GroupBy(m => m.MembershipType)
+            .ToDictionary(g => g.Key, g => g.Count());
+
+        if (errors.Count > 0)
+            StatusMessage = "Kunne ikke hente: " + string.Join(", ", errors);
+
+        IsLoading = false;
+    }
+
+    private async Task<List<T>?> LoadSafe<T>(Func<Task<List<T>>> loader, List<string> errors, string label)
+    {
+        try
+        {
+            return await loader();
+        }
+        catch
+        {
+            errors.Add(label);
+            return null;
+        }
+    }
+
     private void ToggleDetails(Guid id)
     {
         ExpandedId = ExpandedId == id ? null : id;

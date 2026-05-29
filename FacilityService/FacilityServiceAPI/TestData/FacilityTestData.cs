@@ -22,7 +22,7 @@ namespace FacilityServiceAPI.TestData
 				new() { DayOfWeek = DayOfWeek.Sunday, Opens = "08:00", Closes = "18:00" },
 			},
 			roomsForClasses: 4,
-			managerId: Guid.Parse("11111111-1111-1111-1111-111111111111")
+			managerId: Guid.Parse("0d79b539-f1e5-4487-b7fd-e9caa3939728")
 		),
 
 		new ExerciseGym(
@@ -41,7 +41,7 @@ namespace FacilityServiceAPI.TestData
 				new() { DayOfWeek = DayOfWeek.Sunday, Opens = "07:00", Closes = "19:00" },
 			},
 			roomsForClasses: 6,
-			managerId: Guid.Parse("11111111-1111-1111-1111-111111111112")
+			managerId: Guid.Parse("fb08c3c4-12c2-4274-99db-a2203eb9d4d9")
 		)
 
 	};

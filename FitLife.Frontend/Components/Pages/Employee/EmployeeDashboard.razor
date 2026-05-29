@@ -1,4 +1,5 @@
 @page "/employee-dashboard"
+@using FitLife.Frontend.Components.Layout
 @layout EmployeeLayout
 @rendermode InteractiveServer
 
@@ -150,17 +151,10 @@
 
                         <div class="d-grid gap-2">
 
-                            <!-- Midlertidig prototype-knap -->
-                            <button class="btn btn-success"
-                                    @onclick="ShowGyms">
-                                Administrer center
-                            </button>
 
-                            <!-- Midlertidig prototype-knap -->
-                            <button class="btn btn-outline-success"
-                                    @onclick="ShowCenterDeviation">
-                                Opret afvigelse for center
-                            </button>
+                            <a class="btn btn-success" href="/administrer-centre">
+                                Administrer centre
+                            </a>
                         </div>
 
                     </div>
@@ -206,9 +200,9 @@
 
     </section>
 
-    <AppFooter />
 
 </div>
+<AppFooter />
 
 @code {
 

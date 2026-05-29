@@ -5,6 +5,7 @@
 @using FitLife.Frontend.Components
 @layout EmployeeLayout
 @inject ClassService ClassService
+@inject StatisticService StatisticService
 @inject NavigationManager Navigation
 @inject CurrentUserService CurrentUserService
 @inject EmployeeService EmployeeService
@@ -186,6 +187,7 @@
         try
         {
             await ClassService.CreateClassAsync(NewClass);
+            await CreateStatisticForClass();
             Navigation.NavigateTo("/manage-classes");
         }
         catch (Exception ex)
@@ -203,6 +205,7 @@
         try
         {
             await ClassService.CreateClassAsync(NewClass);
+            await CreateStatisticForClass();
             var title = NewClass.Title;
             ResetForm();
             Message = $"Holdet '{title}' er oprettet. Du kan nu oprette et nyt hold.";
@@ -213,5 +216,18 @@
             Message = $"Kunne ikke oprette hold: {ex.Message}";
             MessageCssClass = "alert-danger";
         }
+    }
+
+    private async Task CreateStatisticForClass()
+    {
+        var facilityId = Guid.TryParse(NewClass.ExerciseGymId, out var fid) ? fid : Guid.Empty;
+        await StatisticService.CreateAsync(new Statistic
+        {
+            Name        = NewClass.Title,
+            Description = $"{NewClass.Title} — {NewClass.TimeStart:dd/MM/yyyy HH:mm}",
+            FacilityId  = facilityId,
+            RoomId      = facilityId,
+            ActiveClass = NewClass.ActiveClass
+        });
     }
 }
