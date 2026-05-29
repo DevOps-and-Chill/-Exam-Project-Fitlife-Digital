@@ -1,0 +1,208 @@
+﻿@using FitLife.Frontend.Models
+
+@if (ShowModal)
+{
+    <div class="modal fade show d-block"
+         tabindex="-1"
+         style="background-color: rgba(0,0,0,0.5);">
+
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        Opdater betalingsmiddel
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            @onclick="CloseModal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Betalingsmetode
+                        </label>
+
+                        <select class="form-select"
+                                @bind="Payment.PaymentMethod">
+
+                            <option value="">
+                                Vælg betalingsmetode
+                            </option>
+
+                            <option value="Visa">
+                                Visa
+                            </option>
+
+                            <option value="Mastercard">
+                                Mastercard
+                            </option>
+
+                            <option value="MobilePay">
+                                MobilePay
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Kortnummer
+                        </label>
+
+                        <input class="form-control"
+                               maxlength="16"
+                               placeholder="1234567812345678"
+                               @bind="Payment.CardNumber" />
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Måned
+                            </label>
+
+                            <input class="form-control"
+                                   placeholder="MM"
+                                   @bind="Payment.Month" />
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                År
+                            </label>
+
+                            <input class="form-control"
+                                   placeholder="YY"
+                                   @bind="Payment.Year" />
+
+                        </div>
+
+                    </div>
+
+                    <div class="mt-3">
+
+                        <label class="form-label">
+                            CVV
+                        </label>
+
+                        <input class="form-control"
+                               maxlength="3"
+                               placeholder="123"
+                               @bind="Payment.Cvv" />
+
+                    </div>
+
+                    <div class="alert alert-info mt-4">
+
+                        Dette er mock-data i POC-versionen.
+                        Ingen rigtige betalingsoplysninger gemmes.
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button class="btn btn-secondary"
+                            @onclick="CloseModal">
+                        Luk
+                    </button>
+
+                    <button class="btn btn-success"
+                            @onclick="SavePaymentMethod">
+                        Gem betalingsmiddel
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+}
+
+<button class="btn btn-outline-warning"
+        @onclick="OpenModal">
+    Opdater betalingsmiddel
+</button>
+
+@if (ShowToast)
+{
+    <div class="toast show position-fixed bottom-0 end-0 m-4"
+         role="alert"
+         style="z-index: 2000;">
+
+        <div class="toast-header">
+
+            <strong class="me-auto">
+                VISA
+            </strong>
+
+            <button type="button"
+                    class="btn-close"
+                    @onclick="CloseToast">
+            </button>
+
+        </div>
+
+        <div class="toast-body">
+            @ToastMessage
+        </div>
+
+    </div>
+}
+
+@code {
+
+    private bool ShowModal = false;
+
+    private bool ShowToast = false;
+
+    private string ToastMessage = "";
+
+    private PaymentInfo Payment = new();
+
+    private void OpenModal()
+    {
+        ShowModal = true;
+    }
+
+    private void CloseModal()
+    {
+        ShowModal = false;
+    }
+
+    private void CloseToast()
+    {
+        ShowToast = false;
+    }
+
+    private async Task SavePaymentMethod()
+    {
+        // Mock save
+
+        await Task.Delay(500);
+        ShowModal = false;
+
+        ToastMessage = "Betalingsmiddel blev opdateret.";
+
+        ShowToast = true;
+    }
+}

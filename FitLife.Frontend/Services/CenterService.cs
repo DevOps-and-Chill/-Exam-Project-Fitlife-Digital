@@ -24,18 +24,13 @@ public class CenterService
     {
         try
         {
-			
-            var centers =
-                await _httpClient.GetFromJsonAsync<List<ExerciseGym>>(
-                    "exercisegym/getall");
+            var centers = await _httpClient.GetFromJsonAsync<List<ExerciseGym>>("exercisegym/getall");
 
             return centers ?? new List<ExerciseGym>();
         }
         catch (Exception ex)
         {
-            throw new Exception(
-                $"Kunne ikke hente centre fra FacilityService. Fejl: {ex.Message}",
-                ex);
+            throw new Exception($"Kunne ikke hente centre fra FacilityService. Fejl: {ex.Message}", ex);
         }
     }
     /// <summary>
@@ -80,7 +75,7 @@ public class CenterService
 		catch (Exception ex)
 		{
 			throw new Exception(
-				$"Kunne ikke opdatere træningscenter. Fejl: {ex.Message}",
+				$"Kunne ikke opdatere trï¿½ningscenter. Fejl: {ex.Message}",
 				ex);
 		}
 	}
@@ -105,7 +100,7 @@ public class CenterService
 		catch (Exception ex)
 		{
 			throw new Exception(
-				$"Kunne ikke opdatere svømmehal. Fejl: {ex.Message}",
+				$"Kunne ikke opdatere svï¿½mmehal. Fejl: {ex.Message}",
 				ex);
 		}
 	}

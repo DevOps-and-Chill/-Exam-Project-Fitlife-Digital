@@ -2,6 +2,9 @@
 @rendermode InteractiveServer
 @using FitLife.Frontend.Models
 @using FitLife.Frontend.Services
+@inject CenterService centerService
+@inject MemberService memberService
+@inject NavigationManager navman
 
 <div class="container-fluid px-0">
 
@@ -15,7 +18,7 @@
 
             <!-- Prototype-knap -->
             <!-- TODO: Kan senere åbne support/chat/hjælpesektion -->
-            <button class="btn btn-outline-secondary">
+            <button class="btn btn-outline-secondary" @onclick="ShowNotImplemented">
                 Hjælp mig
             </button>
         </div>
@@ -56,13 +59,13 @@
                         <!-- Midlertidig dropdown med centre -->
                         <!-- TODO: Senere skal centre hentes fra FacilityService/backend -->
                         <select class="form-select mb-4"
-                                @bind="SelectedCenterName">
+                                @bind="SelectedCenterID">
 
                             <option value="">Vælg center</option>
 
-                            @foreach (var center in Centers)
+                            @foreach (var center in centers)
                             {
-                                <option value="@center.Name">
+                                <option value="@center.Id">
                                     @center.Name
                                 </option>
                             }
@@ -71,13 +74,13 @@
                         <h4 class="mb-3">Vælg medlemskabstype</h4>
 
                         <!-- Midlertidige medlemskabstyper -->
-                        <!-- TODO: Skal senere enten mappes til backend enum eller hentes fra backend -->
+                        <!-- TODO -->
                         <div class="list-group mb-4">
 
                             @foreach (var membershipType in MembershipTypes)
                             {
                                 <button type="button"
-                                        class="list-group-item list-group-item-action @(SelectedMembership == membershipType ? "active" : "")"
+                                        class="list-group-item list-group-item-action @(SelectedMembershipType == membershipType ? "active" : "")"
                                         @onclick="() => SelectMembership(membershipType)">
 
                                     <div class="d-flex justify-content-between">
@@ -98,11 +101,7 @@
 
                         <h4 class="mb-3">Vælg tilvalg</h4>
 
-                        <!-- TODO:
-                             UserService backend har lige nu MembershipOptional som enum:
-                             Swimming eller Pizza.
-                             Personlig træning og digital træning findes ikke som backend-tilvalg endnu.
-                             Derfor bruges disse kun som prototypevalg lige nu. -->
+                        <!-- TODO -->
                         <div class="form-check">
                             <input class="form-check-input"
                                    type="checkbox"
@@ -143,16 +142,16 @@
 
                         <p>
                             <strong>Center:</strong><br />
-                            @(string.IsNullOrWhiteSpace(SelectedCenterName)
+                            @(string.IsNullOrWhiteSpace(SelectedCenterID)
                                 ? "Ikke valgt"
-                                : SelectedCenterName)
+                                : SelectedCenterID)
                         </p>
 
                         <p>
                             <strong>Valgt medlemskabstype:</strong><br />
-                            @(SelectedMembership is null
+                            @(SelectedMembershipType is null
                                 ? "Ikke valgt"
-                                : SelectedMembership.Name)
+                                : SelectedMembershipType.Name)
                         </p>
 
                         <p>
@@ -202,7 +201,12 @@
         </div>
 
     </section>
-
+    @if (!string.IsNullOrWhiteSpace(Message))
+    {
+        <div class="alert alert-info mt-4">
+            @Message1
+        </div>
+    }
     <AppFooter />
 
 </div>
@@ -210,10 +214,11 @@
 @code {
     // Gemmer navnet på det valgte center.
     // TODO: Senere skal dette mappes til en rigtig Affiliation Guid fra FacilityService.
-    private string SelectedCenterName = "";
+    private string SelectedCenterID = "";
 
     // Gemmer det valgte medlemskab i frontend.
-    private MembershipType? SelectedMembership;
+    private MembershipType? SelectedMembershipType;
+    private string SelectedMembershipTypeString = "standard";
 
     // Prototype-tilvalg.
     // TODO: Disse skal senere afklares med backend-modellen.
@@ -222,65 +227,10 @@
     private bool DigitalTrainingAddon;
 
     private string Message = "";
+    private string Message1;
 
-    [Inject]
-    private NavigationManager Navigation { get; set; } = default!;
+    private List<ExerciseGym> centers = new();
 
-    [Inject]
-    private RegistrationStateService RegistrationState { get; set; } = default!;
-
-    // Midlertidig mock data til centre.
-    // TODO: Skal senere hentes fra backend/API.
-    private List<Center> Centers = new()
-    {
-        new Center
-        {
-            Name = "Aarhus C",
-            City = "Aarhus",
-            Address = "Eksempelvej 1"
-        },
-
-        new Center
-        {
-            Name = "Randers",
-            City = "Randers",
-            Address = "Eksempelvej 2"
-        },
-
-        new Center
-        {
-            Name = "Silkeborg",
-            City = "Silkeborg",
-            Address = "Eksempelvej 3"
-        },
-
-        new Center
-        {
-            Name = "Horsens",
-            City = "Horsens",
-            Address = "Eksempelvej 4"
-        },
-
-        new Center
-        {
-            Name = "Vejle",
-            City = "Vejle",
-            Address = "Eksempelvej 5"
-        },
-
-        new Center
-        {
-            Name = "Skanderborg",
-            City = "Skanderborg",
-            Address = "Eksempelvej 6"
-        }
-    };
-
-    // Midlertidig mock data til medlemskabstyper.
-    // OBS:
-    // Din backend enum har kun Standard og Premium.
-    // Derfor bør vi senere enten ændre "Basis/Plus/Premium"
-    // eller mappe dem korrekt til backend.
     private List<MembershipType> MembershipTypes = new()
     {
         new MembershipType
@@ -298,53 +248,46 @@
         }
     };
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        // Henter tidligere registreringsdata fra shared state.
-        SelectedCenterName = RegistrationState.SelectedCenterName;
-
-        SelectedMembership = RegistrationState.SelectedMembership;
-
-        PersonalTrainingAddon = RegistrationState.PersonalTrainingAddon;
-
-        DigitalTrainingAddon = RegistrationState.DigitalTrainingAddon;
+        centers = await centerService.GetCentersAsync();
+        SelectedCenterID = memberService.DraftMember.Affiliation ?? "";
     }
 
     private decimal TotalPrice =>
-        (SelectedMembership?.MonthlyPrice ?? 0) +
+        (SelectedMembershipType?.MonthlyPrice ?? 0) +
         (PersonalTrainingAddon ? 150 : 0) +
         (DigitalTrainingAddon ? 50 : 0);
 
     private void SelectMembership(MembershipType membershipType)
     {
-        SelectedMembership = membershipType;
-        Message = "";
+        SelectedMembershipType = membershipType;
+
+        SelectedMembershipTypeString = membershipType.Name.ToLower();
     }
 
     private void GoToNextStep()
     {
-        if (string.IsNullOrWhiteSpace(SelectedCenterName))
+        if (string.IsNullOrWhiteSpace(SelectedCenterID))
         {
             Message = "Vælg et center.";
             return;
         }
 
-        if (SelectedMembership is null)
+        if (SelectedMembershipType is null)
         {
             Message = "Vælg en medlemskabstype.";
             return;
         }
 
-        // Gemmer registreringsdata i shared registration state,
-        // så step 3 kan bruge brugerens valg.
-        RegistrationState.SelectedCenterName = SelectedCenterName;
+        memberService.DraftMember.Affiliation = SelectedCenterID;
 
-        RegistrationState.SelectedMembership = SelectedMembership;
+        memberService.DraftMember.MembershipType = SelectedMembershipType.Name;
 
-        RegistrationState.PersonalTrainingAddon = PersonalTrainingAddon;
-
-        RegistrationState.DigitalTrainingAddon = DigitalTrainingAddon;
-
-        Navigation.NavigateTo("/register-step3");
+        navman.NavigateTo("/register-step3");
+    }
+    private void ShowNotImplemented()
+    {
+        Message1 = "Denne funktion er ikke implementeret endnu.";
     }
 }
