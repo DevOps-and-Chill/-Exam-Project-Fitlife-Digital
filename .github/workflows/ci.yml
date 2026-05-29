@@ -88,7 +88,7 @@ jobs:
       run: |
         docker build \
         -t fitlifedigital.azurecr.io/gateway:latest \
-        ./nginxForAzure
+        ./nginxForAzure/nginxAzure.conf
 
     
     # AuthService

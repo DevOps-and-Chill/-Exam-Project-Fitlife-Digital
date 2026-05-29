@@ -340,7 +340,7 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
           environmentVariables: [
             {
               name: 'ASPNETCORE_URLS'
-              value: 'http://+:${rapportServicePort}'
+              value: 'http://+:${statisticServicePort}'
             }
             {
               name: 'Loki__Url'
@@ -540,7 +540,7 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
             }
             {
               name: 'GatewayBaseUrl' 
-              value: http://localhost:4000/
+              value: 'http://localhost:4000/'
             }
           ]
 
