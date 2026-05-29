@@ -59,19 +59,19 @@
 
                         <p>
                             <strong>Valgt medlemskabstype:</strong><br />
-                            Standard eller Premium
+                            @member.MembershipType
                         </p>
 
                         <p>
                             <strong>Valgte tilvalg:</strong><br />
-                            Vises senere fra registrerings-state
+                            @member.MembershipOptional
                         </p>
 
                         <hr />
-
+                        @* Todo *@
                         <h5>Total pris pr. måned</h5>
 
-                        <h3>Vises senere</h3>
+                        <h3>-</h3>
 
                     </div>
                 </div>
@@ -136,13 +136,6 @@
                class="btn btn-outline-secondary">
                 Tilbage
             </a>
-
-            <!-- Afslutter registrering -->
-            <!-- TODO:
-                 Senere skal denne metode:
-                 1. Hente medlem + valg fra RegistrationStateService
-                 2. Kalde UserService via MemberService
-                 3. Håndtere betaling via payment provider -->
             <button class="btn btn-success px-4"
                     disabled="@IsSubmitting"
                     @onclick="CompleteRegistration">
@@ -154,7 +147,7 @@
     </section>
     @if (!string.IsNullOrWhiteSpace(Message))
     {
-        <div class="alert alert-info mt-4">@Message</div>
+        <div class="alert alert-info mt-4">@Message1</div>
     }
     <AppFooter />
 
@@ -166,6 +159,7 @@
     private PaymentInfo Payment = new();
     private Member member;
     private string Message = "";
+    private string Message1 = "";
 
     private bool IsSubmitting = false;
 
@@ -200,7 +194,6 @@
             member.ActiveMembership = true;
             member.ActiveUser = true;
             member.RoleName = "Member";
-            member.PartitionKey = "users";
 
             bool success = await memberservice.CreateNewMember(member, memberservice.DraftCredential);
 
@@ -229,7 +222,7 @@
 
     private void ShowNotImplemented()
     {
-        Message = "Denne funktion er ikke implementeret endnu.";
+        Message1 = "Denne funktion er ikke implementeret endnu.";
     }
 
 }

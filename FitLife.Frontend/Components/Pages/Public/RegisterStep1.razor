@@ -135,7 +135,7 @@
     @if (!string.IsNullOrWhiteSpace(Message))
     {
         <div class="alert alert-info mt-4">
-            @Message
+            @Message1
         </div>
     }
     <AppFooter />
@@ -152,6 +152,7 @@
     private string RepeatPassword = "";
 
     private string Message = "";
+    private string Message1 = "";
 
     protected override void OnInitialized()
     {
@@ -182,6 +183,6 @@
     }
     private void ShowNotImplemented()
     {
-        Message = "Denne funktion er ikke implementeret endnu.";
+        Message1 = "Denne funktion er ikke implementeret endnu.";
     }
 }
