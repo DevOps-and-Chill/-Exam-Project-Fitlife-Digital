@@ -37,7 +37,7 @@
         else
         {
             <div class="row g-4">
-                <h3>træningscentre</h3>
+                <h3>Vores træningscentre</h3>
                 @foreach (var center in Centers.FindAll(sp => sp.GetType() == typeof(ExerciseGym)))
                 {
                     <div class="col-md-4">
@@ -51,11 +51,6 @@
                                 <p class="text-muted mb-1">
                                     @center.Address
                                 </p>
-
-                                <p class="mb-3">
-                                    @center.Address
-                                </p>
-
                                 <div class="d-grid gap-2">
                                     <button class="btn btn-success"
                                             @onclick="() => SelectCenter(center)">
@@ -74,7 +69,7 @@
 
             </div>
             <div class="row g-4">
-                <h3>Svømmehaller</h3>
+                <h3>Svømmehaller vi samarbejder med:</h3>
                 @foreach (var center in Centers.FindAll(sp => sp.GetType() == typeof (SwimmingPool)))
                 {
                     <div class="col-md-4">
@@ -88,11 +83,6 @@
                                 <p class="text-muted mb-1">
                                     @center.Address
                                 </p>
-
-                                <p class="mb-3">
-                                    @center.Address
-                                </p>
-
                                 <div class="d-grid gap-2">
                                     <button class="btn btn-success"
                                             @onclick="() => SelectCenter(center)">
