@@ -1,0 +1,262 @@
+@page "/manage-personal-training"
+@rendermode InteractiveServer
+@layout EmployeeLayout
+@using FitLife.Frontend.Models
+@using FitLife.Frontend.Services
+@inject PTService PTService
+@inject TokenService TokenService
+
+<div class="container-fluid px-0">
+
+    <EmployeeNavbar />
+
+    <section class="container py-5">
+
+        <div class="row align-items-center mb-5">
+            <div class="col-md-7">
+                <span class="badge bg-success mb-3 px-3 py-2">
+                    PERSONLIG TRÆNING
+                </span>
+                <h1 class="fw-bold mb-3">
+                    Personlig træning
+                </h1>
+                <p class="lead text-muted">
+                    Se og administrer PT-sessioner fra medlemmer.
+                </p>
+            </div>
+        </div>
+
+        <!-- Tab navigation -->
+        <div class="mb-4">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <button class="nav-link @(ActiveTab == "mine" ? "active" : "")"
+                            @onclick='() => SetTab("mine")'>
+                        Mine sessioner
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link @(ActiveTab == "pending" ? "active" : "")"
+                            @onclick='() => SetTab("pending")'>
+                        Afventende anmodninger
+                        @if (PendingSessions.Count > 0)
+                        {
+                            <span class="badge bg-danger ms-2">@PendingSessions.Count</span>
+                        }
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        @if (IsLoading)
+        {
+            <div class="alert alert-info">Henter sessioner...</div>
+        }
+        else if (ActiveTab == "mine")
+        {
+            @if (MineSessions.Count == 0)
+            {
+                <div class="alert alert-secondary">Du har ingen sessioner endnu.</div>
+            }
+            else
+            {
+                <div class="row g-4 mb-5">
+                    @foreach (var session in MineSessions)
+                    {
+                        <div class="col-md-6">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-body p-4">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <h5 class="fw-bold mb-0">PT Session</h5>
+                                        <span class="badge @GetStatusBadgeClass(session.Status)">
+                                            @GetStatusText(session.Status)
+                                        </span>
+                                    </div>
+                                    <p class="mb-1"><strong>Medlem ID:</strong> @session.MemberId</p>
+                                    <p class="mb-1"><strong>Start:</strong> @session.StartDate.ToString("dd/MM/yyyy HH:mm")</p>
+                                    <p class="mb-3"><strong>Slut:</strong> @session.EndDate.ToString("dd/MM/yyyy HH:mm")</p>
+                                    <button class="btn btn-outline-secondary btn-sm"
+                                            @onclick="() => CancelSession(session)">
+                                        Annuller
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        }
+        else if (ActiveTab == "pending")
+        {
+            @if (PendingSessions.Count == 0)
+            {
+                <div class="alert alert-secondary">Ingen afventende anmodninger.</div>
+            }
+            else
+            {
+                <div class="row g-4 mb-5">
+                    @foreach (var session in PendingSessions)
+                    {
+                        <div class="col-md-6">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-body p-4">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <h5 class="fw-bold mb-0">PT Session</h5>
+                                        <span class="badge @GetStatusBadgeClass(session.Status)">
+                                            @GetStatusText(session.Status)
+                                        </span>
+                                    </div>
+                                    <p class="mb-1"><strong>Medlem ID:</strong> @session.MemberId</p>
+                                    <p class="mb-1"><strong>Start:</strong> @session.StartDate.ToString("dd/MM/yyyy HH:mm")</p>
+                                    <p class="mb-3"><strong>Slut:</strong> @session.EndDate.ToString("dd/MM/yyyy HH:mm")</p>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-success btn-sm"
+                                                @onclick="() => AcceptSession(session)">
+                                            Accepter
+                                        </button>
+                                        <button class="btn btn-danger btn-sm"
+                                                @onclick="() => RejectSession(session)">
+                                            Afvis
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        }
+
+        @if (!string.IsNullOrWhiteSpace(StatusMessage))
+        {
+            <div class="alert alert-info mt-4">@StatusMessage</div>
+        }
+
+    </section>
+
+    <AppFooter />
+
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public string? Tab { get; set; }
+
+    private bool IsLoading = true;
+    private string StatusMessage = "";
+    private string ActiveTab = "mine";
+    private List<PersonalTrainingSession> MineSessions = new();
+    private List<PersonalTrainingSession> PendingSessions = new();
+
+    private void SetTab(string tab)
+    {
+        ActiveTab = tab;
+    }
+
+    private string GetStatusText(int status) => status switch
+    {
+        0 => "Afventer",
+        1 => "Aktiv",
+        2 => "Gennemført",
+        3 => "Annulleret",
+        _ => "Ukendt"
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(Tab))
+                ActiveTab = Tab;
+
+            await LoadSessions();
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Kunne ikke hente data: {ex.Message}";
+        }
+    }
+    private async Task LoadSessions()
+    {
+        try
+        {
+            IsLoading = true;
+            var token = TokenService.GetToken();
+            var allSessions = await PTService.GetSessionsAsync();
+
+            if (token is not null)
+            {
+                var userId = await TokenService.GetUserIdFromCachedToken();
+                MineSessions = allSessions
+                    .Where(s => s.PersonalTrainerId.ToString() == userId && s.Status != 0)
+                    .ToList();
+            }
+            else
+            {
+                MineSessions = allSessions;
+            }
+
+            PendingSessions = allSessions
+                .Where(s => s.Status == 0)
+                .ToList();
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Kunne ikke hente sessioner: {ex.Message}";
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task AcceptSession(PersonalTrainingSession session)
+    {
+        var success = await PTService.AcceptSessionAsync(session.Id);
+        if (success)
+        {
+            StatusMessage = "Session accepteret.";
+            await LoadSessions();
+        }
+        else
+        {
+            StatusMessage = "Kunne ikke acceptere sessionen.";
+        }
+    }
+
+    private async Task RejectSession(PersonalTrainingSession session)
+    {
+        var success = await PTService.RejectSessionAsync(session.Id);
+        if (success)
+        {
+            StatusMessage = "Session afvist.";
+            await LoadSessions();
+        }
+        else
+        {
+            StatusMessage = "Kunne ikke afvise sessionen.";
+        }
+    }
+
+    private async Task CancelSession(PersonalTrainingSession session)
+    {
+        var success = await PTService.CancelSessionAsync(session.Id);
+        if (success)
+        {
+            StatusMessage = "Session annulleret.";
+            await LoadSessions();
+        }
+        else
+        {
+            StatusMessage = "Kunne ikke annullere sessionen.";
+        }
+    }
+
+    private string GetStatusBadgeClass(int status)
+    {
+        if (status == 0) return "bg-warning text-dark";
+        if (status == 1) return "bg-success";
+        if (status == 2) return "bg-danger";
+        return "bg-secondary";
+    }
+}

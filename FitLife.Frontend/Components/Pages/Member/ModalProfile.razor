@@ -1,0 +1,171 @@
+﻿@using FitLife.Frontend.Services
+@inject CurrentUserService CurrentUserService
+@inject MemberService MemberService
+
+@if (ShowModal && CurrentUserService.CurrentUser?.Member is not null)
+{
+    <div class="modal fade show d-block"
+         tabindex="-1"
+         style="background-color: rgba(0,0,0,0.5);">
+
+        <div class="modal-dialog modal-lg">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        Medlemsprofil
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            @onclick="CloseModal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row g-3">
+                        @if (!string.IsNullOrWhiteSpace(Message))
+                        {
+                            <div class="alert alert-success mt-3">
+                                @Message
+                            </div>
+                        }
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Fornavn
+                            </label>
+
+                            <input class="form-control"
+                                   @bind="CurrentUserService.CurrentUser.Member.GivenName" />
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Efternavn
+                            </label>
+
+                            <input class="form-control"
+                                   @bind="CurrentUserService.CurrentUser.Member.FamilyName" />
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Email
+                            </label>
+
+                            <input class="form-control"
+                                   @bind="CurrentUserService.CurrentUser.Member.Email" />
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                Telefon
+                            </label>
+
+                            <input class="form-control"
+                                   @bind="CurrentUserService.CurrentUser.Member.Telephone" />
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button class="btn btn-secondary"
+                            @onclick="CloseModal">
+                        Luk
+                    </button>
+
+                    <button class="btn btn-success"
+                            @onclick="SaveProfile">
+                        Gem
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+}
+
+<button class="btn btn-outline-dark"
+        @onclick="OpenModal">
+    Åbn profil
+</button>
+@if (ShowToast)
+{
+    <div class="toast show position-fixed bottom-0 end-0 m-4"
+         role="alert"
+         style="z-index: 2000;">
+
+        <div class="toast-header">
+
+            <strong class="me-auto">
+                FitLife
+            </strong>
+
+            <button type="button"
+                    class="btn-close"
+                    @onclick="CloseToast">
+            </button>
+
+        </div>
+
+        <div class="toast-body">
+            @ToastMessage
+        </div>
+
+    </div>
+}
+@code {
+    private string Message = "";
+    private bool ShowModal = false;
+    private bool ShowToast = false;
+    private string ToastMessage = "";
+
+    private void OpenModal()
+    {
+        Message = "";
+        ShowModal = true;
+    }
+
+    private void CloseModal()
+    {
+        ShowModal = false;
+    }
+
+    private async Task SaveProfile()
+    {
+        if (CurrentUserService.CurrentUser?.Member is null)
+        {
+            return;
+        }
+        await MemberService.SaveMember(CurrentUserService.CurrentUser.Member);
+
+        ToastMessage = "Din profil er nu opdateret.";
+
+        ShowToast = true;
+        ShowModal = false;
+    }
+
+    private void CloseToast()
+    {
+        ShowToast = false;
+    }
+}

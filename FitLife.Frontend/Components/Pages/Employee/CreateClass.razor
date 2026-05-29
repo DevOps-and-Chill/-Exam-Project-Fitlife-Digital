@@ -1,0 +1,233 @@
+@page "/create-class"
+@rendermode InteractiveServer
+@using FitLife.Frontend.Models
+@using FitLife.Frontend.Services
+@using FitLife.Frontend.Components
+@layout EmployeeLayout
+@inject ClassService ClassService
+@inject StatisticService StatisticService
+@inject NavigationManager Navigation
+@inject CurrentUserService CurrentUserService
+@inject EmployeeService EmployeeService
+
+<div class="container-fluid px-0">
+
+    <EmployeeNavbar />
+
+    <section class="container py-5">
+
+        <div class="mb-4">
+            <h1 class="fw-bold">Opret hold</h1>
+            <p class="lead">Opret et nyt hold i centerets holdplan.</p>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label">Holdtype</label>
+                        <input class="form-control"
+                               @bind="NewClass.Title"
+                               placeholder="Fx Yoga, Spinning, Crossfit" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Coach</label>
+                        <select class="form-select" @bind="NewClass.CoachId">
+                            <option value="">Vælg coach...</option>
+                            @foreach (var coach in Coaches)
+                            {
+                                <option value="@coach.Id">@coach.GivenName @coach.FamilyName</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Dato</label>
+                        <input class="form-control"
+                               type="date"
+                               @bind="SelectedDate" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Start klokkeslæt</label>
+                        <input class="form-control"
+                               type="time"
+                               @bind="SelectedStartTime" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Slut klokkeslæt</label>
+                        <input class="form-control"
+                               type="time"
+                               @bind="SelectedEndTime" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Antal pladser</label>
+                        <input class="form-control"
+                               type="number"
+                               @bind="NewClass.MemberLimit" />
+                    </div>
+                    
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(Message))
+                {
+                    <div class="alert @MessageCssClass mt-4">@Message</div>
+                }
+
+                <div class="d-flex gap-3 mt-4">
+                    <button class="btn btn-success px-4" @onclick="Save">
+                        Gem
+                    </button>
+
+                    <button class="btn btn-outline-success px-4" @onclick="SaveAndCreateMore">
+                        Gem og opret flere hold
+                    </button>
+
+                    <a href="/employee-dashboard" class="btn btn-outline-secondary px-4">
+                        Afbryd
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+    <AppFooter />
+
+</div>
+
+@code {
+
+    private List<Employee> Coaches = new();
+
+    private Class NewClass = new()
+    {
+        MemberLimit = 10,
+        ActiveClass = true
+    };
+
+    private DateTime? SelectedDate;
+    private TimeOnly? SelectedStartTime;
+    private TimeOnly? SelectedEndTime;
+    private string Message = "";
+    private string MessageCssClass = "alert-info";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CurrentUserService.SetCurrentUser();
+        
+        var currentEmployee = CurrentUserService.CurrentUser?.Employee;
+   
+        var affiliationId = currentEmployee.Affiliation;
+        
+        var allEmployees = await EmployeeService.GetEmployeesByAffiliationAsync(affiliationId);
+        Coaches = allEmployees.Where(e => e.IsPT).ToList();
+        
+        if (currentEmployee is not null)
+        {
+            NewClass.ExerciseGymId = currentEmployee.Affiliation;
+        }
+    }
+
+    private bool Validate()
+    {
+        if (string.IsNullOrWhiteSpace(NewClass.Title) ||
+            string.IsNullOrWhiteSpace(NewClass.CoachId) ||
+            SelectedDate is null ||
+            SelectedStartTime is null ||
+            SelectedEndTime is null ||
+            NewClass.MemberLimit <= 0 ||
+            NewClass.ExerciseGymId == Guid.Empty.ToString())
+        {
+            Message = "Udfyld alle felter korrekt.";
+            MessageCssClass = "alert-danger";
+            return false;
+        }
+
+        if (SelectedEndTime <= SelectedStartTime)
+        {
+            Message = "Sluttidspunktet skal være efter starttidspunktet.";
+            MessageCssClass = "alert-danger";
+            return false;
+        }
+
+        return true;
+    }
+
+    private void BuildClass()
+    {
+        NewClass.TimeStart = SelectedDate!.Value.Date + SelectedStartTime!.Value.ToTimeSpan();
+        NewClass.TimeEnd   = SelectedDate!.Value.Date + SelectedEndTime!.Value.ToTimeSpan();
+    }
+
+    private void ResetForm()
+    {
+        NewClass = new Class
+        {
+            MemberLimit = 10,
+            ActiveClass = true,
+            ExerciseGymId = CurrentUserService.CurrentUser?.Employee?.Affiliation ?? Guid.Empty.ToString()
+        };
+        SelectedDate = null;
+        SelectedStartTime = null;
+        SelectedEndTime = null;
+    }
+
+    private async Task Save()
+    {
+        if (!Validate()) return;
+        BuildClass();
+
+        try
+        {
+            await ClassService.CreateClassAsync(NewClass);
+            await CreateStatisticForClass();
+            Navigation.NavigateTo("/manage-classes");
+        }
+        catch (Exception ex)
+        {
+            Message = $"Kunne ikke oprette hold: {ex.Message}";
+            MessageCssClass = "alert-danger";
+        }
+    }
+
+    private async Task SaveAndCreateMore()
+    {
+        if (!Validate()) return;
+        BuildClass();
+
+        try
+        {
+            await ClassService.CreateClassAsync(NewClass);
+            await CreateStatisticForClass();
+            var title = NewClass.Title;
+            ResetForm();
+            Message = $"Holdet '{title}' er oprettet. Du kan nu oprette et nyt hold.";
+            MessageCssClass = "alert-success";
+        }
+        catch (Exception ex)
+        {
+            Message = $"Kunne ikke oprette hold: {ex.Message}";
+            MessageCssClass = "alert-danger";
+        }
+    }
+
+    private async Task CreateStatisticForClass()
+    {
+        var facilityId = Guid.TryParse(NewClass.ExerciseGymId, out var fid) ? fid : Guid.Empty;
+        await StatisticService.CreateAsync(new Statistic
+        {
+            Name        = NewClass.Title,
+            Description = $"{NewClass.Title} — {NewClass.TimeStart:dd/MM/yyyy HH:mm}",
+            FacilityId  = facilityId,
+            RoomId      = facilityId,
+            ActiveClass = NewClass.ActiveClass
+        });
+    }
+}

@@ -1,0 +1,188 @@
+@page "/register-step1"
+@rendermode InteractiveServer
+@using FitLife.Frontend.Models
+@using FitLife.Frontend.Models.DTOs
+@using FitLife.Frontend.Services
+@inject MemberService memberService
+@inject NavigationManager navman
+
+<div class="container-fluid px-0">
+
+    <!-- Shared navbar for public pages -->
+    <PublicNavbar />
+
+    <section class="container py-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Opret medlemskab</h2>
+
+            <!-- Prototype-knap -->
+            <!-- TODO: Kan senere åbne support/chat/hjælpesektion -->
+            <button class="btn btn-outline-secondary" @onclick="ShowNotImplemented">
+                Hjælp mig
+            </button>
+        </div>
+
+        <!-- Step-indikator -->
+        <div class="row mb-4 text-center">
+            <div class="col">
+                <div class="border rounded p-3 bg-success text-white">
+                    Trin 1<br />
+                    Personlige informationer
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="border rounded p-3 bg-light">
+                    Trin 2<br />
+                    Vælg medlemskabstype
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="border rounded p-3 bg-light">
+                    Trin 3<br />
+                    Betalingsoplysninger
+                </div>
+            </div>
+        </div>
+
+        <!-- Registreringsformular -->
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+
+                <div class="row g-3">
+
+                    <!-- Felterne matcher nu Member-modellen fra frontend/UserService -->
+                    <div class="col-md-6">
+                        <label class="form-label">Fornavn</label>
+                        <input class="form-control"
+                               @bind="NewMember.GivenName" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Efternavn</label>
+                        <input class="form-control"
+                               @bind="NewMember.FamilyName" />
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label">Adresse</label>
+                        <input class="form-control"
+                               @bind="NewMember.Address" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Fødselsdag</label>
+                        <input class="form-control"
+                               type="date"
+                               @bind="NewMember.BirthDate" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">E-mailadresse</label>
+                        <input class="form-control"
+                               type="email"
+                               @bind="NewMember.Email" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Telefonnummer</label>
+                        <input class="form-control"
+                               @bind="NewMember.Telephone" />
+                    </div>
+
+                    <!-- Password ligger separat fra Member-modellen -->
+                    <!-- TODO: Skal senere hashes/sendes til authentication service -->
+                    <div class="col-md-6">
+                        <label class="form-label">Password</label>
+                        <input class="form-control"
+                               type="password"
+                               @bind="Password" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Gentag password</label>
+                        <input class="form-control"
+                               type="password"
+                               @bind="RepeatPassword" />
+                    </div>
+
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(Message))
+                {
+                    <div class="alert alert-warning mt-4">
+                        @Message
+                    </div>
+                }
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="/" class="btn btn-outline-secondary">
+                        Tilbage
+                    </a>
+
+                    <button class="btn btn-success px-4"
+                            @onclick="GoToNextStep">
+                        Næste
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+    @if (!string.IsNullOrWhiteSpace(Message))
+    {
+        <div class="alert alert-info mt-4">
+            @Message1
+        </div>
+    }
+    <AppFooter />
+
+</div>
+
+@code {
+    // Medlemsdata gemmes nu i MemberService (se oninitiatlized),
+    // så informationer bevares mellem step 1, 2 og 3.
+    private Member NewMember = new();
+
+    private CredentialDTO draftCredential;
+    private string Password = "";
+    private string RepeatPassword = "";
+
+    private string Message = "";
+    private string Message1;
+
+    protected override void OnInitialized()
+    {
+        // Henter medlemsdata fra shared registration state.
+        NewMember = memberService.DraftMember;
+        draftCredential = memberService.DraftCredential;
+    }
+
+    private void GoToNextStep()
+    {
+        // Simpel validering af obligatoriske felter.
+        if (string.IsNullOrWhiteSpace(NewMember.GivenName) ||
+            string.IsNullOrWhiteSpace(NewMember.FamilyName) ||
+            string.IsNullOrWhiteSpace(NewMember.Email))
+        {
+            Message = "Udfyld som minimum fornavn, efternavn og email.";
+            return;
+        }
+
+        if (Password != RepeatPassword)
+        {
+            Message = "Password og gentag password skal være ens.";
+            return;
+        }
+        draftCredential.Email = NewMember.Email;
+        draftCredential.Password = RepeatPassword;
+        navman.NavigateTo("/register-step2");
+    }
+    private void ShowNotImplemented()
+    {
+        Message1 = "Denne funktion er ikke implementeret endnu.";
+    }
+}

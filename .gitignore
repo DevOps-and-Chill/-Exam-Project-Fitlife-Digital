@@ -43,6 +43,7 @@ ScaffoldingReadMe.txt
 ~$*
 *~
 CodeCoverage/
+.env
 
 # MSBuild Binary and Structured Log
 *.binlog
@@ -52,10 +53,47 @@ CodeCoverage/
 [Bb]uild[Ll]og.*
 
 # NUnit
-*.VisualState.xml
+*.VisualState.xmlS
 TestResult.xml
 nunit-*.xml
 /.vs
 /FacilityService/FacilityServiceAPI/.vs/FacilityServiceAPI/CopilotIndices/17.14.1518.61961
 /FacilityService/FacilityServiceAPI/.vs/FacilityServiceAPI/FileContentIndex
 /FacilityService/FacilityServiceAPI/.vs/FacilityServiceAPI/v17
+
+#User-specific files
+*.csproj.user
+/FacilityService/FacilityServiceAPI/.vs/FacilityServiceAPI
+/FacilityService/FacilityServiceAPI/.vs/ProjectEvaluation
+/FacilityService/FacilityServiceAPI/.github
+/FacilityService/.vs/FacilityServiceAPI/CopilotIndices/17.14.1661.41761
+/FacilityService/.vs/FacilityServiceAPI/DesignTimeBuild
+/FacilityService/.vs/FacilityServiceAPI/FileContentIndex
+/FacilityService/.vs/FacilityServiceAPI/v17/TestStore/0
+/FacilityService/FacilityServiceAPI/FacilityServiceAPI.csproj.lscache
+/UserService/.vs/UserServiceAPI/CopilotIndices/17.14.1661.41761
+/UserService/.vs/UserServiceAPI/FileContentIndex
+/UserService/.vs/UserServiceAPI
+/DigitalContentServiceAPI/DigitalContentService/.vs/DigitalContentService/v17
+/DigitalContentServiceAPI/DigitalContentService/.vs/DigitalContentService/FileContentIndex
+/DigitalContentServiceAPI/DigitalContentService/.vs/DigitalContentService/CopilotIndices/17.14.1661.41761
+/DigitalContentServiceAPI/DigitalContentService/.github
+/DigitalContentServiceAPI/DigitalContentService/.vs/DigitalContentService/DesignTimeBuild
+/UserService/packages/
+.idea/
+!.idea/codeStyles/
+!.idea/runConfigurations/
+/AuthService/.github/copilot-instructions.md
+/AuthService/.vs/AuthService/CopilotIndices/17.14.1661.41761
+/AuthService/.vs/AuthService.slnx/FileContentIndex
+/AuthService/.vs/AuthService.slnx/v17
+/AuthService/.vs/ProjectEvaluation
+/DigitalContentServiceAPI/DigitalContentService/.vs/ProjectEvaluation
+/MessageServiceAPI/.github
+/UserService/.vs
+/UserService/.vs/ProjectEvaluation
+/UserService/.vs/ProjectEvaluation
+/UserService/.vs/ProjectEvaluation
+/UserService/.vs/UserServiceAPI/DesignTimeBuild
+/UserService/.vs/UserServiceAPI/v18
+/FacilityService/.vs/ProjectEvaluation

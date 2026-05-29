@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="d170cc54-868d-4ce8-8223-6c34120d00a1" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/../.." value="feature/FitLifeFrontendMessageService" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/DigitalContentServiceAPI/Controllers/DigitalContentController.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/DigitalContentServiceAPI/Repositories/Interfaces/IWorkoutProgramRepository.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/DigitalContentServiceAPI/Repositories/Interfaces/IWorkoutVideoRepository.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/DigitalContentServiceAPI/Repositories/WorkoutProgramRepository.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/DigitalContentServiceAPI/Repositories/WorkoutProgramRepositoryMoq.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/DigitalContentServiceAPI/Repositories/WorkoutVideoRepository.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/DigitalContentServiceTest/DigitalContentServiceTest.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Fitlife/Eksamen/-Exam-Project-Fitlife-Digital/FitLife.Frontend/Components/Pages/Employee/EmployeePersonalTraining.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="mock://D:/Fitlife/Eksamen/-Exam-Project-Fitlife-Digital/FitLife.Frontend/Components/Pages/Member/PersonalTraining.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="mock://D:/Fitlife/Eksamen/-Exam-Project-Fitlife-Digital/FitLife.Frontend/Models/Message.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Fitlife/Eksamen/-Exam-Project-Fitlife-Digital/FitLife.Frontend/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Fitlife/Eksamen/-Exam-Project-Fitlife-Digital/MessageServiceAPI/ClassCancelledConsumer.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Fitlife/Eksamen/-Exam-Project-Fitlife-Digital/MessageServiceAPI/Controllers/MessageController.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Fitlife/Eksamen/-Exam-Project-Fitlife-Digital/MessageServiceAPI/Models/ClassCancelledMessage.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Fitlife/Eksamen/-Exam-Project-Fitlife-Digital/MessageServiceAPI/Models/ClassMessage.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Fitlife/Eksamen/-Exam-Project-Fitlife-Digital/MessageServiceAPI/Models/DirectMessage.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Fitlife/Eksamen/-Exam-Project-Fitlife-Digital/MessageServiceAPI/Services/Interfaces/IMessageService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Fitlife/Eksamen/-Exam-Project-Fitlife-Digital/MessageServiceAPI/Services/MessageService.cs" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 2
+}]]></component>
+  <component name="ProjectId" id="3E4GjehdZyz2BOHR2ekd033Bfmd" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "git-widget-placeholder": "feature/DigitalContentServiceControllersAndRepos",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d170cc54-868d-4ce8-8223-6c34120d00a1" name="Changes" comment="" />
+      <created>1779430564455</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1779430564455</updated>
+      <workItem from="1779430565526" duration="769000" />
+    </task>
+    <task id="LOCAL-00001" summary="dto">
+      <option name="closed" value="true" />
+      <created>1779430740333</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1779430740333</updated>
+    </task>
+    <task id="LOCAL-00002" summary=".">
+      <option name="closed" value="true" />
+      <created>1779430759331</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1779430759331</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="dto" />
+    <MESSAGE value="." />
+    <option name="LAST_COMMIT_MESSAGE" value="." />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.OperationCanceledException" breakIfHandledByOtherCode="false" displayValue="System.OperationCanceledException" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.Threading.Tasks.TaskCanceledException" breakIfHandledByOtherCode="false" displayValue="System.Threading.Tasks.TaskCanceledException" />
+          <option name="timeStamp" value="2" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.Threading.ThreadAbortException" breakIfHandledByOtherCode="false" displayValue="System.Threading.ThreadAbortException" />
+          <option name="timeStamp" value="3" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

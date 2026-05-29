@@ -1,34 +1,140 @@
+using Azure.Identity;
+using FacilityServiceAPI.Contexts;
+using FacilityServiceAPI.Extensions;
+using FacilityServiceAPI.Repositories;
+using FacilityServiceAPI.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Azure.Cosmos;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using NLog;
+using NLog.Web;
+using System.Configuration;
+using System.Text;
 
 namespace FacilityServiceAPI
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            // Opsæt NLog og hent en logger instans til at logge opstart og fejl
+            var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
-            // Add services to the container.
+            logger.Debug("FacilityService starter op");
 
-            builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
-
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            try
             {
-                app.MapOpenApi();
+                var builder = WebApplication.CreateBuilder(args);
+
+                await builder.LoadVault();
+                //builder.Configuration.AddAzureKeyVault(
+                //        new Uri("https://fitlifedigitalkv.vault.azure.net/"),
+                //        new DefaultAzureCredential());
+
+
+                // Ryd eksisterende logging providers og brug NLog i stedet
+                builder.Logging.ClearProviders();
+                builder.Host.UseNLog();
+
+			builder.Services.AddControllers();
+			// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+			builder.Services.AddOpenApi();
+
+			builder.Services.AddTransient<IFacilityRepository, FacilityRepository>();
+            builder.Services.AddTransient<IExerciseGymRepository, ExerciseGymRepository>();
+			builder.Services.AddTransient<ISwimmingPoolRepository, SwimmingPoolRepository>();
+
+            //Enables dependency injection of Factory pattern for DBContext. This way the application is more threadsafe, because each 
+            builder.Services.AddDbContextFactory<FacilityContext>(options =>
+            {
+                options.UseCosmos(
+                        builder.Configuration["CosmosDb:AccountEndpoint"]!,
+                        builder.Configuration["CosmosDb:AccountKey"]!,
+                        builder.Configuration["CosmosDb:DatabaseName"]!,
+                        //Enables dependency injection of Factory pattern for DBContext. This way the application is more threadsafe, because each context is managed through the factory
+                        //    builder.Services.AddDbContextFactory<FacilityContext>(options =>
+                        //    {
+                        //        options.UseCosmos(
+                        //            builder.Configuration["CosmosDb:AccountEndpoint"]!,
+                        //            builder.Configuration["CosmosDb:AccountKey"]!,
+                        //            builder.Configuration["CosmosDb:DatabaseName"]!,
+                        //            //cosmosOptions =>
+                        //            //{
+                        //            //    cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+
+                        //            //    cosmosOptions.HttpClientFactory(() =>
+                        //            //    {
+                        //            //        var handler = new HttpClientHandler();
+
+                        //        return new HttpClient(handler);
+                        //    });
+                        //});
+                        cosmosOptions =>
+                        {
+                            cosmosOptions.ConnectionMode(ConnectionMode.Gateway);
+                        });
+                    });
+
+            builder.Services
+                //AO: Tells the app that we use JWT as authentication
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                //AO: Config of the token validation
+                .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters =
+                         //AO: Config of what makes a token valid
+                        new TokenValidationParameters
+                        {
+                            //AO: Check these
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true,
+                            //AO: Compare issuer and audience 
+                            ValidIssuer =
+                                builder.Configuration["Jwt:Issuer"],
+                            ValidAudience =
+                                builder.Configuration["Jwt:Audience"],
+                            //AO: Calculate key to ensure correct signature
+                                IssuerSigningKey =
+                                    new SymmetricSecurityKey(
+                                        Encoding.UTF8.GetBytes(
+                                        builder.Configuration["Jwt:Key"]!)),
+                                //AO: Accept no difference in validationperiod
+                            ClockSkew = TimeSpan.Zero
+                        };
+                    });
+
+				var app = builder.Build();
+
+			// Configure the HTTP request pipeline.
+			if (app.Environment.IsDevelopment())
+			{
+				app.MapOpenApi();
+			}
+			// using (var scope = app.Services.CreateScope())
+			// {
+			// 	var db = scope.ServiceProvider.GetRequiredService<FacilityContext>();
+
+			// 	await db.Database.EnsureCreatedAsync();
+			// }
+
+                app.UseHttpsRedirection();
+                app.UseAuthentication();
+                app.UseAuthorization();
+                app.MapControllers();
+                app.Run();
             }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-
-            app.MapControllers();
-
-            app.Run();
+            catch (Exception ex)
+            {
+                logger.Error(ex, "FacilityService stopped because of an unexpected error durring startup");
+                throw;
+            }
+            finally
+            {
+                NLog.LogManager.Shutdown();
+            }
         }
     }
 }

@@ -1,0 +1,228 @@
+@page "/register-step3"
+@rendermode InteractiveServer
+@using FitLife.Frontend.Models
+@using FitLife.Frontend.Models.DTOs
+@using FitLife.Frontend.Services
+@inject MemberService memberservice
+
+<div class="container-fluid px-0">
+
+    <!-- Shared navbar for public pages -->
+    <PublicNavbar />
+
+    <section class="container py-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Opret medlemskab</h2>
+            <button class="btn btn-outline-secondary" @onclick="ShowNotImplemented">
+                Hjælp mig
+            </button>
+        </div>
+
+        <!-- Step-indikator -->
+        <div class="row mb-4 text-center">
+
+            <div class="col">
+                <div class="border rounded p-3 bg-light">
+                    Trin 1<br />
+                    Personlige informationer
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="border rounded p-3 bg-light">
+                    Trin 2<br />
+                    Vælg medlemskabstype
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="border rounded p-3 bg-success text-white">
+                    Trin 3<br />
+                    Betalingsoplysninger
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row g-4">
+
+            <!-- Opsummering af brugerens valg -->
+            <!-- TODO:
+                 Senere skal disse værdier komme fra RegistrationStateService,
+                 så step 3 viser de faktiske valg fra step 1 og step 2. -->
+            <div class="col-md-5">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+
+                        <h4>Gennemse dine valg</h4>
+
+                        <p>
+                            <strong>Valgt medlemskabstype:</strong><br />
+                            @member.MembershipType
+                        </p>
+
+                        <p>
+                            <strong>Valgte tilvalg:</strong><br />
+                            @member.MembershipOptional
+                        </p>
+
+                        <hr />
+                        @* Todo *@
+                        <h5>Total pris pr. måned</h5>
+
+                        <h3>-</h3>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Betalingsformular -->
+            <div class="col-md-7">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+
+                        <h4 class="mb-3">
+                            Indtast betalingsoplysninger
+                        </h4>
+                        <div class="mb-3">
+                            <label class="form-label">Kortnummer</label>
+
+                            <input class="form-control"
+                                   @bind="Payment.CardNumber" />
+                        </div>
+
+                        <div class="row g-3">
+
+                            <div class="col-md-4">
+                                <label class="form-label">MM</label>
+
+                                <input class="form-control"
+                                       @bind="Payment.Month" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">YY</label>
+
+                                <input class="form-control"
+                                       @bind="Payment.Year" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">CVV/CVD</label>
+
+                                <input class="form-control"
+                                       @bind="Payment.Cvv" />
+                            </div>
+
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(Message))
+                        {
+                            <div class="alert alert-info mt-4">
+                                @Message
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+
+            <a href="/register-step2"
+               class="btn btn-outline-secondary">
+                Tilbage
+            </a>
+            <button class="btn btn-success px-4"
+                    disabled="@IsSubmitting"
+                    @onclick="CompleteRegistration">
+                @(IsSubmitting ? "Opretter..." : "Betal og afslut")
+            </button>
+
+        </div>
+
+    </section>
+    @if (!string.IsNullOrWhiteSpace(Message))
+    {
+        <div class="alert alert-info mt-4">@Message1</div>
+    }
+    <AppFooter />
+
+</div>
+
+@code {
+    // PaymentInfo holder betalingsdata samlet ét sted.
+    // TODO: Senere bør betalingsflow håndteres via betalingsservice/payment provider.
+    private PaymentInfo Payment = new();
+    private Member member;
+    private string Message = "";
+    private string Message1;
+
+    private bool IsSubmitting = false;
+
+
+    protected override void OnInitialized()
+    {
+        member = memberservice.DraftMember;
+    }
+
+    private async Task CompleteRegistration()
+    {
+        if (string.IsNullOrWhiteSpace(Payment.CardNumber) ||
+            string.IsNullOrWhiteSpace(Payment.Month) ||
+            string.IsNullOrWhiteSpace(Payment.Year) ||
+            string.IsNullOrWhiteSpace(Payment.Cvv))
+        {
+            Message = "Udfyld alle betalingsoplysninger.";
+            return;
+        }
+
+        IsSubmitting = true;
+        Message = "";
+
+        try
+        {
+            // Midlertidig mapping til backend enum.
+            // Backend har lige nu MembershipOptional: Swimming eller Pizza.
+            member.MembershipOptional = "Swimming";
+
+            member.StartDate = DateTime.Today;
+            member.EndDate = DateTime.Today.AddYears(1);
+            member.ActiveMembership = true;
+            member.ActiveUser = true;
+            member.RoleName = "Member";
+
+            bool success = await memberservice.CreateNewMember(member, memberservice.DraftCredential);
+
+            if (success)
+            {
+                memberservice.DraftMember = new Member();
+                memberservice.DraftCredential = new CredentialDTO();
+
+                Message = "Medlem oprettet";
+            }
+            else
+            {
+                Message = "Kunne ikke oprette medlem";
+            }
+        }
+        catch (Exception ex)
+        {
+            Message = $"Fejl ved oprettelse af medlem: {ex.Message}";
+        }
+        finally
+        {
+            IsSubmitting = false;
+        }
+
+    }
+
+    private void ShowNotImplemented()
+    {
+        Message1 = "Denne funktion er ikke implementeret endnu.";
+    }
+
+}
