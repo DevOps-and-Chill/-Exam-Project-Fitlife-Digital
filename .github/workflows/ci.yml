@@ -59,7 +59,7 @@ jobs:
     - name: Run DigitalContentService Test
       run: |
         dotnet test \
-        ./DigitalContentServiceAPI/DigitalContentService/DigitalContentServiceTest
+        ./DigitalContentServiceAPI/DigitalContentService/DigitalContentServiceTest \
         --logger trx \
         --results-directory TestResults
 

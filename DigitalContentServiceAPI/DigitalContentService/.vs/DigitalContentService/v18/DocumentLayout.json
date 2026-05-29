@@ -34,8 +34,12 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 6,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 2,
@@ -46,8 +50,7 @@
               "RelativeToolTip": "DigitalContentServiceAPI\\Controllers\\WorkoutVideoController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACYAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-27T16:29:18.975Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-27T16:29:18.975Z"
             },
             {
               "$type": "Document",
@@ -71,8 +74,7 @@
               "RelativeToolTip": "DigitalContentServiceAPI\\Extensions\\VaultConfigurationExtension.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-25T19:27:38.937Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-25T19:27:38.937Z"
             },
             {
               "$type": "Document",
@@ -106,7 +108,7 @@
               "RelativeDocumentMoniker": "DigitalContentServiceAPI\\Program.cs",
               "ToolTip": "D:\\Dokumenter\\GIT\\Exam-Project-Fitlife-Digital\\DigitalContentServiceAPI\\DigitalContentService\\DigitalContentServiceAPI\\Program.cs",
               "RelativeToolTip": "DigitalContentServiceAPI\\Program.cs",
-              "ViewState": "AgIAAHEAAAAAAAAAAAA1wI0AAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAHsAAAAAAAAAAAAywI0AAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-24T21:05:45.292Z",
               "EditorCaption": ""
