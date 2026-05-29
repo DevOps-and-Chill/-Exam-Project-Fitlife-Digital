@@ -28,7 +28,7 @@ param restartPolicy string = 'Always'
 @secure()
 param vaultToken string = 'fitlife-root-token'
 
-param frontendPort int = 8080
+param frontendPort int = 8089
 param gatewayPort int = 4000
 
 var authServicePort = 8081
@@ -36,8 +36,9 @@ var classServicePort = 8082
 var facilityServicePort = 8083
 var messageServicePort = 8084
 var ptServicePort = 8085
-var rapportServicePort = 8086
+var statisticServicePort = 8086
 var userServicePort = 8087
+var digitalcontentservicePort = 8088
 
 var rabbitMqPort = 5672
 var rabbitMqManagementPort = 15672
@@ -327,12 +328,12 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
       }
 
       {
-        name: 'rapportservice'
+        name: 'statisticservice'
         properties: {
-          image: '${imageLocationPrefix}/rapportservice:${imageTag}'
+          image: '${imageLocationPrefix}/statisticservice:${imageTag}'
           ports: [
             {
-              port: rapportServicePort
+              port: statisticServicePort
               protocol: 'TCP'
             }
           ]
@@ -381,6 +382,47 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
             {
               name: 'ASPNETCORE_URLS'
               value: 'http://+:${userServicePort}'
+            }
+            {
+              name: 'Loki__Url'
+              value: 'http://localhost:${lokiPort}'
+            }
+            {
+              name: 'Vault__Address'
+              value: 'http://localhost:8200'
+            }
+            {
+              name: 'VAULT_TOKEN'
+              secureValue: vaultToken
+            }
+            {
+              name: 'Vault__SecretPath'
+              value: 'secret/fitlife'
+            }
+          ]
+          resources: {
+            requests: {
+              cpu: json('0.2')
+              memoryInGB: json('0.5')
+            }
+          }
+        }
+      }
+
+      {
+        name: 'digitalcontentservice'
+        properties: {
+          image: '${imageLocationPrefix}/digitalcontentservice:${imageTag}'
+          ports: [
+            {
+              port: digitalcontentservicePort
+              protocol: 'TCP'
+            }
+          ]
+          environmentVariables: [
+            {
+              name: 'ASPNETCORE_URLS'
+              value: 'http://+:${digitalcontentservicePort}'
             }
             {
               name: 'Loki__Url'
@@ -523,10 +565,6 @@ resource containerGroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
       dnsNameLabel: 'fitlife-gateway'
 
       ports: [
-        {
-          port: frontendPort
-          protocol: 'TCP'
-        }
         {
           port: gatewayPort
           protocol: 'TCP'
