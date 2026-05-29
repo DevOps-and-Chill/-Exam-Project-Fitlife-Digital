@@ -1,0 +1,256 @@
+@page "/manage-classes"
+@layout EmployeeLayout
+@rendermode InteractiveServer
+@using FitLife.Frontend.Models
+@using FitLife.Frontend.Services
+@inject ClassService ClassService
+@inject CurrentUserService CurrentUserService
+
+<div class="container-fluid px-0">
+
+    <EmployeeNavbar />
+
+    <section class="container py-5">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="fw-bold">Administrer hold</h1>
+                <p class="lead">Se, rediger eller aflys hold.</p>
+            </div>
+            <a href="/create-class" class="btn btn-success">OPRET HOLD</a>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body p-4">
+                <div class="row g-3 align-items-end">
+
+                    <div class="col-md-4">
+                        <label class="form-label">Dato</label>
+                        <input class="form-control" type="date" @bind="SelectedDate" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Søg efter hold</label>
+                        <input class="form-control"
+                               placeholder="Søg efter hold..."
+                               @bind="SearchText"
+                               @bind:event="oninput" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <button class="btn btn-outline-secondary w-100" @onclick="ClearFilter">
+                            Vis alle hold
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            
+            <div class="col-md-7">
+
+                @foreach (var cls in FilteredClasses)
+                {
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+
+                                <div>
+                                    <h5>@cls.Title</h5>
+                                    <p class="mb-1">
+                                        Kl. @cls.TimeStart.ToString("HH:mm") - @cls.TimeEnd.ToString("HH:mm") —
+                                        Pladser: @cls.Registered.Count / @cls.MemberLimit
+                                    </p>
+                                    <p class="text-muted mb-0">
+                                        Dato: @cls.TimeStart.ToString("dd/MM/yyyy")
+                                    </p>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-dark" @onclick="() => SelectClass(cls)">
+                                        Se hold
+                                    </button>
+                                    <button class="btn btn-danger" @onclick="() => CancelClass(cls)">
+                                        Aflys hold
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+            
+            <div class="col-md-5">
+
+                @if (SelectedClass is null)
+                {
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4 text-muted">
+                            Vælg et hold for at se eller redigere detaljer.
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4">
+
+                            <h4>Se eller rediger hold</h4>
+
+                            <div class="mb-3">
+                                <label class="form-label">Holdtype</label>
+                                <input class="form-control" @bind="SelectedClass.Title" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Antal pladser</label>
+                                <input class="form-control" type="number" @bind="SelectedClass.MemberLimit" />
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Dato</label>
+                                    <input class="form-control" type="date" @bind="SelectedClassDate" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Start klokkeslæt</label>
+                                    <input class="form-control" type="time" @bind="SelectedClassStartTime" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Slut klokkeslæt</label>
+                                    <input class="form-control" type="time" @bind="SelectedClassEndTime" />
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 mt-4">
+
+                                <button class="btn btn-success" @onclick="SaveChanges">
+                                    Gem ændringer
+                                </button>
+
+                                <button class="btn btn-outline-warning" @onclick="SendMessage">
+                                    Send SMS til tilmeldte
+                                </button>
+
+                                <button class="btn btn-outline-secondary" @onclick="ClearSelection">
+                                    Afbryd
+                                </button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Message))
+        {
+            <div class="alert alert-info mt-4">@Message</div>
+        }
+
+    </section>
+
+    <AppFooter />
+
+</div>
+
+@code {
+
+    private string SearchText = "";
+    private string Message = "";
+    private DateTime? SelectedDate;
+
+    private Class? SelectedClass;
+    private DateTime? SelectedClassDate;
+    private TimeOnly? SelectedClassStartTime;
+    private TimeOnly? SelectedClassEndTime;
+
+    private List<Class> Classes = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CurrentUserService.SetCurrentUser();
+
+        var gymId = CurrentUserService.CurrentUser?.Employee?.Affiliation.ToString();
+
+        if (!string.IsNullOrWhiteSpace(gymId))
+        {
+            Classes = await ClassService.GetClassesByExerciseGymAsync(gymId);
+        }
+    }
+
+    private IEnumerable<Class> FilteredClasses =>
+        Classes.Where(c =>
+            (SelectedDate is null || c.TimeStart.Date == SelectedDate.Value.Date) &&
+            (string.IsNullOrWhiteSpace(SearchText) ||
+             c.Title.Contains(SearchText, StringComparison.OrdinalIgnoreCase)));
+
+    private void SelectClass(Class cls)
+    {
+        SelectedClass = cls;
+        SelectedClassDate = cls.TimeStart.Date;
+        SelectedClassStartTime = TimeOnly.FromDateTime(cls.TimeStart);
+        SelectedClassEndTime = TimeOnly.FromDateTime(cls.TimeEnd);
+        Message = "";
+    }
+
+    private async Task SaveChanges()
+    {
+        if (SelectedClass is null) return;
+
+        if (SelectedClassDate is not null &&
+            SelectedClassStartTime is not null &&
+            SelectedClassEndTime is not null)
+        {
+            SelectedClass.TimeStart = SelectedClassDate.Value.Date + SelectedClassStartTime.Value.ToTimeSpan();
+            SelectedClass.TimeEnd   = SelectedClassDate.Value.Date + SelectedClassEndTime.Value.ToTimeSpan();
+        }
+
+        await ClassService.UpdateClassAsync(SelectedClass); 
+        Message = $"Ændringer for '{SelectedClass.Title}' er gemt.";
+    }
+    
+    
+    private async Task CancelClass(Class cls)
+    {
+        try
+        {
+            await ClassService.CancelClassAsync(cls.Id);
+            Classes.Remove(cls);
+
+            if (SelectedClass == cls)
+                SelectedClass = null;
+
+            Message = $"'{cls.Title}' er aflyst.";
+        }
+        catch (Exception ex)
+        {
+            Message = $"Kunne ikke aflyse hold: {ex.Message}";
+        }
+    }
+
+    private void SendMessage()
+    {
+        if (SelectedClass is null) return;
+        // TODO
+        Message = $"SMS er sendt til tilmeldte medlemmer på '{SelectedClass.Title}'.";
+    }
+
+    private void ClearSelection()
+    {
+        SelectedClass = null;
+        Message = "";
+    }
+
+    private void ClearFilter()
+    {
+        SearchText = "";
+        SelectedDate = null;
+    }
+}

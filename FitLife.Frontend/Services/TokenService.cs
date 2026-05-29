@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
 using System.Net.Http.Headers;
+using FitLife.Frontend.Services;
 
 public class TokenService
 {
@@ -29,13 +30,6 @@ public class TokenService
             expires - DateTime.UtcNow;
 
         _cache.Set("jwt", token, lifetime);
-
-        //AO: Used during dev
-        //var cachedToken =
-        //    _cache.Get<string>("jwt");
-
-        //Console.WriteLine(
-        //    $"Cache virker: {cachedToken != null} + tokenstring: {cachedToken}");
     }
 
     public string? GetToken()
@@ -61,6 +55,7 @@ public class TokenService
 
     public async Task<string?> GetRoleBasedOnToken()
     {
+        AttachToken(_httpClient);
         var userId = await GetUserIdFromCachedToken();
         var user = await _httpClient.GetFromJsonAsync<UserDto>($"user/GetUserById/{userId}");
         return user?.RoleName;

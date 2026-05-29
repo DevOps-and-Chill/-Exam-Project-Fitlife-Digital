@@ -12,14 +12,14 @@ public class AuthService
     private readonly HttpClient _authClient;
     private readonly HttpClient _userClient;
     private readonly TokenService _tokenService;
+    private readonly CurrentUserService _currentUserService;
 
-    public AuthService(IHttpClientFactory httpClientFactory, TokenService tokenService)
+    public AuthService(IHttpClientFactory httpClientFactory, TokenService tokenService, CurrentUserService currentUserService)
     {
         _authClient = httpClientFactory.CreateClient("AuthService");
         _userClient = httpClientFactory.CreateClient("UserService");
         _tokenService = tokenService;
-        _tokenService.AttachToken(_userClient);
-        _tokenService.AttachToken(_authClient);
+        _currentUserService = currentUserService;
     }
 
     public async Task<LoginResult> LoginAsync(string email, string password)
@@ -50,7 +50,6 @@ public class AuthService
             {
                 return new LoginResult(false, null, null, "Login lykkedes ikke. Token mangler.");
             }
-            Console.WriteLine("LoginAsync lineno 50:"+ loginResponse.Token);
             _tokenService.SetToken(loginResponse.Token);
 
             string ?role = await _tokenService.GetRoleBasedOnToken();
@@ -60,6 +59,7 @@ public class AuthService
                 return new LoginResult(false, loginResponse.Token, null, "Token mangler rolle.");
             }
 
+            _currentUserService.SetAuthorization(true);
             return new LoginResult(true, loginResponse.Token, role, "Login lykkedes.");
         }
         catch (Exception ex)
@@ -68,17 +68,6 @@ public class AuthService
         }
     }
 
-    private static string? GetUserIdFromToken(string token)
-    {
-        var handler = new JwtSecurityTokenHandler();
-
-        var jwtToken = handler.ReadJwtToken(token);
-
-        return jwtToken.Claims.FirstOrDefault(c =>
-            c.Type == ClaimTypes.NameIdentifier ||
-            c.Type == "nameid" ||
-            c.Type.EndsWith("/nameidentifier"))?.Value;
-    }
 }
 
 public class LoginRequest

@@ -1,6 +1,4 @@
-using System.Net.Http.Json;
-using FitLife.Frontend.Models;
-
+﻿using FitLife.Frontend.Models;
 
 namespace FitLife.Frontend.Services;
 
@@ -17,82 +15,153 @@ public class EmployeeService
         _tokenService.AttachToken(_httpClient);
     }
 
-    public async Task<Employee> GetEmployeeById(string id)
-    {
-        var employee = await _httpClient.GetFromJsonAsync<Employee>($"employee/GetEmployeeById/{id}");
-        return employee;
-    }
-
-    // Henter alle ansatte fra UserService og filtrerer kun dem der er personlige trænere
-    // Kalder endpoint:
-    // GET /employee/GetAllEmployees
-    public async Task<List<Trainer>> GetTrainersAsync()
+    // GET
+    
+    public async Task<List<Employee>> GetAllEmployeesAsync()
     {
         try
         {
-            var employees =
-                await _httpClient.GetFromJsonAsync<List<Employee>>(
-                    "employee/GetAllEmployees");
-
-            return employees?
-                .Where(employee => employee.IsPT && employee.ActiveUser)
-                .Select(employee => new Trainer
-                {
-                    // Id kommer fra UserService
-                    // Bruges senere som PersonalTrainerId ved booking i PTService
-                    Id = employee.Id,
-
-                    // Samler fornavn og efternavn til visning i UI
-                    Name = $"{employee.GivenName} {employee.FamilyName}",
-
-                    // Midlertidig visningstekst
-                    // TODO:
-                    // Senere kan dette komme fra UserService, hvis Employee får profiltekst/speciale
-                    Description = "Personlig træner hos FitLife.",
-
-                    // Midlertidigt speciale
-                    // TODO:
-                    // Senere kan dette komme fra UserService eller PTService
-                    Specialty = "Personlig træning",
-
-                    // Midlertidig availability
-                    // TODO:
-                    // Senere kan dette beregnes ud fra bookingkalender/sessioner
-                    IsAvailable = true
-                })
-                .ToList()
-                ?? new List<Trainer>();
+            _tokenService.AttachToken(_httpClient);
+            var employees = await _httpClient.GetFromJsonAsync<List<Employee>>("employee/GetAllEmployees");
+            return employees ?? new List<Employee>();
         }
         catch (Exception ex)
         {
-            throw new Exception(
-                $"Kunne ikke hente trænere fra UserService. Fejl: {ex.Message}",
-                ex);
+            throw new Exception($"Kunne ikke hente medarbejdere fra UserService. Fejl: {ex.Message}", ex);
+        }
+    }
+    
+    public async Task<Employee?> GetEmployeeByIdAsync(string userId)
+    {
+        try
+        {
+            _tokenService.AttachToken(_httpClient);
+            return await _httpClient.GetFromJsonAsync<Employee>($"employee/GetEmployeeById/{userId}");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Kunne ikke hente medarbejder med id {userId}. Fejl: {ex.Message}", ex);
+        }
+    }
+    
+    public async Task<List<Employee>> GetEmployeesByAffiliationAsync(string affiliationId)
+    {
+        try
+        {
+            _tokenService.AttachToken(_httpClient);
+            var employees = await _httpClient.GetFromJsonAsync<List<Employee>>($"employee/GetEmployeeByAffiliation/{affiliationId}");
+            return employees ?? new List<Employee>();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Kunne ikke hente medarbejdere for center {affiliationId}. Fejl: {ex.Message}", ex);
         }
     }
 
-    // Midlertidig ventelistefunktion
-    // Bruges når en træner ikke er ledig.
-    // TODO:
-    // Skal senere gemmes i backend/database.
-    public string JoinWaitlist(Trainer trainer)
+    // POST
+    
+    public async Task<Employee> UpsertEmployeeAsync(Employee employee)
     {
-        return $"Du er nu tilmeldt ventelisten hos {trainer.Name}.";
+        try
+        {
+            _tokenService.AttachToken(_httpClient);
+            var response = await _httpClient.PostAsJsonAsync("employee/UpsertEmployee", employee);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                throw new Exception($"UserService returnerede fejl: {(int)response.StatusCode} {response.ReasonPhrase}. {errorMessage}");
+            }
+
+            var upsertedEmployee = await response.Content.ReadFromJsonAsync<Employee>();
+            return upsertedEmployee ?? employee;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Kunne ikke oprette/opdatere medarbejder via UserService. Fejl: {ex.Message}", ex);
+        }
     }
 
-    // Midlertidig profilfunktion
-    // TODO:
-    // Senere kan denne metode hente detaljeret trænerprofil fra backend.
-    public string ShowProfile(Trainer trainer)
+    // PUT
+    
+    public async Task EndEmploymentAsync(string userId)
     {
-        return $"Profil for {trainer.Name} vises ikke som separat side endnu.";
+        try
+        {
+            _tokenService.AttachToken(_httpClient);
+            var response = await _httpClient.PutAsync($"employee/EndEmploymentForEmployee/{userId}", null);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                throw new Exception($"UserService returnerede fejl: {(int)response.StatusCode} {response.ReasonPhrase}. {errorMessage}");
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Kunne ikke afslutte ansættelse for medarbejder {userId}. Fejl: {ex.Message}", ex);
+        }
+    }
+    
+    public async Task SetEmployeeAsManagerAsync(string userId)
+    {
+        try
+        {
+            _tokenService.AttachToken(_httpClient);
+            var response = await _httpClient.PutAsync($"employee/SetEmployeeAsManager/{userId}", null);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                throw new Exception($"UserService returnerede fejl: {(int)response.StatusCode} {response.ReasonPhrase}. {errorMessage}");
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Kunne ikke sætte medarbejder {userId} som manager. Fejl: {ex.Message}", ex);
+        }
+    }
+    
+    public async Task SetAccountAsInactiveAsync(string userId)
+    {
+        try
+        {
+            _tokenService.AttachToken(_httpClient);
+            var response = await _httpClient.PutAsync($"employee/SetAccountAsInactive/{userId}", null);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                throw new Exception($"UserService returnerede fejl: {(int)response.StatusCode} {response.ReasonPhrase}. {errorMessage}");
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Kunne ikke deaktivere medarbejderkonto {userId}. Fejl: {ex.Message}", ex);
+        }
     }
 
-    // Midlertidig beskedfunktion
-    // TODO:
-    // Senere skal denne kobles til MessageService/backend.
-    public string SendMessage(Trainer trainer)
+    // DELETE
+    
+    public async Task<Employee> DeleteEmployeeAsync(string userId)
     {
-        return $"Din besked til {trainer.Name} er sendt.";
+        try
+        {
+            _tokenService.AttachToken(_httpClient);
+            var response = await _httpClient.DeleteAsync($"employee/DeleteEmployee/{userId}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                throw new Exception($"UserService returnerede fejl: {(int)response.StatusCode} {response.ReasonPhrase}. {errorMessage}");
+            }
+
+            var deletedEmployee = await response.Content.ReadFromJsonAsync<Employee>();
+            return deletedEmployee ?? new();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Kunne ikke slette medarbejder {userId}. Fejl: {ex.Message}", ex);
+        }
     }
 }

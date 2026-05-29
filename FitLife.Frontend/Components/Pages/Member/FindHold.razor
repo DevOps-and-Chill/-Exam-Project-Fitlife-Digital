@@ -1,0 +1,193 @@
+@page "/member/find-hold"
+@rendermode InteractiveServer
+@layout MemberLayout
+@using FitLife.Frontend.Models
+@using FitLife.Frontend.Services
+@inject ClassService ClassService
+@inject CurrentUserService CurrentUserService
+@inject EmployeeService EmployeeService 
+
+<div class="container-fluid px-0">
+
+    <MemberNavbar />
+
+    <section class="container py-5">
+
+        <h1 class="fw-bold mb-3">Find hold</h1>
+
+        @if (IsLoading)
+        {
+            <p>Indlæser hold...</p>
+        }
+        else if (!string.IsNullOrWhiteSpace(ErrorMessage))
+        {
+            <div class="alert alert-warning">@ErrorMessage</div>
+        }
+        else if (!Classes.Any())
+        {
+            <p>Ingen hold fundet.</p>
+        }
+        else
+        {
+            <div class="row g-4">
+
+                @foreach (var classModel in Classes)
+                {
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-body p-4">
+
+                                <h5>@classModel.Title</h5>
+                                <p class="text-muted">@classModel.Title</p>
+
+                                <p>
+                                    <strong>Tid:</strong>
+                                    @classModel.TimeStart.ToString("dd/MM HH:mm")
+                                </p>
+
+                                <p>
+                                    <strong>Instruktør:</strong>
+                                    @(classModel.CoachId is not null && CoachName.TryGetValue(classModel.CoachId, out var name) ? name : "Ukendt")
+                                </p>
+
+                                <p>
+                                    <strong>Pladser:</strong>
+                                    @{
+                                        @(classModel.MemberLimit - classModel.Registered.Count)
+                                    }
+                                </p>
+
+                                @if (classModel.IsUserSignedUp)
+                                {
+                                    <button class="btn btn-danger w-100"
+                                            @onclick="() => Unregister(classModel.Id)">
+                                        Afmeld
+                                    </button>
+                                }
+                                else if (classModel.Registered.Count < classModel.MemberLimit)
+                                {
+                                    <button class="btn btn-success w-100"
+                                            @onclick="() => Register(classModel.Id)">
+                                        Tilmeld
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-warning w-100"
+                                            @onclick="() => JoinWaitingList(classModel.Id)">
+                                        Venteliste
+                                    </button>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Message))
+        {
+            <div class="alert alert-success mt-4">
+                @Message
+            </div>
+        }
+
+    </section>
+
+</div>
+@code {
+    private string Message = "";
+    private List<Class> Classes = new();
+    private bool IsLoading = true;
+    private string? ErrorMessage;
+    
+    // var: public Employee Coach — enkelt coach til alle klasser
+    private Dictionary<string, string> CoachName = new();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await CurrentUserService.SetCurrentUser();
+            var memberId = CurrentUserService.CurrentUser?.GetId();
+            var exerciseGymId = CurrentUserService.CurrentUser?.Member?.Affiliation;
+
+            if (memberId is null || exerciseGymId is null)
+            {
+                ErrorMessage = "Ingen bruger fundet.";
+                return;
+            }
+
+            Classes = await ClassService.GetClassesByExerciseGymAsync(exerciseGymId);
+
+            foreach (var c in Classes)
+            {
+                c.IsUserSignedUp = c.Registered.Any(r => r.Id == memberId);
+            }
+
+            var coachIds = Classes
+                .Select(c => c.CoachId)
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .Distinct();
+
+            foreach (var coachId in coachIds)
+            {
+                var employee = await EmployeeService.GetEmployeeByIdAsync(coachId);
+                if (employee is not null)
+                    CoachName[coachId] = $"{employee.GivenName} {employee.FamilyName}";
+            }
+        }
+        catch
+        {
+            ErrorMessage = "Hold kunne ikke hentes lige nu.";
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task Register(string classId)
+    {
+        var member = CurrentUserService.CurrentUser?.Member;
+        if (member is null) return;
+
+        await ClassService.RegisterMemberToClassAsync(classId, member);
+        
+        // Opdater lokal state så knappen skifter uden reload
+        var cls = Classes.FirstOrDefault(c => c.Id == classId);
+        if (cls is not null)
+        {
+            cls.IsUserSignedUp = true;
+            cls.Registered.Add(member);  // var: manglede lokal opdatering
+        }
+        Message = "Du er tilmeldt holdet.";
+    }
+
+    private async Task Unregister(string classId)
+    {
+        var memberId = CurrentUserService.CurrentUser?.GetId();
+        if (memberId is null) return;
+
+        await ClassService.UnregisterMemberFromClassAsync(classId, memberId);
+        
+        var cls = Classes.FirstOrDefault(c => c.Id == classId);
+        if (cls is not null)
+        {
+            cls.IsUserSignedUp = false;
+            cls.Registered.RemoveAll(r => r.Id == memberId);  // var: manglede lokal opdatering
+        }
+        Message = "Du er afmeldt holdet.";
+    }
+
+    private async Task JoinWaitingList(string classId)
+    {
+        var member = CurrentUserService.CurrentUser?.Member;
+        if (member is null) return;
+
+        await ClassService.RegisterMemberToWaitinglistAsync(classId, member);
+        Message = "Du er tilføjet ventelisten.";  // var: ingen feedback til brugeren
+    }
+}

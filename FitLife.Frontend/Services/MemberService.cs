@@ -1,23 +1,30 @@
 using FitLife.Frontend.Models;
+using FitLife.Frontend.Models.DTOs;
 using System.Diagnostics.Metrics;
 using System.Net.Http.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FitLife.Frontend.Services;
 
 public class MemberService
 {
-    // HttpClient bruges til at kommunikere med backend APIs.
-    // Her bruges den til at kalde UserService.
-    private readonly HttpClient _httpClient;
+    private readonly HttpClient _httpClientUserService;
+    private readonly HttpClient _httpClientAuthService;
     private readonly TokenService _tokenService;
 
     public MemberService(IHttpClientFactory httpClientFactory, TokenService tokenService)
     {
-        // Opretter HttpClient med base URL fra Program.cs/appsettings.json.
-        // Base URL peger på UserService.
-        _httpClient = httpClientFactory.CreateClient("UserService");
+        _httpClientUserService = httpClientFactory.CreateClient("UserService");
+        _httpClientAuthService = httpClientFactory.CreateClient("AuthService");
         _tokenService = tokenService;
-        _tokenService.AttachToken(_httpClient);
+    }
+
+    public Member DraftMember { get; set; } = new();
+    public CredentialDTO DraftCredential { get; set; } = new();
+
+    public void ResetDraftMember()
+    {
+        DraftMember = new Member();
     }
 
     // Henter medlemmer direkte fra UserService.
@@ -27,17 +34,14 @@ public class MemberService
     {
         try
         {
-            var members =
-                await _httpClient.GetFromJsonAsync<List<Member>>(
-                    "member/GetAllMembers");
+            _tokenService.AttachToken(_httpClientUserService);
+            var members = await _httpClientUserService.GetFromJsonAsync<List<Member>>("member/GetAllMembers");
 
             return members ?? new List<Member>();
         }
         catch (Exception ex)
         {
-            throw new Exception(
-                $"Kunne ikke hente medlemmer fra UserService. Fejl: {ex.Message}",
-                ex);
+            throw new Exception($"Kunne ikke hente medlemmer fra UserService. Fejl: {ex.Message}", ex);
         }
     }
     
@@ -45,7 +49,8 @@ public class MemberService
     {
         try
         {
-            return await _httpClient.GetFromJsonAsync<Member>($"member/GetMemberById/{id}");
+            _tokenService.AttachToken(_httpClientUserService);
+            return await _httpClientUserService.GetFromJsonAsync<Member>($"member/GetMemberById/{id}");
         }
         catch (Exception ex)
         {
@@ -62,12 +67,34 @@ public class MemberService
     {
         try
         {
-            return await _httpClient.GetFromJsonAsync<Member>($"member/GetMemberById/{userId}");
+            _tokenService.AttachToken(_httpClientUserService);
+            return await _httpClientUserService.GetFromJsonAsync<Member>($"member/GetMemberById/{userId}");
         }
         catch
         {
             return null;
         }
+    }
+
+    public async Task<bool> CreateNewMember(Member newMember, CredentialDTO credentials)
+    {
+        try
+        {
+            Member memberCreated = await CreateMemberAsync(newMember);
+            string memberId = memberCreated.Id;
+            credentials.UserId = memberId;
+            var response = await _httpClientAuthService.PostAsJsonAsync("auth/RegisterCredentials", credentials);
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+        }
+        catch
+        {
+            throw;
+
+        }
+        return false;
     }
 
     // Opretter eller opdaterer et medlem via UserService.
@@ -77,38 +104,32 @@ public class MemberService
     {
         try
         {
-            var response =
-                await _httpClient.PostAsJsonAsync(
-                    "member/UpsertMember",
-                    member);
+            
+            var response = await _httpClientUserService.PostAsJsonAsync("member/UpsertMember", member);
 
             if (!response.IsSuccessStatusCode)
             {
-                var errorMessage =
-                    await response.Content.ReadAsStringAsync();
+                var errorMessage = await response.Content.ReadAsStringAsync();
 
-                throw new Exception(
-                    $"UserService returnerede fejl: {(int)response.StatusCode} {response.ReasonPhrase}. {errorMessage}");
+                throw new Exception($"UserService returnerede fejl: {(int)response.StatusCode} {response.ReasonPhrase}. {errorMessage}");
             }
 
-            var createdMember =
-                await response.Content.ReadFromJsonAsync<Member>();
+            var createdMember = await response.Content.ReadFromJsonAsync<Member>();
 
             return createdMember ?? member;
         }
         catch (Exception ex)
         {
-            throw new Exception(
-                $"Kunne ikke oprette medlem via UserService. Fejl: {ex.Message}",
-                ex);
+            throw new Exception($"Kunne ikke oprette medlem via UserService. Fejl: {ex.Message}", ex);
         }
     }
 
-    // Midlertidig lokal funktion.
-    // TODO: Senere bør denne sende PUT/PATCH request til UserService.
-    public string SaveMember(Member member)
+    public async Task<Member> SaveMember(Member member)
     {
-        return $"Ændringer for {member.GivenName} {member.FamilyName} er gemt.";
+        _tokenService.AttachToken(_httpClientUserService);
+        var response = await _httpClientUserService.PostAsJsonAsync("member/UpsertMember", member);
+        response.EnsureSuccessStatusCode();
+        return member;
     }
 
     // Midlertidig prototypefunktion.

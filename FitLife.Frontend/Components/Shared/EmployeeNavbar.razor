@@ -1,36 +1,58 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-5 py-3">
+@using FitLife.Frontend.Services
+@inject CurrentUserService CurrentUserService
+@inject NavigationManager navman
 
-    <a class="navbar-brand fw-bold fs-3 text-white"
+<nav class="navbar navbar-expand-lg navbar-brand bg-light px-5 py-3">
+
+    <a class="navbar-brand fw-bold fs-3 text-black"
        href="/employee-dashboard">
         FitLife Admin
     </a>
 
     <div class="ms-auto d-flex align-items-center gap-3">
 
-        <a class="nav-link text-white"
+        <a class="nav-link"
            href="/employee-dashboard">
             Forside
         </a>
 
-        <a class="nav-link text-white"
-           href="/manage-sessions">
+        <a class="nav-link"
+           href="/manage-classes">
             Administrer hold
         </a>
 
-        <a class="nav-link text-white"
+        <a class="nav-link"
            href="/manage-members">
             Administrer medlemmer
         </a>
-
-        <a class="nav-link text-white"
+        <a class="nav-link" href="/administrer-centre">
+            Administrer centre
+        </a>
+        
+        <a class="nav-link"
            href="/manage-personal-training">
             Administrer personlig træning
         </a>
 
-        <span class="fw-bold text-white ms-3">
-            NAVN NAVNESEN
+        <a class="nav-link"
+           href="/inbox">
+            Beskeder
+        </a>
+
+        <span class="fw-bold ms-3">
+            @CurrentUserService.DisplayCurrentUserName()
         </span>
+        <button class="btn btn-outline-danger" @onclick=Logout>
+            Log ud
+        </button>
 
     </div>
 
 </nav>
+@code {
+    public async Task Logout()
+    {
+        await CurrentUserService.Logout();
+        navman.NavigateTo("/");
+    }
+}

@@ -16,17 +16,13 @@ public class MessageDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<DirectMessage>()
-            .ToContainer("DirectMessages");
-        modelBuilder.Entity<DirectMessage>()
-            .HasPartitionKey(u => u.PartitionKey);
-        modelBuilder.Entity<DirectMessage>()
+            .ToContainer("DirectMessages")
+            .HasPartitionKey(u => u.PartitionKey)
             .HasKey(u => u.Id);
 
         modelBuilder.Entity<Message>()
-            .ToContainer("SystemMessages");
-        modelBuilder.Entity<Message>()
-            .HasPartitionKey(u => u.PartitionKey);
-        modelBuilder.Entity<Message>()
+            .ToContainer("SystemMessages")
+            .HasPartitionKey(u => u.PartitionKey)
             .HasKey(u => u.Id);
     }
 }

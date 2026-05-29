@@ -17,13 +17,15 @@ public class PTService
 
     public async Task<List<PersonalTrainingSession>> GetSessionsAsync()
     {
-        return await _httpClient.GetFromJsonAsync<List<PersonalTrainingSession>>("PT")
+        _tokenService.AttachToken(_httpClient);
+        return await _httpClient.GetFromJsonAsync<List<PersonalTrainingSession>>("pt")
                ?? new List<PersonalTrainingSession>();
     }
 
     public async Task<PersonalTrainingSession?> BookSessionAsync(PersonalTrainingSession session)
     {
-        var response = await _httpClient.PostAsJsonAsync("PT", session);
+        _tokenService.AttachToken(_httpClient);
+        var response = await _httpClient.PostAsJsonAsync("pt", session);
 
         if (!response.IsSuccessStatusCode)
             return null;
@@ -33,19 +35,22 @@ public class PTService
 
     public async Task<bool> CancelSessionAsync(Guid id)
     {
-        var response = await _httpClient.DeleteAsync($"PT/{id}");
+        _tokenService.AttachToken(_httpClient);
+        var response = await _httpClient.DeleteAsync($"pt/{id}");
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> AcceptSessionAsync(Guid id)
     {
-        var response = await _httpClient.PutAsync($"PT/{id}/accept", null);
+        _tokenService.AttachToken(_httpClient);
+        var response = await _httpClient.PutAsync($"pt/{id}/accept", null);
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> RejectSessionAsync(Guid id)
     {
-        var response = await _httpClient.PutAsync($"PT/{id}/reject", null);
+        _tokenService.AttachToken(_httpClient);
+        var response = await _httpClient.PutAsync($"pt/{id}/reject", null);
         return response.IsSuccessStatusCode;
     }
 }

@@ -1,4 +1,6 @@
 @page "/employee-dashboard"
+@using FitLife.Frontend.Components.Layout
+@layout EmployeeLayout
 @rendermode InteractiveServer
 
 <div class="container-fluid px-0">
@@ -46,13 +48,13 @@
                         <div class="d-grid gap-2">
 
                             <!-- Navigerer til side hvor medarbejderen kan se/redigere hold -->
-                            <a href="/manage-sessions"
+                            <a href="/manage-classes"
                                class="btn btn-success">
                                 Administrer hold
                             </a>
 
                             <!-- Navigerer til oprettelse af nye hold -->
-                            <a href="/create-session"
+                            <a href="/create-class"
                                class="btn btn-outline-success">
                                 + Opret hold
                             </a>
@@ -117,19 +119,13 @@
 
                         <div class="d-grid gap-2">
 
-                            <!-- Midlertidig prototype-knap.
-                                 TODO: Skal senere navigere til PT-sessioner via egen side/service -->
-                            <button class="btn btn-success"
-                                    @onclick="ShowPTSessions">
+                            <a href="/manage-personal-training?tab=mine" class="btn btn-success">
                                 Se mine sessioner
-                            </button>
+                            </a>
 
-                            <!-- Midlertidig prototype-knap.
-                                 TODO: Skal senere vise bookingønsker fra medlemmer -->
-                            <button class="btn btn-outline-success"
-                                    @onclick="ShowPTRequests">
+                            <a href="/manage-personal-training?tab=pending" class="btn btn-outline-success">
                                 Ønsker om sessioner
-                            </button>
+                            </a>
                         </div>
 
                     </div>
@@ -155,23 +151,43 @@
 
                         <div class="d-grid gap-2">
 
-                            <!-- Midlertidig prototype-knap -->
-                            <button class="btn btn-success"
-                                    @onclick="ShowCenters">
-                                Administrer center
-                            </button>
 
-                            <!-- Midlertidig prototype-knap -->
-                            <button class="btn btn-outline-success"
-                                    @onclick="ShowCenterDeviation">
-                                Opret afvigelse for center
-                            </button>
+                            <a class="btn btn-success" href="/administrer-centre">
+                                Administrer centre
+                            </a>
                         </div>
 
                     </div>
                 </div>
             </div>
 
+        </div>
+    
+        <!-- Statistik -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body p-4">
+
+                    <div class="fs-2 mb-3">
+                        📊
+                    </div>
+
+                    <h3 class="fw-bold">
+                        Statistik
+                    </h3>
+
+                    <p class="text-muted">
+                        Se fremmøde, tilmeldte og venteliste for alle hold og sessioner.
+                    </p>
+
+                    <div class="d-grid gap-2">
+                        <a href="/employee/statistics" class="btn btn-success">
+                            Se statistik
+                        </a>
+                    </div>
+
+                </div>
+            </div>
         </div>
 
         <!-- Midlertidig feedback-besked til prototype -->
@@ -184,9 +200,9 @@
 
     </section>
 
-    <AppFooter />
 
 </div>
+<AppFooter />
 
 @code {
 
@@ -195,22 +211,15 @@
     private string Message = "";
 
     // Midlertidig prototype-funktion.
-    // TODO: Skal senere kobles til side/service for PT-sessioner.
-    private void ShowPTSessions()
-    {
-        Message = "Visning af personlige træningssessioner er ikke implementeret endnu.";
-    }
-
-    // Midlertidig prototype-funktion.
     // TODO: Skal senere hente ønsker om PT-sessioner fra backend/microservice.
-    private void ShowPTRequests()
-    {
-        Message = "Visning af ønsker om sessioner er ikke implementeret endnu.";
-    }
+    //private void ShowPTRequests()
+    //{
+    //    Message = "Visning af ønsker om sessioner er ikke implementeret endnu.";
+    //}
 
     // Midlertidig prototype-funktion.
     // TODO: Skal senere kobles til centeradministration via API/service.
-    private void ShowCenters()
+    private void ShowGyms()
     {
         Message = "Centeradministration er ikke implementeret endnu.";
     }

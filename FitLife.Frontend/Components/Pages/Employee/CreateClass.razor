@@ -1,10 +1,14 @@
-@page "/create-session"
+@page "/create-class"
 @rendermode InteractiveServer
 @using FitLife.Frontend.Models
 @using FitLife.Frontend.Services
+@using FitLife.Frontend.Components
+@layout EmployeeLayout
 @inject ClassService ClassService
+@inject StatisticService StatisticService
 @inject NavigationManager Navigation
-@inject MemberService MemberService
+@inject CurrentUserService CurrentUserService
+@inject EmployeeService EmployeeService
 
 <div class="container-fluid px-0">
 
@@ -31,7 +35,7 @@
 
                     <div class="col-md-6">
                         <label class="form-label">Coach</label>
-                        <select class="form-select" @bind="SelectedCoachId">
+                        <select class="form-select" @bind="NewClass.CoachId">
                             <option value="">Vælg coach...</option>
                             @foreach (var coach in Coaches)
                             {
@@ -67,12 +71,12 @@
                                type="number"
                                @bind="NewClass.MemberLimit" />
                     </div>
-
+                    
                 </div>
 
                 @if (!string.IsNullOrWhiteSpace(Message))
                 {
-                    <div class="alert alert-info mt-4">@Message</div>
+                    <div class="alert @MessageCssClass mt-4">@Message</div>
                 }
 
                 <div class="d-flex gap-3 mt-4">
@@ -99,85 +103,131 @@
 </div>
 
 @code {
-    
-    
-    private List<Member> Coaches = new();
-    private string SelectedCoachId = "";
-    
+
+    private List<Employee> Coaches = new();
+
     private Class NewClass = new()
     {
-        MemberLimit = 10
+        MemberLimit = 10,
+        ActiveClass = true
     };
-    
-    protected override async Task OnInitializedAsync()
-    {
-        var all = await MemberService.GetMembersAsync();
-        Coaches = all.Where(m => m.RoleName == "Employee").ToList();
-    }
-
 
     private DateTime? SelectedDate;
     private TimeOnly? SelectedStartTime;
     private TimeOnly? SelectedEndTime;
     private string Message = "";
+    private string MessageCssClass = "alert-info";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CurrentUserService.SetCurrentUser();
+        
+        var currentEmployee = CurrentUserService.CurrentUser?.Employee;
+   
+        var affiliationId = currentEmployee.Affiliation;
+        
+        var allEmployees = await EmployeeService.GetEmployeesByAffiliationAsync(affiliationId);
+        Coaches = allEmployees.Where(e => e.IsPT).ToList();
+        
+        if (currentEmployee is not null)
+        {
+            NewClass.ExerciseGymId = currentEmployee.Affiliation;
+        }
+    }
+
     private bool Validate()
     {
         if (string.IsNullOrWhiteSpace(NewClass.Title) ||
-            string.IsNullOrWhiteSpace(SelectedCoachId) ||
+            string.IsNullOrWhiteSpace(NewClass.CoachId) ||
             SelectedDate is null ||
             SelectedStartTime is null ||
             SelectedEndTime is null ||
-            NewClass.MemberLimit <= 0)
+            NewClass.MemberLimit <= 0 ||
+            NewClass.ExerciseGymId == Guid.Empty.ToString())
         {
-            Message = "Udfyld alle felter.";
+            Message = "Udfyld alle felter korrekt.";
+            MessageCssClass = "alert-danger";
             return false;
         }
+
+        if (SelectedEndTime <= SelectedStartTime)
+        {
+            Message = "Sluttidspunktet skal være efter starttidspunktet.";
+            MessageCssClass = "alert-danger";
+            return false;
+        }
+
         return true;
     }
 
-    private void SetTimes()
+    private void BuildClass()
     {
-        if (SelectedDate is not null && SelectedStartTime is not null && SelectedEndTime is not null)
+        NewClass.TimeStart = SelectedDate!.Value.Date + SelectedStartTime!.Value.ToTimeSpan();
+        NewClass.TimeEnd   = SelectedDate!.Value.Date + SelectedEndTime!.Value.ToTimeSpan();
+    }
+
+    private void ResetForm()
+    {
+        NewClass = new Class
         {
-            NewClass.TimeStart = SelectedDate.Value.Date + SelectedStartTime.Value.ToTimeSpan();
-            NewClass.TimeEnd   = SelectedDate.Value.Date + SelectedEndTime.Value.ToTimeSpan();
-            NewClass.CoachId   = SelectedCoachId;
-        }
+            MemberLimit = 10,
+            ActiveClass = true,
+            ExerciseGymId = CurrentUserService.CurrentUser?.Employee?.Affiliation ?? Guid.Empty.ToString()
+        };
+        SelectedDate = null;
+        SelectedStartTime = null;
+        SelectedEndTime = null;
     }
 
     private async Task Save()
     {
         if (!Validate()) return;
-        SetTimes();
+        BuildClass();
 
         try
         {
             await ClassService.CreateClassAsync(NewClass);
-            Navigation.NavigateTo("/manage-sessions");
+            await CreateStatisticForClass();
+            Navigation.NavigateTo("/manage-classes");
         }
         catch (Exception ex)
         {
             Message = $"Kunne ikke oprette hold: {ex.Message}";
+            MessageCssClass = "alert-danger";
         }
     }
 
     private async Task SaveAndCreateMore()
     {
         if (!Validate()) return;
-        SetTimes();
+        BuildClass();
 
         try
         {
             await ClassService.CreateClassAsync(NewClass);
-            Message = $"Holdet '{NewClass.Title}' er oprettet. Du kan nu oprette et nyt hold.";
-            NewClass = new Class { MemberLimit = 10 };
-            SelectedDate = null;
-            SelectedStartTime = null;
-            SelectedEndTime = null;
+            await CreateStatisticForClass();
+            var title = NewClass.Title;
+            ResetForm();
+            Message = $"Holdet '{title}' er oprettet. Du kan nu oprette et nyt hold.";
+            MessageCssClass = "alert-success";
         }
         catch (Exception ex)
         {
             Message = $"Kunne ikke oprette hold: {ex.Message}";
+            MessageCssClass = "alert-danger";
         }
+    }
+
+    private async Task CreateStatisticForClass()
+    {
+        var facilityId = Guid.TryParse(NewClass.ExerciseGymId, out var fid) ? fid : Guid.Empty;
+        await StatisticService.CreateAsync(new Statistic
+        {
+            Name        = NewClass.Title,
+            Description = $"{NewClass.Title} — {NewClass.TimeStart:dd/MM/yyyy HH:mm}",
+            FacilityId  = facilityId,
+            RoomId      = facilityId,
+            ActiveClass = NewClass.ActiveClass
+        });
     }
 }

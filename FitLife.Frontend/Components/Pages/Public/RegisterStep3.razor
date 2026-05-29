@@ -1,7 +1,9 @@
 @page "/register-step3"
 @rendermode InteractiveServer
 @using FitLife.Frontend.Models
+@using FitLife.Frontend.Models.DTOs
 @using FitLife.Frontend.Services
+@inject MemberService memberservice
 
 <div class="container-fluid px-0">
 
@@ -12,10 +14,7 @@
 
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Opret medlemskab</h2>
-
-            <!-- Prototype-knap -->
-            <!-- TODO: Kan senere åbne support/chat/hjælpesektion -->
-            <button class="btn btn-outline-secondary">
+            <button class="btn btn-outline-secondary" @onclick="ShowNotImplemented">
                 Hjælp mig
             </button>
         </div>
@@ -60,19 +59,19 @@
 
                         <p>
                             <strong>Valgt medlemskabstype:</strong><br />
-                            Standard eller Premium
+                            @member.MembershipType
                         </p>
 
                         <p>
                             <strong>Valgte tilvalg:</strong><br />
-                            Vises senere fra registrerings-state
+                            @member.MembershipOptional
                         </p>
 
                         <hr />
-
+                        @* Todo *@
                         <h5>Total pris pr. måned</h5>
 
-                        <h3>Vises senere</h3>
+                        <h3>-</h3>
 
                     </div>
                 </div>
@@ -86,11 +85,6 @@
                         <h4 class="mb-3">
                             Indtast betalingsoplysninger
                         </h4>
-
-                        <!-- PaymentInfo samler betalingsfelterne i én model -->
-                        <!-- Vigtigt:
-                             I et rigtigt system bør kortnummer/CVV ikke gemmes i egen database.
-                             Det bør håndteres via betalingsudbyder/payment gateway. -->
                         <div class="mb-3">
                             <label class="form-label">Kortnummer</label>
 
@@ -142,13 +136,6 @@
                class="btn btn-outline-secondary">
                 Tilbage
             </a>
-
-            <!-- Afslutter registrering -->
-            <!-- TODO:
-                 Senere skal denne metode:
-                 1. Hente medlem + valg fra RegistrationStateService
-                 2. Kalde UserService via MemberService
-                 3. Håndtere betaling via payment provider -->
             <button class="btn btn-success px-4"
                     disabled="@IsSubmitting"
                     @onclick="CompleteRegistration">
@@ -158,7 +145,10 @@
         </div>
 
     </section>
-
+    @if (!string.IsNullOrWhiteSpace(Message))
+    {
+        <div class="alert alert-info mt-4">@Message1</div>
+    }
     <AppFooter />
 
 </div>
@@ -167,21 +157,16 @@
     // PaymentInfo holder betalingsdata samlet ét sted.
     // TODO: Senere bør betalingsflow håndteres via betalingsservice/payment provider.
     private PaymentInfo Payment = new();
-
+    private Member member;
     private string Message = "";
+    private string Message1;
 
     private bool IsSubmitting = false;
 
-    [Inject]
-    private MemberService MemberService { get; set; } = default!;
-
-    [Inject]
-    private RegistrationStateService RegistrationState { get; set; } = default!;
 
     protected override void OnInitialized()
     {
-        // Henter betalingsdata fra shared registration state.
-        Payment = RegistrationState.Payment;
+        member = memberservice.DraftMember;
     }
 
     private async Task CompleteRegistration()
@@ -200,16 +185,6 @@
 
         try
         {
-            // Gemmer betalingsdata i shared registration state.
-            RegistrationState.Payment = Payment;
-
-            // Henter medlemmet fra step 1.
-            var member = RegistrationState.Member;
-
-            // Sætter medlemsvalg fra step 2 på medlemmet.
-            member.MembershipType =
-                RegistrationState.SelectedMembership?.Name ?? "Standard";
-
             // Midlertidig mapping til backend enum.
             // Backend har lige nu MembershipOptional: Swimming eller Pizza.
             member.MembershipOptional = "Swimming";
@@ -219,18 +194,20 @@
             member.ActiveMembership = true;
             member.ActiveUser = true;
             member.RoleName = "Member";
-            member.PartitionKey = "users";
 
-            // Midlertidig affiliation.
-            // TODO: Skal senere erstattes af rigtig center/facility id.
-            member.Affiliation =
-                Guid.Parse("11111111-1111-1111-1111-111111111111");
+            bool success = await memberservice.CreateNewMember(member, memberservice.DraftCredential);
 
-            var createdMember =
-                await MemberService.CreateMemberAsync(member);
+            if (success)
+            {
+                memberservice.DraftMember = new Member();
+                memberservice.DraftCredential = new CredentialDTO();
 
-            Message =
-                $"Medlem oprettet via UserService: {createdMember.GivenName} {createdMember.FamilyName}";
+                Message = "Medlem oprettet";
+            }
+            else
+            {
+                Message = "Kunne ikke oprette medlem";
+            }
         }
         catch (Exception ex)
         {
@@ -240,5 +217,12 @@
         {
             IsSubmitting = false;
         }
+
     }
+
+    private void ShowNotImplemented()
+    {
+        Message1 = "Denne funktion er ikke implementeret endnu.";
+    }
+
 }

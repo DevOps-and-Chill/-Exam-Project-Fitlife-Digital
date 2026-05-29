@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace ClassServiceAPI.Controllers;
 
-[Route("class")]
+[Route("")]
 [ApiController]
 public class ClassController : ControllerBase
 {
@@ -248,6 +248,25 @@ public class ClassController : ControllerBase
         }
     }
 
+    // PUT
+    
+    [Authorize]
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateClassAsync(string id, [FromBody] Class classModel)
+    {
+        try
+        {
+            var updated = await _repo.UpdateClassAsync(id, classModel);
+            if (updated is null)
+                return NotFound($"Class with id '{id}' was not found");
+            return Ok(updated);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating class: {id}", id);
+            return BadRequest(ex.Message);
+        }
+    }
     
     
     // PATCH
@@ -260,7 +279,7 @@ public class ClassController : ControllerBase
         _logger.LogDebug("Cancelling class with id: {id}", id);
         try
         {
-            var cancelled = await _repo.CancelClassByIdAsync(id);
+            var cancelled = await _repo.CancelClassAsync(id);
             _logger.LogInformation("Klasse {id} aflyst", id);
             return Ok(cancelled);
         }

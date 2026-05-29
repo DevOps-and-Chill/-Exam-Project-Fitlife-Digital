@@ -1,10 +1,7 @@
 namespace FitLife.Frontend.Models.DTOs;
 
-public class DirectMessageDto
+public class DirectMessageDto : MessageDto
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
-    public string SenderId { get; set; } = Guid.NewGuid().ToString();
-    public string ReceiverId { get; set; } = Guid.NewGuid().ToString();
-    public string Subject { get; set; } = "";
-    public string Content { get; set; } = "";
+    public string SenderId { get; set; } = "";
+    public string ReceiverId { get; set; } = "";
 }
